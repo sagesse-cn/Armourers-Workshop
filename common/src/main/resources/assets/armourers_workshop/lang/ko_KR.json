@@ -105,6 +105,7 @@
   "inventory.armourers_workshop.armourer.dialog.copy.mirror": "Espelhar?",
   "inventory.armourers_workshop.armourer.dialog.copy.srcPart": "Parte Fonte:",
   "inventory.armourers_workshop.armourer.dialog.copy.title": "Copiar",
+  "inventory.armourers_workshop.armourer.displaySettings": "Configuração de exibição",
   "inventory.armourers_workshop.armourer.displaySettings.dropdown.url": "URL",
   "inventory.armourers_workshop.armourer.displaySettings.dropdown.user": "Usuário",
   "inventory.armourers_workshop.armourer.displaySettings.label.skinType": "Tipo de Visual:",
