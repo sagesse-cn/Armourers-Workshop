@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.function.BiFunction;
 
 public class ChunkPartData {
@@ -20,7 +21,7 @@ public class ChunkPartData {
         this.chunkCubes = chunkCubes;
     }
 
-    public Collection<SkinPart> readFromStream(ChunkInputStream stream, IOConsumer2<ChunkReader, SkinPart.Builder> consumer) throws IOException {
+    public List<SkinPart> readFromStream(ChunkInputStream stream, IOConsumer2<ChunkReader, SkinPart.Builder> consumer) throws IOException {
         var chunkTransform = new ChunkTransform();
         var pairs = new ArrayList<Pair<Integer, SkinPart.Builder>>();
         var relationship = new LinkedHashMap<Integer, Integer>();
@@ -61,7 +62,7 @@ public class ChunkPartData {
         });
     }
 
-    public void writeToStream(ChunkOutputStream stream, Collection<SkinPart> parts, IOConsumer2<ChunkWriter, SkinPart> consumer) throws IOException {
+    public void writeToStream(ChunkOutputStream stream, List<SkinPart> parts, IOConsumer2<ChunkWriter, SkinPart> consumer) throws IOException {
         var relationship = new HashMap<Integer, Integer>();
         var pairs = new ArrayList<Pair<Integer, SkinPart>>();
         eachPart(parts, 0, (parent, part) -> {

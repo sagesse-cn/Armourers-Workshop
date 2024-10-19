@@ -12,7 +12,6 @@ import moe.plushie.armourers_workshop.core.data.transform.SkinPartTransform;
 import moe.plushie.armourers_workshop.core.skin.Skin;
 import moe.plushie.armourers_workshop.core.skin.SkinDescriptor;
 import moe.plushie.armourers_workshop.core.skin.SkinLoader;
-import moe.plushie.armourers_workshop.core.skin.cube.impl.SkinCubesV0;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPart;
 import moe.plushie.armourers_workshop.core.skin.serializer.SkinUsedCounter;
 import moe.plushie.armourers_workshop.init.ModConfig;
@@ -26,7 +25,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.function.BiFunction;
 
 @Environment(EnvType.CLIENT)
@@ -176,7 +174,7 @@ public final class SkinBakery implements ISkinLibraryListener {
                 // for ensure data safety, we need create a blank skin part to manage data.
                 var usedPart = part;
                 if (usedPart.getType() != partType) {
-                    usedPart = new SkinPart(partType, Collections.emptyList(), new SkinCubesV0(0));
+                    usedPart = new SkinPart.Builder(partType).build();
                 }
                 var bakedPart = new BakedSkinPart(usedPart, new SkinPartTransform(usedPart, partTransform), quads);
                 children.add(bakedPart);
@@ -202,7 +200,7 @@ public final class SkinBakery implements ISkinLibraryListener {
         });
 
         BakedCubeQuads.from(skin.getPaintData()).forEach((partType, partTransform, quads) -> {
-            var part = new SkinPart(partType, Collections.emptyList(), new SkinCubesV0(0));
+            var part = new SkinPart.Builder(partType).build();
             var bakedPart = new BakedSkinPart(part, new SkinPartTransform(part, partTransform), quads);
             bakedPart.setRenderPolygonOffset(20);
             bakedParts.add(bakedPart);
@@ -212,7 +210,7 @@ public final class SkinBakery implements ISkinLibraryListener {
         // we only bake special parts in preview mode.
         if (skin.getSettings().isPreviewMode()) {
             BakedCubeQuads.from(skin.getPreviewData()).forEach((partType, partTransform, quads) -> {
-                var part = new SkinPart(partType, Collections.emptyList(), new SkinCubesV0(0));
+                var part = new SkinPart.Builder(partType).build();
                 var bakedPart = new BakedSkinPart(part, new SkinPartTransform(part, partTransform), quads);
                 bakedPart.setRenderPolygonOffset(bakedParts.size());
                 bakedParts.add(bakedPart);
@@ -221,7 +219,7 @@ public final class SkinBakery implements ISkinLibraryListener {
         }
 
         // collect color info from the all child parts.
-        ObjectUtils.search(bakedParts, BakedSkinPart::getChildren, bakedPart -> {
+        ObjectUtils.eachTree(bakedParts, BakedSkinPart::getChildren, bakedPart -> {
             colorInfo.add(bakedPart.getColorInfo());
         });
 

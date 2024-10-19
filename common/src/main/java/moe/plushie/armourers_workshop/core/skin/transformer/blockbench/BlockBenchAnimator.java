@@ -25,7 +25,7 @@ public class BlockBenchAnimator extends BlockBenchObject {
     public static class Builder extends BlockBenchObject.Builder {
 
         private String type = "bone";
-        private final ArrayList<BlockBenchKeyFrame> keyframes = new ArrayList<>();
+        private final List<BlockBenchKeyFrame> keyframes = new ArrayList<>();
 
         public Builder(String uuid) {
             this.uuid = uuid;

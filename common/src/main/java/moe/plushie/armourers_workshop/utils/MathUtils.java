@@ -1,5 +1,7 @@
 package moe.plushie.armourers_workshop.utils;
 
+import java.text.DecimalFormat;
+
 public class MathUtils {
 
     public static final float SCALE = 0.0625f; // 1 / 16f;
@@ -13,6 +15,10 @@ public class MathUtils {
     private static final double[] COS_TAB = new double[257];
 
     private static final float[] SIN = new float[65536];
+
+    // we must reduce the floating point zero padding to save space.
+    public static final DecimalFormat FLOAT_FORMAT = new DecimalFormat("#.#####");
+    public static final DecimalFormat DOUBLE_FORMAT = new DecimalFormat("#.############");
 
     public static int clamp(int value, int minValue, int maxValue) {
         if (value < minValue) {
@@ -324,6 +330,14 @@ public class MathUtils {
 
     public static boolean equal(float f, float g) {
         return Math.abs(g - f) < 1.0E-5f;
+    }
+
+    public static String format(float value) {
+        return FLOAT_FORMAT.format(value);
+    }
+
+    public static String format(double value) {
+        return DOUBLE_FORMAT.format(value);
     }
 
     static {

@@ -35,27 +35,27 @@ public class CGGraphicsContext implements GraphicsContextImpl {
             return;
         }
         float u = 0, v = 0, w = rect.width, h = rect.height, mw = 256, mh = 256;
-        CGPoint texturePos = image.uv();
+        var texturePos = image.uv();
         if (texturePos != null) {
             u = texturePos.x;
             v = texturePos.y;
         }
-        CGSize size = image.size();
+        var size = image.size();
         if (size != null) {
             w = size.width;
             h = size.height;
         }
-        CGSize limitSize = image.limit();
+        var limitSize = image.limit();
         if (limitSize != null) {
             mw = limitSize.width;
             mh = limitSize.height;
         }
-        UIImage.AnimationData animation = image.animationData();
+        var animation = image.animationData();
         if (animation != null && animation.frames != 0) {
             int frame = (int) ((System.currentTimeMillis() / animation.speed) % animation.frames);
             v += h * frame;
         }
-        UIImage.ClipData clipData = image.clipData();
+        var clipData = image.clipData();
         if (clipData != null) {
             float t = clipData.contentInsets.top;
             float b = clipData.contentInsets.bottom;
@@ -64,7 +64,7 @@ public class CGGraphicsContext implements GraphicsContextImpl {
             drawTilableImage(image.rl(), rect.x, rect.y, rect.width, rect.height, u, v, w, h, mw, mh, t, b, l, r, 0);
             return;
         }
-        CGSize sourceSize = image.source();
+        var sourceSize = image.source();
         if (sourceSize != null) {
             float sw = sourceSize.width;
             float sh = sourceSize.height;
@@ -223,7 +223,7 @@ public class CGGraphicsContext implements GraphicsContextImpl {
 
     public void strokeDebugRect(int tag, CGRect rect) {
         if (ModDebugger.viewHierarchy) {
-            UIColor color = ColorUtils.getPaletteColor(tag);
+            var color = ColorUtils.getPaletteColor(tag);
             drawBorder(rect.getMinX(), rect.getMinY(), rect.getMaxX(), rect.getMaxY(), 0, color.getRGB());
         }
     }

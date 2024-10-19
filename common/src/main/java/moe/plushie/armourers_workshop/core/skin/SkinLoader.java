@@ -1,5 +1,6 @@
 package moe.plushie.armourers_workshop.core.skin;
 
+import com.google.common.collect.Lists;
 import moe.plushie.armourers_workshop.api.common.IResultHandler;
 import moe.plushie.armourers_workshop.api.skin.ISkinFileProvider;
 import moe.plushie.armourers_workshop.core.data.DataDomain;
@@ -30,7 +31,6 @@ import javax.crypto.Cipher;
 import javax.crypto.CipherInputStream;
 import javax.crypto.CipherOutputStream;
 import javax.crypto.spec.SecretKeySpec;
-import javax.imageio.metadata.IIOInvalidTreeException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -931,7 +931,7 @@ public class SkinLoader {
             var builder = new Skin.Builder(SkinTypes.ADVANCED);
             builder.paintData(skin.getPaintData());
             builder.version(skin.getVersion());
-            builder.parts(Collections.singleton(skinPart));
+            builder.parts(Lists.newArrayList(skinPart));
             builder.settings(skin.getSettings().copy());
             builder.properties(skin.getProperties().copy());
             return builder.build();

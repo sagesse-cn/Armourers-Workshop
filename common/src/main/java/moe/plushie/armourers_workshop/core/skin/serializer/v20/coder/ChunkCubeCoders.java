@@ -64,7 +64,7 @@ public class ChunkCubeCoders {
         // because it must to recompile and resort it.
         var owners = new HashSet<>();
         owners.add(skinOwner);
-        ObjectUtils.search(parts, SkinPart::getParts, part -> {
+        ObjectUtils.eachTree(parts, SkinPart::getParts, part -> {
             var cubeData = part.getCubeData();
             if (cubeData.getCubeTotal() != 0) {
                 owners.add(cubeData.getId());

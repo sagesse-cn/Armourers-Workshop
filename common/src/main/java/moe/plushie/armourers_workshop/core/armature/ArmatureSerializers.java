@@ -50,7 +50,7 @@ public class ArmatureSerializers {
         return defaultValue;
     }
 
-    public static ITransformf readTransform(IDataPackObject object) {
+    public static SkinTransform readTransform(IDataPackObject object) {
         if (object.isNull()) {
             return SkinTransform.IDENTITY;
         }

@@ -2,7 +2,6 @@ package moe.plushie.armourers_workshop.core.skin.part;
 
 import moe.plushie.armourers_workshop.api.core.IResourceLocation;
 import moe.plushie.armourers_workshop.api.skin.ISkinPartType;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
 import moe.plushie.armourers_workshop.utils.math.Rectangle3i;
 import moe.plushie.armourers_workshop.utils.math.Vector3i;
 
@@ -97,6 +96,6 @@ public abstract class SkinPartType implements ISkinPartType {
 
     @Override
     public String toString() {
-        return ObjectUtils.makeDescription(this, "name", registryName);
+        return registryName.toString();
     }
 }

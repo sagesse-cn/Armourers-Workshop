@@ -92,7 +92,7 @@ public class AdvancedBuilderWindow extends MenuWindow<AdvancedBuilderMenu> imple
     }
 
     private void setup() {
-        CGRect bounds = UIScreen.bounds();
+        var bounds = UIScreen.bounds();
         this.setFrame(bounds);
         this.setupCameraView();
         this.setupLeftCard(bounds);
@@ -130,7 +130,7 @@ public class AdvancedBuilderWindow extends MenuWindow<AdvancedBuilderMenu> imple
         rightCard.setFrame(new CGRect(rect.width - offset, 0, CARD_WIDTH, rect.height));
         addSubview(rightCard);
         // provide a scaled menu.
-        UIMenuController menuController = new UIMenuController();
+        var menuController = new UIMenuController();
         menuController.setTransform(CGAffineTransform.createScale(0.5f, 0.5f));
         rightCard.setMenuController(menuController);
     }
@@ -146,8 +146,8 @@ public class AdvancedBuilderWindow extends MenuWindow<AdvancedBuilderMenu> imple
         if (cachedTitleSize == null) {
             cachedTitleSize = titleView.sizeThatFits(CGSize.ZERO);
         }
-        CGRect target = titleView.frame();
-        CGRect frame = helpView.frame().copy();
+        var target = titleView.frame();
+        var frame = helpView.frame().copy();
         frame.setX(target.x + ((target.width - cachedTitleSize.width) / 2) + cachedTitleSize.width + 2);
         frame.setY(target.y);
         helpView.setFrame(frame);
@@ -169,8 +169,8 @@ public class AdvancedBuilderWindow extends MenuWindow<AdvancedBuilderMenu> imple
             Options.SHOWS_LEFT_CARD.set(true);
             value = CARD_WIDTH;
         }
-        CGPoint oldValue = leftCard.center();
-        CGPoint newValue = new CGPoint(oldValue.x + value, oldValue.y);
+        var oldValue = leftCard.center();
+        var newValue = new CGPoint(oldValue.x + value, oldValue.y);
         UIView.animationWithDuration(0.35, () -> leftCard.setCenter(newValue));
     }
 
@@ -183,29 +183,28 @@ public class AdvancedBuilderWindow extends MenuWindow<AdvancedBuilderMenu> imple
             Options.SHOWS_RIGHT_CARD.set(true);
             value = -CARD_WIDTH;
         }
-        CGPoint oldValue = rightCard.center();
-        CGPoint newValue = new CGPoint(oldValue.x + value, oldValue.y);
+        var oldValue = rightCard.center();
+        var newValue = new CGPoint(oldValue.x + value, oldValue.y);
         UIView.animationWithDuration(0.35, () -> rightCard.setCenter(newValue));
     }
 
     private void importAction() {
-        SkinDocumentType documentType = rightCard.getTypeListView().selectedType();
+        var documentType = rightCard.getTypeListView().selectedType();
         if (documentType == null) {
             return;
         }
         importNewSkin(documentType.getSkinType(), documentType.usesItemTransforms(), skin -> {
-            AdvancedBuilderBlockEntity blockEntity = editor.getBlockEntity();
-            AdvancedImportPacket packet = new AdvancedImportPacket(blockEntity, skin, "");
-            NetworkManager.sendToServer(packet);
+            var blockEntity = editor.getBlockEntity();
+            NetworkManager.sendToServer(new AdvancedImportPacket(blockEntity, skin, ""));
         });
     }
 
     private void exportAction() {
-        SkinDocumentType documentType = rightCard.getTypeListView().selectedType();
+        var documentType = rightCard.getTypeListView().selectedType();
         if (documentType == null) {
             return;
         }
-        ConfirmDialog alert = new ConfirmDialog();
+        var alert = new ConfirmDialog();
         alert.setTitle(NSString.localizedString("advanced-skin-builder.dialog.exporter.title"));
         alert.setMessage(NSString.localizedString("advanced-skin-builder.dialog.exporter.message"));
         alert.showInView(this, () -> {
@@ -219,33 +218,33 @@ public class AdvancedBuilderWindow extends MenuWindow<AdvancedBuilderMenu> imple
     }
 
     private void addShortcut(String name, Runnable action, String... keys) {
-        UIMenuItem.Builder builder = UIMenuItem.of(name);
+        var builder = UIMenuItem.of(name);
         builder.keyDown(keys);
         builder.execute(action);
-        UIMenuItem item = builder.build();
+        var item = builder.build();
         helps.add(NSString.localizedString("advanced-skin-builder.shortcut." + name, item.key()));
         addMenuItem(item);
     }
 
     public void importNewSkin(ISkinType skinType, boolean keepItemTransforms, Consumer<Skin> consumer) {
-        NSString title = NSString.localizedString("advanced-skin-builder.dialog.importer.title");
-        SkinLibraryManager libraryManager = SkinLibraryManager.getClient();
+        var title = NSString.localizedString("advanced-skin-builder.dialog.importer.title");
+        var libraryManager = SkinLibraryManager.getClient();
         if (!libraryManager.shouldUploadFile(inventory.player)) {
             NSString message = NSString.localizedString("skin-library.error.illegalOperation");
             UserNotificationCenter.showToast(message, UIColor.RED, title, null);
             return;
         }
-        File rootPath = new File(EnvironmentManager.getRootDirectory(), "model-imports");
+        var rootPath = new File(EnvironmentManager.getRootDirectory(), "model-imports");
         if (!rootPath.exists() && !rootPath.mkdirs()) {
-            NSString message = new NSString("Can't create directory");
+            var message = new NSString("Can't create directory");
             UserNotificationCenter.showToast(message, UIColor.RED, title, null);
             return;
         }
-        FileProviderDialog alert = new FileProviderDialog(rootPath, "bbmodel");
+        var alert = new FileProviderDialog(rootPath, "bbmodel");
         alert.setTitle(title);
         alert.showInView(this, () -> {
             if (!alert.isCancelled()) {
-                DocumentImporter importer = new DocumentImporter(alert.getSelectedFile(), skinType);
+                var importer = new DocumentImporter(alert.getSelectedFile(), skinType);
                 importer.setKeepItemTransforms(keepItemTransforms);
                 importer.execute(consumer);
             }

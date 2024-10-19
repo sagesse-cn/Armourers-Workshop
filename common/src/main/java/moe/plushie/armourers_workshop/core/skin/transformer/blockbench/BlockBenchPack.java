@@ -1,18 +1,16 @@
 package moe.plushie.armourers_workshop.core.skin.transformer.blockbench;
 
-import moe.plushie.armourers_workshop.core.skin.transformer.SkinPack;
-import moe.plushie.armourers_workshop.core.skin.transformer.bedrock.BedrockTransform;
 import moe.plushie.armourers_workshop.utils.math.Size2f;
 import moe.plushie.armourers_workshop.utils.math.Size3f;
-import moe.plushie.armourers_workshop.utils.math.Vector3f;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-public class BlockBenchPack implements SkinPack {
+public class BlockBenchPack {
 
     private final String name;
     private final String description;
@@ -30,10 +28,10 @@ public class BlockBenchPack implements SkinPack {
     private final List<BlockBenchTexture> textures;
     private final List<BlockBenchAnimation> animations;
 
-    private final Map<String, BedrockTransform> transforms;
-    private final HashMap<String, BlockBenchObject> objects = new HashMap<>();
+    private final Map<String, BlockBenchDisplay> transforms;
+    private final Map<String, BlockBenchObject> objects = new HashMap<>();
 
-    public BlockBenchPack(String name, String description, String version, String format, List<String> authors, Size2f resolution, Size3f visibleBox, BlockBenchOutliner rootOutliner, List<BlockBenchElement> elements, List<BlockBenchTexture> textures, List<BlockBenchAnimation> animations, Map<String, BedrockTransform> transforms) {
+    public BlockBenchPack(String name, String description, String version, String format, List<String> authors, Size2f resolution, Size3f visibleBox, BlockBenchOutliner rootOutliner, List<BlockBenchElement> elements, List<BlockBenchTexture> textures, List<BlockBenchAnimation> animations, Map<String, BlockBenchDisplay> transforms) {
         this.name = name;
         this.description = description;
         this.version = version;
@@ -55,12 +53,10 @@ public class BlockBenchPack implements SkinPack {
         });
     }
 
-    @Override
     public String getName() {
         return name;
     }
 
-    @Override
     public String getDescription() {
         return description;
     }
@@ -73,18 +69,8 @@ public class BlockBenchPack implements SkinPack {
         return format;
     }
 
-    @Override
     public List<String> getAuthors() {
         return authors;
-    }
-
-    @Nullable
-    public Vector3f getOrigin() {
-        // java block/item has a special origin.
-        if (format.equals("java_block")) {
-            return new Vector3f(8, 8, 8);
-        }
-        return null;
     }
 
     public Size2f getResolution() {
@@ -111,7 +97,7 @@ public class BlockBenchPack implements SkinPack {
         return animations;
     }
 
-    public Map<String, BedrockTransform> getTransforms() {
+    public Map<String, BlockBenchDisplay> getItemTransforms() {
         return transforms;
     }
 
@@ -124,20 +110,20 @@ public class BlockBenchPack implements SkinPack {
 
         private String name;
         private String description;
-        private String version = "4.5";
-        private String format = "bedrock";
+        private String version = "4.10";
+        private String format = "free";
         private List<String> authors;
 
         private Size2f resolution = new Size2f(64, 64);
         private Size3f visibleBox = new Size3f(8, 7, 1.5f);
 
-        private final ArrayList<BlockBenchElement> elements = new ArrayList<>();
-        private final ArrayList<BlockBenchTexture> textures = new ArrayList<>();
-        private final ArrayList<BlockBenchAnimation> animations = new ArrayList<>();
+        private final List<BlockBenchElement> elements = new ArrayList<>();
+        private final List<BlockBenchTexture> textures = new ArrayList<>();
+        private final List<BlockBenchAnimation> animations = new ArrayList<>();
+
+        private final Map<String, BlockBenchDisplay> transforms = new LinkedHashMap<>();
 
         private final BlockBenchOutliner.Builder rootOutliner = new BlockBenchOutliner.Builder();
-
-        private final HashMap<String, BedrockTransform> transforms = new HashMap<>();
 
         public void name(String name) {
             this.name = name;
@@ -179,7 +165,7 @@ public class BlockBenchPack implements SkinPack {
             this.textures.add(texture);
         }
 
-        public void addDisplay(String name, BedrockTransform transform) {
+        public void addDisplay(String name, BlockBenchDisplay transform) {
             this.transforms.put(name, transform);
         }
 

@@ -69,7 +69,7 @@ public final class SkinPartSerializerV12 {
             }
         }
 
-        SkinCubesV1 cubeData = SkinCubesV1.readFromStream(stream, version, partType);
+        var cubeData = SkinCubesV1.readFromStream(stream, version, partType);
         markerBlocks = new ArrayList<>();
         if (version > 8) {
             int markerCount = stream.readInt();
@@ -78,7 +78,7 @@ public final class SkinPartSerializerV12 {
             }
         }
 
-        SkinPart.Builder builder = new SkinPart.Builder(partType);
+        var builder = new SkinPart.Builder(partType);
         builder.markers(markerBlocks);
         builder.cubes(cubeData);
         return builder.build();

@@ -32,7 +32,7 @@ public class BlockBenchAnimation extends BlockBenchObject {
 
         private float duration = 0;
         private String loop = "loop"; // once, hold, loop
-        private final ArrayList<BlockBenchAnimator> animators = new ArrayList<>();
+        private final List<BlockBenchAnimator> animators = new ArrayList<>();
 
         public void loop(String mode) {
             this.loop = mode;

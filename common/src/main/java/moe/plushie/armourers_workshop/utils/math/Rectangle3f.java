@@ -188,7 +188,7 @@ public class Rectangle3f implements IRectangle3f {
     }
 
     public void mul(OpenMatrix4f matrix) {
-        List<Vector4f> vertexes = ObjectUtils.map(
+        var vertexes = ObjectUtils.map(
                 new Vector4f(x, y, z, 1.0f),
                 new Vector4f(x + width, y, z, 1.0f),
                 new Vector4f(x + width, y + height, z, 1.0f),
@@ -198,8 +198,8 @@ public class Rectangle3f implements IRectangle3f {
                 new Vector4f(x, y + height, z + depth, 1.0f),
                 new Vector4f(x, y, z + depth, 1.0f)
         );
-        Iterator<Vector4f> iterator = vertexes.iterator();
-        Vector4f point = iterator.next();
+        var iterator = vertexes.iterator();
+        var point = iterator.next();
         point.transform(matrix);
         float minX = point.x(), minY = point.y(), minZ = point.z();
         float maxX = point.x(), maxY = point.y(), maxZ = point.z();

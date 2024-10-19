@@ -62,6 +62,7 @@ public class BakedSkin implements IBakedSkin {
 
     private final ArrayList<SkinWingsTransform> cachedWingsTransforms = new ArrayList<>();
     private final ArrayList<BakedItemTransform> cachedItemTransforms = new ArrayList<>();
+    private final ArrayList<BakedLocatorTransform> cachedLocatorTransforms = new ArrayList<>();
 
     private final Range<Integer> useTickRange;
     private final List<BakedSkinPart> skinParts;
@@ -97,6 +98,7 @@ public class BakedSkin implements IBakedSkin {
         cachedWingsTransforms.forEach(it -> it.setup(entity, context.getAnimationTicks()));
         AnimationEngine.apply(entity, this, context.getAnimationTicks(), context.getAnimationManager().getAnimationContext(this));
         SkinRenderHelper.apply(entity, this, bakedArmature, context.getItemSource());
+        cachedLocatorTransforms.forEach(it -> it.setup(entity, bakedArmature, context));
     }
 
     public ColorScheme resolve(Entity entity, ColorScheme scheme) {
@@ -231,6 +233,8 @@ public class BakedSkin implements IBakedSkin {
                 cachedItemTransforms.add(transform1);
             }
         }));
+        // attach locator transform.
+        cachedLocatorTransforms.addAll(BakedLocatorTransform.create(skinParts));
     }
 
     private void loadBlockBounds(List<BakedSkinPart> skinParts) {
@@ -286,7 +290,7 @@ public class BakedSkin implements IBakedSkin {
             return results;
         }
         var namedParts = new HashMap<String, BakedSkinPart>();
-        ObjectUtils.search(skinParts, BakedSkinPart::getChildren, part -> {
+        ObjectUtils.eachTree(skinParts, BakedSkinPart::getChildren, part -> {
             var partType = part.getType();
             var partName = partType.getName();
             if (partType == SkinPartTypes.ADVANCED) {

@@ -80,8 +80,9 @@ public class Armatures {
                         wildcardJoint = joint;
                     }
                 });
+                var transform = ArmatureSerializers.readTransform(value.get("transform"));
                 jointShapes.put(joint, ArmatureSerializers.readShape(value.get("cube")));
-                jointTransforms.put(joint, ArmatureSerializers.readTransform(value.get("transform"))::apply);
+                jointTransforms.put(joint, transform::apply);
                 jointParents.put(joint, value.get("parent").stringValue());
             });
             loadType(object.get("type"), SkinTypes::byName, skinTypes::add);

@@ -249,7 +249,7 @@ public abstract class ChunkColorSection {
         public TextureRef putTexture(Vector2f uv, ITextureProvider provider) {
             // we're also adding all variant textures.
             var textureList = getOrCreateTextureList(provider);
-            ObjectUtils.search(provider.getVariants(), ITextureProvider::getVariants, this::getOrCreateTextureList);
+            ObjectUtils.eachTree(provider.getVariants(), ITextureProvider::getVariants, this::getOrCreateTextureList);
             return textureList.add(uv, this);
         }
 

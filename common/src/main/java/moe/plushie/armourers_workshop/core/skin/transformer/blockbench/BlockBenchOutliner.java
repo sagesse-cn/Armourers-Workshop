@@ -45,7 +45,7 @@ public class BlockBenchOutliner extends BlockBenchObject {
         private Vector3f origin = Vector3f.ZERO;
         private Vector3f rotation = Vector3f.ZERO;
 
-        private final ArrayList<Object> children = new ArrayList<>();
+        private final List<Object> children = new ArrayList<>();
 
         public void origin(Vector3f origin) {
             this.origin = origin;

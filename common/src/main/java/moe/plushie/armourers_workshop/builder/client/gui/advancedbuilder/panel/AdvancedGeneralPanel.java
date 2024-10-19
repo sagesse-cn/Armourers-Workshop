@@ -47,12 +47,12 @@ public class AdvancedGeneralPanel extends AdvancedPanel {
     }
 
     private void addHeader() {
-        AdvancedHeaderView headerView = new AdvancedHeaderView(connector.name, connector.part, new CGRect(0, 0, 200, 24));
+        var headerView = new AdvancedHeaderView(connector.name, connector.part, new CGRect(0, 0, 200, 24));
         connector.lock.addObserver(it -> headerView.setEditable(!it));
         headerView.setPicker((sender) -> {
-            CGRect rect = new CGRect(0, 0, 242, 208);
-            CGAffineTransform transform = CGAffineTransform.createScale(0.5f, 0.5f);
-            PartPickerView pickerView = new PartPickerView(rect);
+            var rect = new CGRect(0, 0, 242, 208);
+            var transform = CGAffineTransform.createScale(0.5f, 0.5f);
+            var pickerView = new PartPickerView(rect);
             pickerView.setAutoresizingMask(UIView.AutoresizingMask.flexibleRightMargin | UIView.AutoresizingMask.flexibleBottomMargin);
             pickerView.setContents(UIImage.of(ModTextures.MENUS).uv(0, 0).fixed(44, 44).clip(4, 4, 4, 4).build());
             pickerView.setTransform(transform);
@@ -67,8 +67,8 @@ public class AdvancedGeneralPanel extends AdvancedPanel {
     }
 
     private void pickAction() {
-        SkinDocumentNode node = connector.getNode();
-        AdvancedBuilderWindow window = ObjectUtils.safeCast(window(), AdvancedBuilderWindow.class);
+        var node = connector.getNode();
+        var window = ObjectUtils.safeCast(window(), AdvancedBuilderWindow.class);
         if (node == null || window == null) {
             return;
         }
@@ -80,9 +80,8 @@ public class AdvancedGeneralPanel extends AdvancedPanel {
             keepItemTransforms = true;
         }
         window.importNewSkin(SkinTypes.ADVANCED, keepItemTransforms, skin -> {
-            AdvancedBuilderBlockEntity blockEntity = editor.getBlockEntity();
-            AdvancedImportPacket packet = new AdvancedImportPacket(blockEntity, skin, node.getId());
-            NetworkManager.sendToServer(packet);
+            var blockEntity = editor.getBlockEntity();
+            NetworkManager.sendToServer(new AdvancedImportPacket(blockEntity, skin, node.getId()));
         });
     }
 }

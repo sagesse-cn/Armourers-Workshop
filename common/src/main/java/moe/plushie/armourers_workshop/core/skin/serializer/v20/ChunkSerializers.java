@@ -32,7 +32,6 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -136,10 +135,10 @@ public class ChunkSerializers {
         }
     });
 
-    public static final ChunkSerializer<Collection<SkinPart>, ChunkCubeData> SKIN_PART = register(new ChunkSerializer<>(ChunkType.SKIN_PART) {
+    public static final ChunkSerializer<List<SkinPart>, ChunkCubeData> SKIN_PART = register(new ChunkSerializer<>(ChunkType.SKIN_PART) {
 
         @Override
-        public Collection<SkinPart> read(ChunkInputStream stream, ChunkCubeData chunkCubes) throws IOException {
+        public List<SkinPart> read(ChunkInputStream stream, ChunkCubeData chunkCubes) throws IOException {
             var partData = new ChunkPartData(chunkCubes);
             return partData.readFromStream(stream, (it, builder) -> {
                 builder.markers(it.read(SKIN_MARKERS));
@@ -151,7 +150,7 @@ public class ChunkSerializers {
         }
 
         @Override
-        public void write(Collection<SkinPart> parts, ChunkCubeData chunkCubes, ChunkOutputStream stream) throws IOException {
+        public void write(List<SkinPart> parts, ChunkCubeData chunkCubes, ChunkOutputStream stream) throws IOException {
             var partData = new ChunkPartData(chunkCubes);
             partData.writeToStream(stream, parts, (it, part) -> {
                 it.write(SKIN_MARKERS, part.getMarkers());
@@ -163,12 +162,12 @@ public class ChunkSerializers {
         }
     });
 
-    public static final ChunkSerializer<Collection<SkinMarker>, Void> SKIN_MARKERS = register(new ChunkSerializer<>(ChunkType.MARKER) {
+    public static final ChunkSerializer<List<SkinMarker>, Void> SKIN_MARKERS = register(new ChunkSerializer<>(ChunkType.MARKER) {
 
         @Override
-        public Collection<SkinMarker> read(ChunkInputStream stream, Void obj) throws IOException {
+        public List<SkinMarker> read(ChunkInputStream stream, Void obj) throws IOException {
             int size = stream.readInt();
-            ArrayList<SkinMarker> markers = new ArrayList<>();
+            var markers = new ArrayList<SkinMarker>();
             for (int i = 0; i < size; ++i) {
                 markers.add(new SkinMarker(stream));
             }
@@ -176,7 +175,7 @@ public class ChunkSerializers {
         }
 
         @Override
-        public void write(Collection<SkinMarker> value, Void obj, ChunkOutputStream stream) throws IOException {
+        public void write(List<SkinMarker> value, Void obj, ChunkOutputStream stream) throws IOException {
             stream.writeInt(value.size());
             for (var marker : value) {
                 marker.writeToStream(stream);

@@ -30,15 +30,15 @@ public class ColorArgumentType implements IArgumentType<PaintColor> {
 
     @Override
     public PaintColor parse(final StringReader reader) throws CommandSyntaxException {
-        ColorParser parser = new ColorParser(reader).parse();
+        var parser = new ColorParser(reader).parse();
         return parser.getPaintColor();
     }
 
     @Override
     public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
-        StringReader stringReader = new StringReader(builder.getInput());
+        var stringReader = new StringReader(builder.getInput());
         stringReader.setCursor(builder.getStart());
-        ColorParser parser = new ColorParser(stringReader);
+        var parser = new ColorParser(stringReader);
         try {
             parser.parse();
         } catch (CommandSyntaxException commandSyntaxException) {

@@ -5,6 +5,7 @@ import moe.plushie.armourers_workshop.api.math.ITransformf;
 import moe.plushie.armourers_workshop.api.skin.ISkinTransform;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IInputStream;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IOutputStream;
+import moe.plushie.armourers_workshop.utils.ObjectUtils;
 import moe.plushie.armourers_workshop.utils.math.OpenQuaternionf;
 import moe.plushie.armourers_workshop.utils.math.Vector3f;
 
@@ -142,6 +143,11 @@ public class SkinTransform implements ITransformf, ISkinTransform {
     @Override
     public int hashCode() {
         return Objects.hash(translate, rotation, scale, pivot, afterTranslate);
+    }
+
+    @Override
+    public String toString() {
+        return ObjectUtils.makeDescription(this, "translate", translate, "rotation", rotation, "scale", scale, "pivot", pivot, "offset", afterTranslate);
     }
 
     @Override

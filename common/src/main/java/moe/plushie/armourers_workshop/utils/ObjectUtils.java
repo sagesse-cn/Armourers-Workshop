@@ -2,6 +2,7 @@ package moe.plushie.armourers_workshop.utils;
 
 import moe.plushie.armourers_workshop.api.math.IMatrix3f;
 import moe.plushie.armourers_workshop.api.math.IMatrix4f;
+import moe.plushie.armourers_workshop.utils.math.Vector3f;
 import org.jetbrains.annotations.Nullable;
 
 import java.nio.ByteBuffer;
@@ -182,10 +183,10 @@ public class ObjectUtils {
         return results;
     }
 
-    public static <T> void search(Collection<T> collection, Function<T, Collection<T>> children, Consumer<T> consumer) {
+    public static <T> void eachTree(Iterable<T> collection, Function<T, Iterable<T>> children, Consumer<T> consumer) {
         for (T value : collection) {
             consumer.accept(value);
-            search(children.apply(value), children, consumer);
+            eachTree(children.apply(value), children, consumer);
         }
     }
 

@@ -44,7 +44,7 @@ public class BlockBenchKeyFrame extends BlockBenchObject {
         private String interpolation = "liner"; // liner,smooth,bezier,step
 
         private List<Float> parameters;
-        private final ArrayList<Object> points = new ArrayList<>();
+        private final List<Object> points = new ArrayList<>();
 
         public void time(float time) {
             this.time = time;

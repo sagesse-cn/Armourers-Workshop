@@ -10,13 +10,13 @@ import moe.plushie.armourers_workshop.core.skin.property.SkinProperty;
 import moe.plushie.armourers_workshop.core.skin.serializer.SkinSerializer;
 import moe.plushie.armourers_workshop.core.texture.SkinPaintData;
 import moe.plushie.armourers_workshop.core.texture.SkinPreviewData;
+import moe.plushie.armourers_workshop.utils.ObjectUtils;
 import moe.plushie.armourers_workshop.utils.ThreadUtils;
 import moe.plushie.armourers_workshop.utils.math.Rectangle3i;
 import net.minecraft.core.BlockPos;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,20 +28,20 @@ public class Skin implements ISkin {
 
     private final SkinSettings settings;
     private final SkinProperties properties;
-    private final ISkinType skinType;
+    private final ISkinType type;
     private final List<SkinPart> parts;
     private final List<SkinAnimation> animations;
-
-    private HashMap<BlockPos, Rectangle3i> blockBounds;
 
     private final SkinPaintData paintData;
     private final SkinPreviewData previewData;
     private final Object blobs;
 
-    public Skin(int id, int version, ISkinType skinType, SkinProperties properties, SkinSettings settings, SkinPaintData paintData, SkinPreviewData previewData, Collection<SkinAnimation> skinAnimations, Collection<SkinPart> skinParts, Object blobs) {
+    private Map<BlockPos, Rectangle3i> blockBounds;
+
+    protected Skin(int id, int version, ISkinType type, SkinProperties properties, SkinSettings settings, SkinPaintData paintData, SkinPreviewData previewData, List<SkinAnimation> skinAnimations, List<SkinPart> skinParts, Object blobs) {
         this.id = id;
         this.version = version;
-        this.skinType = skinType;
+        this.type = type;
         this.properties = properties;
         this.settings = settings;
         this.blobs = blobs;
@@ -68,7 +68,7 @@ public class Skin implements ISkin {
             return blockBounds;
         }
         blockBounds = new HashMap<>();
-        if (skinType != SkinTypes.BLOCK) {
+        if (type != SkinTypes.BLOCK) {
             return blockBounds;
         }
         var collisionBox = settings.getCollisionBox();
@@ -100,7 +100,7 @@ public class Skin implements ISkin {
 
     public int getModelCount() {
         int count = 0;
-        for (SkinPart part : parts) {
+        for (var part : parts) {
             count += part.getModelCount();
         }
         return count;
@@ -112,7 +112,7 @@ public class Skin implements ISkin {
 
     @Override
     public ISkinType getType() {
-        return skinType;
+        return type;
     }
 
     @Nullable
@@ -159,15 +159,10 @@ public class Skin implements ISkin {
 
     @Override
     public String toString() {
-        var returnString = "Skin [properties=" + properties + ", type=" + skinType.getRegistryName();
-        if (paintData != null) {
-            returnString += ", paintData=" + paintData;
-        }
-        returnString += "]";
-        return returnString;
+        return ObjectUtils.makeDescription(this, "type", type.getRegistryName().toString(), "properties", properties, "settings", settings, "animations", animations, "paintData", paintData, "previewData", previewData);
     }
 
-    public Collection<SkinMarker> getMarkers() {
+    public List<SkinMarker> getMarkers() {
         var markers = new ArrayList<SkinMarker>();
         for (var part : parts) {
             markers.addAll(part.getMarkers());
@@ -181,22 +176,24 @@ public class Skin implements ISkin {
 
     public static class Builder {
 
-        private final ISkinType skinType;
-        private final ArrayList<SkinPart> skinParts = new ArrayList<>();
-        private final ArrayList<SkinAnimation> skinAnimations = new ArrayList<>();
+        private final ISkinType type;
+
+        private ArrayList<SkinPart> skinParts = new ArrayList<>();
+        private ArrayList<SkinAnimation> skinAnimations = new ArrayList<>();
 
         private SkinPaintData paintData;
         private SkinPreviewData previewData;
         private SkinSettings settings = new SkinSettings();
         private SkinProperties properties = SkinProperties.EMPTY;
         private Object blobs;
+
         private int id = -1;
         private int version = SkinSerializer.Versions.V13;
 
-        public Builder(ISkinType skinType) {
-            this.skinType = skinType;
-            // for outfit skin, editable is not allowed by default.
-            if (this.skinType == SkinTypes.OUTFIT) {
+        public Builder(ISkinType type) {
+            this.type = type;
+            // for outfit skin, not allow edit by default.
+            if (type == SkinTypes.OUTFIT) {
                 this.settings.setEditable(false);
             }
         }
@@ -229,16 +226,16 @@ public class Skin implements ISkin {
             return this;
         }
 
-        public Builder parts(Collection<SkinPart> parts) {
+        public Builder parts(List<SkinPart> parts) {
             if (parts != null) {
-                this.skinParts.addAll(parts);
+                this.skinParts = new ArrayList<>(parts);
             }
             return this;
         }
 
         public Builder animations(List<SkinAnimation> animations) {
             if (animations != null) {
-                this.skinAnimations.addAll(animations);
+                this.skinAnimations = new ArrayList<>(animations);
             }
             return this;
         }
@@ -262,7 +259,7 @@ public class Skin implements ISkin {
             updateIdIfNeeded();
             updateSettingIfNeeded();
             updatePropertiesIfNeeded();
-            return new Skin(id, version, skinType, properties, settings, paintData, previewData, skinAnimations, skinParts, blobs);
+            return new Skin(id, version, type, properties, settings, paintData, previewData, skinAnimations, skinParts, blobs);
         }
 
         private void updateIdIfNeeded() {
@@ -280,38 +277,38 @@ public class Skin implements ISkin {
         private void updatePropertiesIfNeeded() {
             // Update skin properties.
             if (properties.get(SkinProperty.OVERRIDE_MODEL_ALL)) {
-                if (skinType == SkinTypes.ARMOR_HEAD) {
+                if (type == SkinTypes.ARMOR_HEAD) {
                     properties.put(SkinProperty.OVERRIDE_MODEL_HEAD, true);
                 }
-                if (skinType == SkinTypes.ARMOR_CHEST) {
+                if (type == SkinTypes.ARMOR_CHEST) {
                     properties.put(SkinProperty.OVERRIDE_MODEL_CHEST, true);
                     properties.put(SkinProperty.OVERRIDE_MODEL_LEFT_ARM, true);
                     properties.put(SkinProperty.OVERRIDE_MODEL_RIGHT_ARM, true);
                 }
-                if (skinType == SkinTypes.ARMOR_LEGS) {
+                if (type == SkinTypes.ARMOR_LEGS) {
                     properties.put(SkinProperty.OVERRIDE_MODEL_LEFT_LEG, true);
                     properties.put(SkinProperty.OVERRIDE_MODEL_RIGHT_LEG, true);
                 }
-                if (skinType == SkinTypes.ARMOR_FEET) {
+                if (type == SkinTypes.ARMOR_FEET) {
                     properties.put(SkinProperty.OVERRIDE_MODEL_LEFT_LEG, true);
                     properties.put(SkinProperty.OVERRIDE_MODEL_RIGHT_LEG, true);
                 }
                 properties.remove(SkinProperty.OVERRIDE_MODEL_ALL);
             }
             if (properties.get(SkinProperty.OVERRIDE_OVERLAY_ALL)) {
-                if (skinType == SkinTypes.ARMOR_HEAD) {
+                if (type == SkinTypes.ARMOR_HEAD) {
                     properties.put(SkinProperty.OVERRIDE_OVERLAY_HAT, true);
                 }
-                if (skinType == SkinTypes.ARMOR_CHEST) {
+                if (type == SkinTypes.ARMOR_CHEST) {
                     properties.put(SkinProperty.OVERRIDE_OVERLAY_JACKET, true);
                     properties.put(SkinProperty.OVERRIDE_OVERLAY_LEFT_SLEEVE, true);
                     properties.put(SkinProperty.OVERRIDE_OVERLAY_RIGHT_SLEEVE, true);
                 }
-                if (skinType == SkinTypes.ARMOR_LEGS) {
+                if (type == SkinTypes.ARMOR_LEGS) {
                     properties.put(SkinProperty.OVERRIDE_OVERLAY_LEFT_PANTS, true);
                     properties.put(SkinProperty.OVERRIDE_OVERLAY_RIGHT_PANTS, true);
                 }
-                if (skinType == SkinTypes.ARMOR_FEET) {
+                if (type == SkinTypes.ARMOR_FEET) {
                     properties.put(SkinProperty.OVERRIDE_OVERLAY_LEFT_PANTS, true);
                     properties.put(SkinProperty.OVERRIDE_OVERLAY_RIGHT_PANTS, true);
                 }

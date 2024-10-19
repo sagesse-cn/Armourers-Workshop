@@ -14,6 +14,7 @@ import moe.plushie.armourers_workshop.utils.math.OpenPoseStack;
 import moe.plushie.armourers_workshop.utils.math.OpenVoxelShape;
 import moe.plushie.armourers_workshop.utils.math.Rectangle3f;
 import net.minecraft.core.Direction;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -105,6 +106,15 @@ public class SkinCubesV2 extends SkinCubes {
             if (getTexture(dir) != null) {
                 return super.getFace(dir);
             }
+            return null;
+        }
+    }
+
+    // TODO: @SAGESSE impl mesh.
+    public static class Mesh extends SkinCube {
+
+        @Override
+        public SkinCubeFace getFace(Direction dir) {
             return null;
         }
     }

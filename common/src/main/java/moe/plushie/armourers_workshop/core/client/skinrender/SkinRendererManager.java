@@ -127,7 +127,7 @@ public class SkinRendererManager {
         }
         var transformer = BakedArmatureTransformer.defaultBy(entityType, livingRenderer.getModel(), livingRenderer);
         if (transformer != null) {
-            livingRenderer.addLayer(new SkinWardrobeLayer<>(transformer, livingRenderer));
+            livingRenderer.layers.add(0, new SkinWardrobeLayer<>(transformer, livingRenderer));
         }
     }
 

@@ -5,11 +5,13 @@ import moe.plushie.armourers_workshop.core.data.transform.SkinTransform;
 import moe.plushie.armourers_workshop.core.skin.serializer.SkinFileOptions;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IInputStream;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IOutputStream;
+import moe.plushie.armourers_workshop.utils.ObjectUtils;
 import moe.plushie.armourers_workshop.utils.math.Rectangle3f;
 import moe.plushie.armourers_workshop.utils.math.Vector3f;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
@@ -140,6 +142,22 @@ public class SkinSettings {
     @Override
     public int hashCode() {
         return Objects.hash(flags, collisionBox, itemTransforms, securityData);
+    }
+
+    @Override
+    public String toString() {
+        var properties = new HashMap<String, Object>();
+        properties.put("editable", isEditable());
+        properties.put("savable", isSavable());
+        properties.put("exportable", isExportable());
+        properties.put("compressed", isCompressed());
+        if (collisionBox != null && !collisionBox.isEmpty()) {
+            properties.put("collisionBox", collisionBox);
+        }
+        if (itemTransforms != null) {
+            properties.putAll(itemTransforms);
+        }
+        return properties.toString();
     }
 
     public SkinSettings copy() {

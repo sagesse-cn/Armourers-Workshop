@@ -27,6 +27,7 @@ import moe.plushie.armourers_workshop.utils.ColorUtils;
 import moe.plushie.armourers_workshop.utils.DataStorage;
 import moe.plushie.armourers_workshop.utils.RenderSystem;
 import moe.plushie.armourers_workshop.utils.TickUtils;
+import moe.plushie.armourers_workshop.utils.math.OpenPoseStack;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
@@ -64,6 +65,8 @@ public class EntitySlotsHandler<T> implements IAssociatedContainer, SkinBakery.I
     private final SkinOverriddenManager overriddenManager = new SkinOverriddenManager();
 
     private final DataStorage dataStorage = new DataStorage();
+
+    public OpenPoseStack handPoseStack;
 
     private int version = 0;
     private int lastVersion = Integer.MAX_VALUE;

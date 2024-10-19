@@ -2,13 +2,13 @@ package moe.plushie.armourers_workshop.core.skin.transformer.blockbench;
 
 import moe.plushie.armourers_workshop.utils.math.Rectangle2f;
 
-public class BlockBenchFace {
+public class BlockBenchCubeFace {
 
     private final int textureId;
     private final int rotation;
     private final Rectangle2f rect;
 
-    public BlockBenchFace(int textureId, int rotation, Rectangle2f rect) {
+    public BlockBenchCubeFace(int textureId, int rotation, Rectangle2f rect) {
         this.textureId = textureId;
         this.rotation = rotation;
         this.rect = rect;
@@ -30,6 +30,7 @@ public class BlockBenchFace {
 
         private int texture = -1;
         private int rotation = 0;
+
         private Rectangle2f rect = Rectangle2f.ZERO;
 
         public void uv(Rectangle2f rect) {
@@ -44,9 +45,8 @@ public class BlockBenchFace {
             this.rotation = rotation;
         }
 
-        public BlockBenchFace build() {
-            return new BlockBenchFace(texture, rotation, rect);
+        public BlockBenchCubeFace build() {
+            return new BlockBenchCubeFace(texture, rotation, rect);
         }
     }
-
 }

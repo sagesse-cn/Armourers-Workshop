@@ -200,7 +200,7 @@ public class SkinProperties implements ISkinProperties {
 
     @Override
     public String toString() {
-        return "SkinProperties [properties=" + properties + "]";
+        return properties.toString();
     }
 
     public void readFromNBT(CompoundTag nbt) {

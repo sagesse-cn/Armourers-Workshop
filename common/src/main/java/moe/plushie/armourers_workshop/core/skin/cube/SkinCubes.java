@@ -67,6 +67,10 @@ public abstract class SkinCubes implements ISkinCubeProvider {
         return null;
     }
 
+    public boolean isEmpty() {
+        return getCubeTotal() == 0;
+    }
+
     @Override
     public String toString() {
         return ObjectUtils.makeDescription(this, "total", getCubeTotal());

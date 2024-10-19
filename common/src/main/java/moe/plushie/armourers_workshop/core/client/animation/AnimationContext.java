@@ -28,7 +28,7 @@ public class AnimationContext {
     public static AnimationContext from(List<BakedSkinPart> skinParts) {
         // find all animated transform and convert to snapshot.
         var context = new AnimationContext();
-        ObjectUtils.search(skinParts, BakedSkinPart::getChildren, part -> {
+        ObjectUtils.eachTree(skinParts, BakedSkinPart::getChildren, part -> {
             for (var transform : part.getTransform().getChildren()) {
                 if (transform instanceof AnimatedTransform transform1) {
                     context.snapshots.add(new Snapshot(part, transform1));

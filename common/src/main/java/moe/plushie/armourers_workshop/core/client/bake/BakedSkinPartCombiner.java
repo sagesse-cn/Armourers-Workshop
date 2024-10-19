@@ -4,6 +4,7 @@ import moe.plushie.armourers_workshop.api.skin.ISkinTransform;
 import moe.plushie.armourers_workshop.core.client.animation.AnimatedTransform;
 import moe.plushie.armourers_workshop.core.data.transform.SkinPartTransform;
 import moe.plushie.armourers_workshop.core.data.transform.SkinWingsTransform;
+import moe.plushie.armourers_workshop.core.skin.part.SkinPartTypes;
 import moe.plushie.armourers_workshop.init.ModDebugger;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -63,7 +64,7 @@ public class BakedSkinPartCombiner {
     }
 
 
-    public static class Node {
+    protected static class Node {
 
         private final BakedSkinPart part;
 
@@ -112,6 +113,11 @@ public class BakedSkinPartCombiner {
         }
 
         private boolean freeze() {
+            // we can't freeze the locator, because the locator will be read transform for real time.
+            if (part.getType() == SkinPartTypes.ADVANCED_LOCATOR) {
+                return false;
+            }
+            // determine node freeze by transform.
             for (var transform : part.getTransform().getChildren()) {
                 if (transform instanceof SkinWingsTransform) {
                     return false;

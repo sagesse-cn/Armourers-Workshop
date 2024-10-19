@@ -9,7 +9,6 @@ import moe.plushie.armourers_workshop.core.skin.SkinMarker;
 import moe.plushie.armourers_workshop.core.skin.SkinSettings;
 import moe.plushie.armourers_workshop.core.skin.SkinTypes;
 import moe.plushie.armourers_workshop.core.skin.animation.SkinAnimation;
-import moe.plushie.armourers_workshop.core.skin.cube.impl.SkinCubesV2;
 import moe.plushie.armourers_workshop.core.skin.exception.SkinSaveException;
 import moe.plushie.armourers_workshop.core.skin.exception.TranslatableException;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPart;
@@ -142,9 +141,6 @@ public class SkinDocumentExporter {
                 builder.name(node.getName());
             }
             builder.transform(transform);
-
-            var cubes = new SkinCubesV2();
-            builder.cubes(cubes);
 
             builder.markers(loadSkinMarkers(node));
             builder.properties(null);

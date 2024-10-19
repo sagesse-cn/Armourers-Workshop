@@ -16,7 +16,7 @@ public class SkinItemTransforms extends LinkedHashMap<String, ITransformf> {
     }
 
     public SkinItemTransforms(CompoundTag nbt) {
-        for (String key : nbt.getAllKeys()) {
+        for (var key : nbt.getAllKeys()) {
             put(key, deserializeTransform(nbt.getList(key, Constants.TagFlags.FLOAT)));
         }
     }
