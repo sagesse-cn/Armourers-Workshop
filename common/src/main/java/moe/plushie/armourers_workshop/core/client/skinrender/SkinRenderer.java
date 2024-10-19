@@ -8,6 +8,7 @@ import moe.plushie.armourers_workshop.core.client.bake.BakedSkinPart;
 import moe.plushie.armourers_workshop.core.client.other.ConcurrentBufferBuilder;
 import moe.plushie.armourers_workshop.core.client.other.ConcurrentRenderingContext;
 import moe.plushie.armourers_workshop.core.data.color.ColorScheme;
+import moe.plushie.armourers_workshop.core.skin.part.SkinPartTypes;
 import moe.plushie.armourers_workshop.init.ModDebugger;
 import moe.plushie.armourers_workshop.utils.ColorUtils;
 import moe.plushie.armourers_workshop.utils.math.OpenVoxelShape;
@@ -65,7 +66,10 @@ public class SkinRenderer {
         if (ModDebugger.skinPartBounds) {
             builder.addShape(bakedPart.getRenderShape(), ColorUtils.getPaletteColor(bakedPart.getId()), context);
         }
-        if (ModDebugger.skinPartOrigin) {
+        if (ModDebugger.skinPartOrigin && bakedPart.getType() != SkinPartTypes.ADVANCED_LOCATOR) {
+            builder.addShape(Vector3f.ZERO, context);
+        }
+        if (ModDebugger.skinLocatorOrigin && bakedPart.getType() == SkinPartTypes.ADVANCED_LOCATOR) {
             builder.addShape(Vector3f.ZERO, context);
         }
     }

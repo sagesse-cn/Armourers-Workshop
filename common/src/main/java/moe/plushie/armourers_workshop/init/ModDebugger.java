@@ -37,6 +37,7 @@ public class ModDebugger {
     public static boolean skinPartBounds = false;
     public static boolean skinPartOrigin = false;
     public static boolean skinPartCombiner = false;
+    public static boolean skinLocatorOrigin = false;
 
     public static boolean targetBounds = false;
 

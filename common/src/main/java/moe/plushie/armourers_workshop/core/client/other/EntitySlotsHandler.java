@@ -2,6 +2,7 @@ package moe.plushie.armourers_workshop.core.client.other;
 
 import moe.plushie.armourers_workshop.api.data.IAssociatedContainer;
 import moe.plushie.armourers_workshop.api.data.IAssociatedContainerKey;
+import moe.plushie.armourers_workshop.api.math.IPoseStack;
 import moe.plushie.armourers_workshop.api.painting.IPaintColor;
 import moe.plushie.armourers_workshop.api.skin.ISkinPaintType;
 import moe.plushie.armourers_workshop.api.skin.ISkinPartType;
@@ -19,6 +20,7 @@ import moe.plushie.armourers_workshop.core.data.ticket.Ticket;
 import moe.plushie.armourers_workshop.core.entity.EntityProfile;
 import moe.plushie.armourers_workshop.core.entity.MannequinEntity;
 import moe.plushie.armourers_workshop.core.skin.SkinDescriptor;
+import moe.plushie.armourers_workshop.core.skin.SkinLocatorType;
 import moe.plushie.armourers_workshop.core.skin.SkinTypes;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperty;
 import moe.plushie.armourers_workshop.init.ModConfig;
@@ -27,7 +29,6 @@ import moe.plushie.armourers_workshop.utils.ColorUtils;
 import moe.plushie.armourers_workshop.utils.DataStorage;
 import moe.plushie.armourers_workshop.utils.RenderSystem;
 import moe.plushie.armourers_workshop.utils.TickUtils;
-import moe.plushie.armourers_workshop.utils.math.OpenPoseStack;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
@@ -60,13 +61,13 @@ public class EntitySlotsHandler<T> implements IAssociatedContainer, SkinBakery.I
     private final HashMap<SkinDescriptor, BakedSkin> activeSkins = new HashMap<>();
     private final HashMap<SkinDescriptor, BakedSkin> animatedSkins = new HashMap<>();
 
+    private final HashMap<SkinLocatorType, IPoseStack> locatorPoses = new HashMap<>();
+
     private final Ticket loadTicket = Ticket.wardrobe();
     private final AnimationManager animationManager = new AnimationManager();
     private final SkinOverriddenManager overriddenManager = new SkinOverriddenManager();
 
     private final DataStorage dataStorage = new DataStorage();
-
-    public OpenPoseStack handPoseStack;
 
     private int version = 0;
     private int lastVersion = Integer.MAX_VALUE;
@@ -221,6 +222,16 @@ public class EntitySlotsHandler<T> implements IAssociatedContainer, SkinBakery.I
         animatedSkins.put(slot.getDescriptor(), slot.getBakedSkin());
     }
 
+    public void onActivate(){
+    }
+
+    public void onApply() {
+    }
+
+    public void onDeactivate(){
+        locatorPoses.clear();
+    }
+
     @Override
     public void didBake(String identifier, BakedSkin bakedSkin) {
         if (missingSkins.contains(identifier)) {
@@ -304,6 +315,14 @@ public class EntitySlotsHandler<T> implements IAssociatedContainer, SkinBakery.I
 
     public AnimationManager getAnimationManager() {
         return animationManager;
+    }
+
+    public void setLocatorPose(SkinLocatorType type, IPoseStack poseStack) {
+        locatorPoses.put(type, poseStack);
+    }
+
+    public IPoseStack getLocatorPose(SkinLocatorType type) {
+        return locatorPoses.get(type);
     }
 
     @Override

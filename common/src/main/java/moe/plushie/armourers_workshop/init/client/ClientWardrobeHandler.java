@@ -25,6 +25,7 @@ import moe.plushie.armourers_workshop.core.data.color.ColorScheme;
 import moe.plushie.armourers_workshop.core.data.ticket.Tickets;
 import moe.plushie.armourers_workshop.core.entity.MannequinEntity;
 import moe.plushie.armourers_workshop.core.skin.SkinDescriptor;
+import moe.plushie.armourers_workshop.core.skin.SkinLocatorType;
 import moe.plushie.armourers_workshop.core.skin.SkinTypes;
 import moe.plushie.armourers_workshop.init.ModConfig;
 import moe.plushie.armourers_workshop.init.ModDebugger;
@@ -78,6 +79,20 @@ public class ClientWardrobeHandler {
         RENDERING_GUI_ITEM = null;
     }
 
+    public static void onRenderHandItem(LivingEntity entity, ItemStack itemStack, AbstractItemTransformType transformType, PoseStack poseStackIn, MultiBufferSource buffersIn) {
+        var renderData = EntityRenderData.of(entity);
+        if (renderData == null) {
+            return;
+        }
+        var type = transformType.isLeftHand() ? SkinLocatorType.LEFT_HAND : SkinLocatorType.RIGHT_HAND;
+        var locatorPose = renderData.getLocatorPose(type);
+        if (locatorPose == null) {
+            return;
+        }
+        var poseStack = AbstractPoseStack.wrap(poseStackIn);
+        poseStack.last().set(locatorPose.last());
+    }
+
     public static void onRenderSpecificHand(LivingEntity entity, float partialTicks, int packedLight, AbstractItemTransformType transformType, PoseStack poseStackIn, MultiBufferSource buffersIn, Runnable cancelHandler) {
         var renderData = EntityRenderData.of(entity);
         if (renderData == null) {
@@ -116,7 +131,6 @@ public class ClientWardrobeHandler {
 
         poseStack.popPose();
     }
-
 
     public static void onRenderEntityPre(Entity entity, float partialTicks, PoseStack poseStackIn, MultiBufferSource bufferSourceIn, int packedLight) {
         FallbackEntityRenderPatch.activate(entity, partialTicks, packedLight, poseStackIn, null);

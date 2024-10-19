@@ -13,6 +13,7 @@
     "RenderStateMixin",
     "ItemRendererREIMixin",
     "ItemRendererMixin",
+    "ItemInHandLayerMixin",
     "InventoryScreenMixin",
     "HttpTextureMixin",
     "FallbackResourceManagerMixin",

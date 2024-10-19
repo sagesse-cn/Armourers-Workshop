@@ -176,17 +176,14 @@ public class DocumentImporter {
     }
 
     private SkinTransform convertToLocal(SkinPart part, DocumentBoneMapper.Entry entry, Stack<SkinPart> parent) {
-        if (part.getTransform() instanceof SkinTransform transform) {
-            // TODO: @SAGESSE add built-in pivot support.
-            //var origin = getParentOrigin(parent).adding(transform.getTranslate());
-            //translate = origin;
-            //rotation = transform.getRotation();
-            //pivot = transform.getPivot();
-            var translate = entry.getOffset(); // 0 + offset
-            var rotation = Vector3f.ZERO; // never use rotation on the built-in part type.
-            return SkinTransform.create(translate, rotation, Vector3f.ONE);
-        }
-        return SkinTransform.IDENTITY;
+        // TODO: @SAGESSE add built-in pivot support.
+        //var origin = getParentOrigin(parent).adding(transform.getTranslate());
+        //translate = origin;
+        //rotation = transform.getRotation();
+        //pivot = transform.getPivot();
+        var translate = entry.getOffset(); // 0 + offset
+        var rotation = Vector3f.ZERO; // never use rotation on the built-in part type.
+        return SkinTransform.create(translate, rotation, Vector3f.ONE);
     }
 
     private Vector3f getPackOrigin(BlockBenchPack pack) {

@@ -50,6 +50,7 @@ public abstract class EntityRenderPatch<T extends Entity> {
         if (handler != null) {
             handler.accept(ObjectUtils.unsafeCast(renderPatch));
         }
+        renderData.onActivate();
     }
 
     protected static <T extends Entity, P extends EntityRenderPatch<? super T>> void _apply(Class<?> clazz, T entity, PoseStack poseStackIn, MultiBufferSource bufferSourceIn, Consumer<P> handler) {
@@ -62,6 +63,7 @@ public abstract class EntityRenderPatch<T extends Entity> {
                 }
                 renderPatch.onApply(entity, poseStackIn, bufferSourceIn);
             }
+            renderData.onApply();
         }
     }
 
@@ -75,6 +77,7 @@ public abstract class EntityRenderPatch<T extends Entity> {
                     handler.accept(ObjectUtils.unsafeCast(renderPatch));
                 }
             }
+            renderData.onDeactivate();
         }
     }
 
