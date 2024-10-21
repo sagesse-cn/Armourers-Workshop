@@ -161,6 +161,14 @@ public class SkinWardrobeMenu extends AbstractContainerMenu {
             slot.set(ItemStack.EMPTY);
             return itemStack.copy();
         }
+        if (wardrobe.getEntity() instanceof MannequinEntity) {
+            var startIndex = getFreeSlot(SkinSlotType.ANY);
+            if (!moveItemStackTo(itemStack, startIndex, startIndex + 1, false)) {
+                return ItemStack.EMPTY;
+            }
+            slot.set(ItemStack.EMPTY);
+            return itemStack.copy();
+        }
         return ItemStack.EMPTY;
     }
 

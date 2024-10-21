@@ -19,8 +19,4 @@ public abstract class AbstractBlockEntityMenu<T extends BlockEntity> extends Abs
     public T getBlockEntity() {
         return blockEntity;
     }
-
-//    public Container getBlockInventory() {
-//        return ((IHasInventory) getBlockEntity()).getInventory();
-//    }
 }
