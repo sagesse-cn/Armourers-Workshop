@@ -1,7 +1,6 @@
 package moe.plushie.armourers_workshop.builder.other;
 
 import moe.plushie.armourers_workshop.api.common.IPaintable;
-import moe.plushie.armourers_workshop.api.core.math.ITexturePos;
 import moe.plushie.armourers_workshop.api.core.math.IVector3i;
 import moe.plushie.armourers_workshop.api.skin.ISkinType;
 import moe.plushie.armourers_workshop.api.skin.geometry.ISkinGeometryType;
@@ -11,6 +10,7 @@ import moe.plushie.armourers_workshop.builder.block.SkinCubeBlock;
 import moe.plushie.armourers_workshop.core.data.OptionalDirection;
 import moe.plushie.armourers_workshop.core.math.Rectangle3f;
 import moe.plushie.armourers_workshop.core.math.Rectangle3i;
+import moe.plushie.armourers_workshop.core.math.Vector2i;
 import moe.plushie.armourers_workshop.core.math.Vector3i;
 import moe.plushie.armourers_workshop.core.skin.Skin;
 import moe.plushie.armourers_workshop.core.skin.SkinMarker;
@@ -199,7 +199,7 @@ public final class WorldUtils {
         for (var dir : Direction.values()) {
             var paintColor = target.getColor(dir);
             var resolvedDir = transform.invRotate(dir);
-            cube.setPaintColor(OpenDirection.of(resolvedDir), paintColor);
+            cube.setPaintColor(OpenDirection.of(resolvedDir), SkinPaintColor.of(paintColor));
         }
         if (marker != OptionalDirection.NONE) {
             var markFacing = transform.invRotate(marker.getDirection());
@@ -279,7 +279,7 @@ public final class WorldUtils {
         var destY = destBox.getBounds().getY();
         var destZ = destBox.getBounds().getZ();
         var destWidth = destBox.getBounds().getWidth();
-        var colors = new HashMap<ITexturePos, Integer>();
+        var colors = new HashMap<Vector2i, Integer>();
         srcBox.forEach((texture, x, y, z, dir) -> {
             var ix = x - srcX;
             var iy = y - srcY;

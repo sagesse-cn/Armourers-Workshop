@@ -2,11 +2,11 @@ package moe.plushie.armourers_workshop.core.client.texture;
 
 import com.mojang.blaze3d.platform.NativeImage;
 import moe.plushie.armourers_workshop.api.core.IResourceLocation;
-import moe.plushie.armourers_workshop.api.core.math.ITexturePos;
 import moe.plushie.armourers_workshop.api.skin.part.ISkinPartType;
 import moe.plushie.armourers_workshop.core.data.color.TexturedPaintColor;
 import moe.plushie.armourers_workshop.core.math.OpenMath;
 import moe.plushie.armourers_workshop.core.math.Rectangle3i;
+import moe.plushie.armourers_workshop.core.math.Vector2i;
 import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
 import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintTypes;
 import moe.plushie.armourers_workshop.core.skin.paint.texture.PlayerTextureModel;
@@ -67,19 +67,19 @@ public class BakedEntityTexture {
             var part = allParts.computeIfAbsent(entry.getKey(), k -> new HashMap<>());
             allBounds.put(entry.getKey(), box.getBounds());
             box.forEach((texture, x, y, z, dir) -> {
-                int color = accessor.getRGB(texture.getU(), texture.getV());
+                int color = accessor.getRGB(texture.getX(), texture.getY());
                 if (SkinPaintColor.isOpaque(color)) {
                     var paintColor = TexturedPaintColor.of(color, SkinPaintTypes.NORMAL);
                     part.put(getPosKey(x, y, z, dir), paintColor);
-                    allColors.put(getUVKey(texture.getU(), texture.getV()), paintColor);
+                    allColors.put(getUVKey(texture.getX(), texture.getY()), paintColor);
                 }
             });
         }
         this.isLoaded = true;
     }
 
-    public SkinPaintColor getColor(ITexturePos texturePos) {
-        return getColor(texturePos.getU(), texturePos.getV());
+    public SkinPaintColor getColor(Vector2i texturePos) {
+        return getColor(texturePos.getX(), texturePos.getY());
     }
 
     public SkinPaintColor getColor(int u, int v) {

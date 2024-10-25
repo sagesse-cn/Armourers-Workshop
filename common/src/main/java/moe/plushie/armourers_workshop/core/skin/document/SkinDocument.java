@@ -77,13 +77,13 @@ public class SkinDocument {
     }
 
     public void updateProperties(CompoundTag value) {
-        properties.putAll(new SkinProperties.Changes(value));
+        properties.putAll(new SkinProperties(value));
         listener.documentDidChangeProperties(value);
     }
 
     public <T> void put(ISkinProperty<T> property, T value) {
         properties.put(property, value);
-        var changes = new SkinProperties.Changes();
+        var changes = new SkinProperties();
         changes.put(property, value);
         listener.documentDidChangeProperties(changes.serializeNBT());
     }

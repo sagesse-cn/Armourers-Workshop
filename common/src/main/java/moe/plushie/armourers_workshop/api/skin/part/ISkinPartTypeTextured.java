@@ -1,6 +1,6 @@
 package moe.plushie.armourers_workshop.api.skin.part;
 
-import moe.plushie.armourers_workshop.api.core.math.ITexturePos;
+import moe.plushie.armourers_workshop.api.core.math.IVector2i;
 import moe.plushie.armourers_workshop.api.core.math.IVector3i;
 
 public interface ISkinPartTypeTextured extends ISkinPartType {
@@ -13,17 +13,17 @@ public interface ISkinPartTypeTextured extends ISkinPartType {
     /**
      * Location of the texture in skin storage.
      */
-    ITexturePos getTextureSkinPos();
+    IVector2i getTextureSkinPos();
 
     /**
      * UV location of the models base texture.
      */
-    ITexturePos getTextureBasePos();
+    IVector2i getTextureBasePos();
 
     /**
      * UV location of the models overlay texture.
      */
-    ITexturePos getTextureOverlayPos();
+    IVector2i getTextureOverlayPos();
 
     /**
      * Size of the model the texture is used on.

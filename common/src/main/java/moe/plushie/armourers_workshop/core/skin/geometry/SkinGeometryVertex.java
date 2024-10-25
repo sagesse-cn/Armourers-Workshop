@@ -1,8 +1,6 @@
 package moe.plushie.armourers_workshop.core.skin.geometry;
 
 import moe.plushie.armourers_workshop.api.skin.geometry.ISkinGeometryVertex;
-import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintColor;
-import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintType;
 import moe.plushie.armourers_workshop.core.math.Vector2f;
 import moe.plushie.armourers_workshop.core.math.Vector3f;
 import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
@@ -58,31 +56,15 @@ public class SkinGeometryVertex implements ISkinGeometryVertex {
         return Objects.toString(this, "id", getId(), "position", getPosition(), "normal", getNormal(), "uv", getTextureCoords(), "color", getColor());
     }
 
-    public static class Color implements ISkinPaintColor {
+    public static class Color extends SkinPaintColor {
 
         public static final Color WHITE = new Color(SkinPaintColor.WHITE, 255);
 
         protected final int alpha;
-        protected final ISkinPaintColor paintColor;
 
-        public Color(ISkinPaintColor paintColor, int alpha) {
-            this.paintColor = paintColor;
+        public Color(SkinPaintColor paintColor, int alpha) {
+            super(paintColor.getRawValue(), paintColor.getRGB(), paintColor.getPaintType());
             this.alpha = alpha;
-        }
-
-        @Override
-        public int getRGB() {
-            return paintColor.getRGB();
-        }
-
-        @Override
-        public int getRawValue() {
-            return paintColor.getRawValue();
-        }
-
-        @Override
-        public ISkinPaintType getPaintType() {
-            return paintColor.getPaintType();
         }
 
         public int getAlpha() {
@@ -93,9 +75,9 @@ public class SkinGeometryVertex implements ISkinGeometryVertex {
         public String toString() {
             var alpha = getAlpha();
             if (alpha < 255) {
-                return String.format("%s * %f", paintColor, getAlpha() / 255f);
+                return String.format("%s * %f", super.toString(), getAlpha() / 255f);
             }
-            return paintColor.toString();
+            return super.toString();
         }
     }
 }

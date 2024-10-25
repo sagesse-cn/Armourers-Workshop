@@ -4,8 +4,8 @@ import com.google.gson.JsonElement;
 import moe.plushie.armourers_workshop.core.math.Rectangle2f;
 import moe.plushie.armourers_workshop.core.math.Size2f;
 import moe.plushie.armourers_workshop.core.math.Size3f;
-import moe.plushie.armourers_workshop.core.math.TexturePos;
 import moe.plushie.armourers_workshop.core.math.Vector2f;
+import moe.plushie.armourers_workshop.core.math.Vector2i;
 import moe.plushie.armourers_workshop.core.math.Vector3f;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IOConsumer;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IOConsumer2;
@@ -300,13 +300,13 @@ public class BlockBenchPackReader {
             }
         }
 
-        public TexturePos texturePosValue() {
+        public Vector2i Vector2iValue() {
             var values = allValues();
             if (values.size() >= 2) {
                 var iterator = values.iterator();
-                return new TexturePos(iterator.next().intValue(), iterator.next().intValue());
+                return new Vector2i(iterator.next().intValue(), iterator.next().intValue());
             }
-            return TexturePos.ZERO;
+            return Vector2i.ZERO;
         }
 
         public Vector2f vector2fValue() {

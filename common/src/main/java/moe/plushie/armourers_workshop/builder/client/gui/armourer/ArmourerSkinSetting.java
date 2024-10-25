@@ -16,6 +16,7 @@ import moe.plushie.armourers_workshop.builder.menu.ArmourerMenu;
 import moe.plushie.armourers_workshop.builder.network.UpdateArmourerPacket;
 import moe.plushie.armourers_workshop.core.skin.SkinTypes;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperties;
+import moe.plushie.armourers_workshop.core.utils.OpenProperties;
 import moe.plushie.armourers_workshop.init.platform.NetworkManager;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -123,7 +124,7 @@ public class ArmourerSkinSetting extends ArmourerBaseSetting {
         }
 
         @Override
-        public void putAll(SkinProperties properties) {
+        public void putAll(OpenProperties properties) {
             changes.clear();
             super.putAll(properties);
         }

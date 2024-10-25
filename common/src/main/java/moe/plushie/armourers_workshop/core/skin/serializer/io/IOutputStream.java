@@ -78,6 +78,21 @@ public interface IOutputStream {
         getOutputStream().writeDouble(v);
     }
 
+    default void writeFixedInt(int value, int usedBytes) throws IOException {
+        if (usedBytes == 4) {
+            writeInt(value);
+            return;
+        }
+        for (int i = usedBytes; i > 0; i--) {
+            int ch = value >> (i - 1) * 8;
+            writeByte(ch & 0xff);
+        }
+    }
+
+    default void writeFixedFloat(float value, int usedBytes) throws IOException {
+        writeFixedInt(Float.floatToIntBits(value), usedBytes);
+    }
+
     default void writeString(String v) throws IOException {
         // yep, we just need write a length.
         if (v == null || v.isEmpty()) {

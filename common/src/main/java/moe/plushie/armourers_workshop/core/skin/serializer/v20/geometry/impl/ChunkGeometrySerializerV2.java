@@ -2,8 +2,6 @@ package moe.plushie.armourers_workshop.core.skin.serializer.v20.geometry.impl;
 
 import moe.plushie.armourers_workshop.api.core.utils.IPair;
 import moe.plushie.armourers_workshop.api.skin.geometry.ISkinGeometryType;
-import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintColor;
-import moe.plushie.armourers_workshop.api.skin.paint.texture.ITextureKey;
 import moe.plushie.armourers_workshop.api.skin.paint.texture.ITextureProvider;
 import moe.plushie.armourers_workshop.core.math.OpenTransform3f;
 import moe.plushie.armourers_workshop.core.math.Rectangle3f;
@@ -13,8 +11,8 @@ import moe.plushie.armourers_workshop.core.skin.geometry.cube.SkinCube;
 import moe.plushie.armourers_workshop.core.skin.geometry.cube.SkinCubeFace;
 import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
 import moe.plushie.armourers_workshop.core.skin.paint.texture.TextureBox;
-import moe.plushie.armourers_workshop.core.skin.paint.texture.TextureKey;
 import moe.plushie.armourers_workshop.core.skin.paint.texture.TextureOptions;
+import moe.plushie.armourers_workshop.core.skin.paint.texture.TexturePos;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IOConsumer2;
 import moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk.ChunkGeometrySlice;
 import moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk.ChunkOutputStream;
@@ -54,7 +52,7 @@ public class ChunkGeometrySerializerV2 extends ChunkGeometrySerializer {
         private final EnumMap<OpenDirection, Vector2f> startUVs = new EnumMap<>(OpenDirection.class);
         private final EnumMap<OpenDirection, Vector2f> endUVs = new EnumMap<>(OpenDirection.class);
         private final EnumMap<OpenDirection, TextureOptions> optionsValues = new EnumMap<>(OpenDirection.class);
-        private final EnumMap<OpenDirection, ITextureKey> textureKeys = new EnumMap<>(OpenDirection.class);
+        private final EnumMap<OpenDirection, TexturePos> texturePoss = new EnumMap<>(OpenDirection.class);
 
         private OpenTransform3f transform = OpenTransform3f.IDENTITY;
 
@@ -96,7 +94,7 @@ public class ChunkGeometrySerializerV2 extends ChunkGeometrySerializer {
         }
 
         @Override
-        public ISkinPaintColor getPaintColor(OpenDirection dir) {
+        public SkinPaintColor getPaintColor(OpenDirection dir) {
             var key = getTexture(dir);
             if (key != null) {
                 return SkinPaintColor.WHITE;
@@ -105,11 +103,11 @@ public class ChunkGeometrySerializerV2 extends ChunkGeometrySerializer {
         }
 
         @Override
-        public ITextureKey getTexture(OpenDirection dir) {
+        public TexturePos getTexture(OpenDirection dir) {
             if (slice.once(2)) {
                 parseTextures();
             }
-            return textureKeys.get(dir);
+            return texturePoss.get(dir);
         }
 
 
@@ -125,7 +123,7 @@ public class ChunkGeometrySerializerV2 extends ChunkGeometrySerializer {
             startUVs.clear();
             endUVs.clear();
             optionsValues.clear();
-            textureKeys.clear();
+            texturePoss.clear();
             TextureBox textureBox = null;
             int usedBytes = palette.getTextureIndexBytes();
             for (int i = 0; i < faceCount; ++i) {
@@ -170,9 +168,9 @@ public class ChunkGeometrySerializerV2 extends ChunkGeometrySerializer {
                     float v = ref.getV();
                     float width = end.getX() - start.getX();
                     float height = end.getY() - start.getY();
-                    textureKeys.put(dir, new TextureKey(u, v, width, height, opt, ref.getProvider()));
+                    texturePoss.put(dir, new TexturePos(u, v, width, height, opt, ref.getProvider()));
                 } else if (textureBox != null) {
-                    textureKeys.put(dir, textureBox.getTexture(dir));
+                    texturePoss.put(dir, textureBox.getTexture(dir));
                 }
             }
         }

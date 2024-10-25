@@ -5,7 +5,7 @@ import com.google.common.collect.ImmutableSet;
 import moe.plushie.armourers_workshop.api.skin.part.ISkinPartType;
 import moe.plushie.armourers_workshop.core.math.Rectangle2f;
 import moe.plushie.armourers_workshop.core.math.Rectangle3i;
-import moe.plushie.armourers_workshop.core.math.TexturePos;
+import moe.plushie.armourers_workshop.core.math.Vector2i;
 import moe.plushie.armourers_workshop.core.math.Vector3i;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPartTypes;
 import moe.plushie.armourers_workshop.core.utils.OpenDirection;
@@ -96,7 +96,7 @@ public class PlayerTextureModel {
         return skyBoxes.get(partType);
     }
 
-    public TexturePos get(ISkinPartType partType, int x, int y, int z, OpenDirection dir) {
+    public Vector2i get(ISkinPartType partType, int x, int y, int z, OpenDirection dir) {
         var box = get(partType);
         if (box != null) {
             return box.get(x, y, z, dir);
@@ -115,7 +115,7 @@ public class PlayerTextureModel {
     public static class Box {
 
         protected final EnumMap<OpenDirection, ToIntFunction<Vector3i>> validator = new EnumMap<>(OpenDirection.class);
-        protected final EnumMap<OpenDirection, Function<Vector3i, TexturePos>> evaluator = new EnumMap<>(OpenDirection.class);
+        protected final EnumMap<OpenDirection, Function<Vector3i, Vector2i>> evaluator = new EnumMap<>(OpenDirection.class);
         protected final Rectangle3i rect;
         protected final Rectangle2f textureRect;
         protected final boolean mirror;
@@ -149,7 +149,7 @@ public class PlayerTextureModel {
         }
 
         protected void put(OpenDirection dir, ToIntFunction<Vector3i> uf, ToIntFunction<Vector3i> vf) {
-            evaluator.put(getMirroredDirection(dir), pos -> new TexturePos(uf.applyAsInt(pos), vf.applyAsInt(pos)));
+            evaluator.put(getMirroredDirection(dir), pos -> new Vector2i(uf.applyAsInt(pos), vf.applyAsInt(pos)));
         }
 
         public void forEach(IPixelConsumer consumer) {
@@ -180,7 +180,7 @@ public class PlayerTextureModel {
         }
 
         @Nullable
-        public TexturePos get(int x, int y, int z, OpenDirection dir) {
+        public Vector2i get(int x, int y, int z, OpenDirection dir) {
             x -= rect.getX();
             y -= rect.getY();
             z -= rect.getZ();
@@ -242,7 +242,7 @@ public class PlayerTextureModel {
         }
 
         public interface IPixelConsumer {
-            void accept(TexturePos texture, int x, int y, int z, OpenDirection dir);
+            void accept(Vector2i texture, int x, int y, int z, OpenDirection dir);
         }
     }
 }

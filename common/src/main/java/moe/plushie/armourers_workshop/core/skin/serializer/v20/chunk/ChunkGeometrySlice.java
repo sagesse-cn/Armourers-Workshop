@@ -1,12 +1,12 @@
 package moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk;
 
 import moe.plushie.armourers_workshop.api.skin.geometry.ISkinGeometryType;
-import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintColor;
 import moe.plushie.armourers_workshop.core.math.OpenTransform3f;
 import moe.plushie.armourers_workshop.core.math.Rectangle3f;
 import moe.plushie.armourers_workshop.core.math.Vector2f;
 import moe.plushie.armourers_workshop.core.math.Vector3f;
 import moe.plushie.armourers_workshop.core.skin.geometry.SkinGeometry;
+import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
 import moe.plushie.armourers_workshop.core.skin.paint.texture.TextureOptions;
 import moe.plushie.armourers_workshop.core.skin.serializer.v20.geometry.ChunkGeometrySerializer;
 import moe.plushie.armourers_workshop.core.skin.serializer.v20.geometry.ChunkGeometrySerializers;
@@ -103,6 +103,22 @@ public class ChunkGeometrySlice implements OpenSliceAccessor.Provider<SkinGeomet
         return Float.intBitsToFloat(getInt(offset));
     }
 
+    public int getFixedInt(int offset, int usedBytes) {
+        if (usedBytes == 4) {
+            return getInt(offset);
+        }
+        int value = 0;
+        for (int i = 0; i < usedBytes; i++) {
+            int ch = getByte(offset + i) & 0xff;
+            value = (value << 8) | ch;
+        }
+        return value;
+    }
+
+    public float getFixedFloat(int offset, int usedBytes) {
+        return Float.intBitsToFloat(getFixedInt(offset, usedBytes));
+    }
+
     public Vector3f getVector3f(int offset) {
         float x = getFloat(offset);
         float y = getFloat(offset + 4);
@@ -137,17 +153,24 @@ public class ChunkGeometrySlice implements OpenSliceAccessor.Provider<SkinGeomet
         return OpenTransform3f.create(translate, rotation, scale, pivot, afterTranslate);
     }
 
-    public ISkinPaintColor getColor(int offset) {
-        return palette.readColorFromStream(bytes, readerIndex + offset);
+    public SkinPaintColor getColor(int offset) {
+        return palette.readColor(getFixedInt(offset, palette.getColorIndexBytes()));
     }
 
     public Vector2f getTexturePos(int offset) {
         int usedBytes = palette.getTextureIndexBytes();
-        return ChunkColorSection.TextureRef.readFromStream(usedBytes, readerIndex + offset, bytes);
+        float x = getFixedFloat(offset, usedBytes);
+        float y = getFixedFloat(offset + usedBytes, usedBytes);
+        if (x == 0 && y == 0) {
+            return Vector2f.ZERO;
+        }
+        return new Vector2f(x, y);
     }
 
     public TextureOptions getTextureOptions(int offset) {
         int usedBytes = palette.getTextureIndexBytes();
-        return ChunkColorSection.OptionsRef.readFromStream(usedBytes, readerIndex + offset, bytes);
+        int x = getFixedInt(offset, usedBytes);
+        int y = getFixedInt(offset + usedBytes, usedBytes);
+        return new TextureOptions(((long) y << 32) | x);
     }
 }

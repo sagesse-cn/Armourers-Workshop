@@ -92,6 +92,22 @@ public interface IInputStream {
         return getInputStream().readDouble();
     }
 
+    default int readFixedInt(int usedBytes) throws IOException {
+        if (usedBytes == 4) {
+            return readInt();
+        }
+        int value = 0;
+        for (int i = 0; i < usedBytes; i++) {
+            int ch = readByte() & 0xff;
+            value = (value << 8) | ch;
+        }
+        return value;
+    }
+
+    default float readFixedFloat(int usedBytes) throws IOException {
+        return Float.intBitsToFloat(readFixedInt(usedBytes));
+    }
+
     default String readString() throws IOException {
         int size = getInputStream().readUnsignedShort();
         return readString(size);

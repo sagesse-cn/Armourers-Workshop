@@ -20,9 +20,9 @@ import moe.plushie.armourers_workshop.core.data.slot.SkinSlotType;
 import moe.plushie.armourers_workshop.core.network.UpdateWardrobePacket;
 import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
 import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintTypes;
+import moe.plushie.armourers_workshop.init.ModDataComponents;
 import moe.plushie.armourers_workshop.init.ModTextures;
 import moe.plushie.armourers_workshop.init.platform.NetworkManager;
-import moe.plushie.armourers_workshop.utils.ColorUtils;
 import moe.plushie.armourers_workshop.utils.RenderSystem;
 import moe.plushie.armourers_workshop.utils.TextureUtils;
 import net.fabricmc.api.EnvType;
@@ -201,7 +201,8 @@ public class SkinWardrobeColorSetting extends SkinWardrobeBaseSetting {
         }
 
         private ISkinPaintColor getColor() {
-            return ColorUtils.getColor(wardrobe.getInventory().getItem(slot));
+            var itemStack = wardrobe.getInventory().getItem(slot);
+            return itemStack.get(ModDataComponents.TOOL_COLOR.get());
         }
 
         private void setColor(ISkinPaintColor newValue) {

@@ -1,10 +1,8 @@
 package moe.plushie.armourers_workshop.core.skin.part.head;
 
-import moe.plushie.armourers_workshop.api.core.math.ITexturePos;
-import moe.plushie.armourers_workshop.api.core.math.IVector3i;
 import moe.plushie.armourers_workshop.api.skin.part.ISkinPartTypeTextured;
 import moe.plushie.armourers_workshop.core.math.Rectangle3i;
-import moe.plushie.armourers_workshop.core.math.TexturePos;
+import moe.plushie.armourers_workshop.core.math.Vector2i;
 import moe.plushie.armourers_workshop.core.math.Vector3i;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPartType;
 
@@ -25,22 +23,22 @@ public class HeadPartType extends SkinPartType implements ISkinPartTypeTextured 
     }
 
     @Override
-    public ITexturePos getTextureSkinPos() {
-        return TexturePos.ZERO;
+    public Vector2i getTextureSkinPos() {
+        return Vector2i.ZERO;
     }
 
     @Override
-    public ITexturePos getTextureBasePos() {
-        return TexturePos.ZERO;
+    public Vector2i getTextureBasePos() {
+        return Vector2i.ZERO;
     }
 
     @Override
-    public ITexturePos getTextureOverlayPos() {
-        return new TexturePos(32, 0);
+    public Vector2i getTextureOverlayPos() {
+        return new Vector2i(32, 0);
     }
 
     @Override
-    public IVector3i getTextureModelSize() {
+    public Vector3i getTextureModelSize() {
         return new Vector3i(8, 8, 8);
     }
 }

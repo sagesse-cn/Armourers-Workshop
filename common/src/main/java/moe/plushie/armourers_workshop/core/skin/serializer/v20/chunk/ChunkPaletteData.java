@@ -1,10 +1,9 @@
 package moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk;
 
-import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintColor;
-import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintType;
 import moe.plushie.armourers_workshop.api.skin.paint.texture.ITextureProvider;
 import moe.plushie.armourers_workshop.core.math.Vector2f;
 import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
+import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintType;
 import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintTypes;
 import moe.plushie.armourers_workshop.core.skin.paint.texture.TextureOptions;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IInputStream;
@@ -49,7 +48,7 @@ public class ChunkPaletteData implements ChunkVariable {
         return _mutableSectionAt(SkinPaintTypes.NORMAL, 3).putColor(rawValue);
     }
 
-    public ChunkColorSection.ColorRef writeColor(ISkinPaintColor color) {
+    public ChunkColorSection.ColorRef writeColor(SkinPaintColor color) {
         int rawValue = color.getRawValue();
         return _mutableSectionAt(color.getPaintType(), 3).putColor(rawValue);
     }
@@ -67,25 +66,22 @@ public class ChunkPaletteData implements ChunkVariable {
         return paintColor;
     }
 
-    public ISkinPaintColor readColor(ChunkInputStream stream) throws IOException {
-        return readColor(ChunkColorSection.ColorRef.readFromStream(colorUsedIndex, stream));
+    public SkinPaintColor readColor(ChunkInputStream stream) throws IOException {
+        return readColor(stream.readFixedInt(colorUsedIndex));
     }
 
-    public ISkinPaintColor readColorFromStream(byte[] bytes, int offset) {
-        return readColor(ChunkColorSection.ColorRef.readFromStream(colorUsedIndex, offset, bytes));
-    }
 
-    public ChunkColorSection.TextureRef writeTexture(Vector2f uv, ITextureProvider provider) {
+    public ChunkTextureData.TextureRef writeTexture(Vector2f uv, ITextureProvider provider) {
         // texture + black(0x000000) + 0(used bytes)
         return _mutableSectionAt(SkinPaintTypes.TEXTURE, 0).putTexture(uv, provider);
     }
 
-    public ChunkColorSection.TextureRef readTexture(Vector2f uv) {
+    public ChunkTextureData.TextureRef readTexture(Vector2f uv) {
         // texture + black(0x000000) + 0(used bytes)
         return _sectionAt(SkinPaintTypes.TEXTURE, 0).getTexture(uv);
     }
 
-    public ChunkColorSection.OptionsRef writeTextureOptions(TextureOptions options, ITextureProvider provider) {
+    public ChunkTextureData.OptionsRef writeTextureOptions(TextureOptions options, ITextureProvider provider) {
         // texture + black(0x000000) + 0(used bytes)
         return _mutableSectionAt(SkinPaintTypes.TEXTURE, 0).putTextureOptions(options);
     }
@@ -200,11 +196,11 @@ public class ChunkPaletteData implements ChunkVariable {
         return section.getPaintType().getId() << 24 | section.getUsedBytes();
     }
 
-    private ChunkColorSection _sectionAt(ISkinPaintType paintType, int usedBytes) {
+    private ChunkColorSection _sectionAt(SkinPaintType paintType, int usedBytes) {
         return sections.get(paintType.getId() << 24 | usedBytes);
     }
 
-    private ChunkColorSection.Mutable _mutableSectionAt(ISkinPaintType paintType, int usedBytes) {
+    private ChunkColorSection.Mutable _mutableSectionAt(SkinPaintType paintType, int usedBytes) {
         return (ChunkColorSection.Mutable) sections.computeIfAbsent(paintType.getId() << 24 | usedBytes, k -> new ChunkColorSection.Mutable(usedBytes, paintType));
     }
 

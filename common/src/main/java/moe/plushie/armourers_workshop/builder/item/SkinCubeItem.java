@@ -85,7 +85,7 @@ public class SkinCubeItem extends AbstractBlockItem implements IItemColorProvide
 
     @Override
     public ISkinPaintColor getItemColor(ItemStack itemStack) {
-        return ColorUtils.getColorOrDefault(itemStack, SkinPaintColor.WHITE);
+        return itemStack.getOrDefault(ModDataComponents.TOOL_COLOR.get(), SkinPaintColor.WHITE);
     }
 
     @Nullable

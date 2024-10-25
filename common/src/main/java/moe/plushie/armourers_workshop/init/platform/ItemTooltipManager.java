@@ -114,7 +114,7 @@ public class ItemTooltipManager {
 
             if (ModDebugger.properties && !skin.getProperties().isEmpty()) {
                 tooltip.add(TranslateUtils.subtitle("item.armourers_workshop.rollover.skinProperties"));
-                for (String prop : skin.getProperties().getPropertiesList()) {
+                for (var prop : skin.getProperties().getPropertiesList()) {
                     tooltip.add(Component.literal(" " + prop));
                 }
             }

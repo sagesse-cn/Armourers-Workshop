@@ -2,7 +2,6 @@ package moe.plushie.armourers_workshop.core.skin.paint.texture;
 
 import moe.plushie.armourers_workshop.api.core.utils.IDirection;
 import moe.plushie.armourers_workshop.api.skin.paint.texture.ITextureBox;
-import moe.plushie.armourers_workshop.api.skin.paint.texture.ITextureKey;
 import moe.plushie.armourers_workshop.api.skin.paint.texture.ITextureOptions;
 import moe.plushie.armourers_workshop.api.skin.paint.texture.ITextureProvider;
 import moe.plushie.armourers_workshop.core.math.Rectangle2f;
@@ -75,11 +74,11 @@ public class TextureBox implements ITextureBox {
 
     @Nullable
     @Override
-    public ITextureKey getTexture(IDirection dir) {
+    public TexturePos getTexture(IDirection dir) {
         return getTexture(OpenDirection.of(dir));
     }
 
-    public ITextureKey getTexture(OpenDirection dir) {
+    public TexturePos getTexture(OpenDirection dir) {
         // when mirroring occurs, the contents of the WEST and EAST sides will be swapped.
         if (mirror) {
             return getMirrorTexture(dir);
@@ -94,7 +93,7 @@ public class TextureBox implements ITextureBox {
         };
     }
 
-    private ITextureKey getMirrorTexture(OpenDirection dir) {
+    private TexturePos getMirrorTexture(OpenDirection dir) {
         return switch (dir) {
             case UP -> makeTexture(dir, depth + width, 0, -width, depth);
             case DOWN -> makeTexture(dir, depth + width + width, 0, -width, depth);
@@ -106,7 +105,7 @@ public class TextureBox implements ITextureBox {
     }
 
     @Nullable
-    private ITextureKey makeTexture(OpenDirection dir, float u, float v, float s, float t) {
+    private TexturePos makeTexture(OpenDirection dir, float u, float v, float s, float t) {
         var texture = getTextureProvider(dir);
         if (texture == null) {
             return null;
@@ -115,7 +114,7 @@ public class TextureBox implements ITextureBox {
         var rect = getTextureRect(dir);
         if (rect != null) {
             var options = getTextureOptions(dir);
-            return new TextureKey(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight(), options, texture);
+            return new TexturePos(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight(), options, texture);
         }
         var pos = texturePos;
         if (pos != null) {
@@ -146,7 +145,7 @@ public class TextureBox implements ITextureBox {
         return defaultTexture;
     }
 
-    public static class Entry extends TextureKey {
+    public static class Entry extends TexturePos {
 
         protected final Vector2f parent;
 

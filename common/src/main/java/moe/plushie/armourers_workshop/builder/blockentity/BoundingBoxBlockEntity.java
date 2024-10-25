@@ -7,7 +7,7 @@ import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintColor;
 import moe.plushie.armourers_workshop.api.skin.part.ISkinPartType;
 import moe.plushie.armourers_workshop.builder.data.BoundingBox;
 import moe.plushie.armourers_workshop.core.blockentity.UpdatableBlockEntity;
-import moe.plushie.armourers_workshop.core.math.TexturePos;
+import moe.plushie.armourers_workshop.core.math.Vector2i;
 import moe.plushie.armourers_workshop.core.math.Vector3i;
 import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
 import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintTypes;
@@ -155,7 +155,7 @@ public class BoundingBoxBlockEntity extends UpdatableBlockEntity implements IPai
         }
     }
 
-    public ISkinPaintColor getArmourerTextureColor(ArmourerBlockEntity blockEntity, TexturePos texturePos) {
+    public ISkinPaintColor getArmourerTextureColor(ArmourerBlockEntity blockEntity, Vector2i texturePos) {
         if (texturePos != null && blockEntity != null) {
             var color = blockEntity.getPaintColor(texturePos);
             if (color != null) {
@@ -165,7 +165,7 @@ public class BoundingBoxBlockEntity extends UpdatableBlockEntity implements IPai
         return SkinPaintColor.CLEAR;
     }
 
-    public void setArmourerTextureColor(ArmourerBlockEntity blockEntity, TexturePos texturePos, ISkinPaintColor color) {
+    public void setArmourerTextureColor(ArmourerBlockEntity blockEntity, Vector2i texturePos, ISkinPaintColor color) {
         if (texturePos != null && blockEntity != null) {
             blockEntity.setPaintColor(texturePos, color);
             BlockUtils.combine(blockEntity, blockEntity::sendBlockUpdates);
@@ -173,7 +173,7 @@ public class BoundingBoxBlockEntity extends UpdatableBlockEntity implements IPai
     }
 
     @Environment(EnvType.CLIENT)
-    private ISkinPaintColor getTextureColor(ArmourerBlockEntity blockEntity, TexturePos texturePos) {
+    private ISkinPaintColor getTextureColor(ArmourerBlockEntity blockEntity, Vector2i texturePos) {
         if (texturePos != null && blockEntity != null) {
             var color = TextureUtils.getPlayerTextureModelColor(blockEntity.getTextureDescriptor(), texturePos);
             if (color != null) {
@@ -183,7 +183,7 @@ public class BoundingBoxBlockEntity extends UpdatableBlockEntity implements IPai
         return SkinPaintColor.CLEAR;
     }
 
-    private TexturePos getTexturePos(ArmourerBlockEntity blockEntity, Direction direction) {
+    private Vector2i getTexturePos(ArmourerBlockEntity blockEntity, Direction direction) {
         return BoundingBox.getTexturePos(partType, guide, getResolvedDirection(blockEntity, direction));
     }
 

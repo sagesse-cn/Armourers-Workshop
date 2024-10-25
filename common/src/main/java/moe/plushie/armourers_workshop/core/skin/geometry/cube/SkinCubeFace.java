@@ -1,16 +1,16 @@
 package moe.plushie.armourers_workshop.core.skin.geometry.cube;
 
-import moe.plushie.armourers_workshop.api.core.math.ITransform3f;
 import moe.plushie.armourers_workshop.api.skin.geometry.ISkinGeometryType;
-import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintColor;
-import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintType;
-import moe.plushie.armourers_workshop.api.skin.paint.texture.ITextureKey;
+import moe.plushie.armourers_workshop.core.math.OpenTransform3f;
 import moe.plushie.armourers_workshop.core.math.Rectangle3f;
 import moe.plushie.armourers_workshop.core.math.Vector2f;
 import moe.plushie.armourers_workshop.core.math.Vector3f;
 import moe.plushie.armourers_workshop.core.skin.geometry.SkinGeometryFace;
 import moe.plushie.armourers_workshop.core.skin.geometry.SkinGeometryVertex;
+import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
+import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintType;
 import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintTypes;
+import moe.plushie.armourers_workshop.core.skin.paint.texture.TexturePos;
 import moe.plushie.armourers_workshop.core.utils.OpenDirection;
 
 import java.util.ArrayList;
@@ -41,15 +41,15 @@ public class SkinCubeFace extends SkinGeometryFace {
 
     private final ISkinGeometryType type;
     private final OpenDirection direction;
-    private final ISkinPaintColor paintColor;
+    private final SkinPaintColor paintColor;
 
     private final Rectangle3f boundingBox;
 
-    public SkinCubeFace(int id, ISkinGeometryType type, ITransform3f transform, ITextureKey textureKey, Rectangle3f boundingBox, OpenDirection direction, ISkinPaintColor color, int alpha) {
+    public SkinCubeFace(int id, ISkinGeometryType type, OpenTransform3f transform, TexturePos texturePos, Rectangle3f boundingBox, OpenDirection direction, SkinPaintColor color, int alpha) {
         this.id = id;
         this.type = type;
         this.transform = transform;
-        this.textureKey = textureKey;
+        this.texturePos = texturePos;
         this.paintColor = color;
         this.alpha = alpha;
         this.direction = direction;
@@ -68,7 +68,7 @@ public class SkinCubeFace extends SkinGeometryFace {
         return boundingBox;
     }
 
-    public ISkinPaintColor getColor() {
+    public SkinPaintColor getColor() {
         return paintColor;
     }
 
@@ -80,7 +80,7 @@ public class SkinCubeFace extends SkinGeometryFace {
         return direction;
     }
 
-    public ISkinPaintType getPaintType() {
+    public SkinPaintType getPaintType() {
         return paintColor.getPaintType();
     }
 
@@ -90,11 +90,11 @@ public class SkinCubeFace extends SkinGeometryFace {
     }
 
     @Override
-    public ITextureKey getTextureKey() {
-        if (textureKey != null) {
-            return textureKey;
+    public TexturePos getTexturePos() {
+        if (texturePos != null) {
+            return texturePos;
         }
-        return paintColor.getPaintType().getTextureKey();
+        return paintColor.getPaintType().getTexturePos();
     }
 
     @Override
@@ -110,7 +110,7 @@ public class SkinCubeFace extends SkinGeometryFace {
     @Override
     public Iterable<? extends SkinGeometryVertex> getVertices() {
         var id = getId();
-        var textureKey = getTextureKey();
+        var texturePos = getTexturePos();
 
         // https://learnopengl.com/Getting-started/Coordinate-Systems
         var x = boundingBox.getX();
@@ -120,16 +120,16 @@ public class SkinCubeFace extends SkinGeometryFace {
         var h = roundUp(boundingBox.getHeight());
         var d = roundUp(boundingBox.getDepth());
 
-        var u = textureKey.getU();
-        var v = textureKey.getV();
-        var s = roundDown(textureKey.getWidth());
-        var t = roundDown(textureKey.getHeight());
+        var u = texturePos.getU();
+        var v = texturePos.getV();
+        var s = roundDown(texturePos.getWidth());
+        var t = roundDown(texturePos.getHeight());
 
         var color = new SkinGeometryVertex.Color(paintColor, alpha);
         var vertices = new ArrayList<SkinGeometryVertex>();
 
         var vertexes = getBaseVertices(direction);
-        var uvs = getBaseUVs(getTextureDirection(direction, textureKey));
+        var uvs = getBaseUVs(getTextureDirection(direction, texturePos));
 
         for (int i = 0; i < 4; ++i) {
             var position = new Vector3f(x + w * vertexes[i][0], y + h * vertexes[i][1], z + d * vertexes[i][2]);
@@ -157,7 +157,7 @@ public class SkinCubeFace extends SkinGeometryFace {
         }
     }
 
-    private OpenDirection getTextureDirection(OpenDirection direction, ITextureKey key) {
+    private OpenDirection getTextureDirection(OpenDirection direction, TexturePos key) {
         var options = key.getOptions();
         if (options != null) {
             return switch (options.getRotation()) {

@@ -19,9 +19,9 @@ import moe.plushie.armourers_workshop.core.menu.AbstractContainerMenu;
 import moe.plushie.armourers_workshop.core.network.UpdateConfigurableToolPacket;
 import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
 import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintTypes;
+import moe.plushie.armourers_workshop.init.ModDataComponents;
 import moe.plushie.armourers_workshop.init.ModTextures;
 import moe.plushie.armourers_workshop.init.platform.NetworkManager;
-import moe.plushie.armourers_workshop.utils.ColorUtils;
 import moe.plushie.armourers_workshop.utils.TranslateUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -64,7 +64,7 @@ public class PaletteToolWindow extends PaletteEditingWindow<AbstractContainerMen
     @Override
     protected void submitColorChange(UIControl control) {
         var paintColor = paintColorView.paintColor();
-        ColorUtils.setColor(itemStack, paintColor);
+        itemStack.set(ModDataComponents.TOOL_COLOR.get(), paintColor);
         NetworkManager.sendToServer(new UpdateConfigurableToolPacket(hand, itemStack));
     }
 
@@ -184,7 +184,7 @@ public class PaletteToolWindow extends PaletteEditingWindow<AbstractContainerMen
     }
 
     protected ISkinPaintColor getItemColor(ItemStack itemStack) {
-        var paintColor = ColorUtils.getColor(itemStack);
+        var paintColor = itemStack.get(ModDataComponents.TOOL_COLOR.get());
         if (paintColor != null) {
             return paintColor;
         }

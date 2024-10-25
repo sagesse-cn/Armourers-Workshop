@@ -6,5 +6,5 @@ import org.jetbrains.annotations.Nullable;
 public interface ITextureBox {
 
     @Nullable
-    ITextureKey getTexture(IDirection dir);
+    ITexturePos getTexture(IDirection dir);
 }

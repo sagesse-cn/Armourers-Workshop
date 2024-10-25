@@ -18,6 +18,7 @@ import moe.plushie.armourers_workshop.core.item.impl.IPaintToolPicker;
 import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
 import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintTypes;
 import moe.plushie.armourers_workshop.init.ModConstants;
+import moe.plushie.armourers_workshop.init.ModDataComponents;
 import moe.plushie.armourers_workshop.init.ModSounds;
 import moe.plushie.armourers_workshop.init.environment.EnvironmentExecutorIO;
 import moe.plushie.armourers_workshop.utils.ColorUtils;
@@ -109,12 +110,12 @@ public class PaintbrushItem extends AbstractColoredToolItem implements IItemTint
 
     @Override
     public void setItemColor(ItemStack itemStack, ISkinPaintColor paintColor) {
-        ColorUtils.setColor(itemStack, paintColor);
+        itemStack.set(ModDataComponents.TOOL_COLOR.get(), paintColor);
     }
 
     @Override
     public ISkinPaintColor getItemColor(ItemStack itemStack) {
-        return ColorUtils.getColor(itemStack);
+        return itemStack.get(ModDataComponents.TOOL_COLOR.get());
     }
 
     @Override

@@ -351,14 +351,14 @@ public class OptionalAPI {
         }
     }
 
-    public static ISkinPaintColor getOptionalPaintColor(@This CompoundTag tag, String key, ISkinPaintColor defaultValue) {
+    public static SkinPaintColor getOptionalPaintColor(@This CompoundTag tag, String key, SkinPaintColor defaultValue) {
         if (tag != null && tag.contains(key, Constants.TagFlags.INT)) {
             return SkinPaintColor.of(tag.getInt(key));
         }
         return defaultValue;
     }
 
-    public static void putOptionalPaintColor(@This CompoundTag tag, String key, ISkinPaintColor value, ISkinPaintColor defaultValue) {
+    public static void putOptionalPaintColor(@This CompoundTag tag, String key, ISkinPaintColor value, SkinPaintColor defaultValue) {
         if (_shouldPutValue(tag, key, value, defaultValue)) {
             tag.putInt(key, value.getRawValue());
         }

@@ -1,8 +1,6 @@
 package moe.plushie.armourers_workshop.core.skin.geometry.collection;
 
 import moe.plushie.armourers_workshop.api.skin.geometry.ISkinGeometryType;
-import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintColor;
-import moe.plushie.armourers_workshop.api.skin.paint.texture.ITextureKey;
 import moe.plushie.armourers_workshop.core.math.OpenTransform3f;
 import moe.plushie.armourers_workshop.core.math.Rectangle3f;
 import moe.plushie.armourers_workshop.core.skin.geometry.SkinGeometry;
@@ -14,6 +12,7 @@ import moe.plushie.armourers_workshop.core.skin.geometry.mesh.SkinMesh;
 import moe.plushie.armourers_workshop.core.skin.geometry.mesh.SkinMeshFace;
 import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
 import moe.plushie.armourers_workshop.core.skin.paint.texture.TextureBox;
+import moe.plushie.armourers_workshop.core.skin.paint.texture.TexturePos;
 import moe.plushie.armourers_workshop.core.utils.OpenDirection;
 
 import java.util.ArrayList;
@@ -64,12 +63,12 @@ public class SkinGeometrySetV2 extends SkinGeometrySet<SkinGeometry> {
         }
 
         @Override
-        public ISkinPaintColor getPaintColor(OpenDirection dir) {
+        public SkinPaintColor getPaintColor(OpenDirection dir) {
             return SkinPaintColor.WHITE;
         }
 
         @Override
-        public ITextureKey getTexture(OpenDirection dir) {
+        public TexturePos getTexture(OpenDirection dir) {
             return skyBox.getTexture(dir);
         }
 
@@ -86,9 +85,9 @@ public class SkinGeometrySetV2 extends SkinGeometrySet<SkinGeometry> {
 
         private final List<SkinMeshFace> faces;
 
-        public Mesh(OpenTransform3f transform, ITextureKey textureKey, List<SkinMeshFace> faces) {
+        public Mesh(OpenTransform3f transform, TexturePos texturePos, List<SkinMeshFace> faces) {
             this.transform = transform;
-            this.textureKey = textureKey;
+            this.texturePos = texturePos;
             this.faces = faces;
         }
 

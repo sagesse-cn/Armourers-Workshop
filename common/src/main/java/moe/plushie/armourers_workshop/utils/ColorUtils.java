@@ -226,75 +226,12 @@ public class ColorUtils {
     }
 
     public static int getDisplayRGB(ItemStack itemStack) {
-        ISkinPaintColor paintColor = getColor(itemStack);
+        var paintColor = itemStack.get(ModDataComponents.TOOL_COLOR.get());
         if (paintColor != null) {
             return ColorUtils.getDisplayRGB(paintColor) | 0xff000000;
         }
         return 0xffffffff;
     }
-
-    public static boolean hasColor(ItemStack itemStack) {
-        return itemStack.has(ModDataComponents.TOOL_COLOR.get());
-    }
-
-    public static void setColor(ItemStack itemStack, ISkinPaintColor color) {
-        itemStack.set(ModDataComponents.TOOL_COLOR.get(), color);
-    }
-
-    @Nullable
-    public static ISkinPaintColor getColor(ItemStack itemStack) {
-        ItemStackStorage storage = ItemStackStorage.of(itemStack);
-        if (storage.paintColor != null) {
-            return storage.paintColor.orElse(null);
-        }
-        ISkinPaintColor paintColor = itemStack.get(ModDataComponents.TOOL_COLOR.get());
-//        IPaintColor paintColor = getColor(itemStack, null);
-        storage.paintColor = Optional.ofNullable(paintColor);
-        return paintColor;
-    }
-
-    public static ISkinPaintColor getColorOrDefault(ItemStack itemStack, ISkinPaintColor defaultColor) {
-        ISkinPaintColor paintColor = getColor(itemStack);
-        if (paintColor != null) {
-            return paintColor;
-        }
-        return defaultColor;
-    }
-
-//    public static void setColor(ItemStack itemStack, @Nullable String rootPath, IPaintColor color) {
-//        CompoundTag tag = itemStack.getOrCreateTag();
-//        if (rootPath != null) {
-//            if (tag.contains(rootPath)) {
-//                tag = tag.getCompound(rootPath);
-//            } else {
-//                CompoundTag newTag = new CompoundTag();
-//                tag.put(rootPath, newTag);
-//                tag = newTag;
-//            }
-//        }
-//        tag.putOptionalPaintColor(Constants.Key.COLOR, color, null);
-//    }
-//
-//    @Nullable
-//    public static IPaintColor getColor(ItemStack itemStack, @Nullable String rootPath) {
-//        CompoundTag tag = itemStack.getTag();
-//        if (tag != null && rootPath != null) {
-//            tag = tag.getCompound(rootPath);
-//        }
-//        if (tag != null && tag.contains(Constants.Key.COLOR)) {
-//            Tag nbt = tag.get(Constants.Key.COLOR);
-//            if (nbt instanceof NumericTag) {
-//                return PaintColor.of(((NumericTag) nbt).getAsInt());
-//            }
-//            if (nbt instanceof StringTag) {
-//                UIColor color = ColorUtils.parseColor(nbt.getAsString());
-//                tag.putInt(Constants.Key.COLOR, color.getRGB());
-//                return PaintColor.of(color.getRGB());
-//            }
-//            tag.remove(Constants.Key.COLOR);
-//        }
-//        return null;
-//    }
 
     @Nullable
     public static BlockPaintColor getBlockColor(ItemStack itemStack) {

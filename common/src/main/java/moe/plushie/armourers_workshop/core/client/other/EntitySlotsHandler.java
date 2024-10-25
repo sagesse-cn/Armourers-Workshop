@@ -5,7 +5,6 @@ import moe.plushie.armourers_workshop.api.data.IAssociatedContainerKey;
 import moe.plushie.armourers_workshop.api.data.IAssociatedContainerProvider;
 import moe.plushie.armourers_workshop.api.skin.ISkinToolType;
 import moe.plushie.armourers_workshop.api.skin.ISkinType;
-import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintColor;
 import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintType;
 import moe.plushie.armourers_workshop.api.skin.part.ISkinPartType;
 import moe.plushie.armourers_workshop.core.blockentity.HologramProjectorBlockEntity;
@@ -21,11 +20,12 @@ import moe.plushie.armourers_workshop.core.entity.MannequinEntity;
 import moe.plushie.armourers_workshop.core.skin.SkinDescriptor;
 import moe.plushie.armourers_workshop.core.skin.SkinLocatorType;
 import moe.plushie.armourers_workshop.core.skin.SkinTypes;
+import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
 import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintScheme;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperty;
 import moe.plushie.armourers_workshop.init.ModConfig;
+import moe.plushie.armourers_workshop.init.ModDataComponents;
 import moe.plushie.armourers_workshop.init.ModItems;
-import moe.plushie.armourers_workshop.utils.ColorUtils;
 import moe.plushie.armourers_workshop.utils.DataContainer;
 import moe.plushie.armourers_workshop.utils.RenderSystem;
 import moe.plushie.armourers_workshop.utils.TickUtils;
@@ -362,8 +362,8 @@ public class EntitySlotsHandler<T> implements IAssociatedContainerProvider, Skin
 
     protected static class WardrobeProvider extends SlotProvider<SkinWardrobe> {
 
-        protected final HashMap<ISkinPaintType, ISkinPaintColor> dyeColors = new HashMap<>();
-        protected final HashMap<ISkinPaintType, ISkinPaintColor> lastDyeColors = new HashMap<>();
+        protected final HashMap<ISkinPaintType, SkinPaintColor> dyeColors = new HashMap<>();
+        protected final HashMap<ISkinPaintType, SkinPaintColor> lastDyeColors = new HashMap<>();
 
         protected BitSet wardrobeFlags = new BitSet();
         protected SkinPaintScheme colorScheme = SkinPaintScheme.EMPTY;
@@ -397,9 +397,9 @@ public class EntitySlotsHandler<T> implements IAssociatedContainerProvider, Skin
             dyeColors.clear();
             for (var paintType : SkinSlotType.getSupportedPaintTypes()) {
                 var itemStack = lastSlots.get(SkinSlotType.getDyeSlotIndex(paintType));
-                var paintColor = ColorUtils.getColor(itemStack);
+                var paintColor = itemStack.get(ModDataComponents.TOOL_COLOR.get());
                 if (paintColor != null) {
-                    dyeColors.put(paintType, paintColor);
+                    dyeColors.put(paintType, SkinPaintColor.of(paintColor));
                 }
             }
             if (!lastDyeColors.equals(dyeColors)) {

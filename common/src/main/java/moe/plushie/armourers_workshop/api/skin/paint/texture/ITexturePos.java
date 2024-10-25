@@ -2,9 +2,7 @@ package moe.plushie.armourers_workshop.api.skin.paint.texture;
 
 import org.jetbrains.annotations.Nullable;
 
-public interface ITextureKey {
-
-    boolean isMirror();
+public interface ITexturePos {
 
     float getU();
 

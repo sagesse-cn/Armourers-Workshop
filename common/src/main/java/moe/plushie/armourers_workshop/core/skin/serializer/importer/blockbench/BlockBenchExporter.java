@@ -1,7 +1,6 @@
 package moe.plushie.armourers_workshop.core.skin.serializer.importer.blockbench;
 
 import io.netty.buffer.Unpooled;
-import moe.plushie.armourers_workshop.api.skin.paint.texture.ITextureKey;
 import moe.plushie.armourers_workshop.api.skin.paint.texture.ITextureProvider;
 import moe.plushie.armourers_workshop.core.data.transform.SkinItemTransforms;
 import moe.plushie.armourers_workshop.core.math.OpenMath;
@@ -25,8 +24,8 @@ import moe.plushie.armourers_workshop.core.skin.geometry.mesh.SkinMeshFace;
 import moe.plushie.armourers_workshop.core.skin.paint.texture.TextureAnimation;
 import moe.plushie.armourers_workshop.core.skin.paint.texture.TextureBox;
 import moe.plushie.armourers_workshop.core.skin.paint.texture.TextureData;
-import moe.plushie.armourers_workshop.core.skin.paint.texture.TextureKey;
 import moe.plushie.armourers_workshop.core.skin.paint.texture.TextureOptions;
+import moe.plushie.armourers_workshop.core.skin.paint.texture.TexturePos;
 import moe.plushie.armourers_workshop.core.skin.paint.texture.TextureProperties;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPart;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPartTypes;
@@ -178,12 +177,12 @@ public class BlockBenchExporter {
     protected SkinGeometrySetV2.Mesh exportMesh(Mesh mesh, TextureSet texture) {
         var faces = new ArrayList<SkinMeshFace>();
         var transform = OpenTransform3f.create(mesh.origin, mesh.rotation, Vector3f.ONE, Vector3f.ZERO, Vector3f.ZERO);
-        var textureKeys = new ITextureKey[1];
+        var defaultTexturePos = new TexturePos[1];
         var sequence = new AtomicInteger();
         mesh.faces.stream().sorted(Comparator.comparingInt(it -> it.vertices.size())).forEachOrdered(it -> {
             // ignore all not use texture face.
-            var textureKey = texture.read(Vector2f.ZERO, it);
-            if (textureKey == null) {
+            var texturePos = texture.read(Vector2f.ZERO, it);
+            if (texturePos == null) {
                 return;
             }
             var faceId = faces.size();
@@ -195,10 +194,10 @@ public class BlockBenchExporter {
                 var textureCoords = it2.textureCoords;
                 vertices.add(new SkinGeometryVertex(vertexId, position, normal, textureCoords));
             });
-            faces.add(new SkinMeshFace(faceId, transform, textureKey, vertices));
-            textureKeys[0] = textureKey;
+            faces.add(new SkinMeshFace(faceId, transform, texturePos, vertices));
+            defaultTexturePos[0] = texturePos;
         });
-        return new SkinGeometrySetV2.Mesh(transform, textureKeys[0], faces);
+        return new SkinGeometrySetV2.Mesh(transform, defaultTexturePos[0], faces);
     }
 
     protected SkinItemTransforms exportItemTransforms(Map<String, BlockBenchDisplay> transforms) {
@@ -685,10 +684,10 @@ public class BlockBenchExporter {
             return skyBox;
         }
 
-        public TextureKey read(Vector2f pos, MeshFace meshFace) {
+        public TexturePos read(Vector2f pos, MeshFace meshFace) {
             var textureData = allTexture.get(meshFace.textureId);
             if (textureData != null) {
-                return new TextureKey(pos.getX(), pos.getY(), 0, 0, textureData);
+                return new TexturePos(pos.getX(), pos.getY(), 0, 0, textureData);
             }
             return null;
         }

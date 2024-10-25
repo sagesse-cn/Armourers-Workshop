@@ -1,17 +1,16 @@
 package moe.plushie.armourers_workshop.core.skin.geometry;
 
-import moe.plushie.armourers_workshop.api.core.math.ITransform3f;
 import moe.plushie.armourers_workshop.api.skin.geometry.ISkinGeometryFace;
-import moe.plushie.armourers_workshop.api.skin.paint.texture.ITextureKey;
 import moe.plushie.armourers_workshop.core.math.OpenTransform3f;
+import moe.plushie.armourers_workshop.core.skin.paint.texture.TexturePos;
 import moe.plushie.armourers_workshop.core.utils.Objects;
 
 public abstract class SkinGeometryFace implements ISkinGeometryFace {
 
     protected int id;
 
-    protected ITransform3f transform = OpenTransform3f.IDENTITY;
-    protected ITextureKey textureKey;
+    protected OpenTransform3f transform = OpenTransform3f.IDENTITY;
+    protected TexturePos texturePos = TexturePos.DEFAULT;
 
     @Override
     public int getId() {
@@ -19,13 +18,13 @@ public abstract class SkinGeometryFace implements ISkinGeometryFace {
     }
 
     @Override
-    public ITransform3f getTransform() {
+    public OpenTransform3f getTransform() {
         return transform;
     }
 
     @Override
-    public ITextureKey getTextureKey() {
-        return textureKey;
+    public TexturePos getTexturePos() {
+        return texturePos;
     }
 
     @Override

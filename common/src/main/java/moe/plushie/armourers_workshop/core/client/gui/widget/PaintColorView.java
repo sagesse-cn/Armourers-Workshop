@@ -29,7 +29,7 @@ public class PaintColorView extends UIView {
     @Override
     public void render(CGPoint point, CGGraphicsContext context) {
         super.render(point, context);
-        var texture = paintType.getTextureKey();
+        var texture = paintType.getTexturePos();
         var textureMatrix = TextureAnimationController.DEFAULT.getTextureMatrix(TickUtils.animationTicks());
         var textureOffset = Vector3f.ZERO.transforming(textureMatrix);
         var cu = texture.getU();

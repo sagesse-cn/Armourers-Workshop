@@ -1,7 +1,7 @@
 package moe.plushie.armourers_workshop.core.skin.paint;
 
-import moe.plushie.armourers_workshop.api.core.math.ITexturePos;
 import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintColor;
+import moe.plushie.armourers_workshop.core.math.Vector2i;
 import moe.plushie.armourers_workshop.core.skin.paint.texture.PlayerTextureModel;
 import moe.plushie.armourers_workshop.utils.StreamUtils;
 
@@ -98,8 +98,8 @@ public class SkinPaintData {
             if (sourceBox.equals(destinationBox) || destinationBox == null) {
                 return;
             }
-            var sourceTextures = new ArrayList<ITexturePos>(0);
-            sourceBox.forEach((texture, x, y, z, dir) -> sourceTextures.add(texture));
+            var sourceTextures = new ArrayList<Vector2i>(0);
+            sourceBox.forEach((texturePos, x, y, z, dir) -> sourceTextures.add(texturePos));
             destinationBox.forEach((texture, x, y, z, dir) -> {
                 if (!sourceTextures.isEmpty()) {
                     var color = paintData.getColor(sourceTextures.remove(0));
@@ -109,12 +109,12 @@ public class SkinPaintData {
         });
     }
 
-    public int getColor(ITexturePos point) {
-        return getColor(point.getU(), point.getV());
+    public int getColor(Vector2i point) {
+        return getColor(point.getX(), point.getY());
     }
 
-    public void setColor(ITexturePos point, int color) {
-        setColor(point.getU(), point.getV(), color);
+    public void setColor(Vector2i point, int color) {
+        setColor(point.getX(), point.getY(), color);
     }
 
     public int getColor(int x, int y) {

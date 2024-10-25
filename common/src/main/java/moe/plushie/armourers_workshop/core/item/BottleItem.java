@@ -11,6 +11,7 @@ import moe.plushie.armourers_workshop.core.item.impl.IPaintProvider;
 import moe.plushie.armourers_workshop.core.item.impl.IPaintToolPicker;
 import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintTypes;
 import moe.plushie.armourers_workshop.init.ModConstants;
+import moe.plushie.armourers_workshop.init.ModDataComponents;
 import moe.plushie.armourers_workshop.utils.ColorUtils;
 import moe.plushie.armourers_workshop.utils.TranslateUtils;
 import net.fabricmc.api.EnvType;
@@ -59,12 +60,12 @@ public class BottleItem extends FlavouredItem implements IItemTintColorProvider,
 
     @Override
     public void setItemColor(ItemStack itemStack, ISkinPaintColor paintColor) {
-        ColorUtils.setColor(itemStack, paintColor);
+        itemStack.set(ModDataComponents.TOOL_COLOR.get(), paintColor);
     }
 
     @Override
     public ISkinPaintColor getItemColor(ItemStack itemStack) {
-        return ColorUtils.getColor(itemStack);
+        return itemStack.get(ModDataComponents.TOOL_COLOR.get());
     }
 
     @Override
@@ -77,7 +78,7 @@ public class BottleItem extends FlavouredItem implements IItemTintColorProvider,
 
     @Override
     public void createModelProperties(BiConsumer<IResourceLocation, IItemModelProperty> builder) {
-        builder.accept(ModConstants.key("empty"), (itemStack, level, entity, id) -> ColorUtils.hasColor(itemStack) ? 0 : 1);
+        builder.accept(ModConstants.key("empty"), (itemStack, level, entity, id) -> itemStack.has(ModDataComponents.TOOL_COLOR.get()) ? 0 : 1);
     }
 
     @Override

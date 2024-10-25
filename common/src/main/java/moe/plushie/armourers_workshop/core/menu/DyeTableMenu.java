@@ -2,19 +2,18 @@ package moe.plushie.armourers_workshop.core.menu;
 
 import moe.plushie.armourers_workshop.api.common.IGlobalPos;
 import moe.plushie.armourers_workshop.api.skin.paint.ISkinDyeType;
-import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintColor;
 import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintType;
 import moe.plushie.armourers_workshop.core.blockentity.DyeTableBlockEntity;
 import moe.plushie.armourers_workshop.core.data.slot.SkinSlot;
 import moe.plushie.armourers_workshop.core.data.slot.SkinSlotType;
 import moe.plushie.armourers_workshop.core.item.BottleItem;
 import moe.plushie.armourers_workshop.core.skin.SkinDescriptor;
+import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
 import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintScheme;
 import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintTypes;
 import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.init.ModDataComponents;
 import moe.plushie.armourers_workshop.init.ModItems;
-import moe.plushie.armourers_workshop.utils.ColorUtils;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -125,11 +124,11 @@ public class DyeTableMenu extends AbstractBlockEntityMenu<DyeTableBlockEntity> {
         var descriptor = SkinDescriptor.of(itemStack);
         var scheme = descriptor.getColorScheme();
         for (int i = 0; i < paintTypes.length; ++i) {
-            ItemStack colorStack = ItemStack.EMPTY;
-            ISkinPaintColor paintColor = scheme.getColor(paintTypes[i]);
+            var colorStack = ItemStack.EMPTY;
+            var paintColor = scheme.getColor(paintTypes[i]);
             if (paintColor != null) {
                 colorStack = new ItemStack(ModItems.BOTTLE.get());
-                ColorUtils.setColor(colorStack, paintColor);
+                itemStack.set(ModDataComponents.TOOL_COLOR.get(), paintColor);
             }
             inventory.setItem(i, colorStack);
         }
@@ -143,9 +142,9 @@ public class DyeTableMenu extends AbstractBlockEntityMenu<DyeTableBlockEntity> {
         var newScheme = new SkinPaintScheme();
         for (int i = 0; i < paintTypes.length; ++i) {
             var colorStack = inventory.getItem(i);
-            var paintColor = ColorUtils.getColor(colorStack);
+            var paintColor = colorStack.get(ModDataComponents.TOOL_COLOR.get());
             if (paintColor != null) {
-                newScheme.setColor(paintTypes[i], paintColor);
+                newScheme.setColor(paintTypes[i], SkinPaintColor.of(paintColor));
             }
         }
         var descriptor = SkinDescriptor.of(itemStack);

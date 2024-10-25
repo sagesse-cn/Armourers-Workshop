@@ -26,18 +26,18 @@ public final class SkinPaintTypes {
     public static final SkinPaintType DYE_7 = register("dye_7", 7, 7).setDyeType(SkinDyeType.DYE_7);
     public static final SkinPaintType DYE_8 = register("dye_8", 8, 8).setDyeType(SkinDyeType.DYE_8);
 
-    public static final SkinPaintType RAINBOW = register("rainbow", 104, 14).setTexture(1F, 0F);
+    public static final SkinPaintType RAINBOW = register("rainbow", 104, 14).setTexturePos(1F, 0F);
 
-    public static final SkinPaintType PULSE_1 = register("pulse_1", 105, 15).setTexture(2F, 0F);
-    public static final SkinPaintType PULSE_2 = register("pulse_2", 106, 16).setTexture(3F, 0F);
+    public static final SkinPaintType PULSE_1 = register("pulse_1", 105, 15).setTexturePos(2F, 0F);
+    public static final SkinPaintType PULSE_2 = register("pulse_2", 106, 16).setTexturePos(3F, 0F);
 
     public static final SkinPaintType TEXTURE = register("texture", 107, 17);
 
-    public static final SkinPaintType FLICKER_1 = register("flicker_1", 108, 18).setTexture(4F, 0F);
-    public static final SkinPaintType FLICKER_2 = register("flicker_2", 109, 19).setTexture(5F, 0F);
+    public static final SkinPaintType FLICKER_1 = register("flicker_1", 108, 18).setTexturePos(4F, 0F);
+    public static final SkinPaintType FLICKER_2 = register("flicker_2", 109, 19).setTexturePos(5F, 0F);
 
-    public static final SkinPaintType FLASH_1 = register("flash_1", 110, 23).setTexture(6F, 0F);
-    public static final SkinPaintType FLASH_2 = register("flash_2", 111, 24).setTexture(7F, 0F);
+    public static final SkinPaintType FLASH_1 = register("flash_1", 110, 23).setTexturePos(6F, 0F);
+    public static final SkinPaintType FLASH_2 = register("flash_2", 111, 24).setTexturePos(7F, 0F);
 
     public static final SkinPaintType SKIN = register("skin", 253, 10).setDyeType(SkinDyeType.SKIN);
     public static final SkinPaintType HAIR = register("hair", 254, 11).setDyeType(SkinDyeType.HAIR);

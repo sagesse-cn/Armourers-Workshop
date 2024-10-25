@@ -2,7 +2,6 @@ package moe.plushie.armourers_workshop.core.skin.geometry.collection;
 
 import moe.plushie.armourers_workshop.api.skin.geometry.ISkinGeometryType;
 import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintColor;
-import moe.plushie.armourers_workshop.api.skin.paint.texture.ITextureKey;
 import moe.plushie.armourers_workshop.api.skin.part.ISkinPartType;
 import moe.plushie.armourers_workshop.core.math.Rectangle3f;
 import moe.plushie.armourers_workshop.core.math.Vector3i;
@@ -12,6 +11,7 @@ import moe.plushie.armourers_workshop.core.skin.geometry.SkinGeometryTypes;
 import moe.plushie.armourers_workshop.core.skin.geometry.cube.SkinCube;
 import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
 import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintTypes;
+import moe.plushie.armourers_workshop.core.skin.paint.texture.TexturePos;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IInputStream;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IOutputStream;
 import moe.plushie.armourers_workshop.core.skin.serializer.v12.LegacyCubeHelper;
@@ -235,7 +235,7 @@ public class SkinGeometrySetV1 extends SkinGeometrySet<SkinCube> {
         }
 
         @Override
-        public void setPaintColor(OpenDirection dir, ISkinPaintColor paintColor) {
+        public void setPaintColor(OpenDirection dir, SkinPaintColor paintColor) {
             int side = dir.get3DDataValue();
             int type = paintColor.getPaintType().getId();
             int rgb = paintColor.getRGB();
@@ -244,7 +244,7 @@ public class SkinGeometrySetV1 extends SkinGeometrySet<SkinCube> {
         }
 
         @Override
-        public ISkinPaintColor getPaintColor(OpenDirection dir) {
+        public SkinPaintColor getPaintColor(OpenDirection dir) {
             int side = dir.get3DDataValue();
             int type = getPaintType(side);
             int rgb = getRGB(side);
@@ -252,7 +252,7 @@ public class SkinGeometrySetV1 extends SkinGeometrySet<SkinCube> {
         }
 
         @Override
-        public ITextureKey getTexture(OpenDirection dir) {
+        public TexturePos getTexture(OpenDirection dir) {
             return null;
         }
 

@@ -1,7 +1,6 @@
 package moe.plushie.armourers_workshop.core.skin.paint;
 
 import com.google.common.collect.Iterables;
-import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintColor;
 import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintType;
 import moe.plushie.armourers_workshop.core.utils.Objects;
 import moe.plushie.armourers_workshop.core.utils.OpenResourceLocation;
@@ -17,8 +16,8 @@ public class SkinPaintScheme {
 
     public final static SkinPaintScheme EMPTY = new SkinPaintScheme();
 
-    private final HashMap<ISkinPaintType, ISkinPaintColor> colors = new HashMap<>();
-    private HashMap<ISkinPaintType, ISkinPaintColor> resolvedColors;
+    private final HashMap<ISkinPaintType, SkinPaintColor> colors = new HashMap<>();
+    private HashMap<ISkinPaintType, SkinPaintColor> resolvedColors;
 
     private SkinPaintScheme reference;
     private OpenResourceLocation texture;
@@ -65,7 +64,7 @@ public class SkinPaintScheme {
     }
 
     @Nullable
-    public ISkinPaintColor getColor(ISkinPaintType paintType) {
+    public SkinPaintColor getColor(ISkinPaintType paintType) {
         var color = colors.get(paintType);
         if (color != null) {
             return color;
@@ -76,13 +75,13 @@ public class SkinPaintScheme {
         return null;
     }
 
-    public void setColor(ISkinPaintType paintType, ISkinPaintColor color) {
+    public void setColor(ISkinPaintType paintType, SkinPaintColor color) {
         colors.put(paintType, color);
         resolvedColors = null;
         hashCode = 0;
     }
 
-    public ISkinPaintColor getResolvedColor(ISkinPaintType paintType) {
+    public SkinPaintColor getResolvedColor(ISkinPaintType paintType) {
         if (resolvedColors == null) {
             resolvedColors = getResolvedColors();
         }
@@ -116,8 +115,8 @@ public class SkinPaintScheme {
         }
     }
 
-    private HashMap<ISkinPaintType, ISkinPaintColor> getResolvedColors() {
-        var resolvedColors = new HashMap<ISkinPaintType, ISkinPaintColor>();
+    private HashMap<ISkinPaintType, SkinPaintColor> getResolvedColors() {
+        var resolvedColors = new HashMap<ISkinPaintType, SkinPaintColor>();
         var dependencies = new HashMap<ISkinPaintType, ArrayList<ISkinPaintType>>();
         // build all reference dependencies
         if (reference != null) {

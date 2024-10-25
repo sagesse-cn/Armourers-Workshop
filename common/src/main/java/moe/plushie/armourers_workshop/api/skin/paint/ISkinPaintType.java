@@ -1,7 +1,7 @@
 package moe.plushie.armourers_workshop.api.skin.paint;
 
 import moe.plushie.armourers_workshop.api.core.IRegistryEntry;
-import moe.plushie.armourers_workshop.api.skin.paint.texture.ITextureKey;
+import moe.plushie.armourers_workshop.api.skin.paint.texture.ITexturePos;
 
 public interface ISkinPaintType extends IRegistryEntry {
 
@@ -9,7 +9,7 @@ public interface ISkinPaintType extends IRegistryEntry {
 
     int getIndex();
 
-    ITextureKey getTextureKey();
-
     ISkinDyeType getDyeType();
+
+    ITexturePos getTexturePos();
 }

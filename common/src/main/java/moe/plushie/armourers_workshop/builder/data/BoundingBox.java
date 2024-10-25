@@ -3,7 +3,7 @@ package moe.plushie.armourers_workshop.builder.data;
 import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintColor;
 import moe.plushie.armourers_workshop.api.skin.part.ISkinPartType;
 import moe.plushie.armourers_workshop.core.math.Rectangle3i;
-import moe.plushie.armourers_workshop.core.math.TexturePos;
+import moe.plushie.armourers_workshop.core.math.Vector2i;
 import moe.plushie.armourers_workshop.core.math.Vector3i;
 import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
 import moe.plushie.armourers_workshop.core.skin.paint.texture.PlayerTextureModel;
@@ -25,14 +25,14 @@ public class BoundingBox extends Rectangle3i {
         this.partType = partType;
     }
 
-    public static void setColor(ISkinPartType partType, Vector3i offset, Direction dir, ISkinPaintColor color, BiConsumer<TexturePos, ISkinPaintColor> applier) {
+    public static void setColor(ISkinPartType partType, Vector3i offset, Direction dir, ISkinPaintColor color, BiConsumer<Vector2i, ISkinPaintColor> applier) {
         var texturePos = getTexturePos(partType, offset, dir);
         if (texturePos != null) {
             applier.accept(texturePos, color);
         }
     }
 
-    public static ISkinPaintColor getColor(ISkinPartType partType, Vector3i offset, Direction dir, Function<TexturePos, ISkinPaintColor> supplier) {
+    public static ISkinPaintColor getColor(ISkinPartType partType, Vector3i offset, Direction dir, Function<Vector2i, ISkinPaintColor> supplier) {
         var texturePos = getTexturePos(partType, offset, dir);
         if (texturePos != null) {
             return supplier.apply(texturePos);
@@ -40,7 +40,7 @@ public class BoundingBox extends Rectangle3i {
         return SkinPaintColor.CLEAR;
     }
 
-    public static TexturePos getTexturePos(ISkinPartType partType, Vector3i offset, Direction dir) {
+    public static Vector2i getTexturePos(ISkinPartType partType, Vector3i offset, Direction dir) {
         var box = MODEL.get(partType);
         if (box == null) {
             return null;

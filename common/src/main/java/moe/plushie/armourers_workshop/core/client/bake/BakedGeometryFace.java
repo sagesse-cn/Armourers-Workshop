@@ -4,8 +4,7 @@ import moe.plushie.armourers_workshop.api.client.IVertexConsumer;
 import moe.plushie.armourers_workshop.api.core.math.IPoseStack;
 import moe.plushie.armourers_workshop.api.core.math.ITransform3f;
 import moe.plushie.armourers_workshop.api.skin.geometry.ISkinGeometryType;
-import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintColor;
-import moe.plushie.armourers_workshop.api.skin.paint.texture.ITextureKey;
+import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintType;
 import moe.plushie.armourers_workshop.api.skin.part.ISkinPartType;
 import moe.plushie.armourers_workshop.core.client.other.SkinRenderType;
 import moe.plushie.armourers_workshop.core.client.texture.PlayerTextureLoader;
@@ -20,6 +19,7 @@ import moe.plushie.armourers_workshop.core.skin.geometry.cube.SkinCubeVertex;
 import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
 import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintScheme;
 import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintTypes;
+import moe.plushie.armourers_workshop.core.skin.paint.texture.TexturePos;
 import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.core.utils.OpenResourceLocation;
 import net.fabricmc.api.EnvType;
@@ -44,7 +44,7 @@ public class BakedGeometryFace {
     private final List<? extends SkinGeometryVertex> vertices;
 
     private final SkinGeometryVertex defaultVertex;
-    private final ITextureKey defaultTexture;
+    private final TexturePos defaultTexturePos;
 
     public BakedGeometryFace(SkinGeometryFace geometryFace) {
         this.priority = geometryFace.getPriority();
@@ -53,7 +53,7 @@ public class BakedGeometryFace {
         this.renderTypeVariants = resolveRenderTypeVariants(geometryFace);
         this.vertices = triangulation(geometryFace.getVertices(), geometryFace.getType());
         this.defaultVertex = resolveDefaultVertex(vertices);
-        this.defaultTexture = geometryFace.getTextureKey();
+        this.defaultTexturePos = geometryFace.getTexturePos();
     }
 
     public void render(BakedSkinPart part, SkinPaintScheme scheme, int lightmap, int overlay, IPoseStack poseStack, IVertexConsumer builder) {
@@ -77,8 +77,12 @@ public class BakedGeometryFace {
 
         var entry = poseStack.last();
 
-        var n = defaultTexture.getTotalWidth();
-        var m = defaultTexture.getTotalHeight();
+        // for dye color, we need to relocation to final color by the offset(x, 0).
+        var u = resolveTextureOffset(vertexColor.getPaintType(), resolvedColor.getPaintType());
+        var v = 0.0f;
+
+        var n = defaultTexturePos.getTotalWidth();
+        var m = defaultTexturePos.getTotalHeight();
 
         var r = resolvedColor.getRed();
         var g = resolvedColor.getGreen();
@@ -91,7 +95,7 @@ public class BakedGeometryFace {
             var textureCoords = vertex.getTextureCoords();
             builder.vertex(entry, position.getX(), position.getY(), position.getZ())
                     .color(r, g, b, a)
-                    .uv(textureCoords.getX() / n, textureCoords.getY() / m)
+                    .uv((u + textureCoords.getX()) / n, (v + textureCoords.getY()) / m)
                     .overlayCoords(overlay)
                     .uv2(lightmap)
                     .normal(entry, normal.getX(), normal.getY(), normal.getZ())
@@ -103,7 +107,7 @@ public class BakedGeometryFace {
         }
     }
 
-    private ISkinPaintColor dye(ISkinPaintColor source, ISkinPaintColor destination, ISkinPaintColor average) {
+    private SkinPaintColor dye(SkinPaintColor source, SkinPaintColor destination, SkinPaintColor average) {
         if (destination.getPaintType() == SkinPaintTypes.NONE) {
             return SkinPaintColor.CLEAR;
         }
@@ -119,7 +123,7 @@ public class BakedGeometryFace {
     }
 
 
-    private ISkinPaintColor resolveTextureColor(OpenResourceLocation texture, ISkinPartType partType) {
+    private SkinPaintColor resolveTextureColor(OpenResourceLocation texture, ISkinPartType partType) {
         var bakedTexture = PlayerTextureLoader.getInstance().getTextureModel(texture);
         if (bakedTexture != null && defaultVertex instanceof SkinCubeVertex cubeVertex) {
             var shape = cubeVertex.getBoundingBox();
@@ -132,7 +136,16 @@ public class BakedGeometryFace {
         return null;
     }
 
-    private ISkinPaintColor resolveColor(ISkinPaintColor paintColor, SkinPaintScheme scheme, ColorDescriptor descriptor, ISkinPartType partType, int deep) {
+    private float resolveTextureOffset(ISkinPaintType from, ISkinPaintType to) {
+        var fromTexturePos = from.getTexturePos();
+        var toTexturePos = to.getTexturePos();
+        if (fromTexturePos != toTexturePos) {
+            return toTexturePos.getU() - fromTexturePos.getU();
+        }
+        return 0;
+    }
+
+    private SkinPaintColor resolveColor(SkinPaintColor paintColor, SkinPaintScheme scheme, ColorDescriptor descriptor, ISkinPartType partType, int deep) {
         var paintType = paintColor.getPaintType();
         if (paintType == SkinPaintTypes.NONE) {
             return SkinPaintColor.CLEAR;
@@ -190,15 +203,15 @@ public class BakedGeometryFace {
     }
 
     private RenderType resolveRenderType(SkinGeometryFace face) {
-        var textureKey = face.getTextureKey();
-        if (textureKey != null && textureKey.getProvider() != null) {
-            return TextureManager.getInstance().register(textureKey.getProvider(), face.getType());
+        var texturePos = face.getTexturePos();
+        if (texturePos != null && texturePos.getProvider() != null) {
+            return TextureManager.getInstance().register(texturePos.getProvider(), face.getType());
         }
         return SkinRenderType.by(face.getType());
     }
 
     private Collection<RenderType> resolveRenderTypeVariants(SkinGeometryFace face) {
-        var texture = face.getTextureKey();
+        var texture = face.getTexturePos();
         if (texture == null || texture.getProvider() == null) {
             return null;
         }
@@ -214,7 +227,7 @@ public class BakedGeometryFace {
         return renderTypes;
     }
 
-    public float getRenderPriority() {
+    public float getPriority() {
         return priority;
     }
 
@@ -226,8 +239,8 @@ public class BakedGeometryFace {
         return renderTypeVariants;
     }
 
-    public ISkinPaintColor getDefaultColor() {
-        if (defaultTexture != null) {
+    public SkinPaintColor getDefaultColor() {
+        if (defaultVertex != null) {
             return defaultVertex.getColor();
         }
         return null;

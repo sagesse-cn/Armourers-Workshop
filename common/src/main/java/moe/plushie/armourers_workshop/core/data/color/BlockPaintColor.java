@@ -1,6 +1,5 @@
 package moe.plushie.armourers_workshop.core.data.color;
 
-import moe.plushie.armourers_workshop.api.common.IBlockPaintColor;
 import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintColor;
 import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
 import net.minecraft.core.Direction;
@@ -11,7 +10,7 @@ import java.util.Collections;
 import java.util.EnumMap;
 import java.util.Objects;
 
-public class BlockPaintColor implements IBlockPaintColor {
+public class BlockPaintColor {
 
     public static final BlockPaintColor WHITE = new BlockPaintColor(SkinPaintColor.WHITE);
 
@@ -53,12 +52,11 @@ public class BlockPaintColor implements IBlockPaintColor {
         return tag;
     }
 
-    public void putAll(ISkinPaintColor paintColor) {
+    public void putAll(SkinPaintColor paintColor) {
         this.paintColor = paintColor;
         this.paintColors = null;
     }
 
-    @Override
     public void put(Direction dir, ISkinPaintColor paintColor) {
         if (this.paintColors == null) {
             if (Objects.equals(this.paintColor, paintColor)) {
@@ -77,12 +75,10 @@ public class BlockPaintColor implements IBlockPaintColor {
     }
 
 
-    @Override
     public ISkinPaintColor get(Direction dir) {
         return getOrDefault(dir, null);
     }
 
-    @Override
     public ISkinPaintColor getOrDefault(Direction dir, ISkinPaintColor defaultValue) {
         if (paintColor != null) {
             return paintColor;
@@ -115,7 +111,6 @@ public class BlockPaintColor implements IBlockPaintColor {
         return Objects.hash(paintColor, paintColors);
     }
 
-    @Override
     public boolean isEmpty() {
         if (paintColors != null) {
             return paintColors.isEmpty();
@@ -123,7 +118,6 @@ public class BlockPaintColor implements IBlockPaintColor {
         return paintColor == null;
     }
 
-    @Override
     public boolean isPureColor() {
         return paintColor != null;
     }

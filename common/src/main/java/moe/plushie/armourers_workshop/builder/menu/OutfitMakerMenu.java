@@ -198,8 +198,8 @@ public class OutfitMakerMenu extends AbstractBlockEntityMenu<OutfitMakerBlockEnt
 
         for (var ix = 0; ix < width; ix++) {
             for (var iy = 0; iy < height; iy++) {
-                var x = pos.getU() + ix;
-                var y = pos.getV() + iy;
+                var x = pos.getX() + ix;
+                var y = pos.getY() + iy;
                 var color = srcPaint.getColor(x, y);
                 if (SkinPaintColor.isOpaque(color)) {
                     desPaint.setColor(x, y, color);

@@ -1,13 +1,14 @@
 package moe.plushie.armourers_workshop.core.skin.paint.texture;
 
-import moe.plushie.armourers_workshop.api.skin.paint.texture.ITextureKey;
 import moe.plushie.armourers_workshop.api.skin.paint.texture.ITextureOptions;
+import moe.plushie.armourers_workshop.api.skin.paint.texture.ITexturePos;
 import moe.plushie.armourers_workshop.api.skin.paint.texture.ITextureProvider;
 import moe.plushie.armourers_workshop.core.utils.Objects;
 import org.jetbrains.annotations.Nullable;
 
+public class TexturePos implements ITexturePos {
 
-public class TextureKey implements ITextureKey {
+    public static final TexturePos DEFAULT = new TexturePos(0, 0, 1, 1, 256, 256);
 
     protected final float u;
     protected final float v;
@@ -18,19 +19,19 @@ public class TextureKey implements ITextureKey {
     protected final ITextureOptions options;
     protected final ITextureProvider provider;
 
-    public TextureKey(float u, float v, float width, float height, ITextureProvider provider) {
+    public TexturePos(float u, float v, float width, float height, ITextureProvider provider) {
         this(u, v, width, height, provider.getWidth(), provider.getHeight(), null, provider);
     }
 
-    public TextureKey(float u, float v, float width, float height, ITextureOptions options, ITextureProvider provider) {
+    public TexturePos(float u, float v, float width, float height, ITextureOptions options, ITextureProvider provider) {
         this(u, v, width, height, provider.getWidth(), provider.getHeight(), options, provider);
     }
 
-    public TextureKey(float u, float v, float width, float height, float totalWidth, float totalHeight) {
+    public TexturePos(float u, float v, float width, float height, float totalWidth, float totalHeight) {
         this(u, v, width, height, totalWidth, totalHeight, null, null);
     }
 
-    public TextureKey(float u, float v, float width, float height, float totalWidth, float totalHeight, ITextureOptions options, ITextureProvider provider) {
+    public TexturePos(float u, float v, float width, float height, float totalWidth, float totalHeight, ITextureOptions options, ITextureProvider provider) {
         this.u = u;
         this.v = v;
         this.width = width;
@@ -39,11 +40,6 @@ public class TextureKey implements ITextureKey {
         this.totalHeight = totalHeight;
         this.options = options;
         this.provider = provider;
-    }
-
-    @Override
-    public boolean isMirror() {
-        return false;
     }
 
     @Override
@@ -90,7 +86,7 @@ public class TextureKey implements ITextureKey {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof TextureKey that)) return false;
+        if (!(o instanceof TexturePos that)) return false;
         return Float.compare(that.u, u) == 0 && Float.compare(that.v, v) == 0 && Float.compare(that.width, width) == 0 && Float.compare(that.height, height) == 0 && Float.compare(that.totalWidth, totalWidth) == 0 && Float.compare(that.totalHeight, totalHeight) == 0 && that.options == options;
     }
 

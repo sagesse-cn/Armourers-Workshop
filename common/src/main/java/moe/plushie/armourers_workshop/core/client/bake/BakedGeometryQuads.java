@@ -177,7 +177,7 @@ public class BakedGeometryQuads {
             }
         }
         for (var filteredFaces : splitFaces.values()) {
-            filteredFaces.sort(Comparator.comparingDouble(BakedGeometryFace::getRenderPriority));
+            filteredFaces.sort(Comparator.comparingDouble(BakedGeometryFace::getPriority));
         }
     }
 

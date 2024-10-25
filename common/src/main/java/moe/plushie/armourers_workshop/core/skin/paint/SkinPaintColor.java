@@ -15,34 +15,41 @@ public class SkinPaintColor implements ISkinPaintColor {
             .maximumSize(2048)
             .build();
 
-    private final int value;
-    private final int rgb;
-    private final ISkinPaintType paintType;
+    protected final int value;
+    protected final int rgb;
+    protected final SkinPaintType paintType;
 
 //    private PaintColor(int rgb, ISkinPaintType paintType) {
 //        this((rgb & 0xffffff) | ((paintType.getId() & 0xff) << 24), rgb, paintType);
 //    }
 
-    protected SkinPaintColor(int value, int rgb, ISkinPaintType paintType) {
+    protected SkinPaintColor(int value, int rgb, SkinPaintType paintType) {
         this.value = value;
         this.paintType = paintType;
         this.rgb = rgb;
     }
 
-    public static SkinPaintColor of(int value) {
-        if (value == 0) {
-            return CLEAR;
+    public static SkinPaintColor of(ISkinPaintColor paintColor) {
+        if (paintColor instanceof SkinPaintColor paintColor1) {
+            return paintColor1;
         }
-        return of(value, getPaintType(value));
+        return of(paintColor.getRawValue());
     }
 
-    public static SkinPaintColor of(int r, int g, int b, ISkinPaintType paintType) {
+    public static SkinPaintColor of(int value) {
+        if (value != 0) {
+            return of(value, getPaintType(value));
+        }
+        return CLEAR;
+    }
+
+    public static SkinPaintColor of(int r, int g, int b, SkinPaintType paintType) {
         return of(r << 16 | g << 8 | b, paintType);
     }
 
-    public static SkinPaintColor of(int rgb, ISkinPaintType paintType) {
+    public static SkinPaintColor of(int rgb, SkinPaintType paintType) {
         int value = (rgb & 0xffffff) | ((paintType.getId() & 0xff) << 24);
-        SkinPaintColor paintColor = POOL.getIfPresent(value);
+        var paintColor = POOL.getIfPresent(value);
         if (paintColor == null) {
             paintColor = new SkinPaintColor(value, rgb, paintType);
             POOL.put(value, paintColor);
@@ -50,7 +57,15 @@ public class SkinPaintColor implements ISkinPaintColor {
         return paintColor;
     }
 
-    public static ISkinPaintType getPaintType(int value) {
+    public static SkinPaintColor of(int r, int g, int b, ISkinPaintType paintType) {
+        return of(r, g, b, (SkinPaintType) paintType);
+    }
+
+    public static SkinPaintColor of(int rgb, ISkinPaintType paintType) {
+        return of(rgb, (SkinPaintType) paintType);
+    }
+
+    public static SkinPaintType getPaintType(int value) {
         return SkinPaintTypes.byId(value >> 24 & 0xff);
     }
 
@@ -88,7 +103,7 @@ public class SkinPaintColor implements ISkinPaintColor {
     }
 
     @Override
-    public ISkinPaintType getPaintType() {
+    public SkinPaintType getPaintType() {
         return paintType;
     }
 

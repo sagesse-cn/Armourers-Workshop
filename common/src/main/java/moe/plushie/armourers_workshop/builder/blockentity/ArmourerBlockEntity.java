@@ -22,7 +22,7 @@ import moe.plushie.armourers_workshop.builder.other.WorldUpdater;
 import moe.plushie.armourers_workshop.builder.other.WorldUtils;
 import moe.plushie.armourers_workshop.core.blockentity.UpdatableBlockEntity;
 import moe.plushie.armourers_workshop.core.math.Rectangle3i;
-import moe.plushie.armourers_workshop.core.math.TexturePos;
+import moe.plushie.armourers_workshop.core.math.Vector2i;
 import moe.plushie.armourers_workshop.core.math.Vector3i;
 import moe.plushie.armourers_workshop.core.skin.SkinTypes;
 import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
@@ -190,14 +190,14 @@ public class ArmourerBlockEntity extends UpdatableBlockEntity implements IBlockE
         BlockUtils.combine(this, this::sendBlockUpdates);
     }
 
-    public ISkinPaintColor getPaintColor(TexturePos pos) {
+    public ISkinPaintColor getPaintColor(Vector2i pos) {
         if (paintData != null) {
             return SkinPaintColor.of(paintData.getColor(pos));
         }
         return null;
     }
 
-    public void setPaintColor(TexturePos pos, ISkinPaintColor paintColor) {
+    public void setPaintColor(Vector2i pos, ISkinPaintColor paintColor) {
         if (this.paintData == null) {
             this.paintData = SkinPaintData.v2();
         }

@@ -33,7 +33,6 @@ import moe.plushie.armourers_workshop.init.platform.EnvironmentManager;
 import moe.plushie.armourers_workshop.init.platform.NetworkManager;
 import moe.plushie.armourers_workshop.init.platform.event.common.RegisterCommandsEvent;
 import moe.plushie.armourers_workshop.library.data.SkinLibraryManager;
-import moe.plushie.armourers_workshop.utils.ColorUtils;
 import moe.plushie.armourers_workshop.utils.TranslateUtils;
 import moe.plushie.armourers_workshop.utils.TypedRegistry;
 import net.minecraft.Util;
@@ -227,7 +226,7 @@ public class ModCommands {
                 }
                 int slot = SkinSlotType.getDyeSlotIndex(paintType);
                 var itemStack = new ItemStack(ModItems.BOTTLE.get());
-                ColorUtils.setColor(itemStack, paintColor);
+                itemStack.set(ModDataComponents.TOOL_COLOR.get(), paintColor);
                 var inventory = wardrobe.getInventory();
                 inventory.setItem(slot, itemStack);
                 wardrobe.broadcast();

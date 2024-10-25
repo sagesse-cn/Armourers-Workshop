@@ -1,11 +1,11 @@
 package moe.plushie.armourers_workshop.core.skin.serializer.v20.geometry.impl;
 
 import moe.plushie.armourers_workshop.api.skin.geometry.ISkinGeometryType;
-import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintColor;
-import moe.plushie.armourers_workshop.api.skin.paint.texture.ITextureKey;
 import moe.plushie.armourers_workshop.core.math.Rectangle3f;
 import moe.plushie.armourers_workshop.core.math.Vector3i;
 import moe.plushie.armourers_workshop.core.skin.geometry.cube.SkinCube;
+import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
+import moe.plushie.armourers_workshop.core.skin.paint.texture.TexturePos;
 import moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk.ChunkGeometrySlice;
 import moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk.ChunkOutputStream;
 import moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk.ChunkPaletteData;
@@ -75,7 +75,7 @@ public class ChunkGeometrySerializerV1 extends ChunkGeometrySerializer {
         }
 
         @Override
-        public ISkinPaintColor getPaintColor(OpenDirection dir) {
+        public SkinPaintColor getPaintColor(OpenDirection dir) {
             if (slice.once(1)) {
                 parseColors();
             }
@@ -83,7 +83,7 @@ public class ChunkGeometrySerializerV1 extends ChunkGeometrySerializer {
         }
 
         @Override
-        public ITextureKey getTexture(OpenDirection dir) {
+        public TexturePos getTexture(OpenDirection dir) {
             return null;
         }
 
@@ -102,7 +102,7 @@ public class ChunkGeometrySerializerV1 extends ChunkGeometrySerializer {
     protected static class Encoder implements ChunkGeometrySerializer.Encoder<SkinCube> {
 
         private Vector3i pos = Vector3i.ZERO;
-        private final LinkedHashMap<ISkinPaintColor, Integer> values = new LinkedHashMap<>();
+        private final LinkedHashMap<SkinPaintColor, Integer> values = new LinkedHashMap<>();
 
         @Override
         public int begin(SkinCube cube) {

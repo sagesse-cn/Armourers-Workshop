@@ -2,12 +2,12 @@ package moe.plushie.armourers_workshop.utils;
 
 import com.mojang.blaze3d.platform.NativeImage;
 import moe.plushie.armourers_workshop.api.core.IResourceLocation;
-import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintColor;
 import moe.plushie.armourers_workshop.builder.data.PlayerTexture;
 import moe.plushie.armourers_workshop.builder.data.PlayerTextureDescriptor;
 import moe.plushie.armourers_workshop.core.client.texture.BakedEntityTexture;
 import moe.plushie.armourers_workshop.core.client.texture.PlayerTextureLoader;
-import moe.plushie.armourers_workshop.core.math.TexturePos;
+import moe.plushie.armourers_workshop.core.math.Vector2i;
+import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
 import moe.plushie.armourers_workshop.core.utils.OpenResourceLocation;
 import moe.plushie.armourers_workshop.init.ModTextures;
 import net.fabricmc.api.EnvType;
@@ -58,8 +58,8 @@ public final class TextureUtils {
         return null;
     }
 
-    public static ISkinPaintColor getPlayerTextureModelColor(PlayerTextureDescriptor descriptor, TexturePos texturePos) {
-        BakedEntityTexture textureModel = getPlayerTextureModel(descriptor);
+    public static SkinPaintColor getPlayerTextureModelColor(PlayerTextureDescriptor descriptor, Vector2i texturePos) {
+        var textureModel = getPlayerTextureModel(descriptor);
         if (textureModel != null) {
             return textureModel.getColor(texturePos);
         }
