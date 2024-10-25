@@ -186,7 +186,7 @@ public class UIScrollView extends UIView {
         private final BiFunction<Float, Float, Float> selector;
 
         public Indicator(BiFunction<Float, Float, Float> selector) {
-            super(CGRect.   ZERO);
+            super(CGRect.ZERO);
             this.selector = selector;
             this.setBackgroundColor(new UIColor(0x7f000000, true));
             this.setHidden(true);

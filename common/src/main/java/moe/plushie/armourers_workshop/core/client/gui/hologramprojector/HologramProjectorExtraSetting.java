@@ -8,8 +8,8 @@ import com.apple.library.uikit.UIControl;
 import com.apple.library.uikit.UILabel;
 import moe.plushie.armourers_workshop.core.blockentity.HologramProjectorBlockEntity;
 import moe.plushie.armourers_workshop.core.network.UpdateHologramProjectorPacket;
+import moe.plushie.armourers_workshop.core.utils.Objects;
 import moe.plushie.armourers_workshop.init.platform.NetworkManager;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
@@ -41,7 +41,7 @@ public class HologramProjectorExtraSetting extends HologramProjectorBaseSetting 
         checkBox.setTitle(getDisplayText(key));
         checkBox.setSelected(property.get(entity));
         checkBox.addTarget(this, UIControl.Event.VALUE_CHANGED, (self, c) -> {
-            UICheckBox checkBox1 = ObjectUtils.unsafeCast(c);
+            UICheckBox checkBox1 = Objects.unsafeCast(c);
             property.set(entity, checkBox1.isSelected());
             NetworkManager.sendToServer(property.buildPacket(entity, checkBox1.isSelected()));
         });
@@ -57,7 +57,7 @@ public class HologramProjectorExtraSetting extends HologramProjectorBaseSetting 
         comboBox.setSelectedIndex(property.get(entity));
         comboBox.reloadData(items);
         comboBox.addTarget(this, UIControl.Event.VALUE_CHANGED, (self, e) -> {
-            UIComboBox comboBox1 = ObjectUtils.unsafeCast(e);
+            UIComboBox comboBox1 = Objects.unsafeCast(e);
             property.set(entity, comboBox1.selectedIndex());
             NetworkManager.sendToServer(property.buildPacket(entity, comboBox1.selectedIndex()));
         });

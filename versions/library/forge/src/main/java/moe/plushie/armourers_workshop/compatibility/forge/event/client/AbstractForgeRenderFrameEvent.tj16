@@ -4,8 +4,8 @@ import moe.plushie.armourers_workshop.api.annotation.Available;
 import moe.plushie.armourers_workshop.api.registry.IEventHandler;
 import moe.plushie.armourers_workshop.compatibility.forge.AbstractForgeClientEventsImpl;
 import moe.plushie.armourers_workshop.init.platform.event.client.RenderFrameEvent;
-import net.minecraftforge.event.TickEvent;
 import net.minecraft.client.Minecraft;
+import net.minecraftforge.event.TickEvent;
 
 @Available("[1.16, 1.21)")
 public class AbstractForgeRenderFrameEvent {

@@ -2,7 +2,7 @@ package moe.plushie.armourers_workshop.init;
 
 import moe.plushie.armourers_workshop.api.common.IEntitySerializer;
 import moe.plushie.armourers_workshop.api.registry.IEntryBuilder;
-import moe.plushie.armourers_workshop.core.texture.PlayerTextureDescriptor;
+import moe.plushie.armourers_workshop.builder.data.PlayerTextureDescriptor;
 import moe.plushie.armourers_workshop.init.platform.BuilderManager;
 import moe.plushie.armourers_workshop.utils.DataSerializers;
 import net.minecraft.nbt.CompoundTag;

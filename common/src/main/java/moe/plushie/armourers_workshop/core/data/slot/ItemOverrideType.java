@@ -1,7 +1,7 @@
 package moe.plushie.armourers_workshop.core.data.slot;
 
 import moe.plushie.armourers_workshop.api.common.IItemTag;
-import moe.plushie.armourers_workshop.api.registry.IRegistryHolder;
+import moe.plushie.armourers_workshop.api.core.IRegistryHolder;
 import moe.plushie.armourers_workshop.init.ModConfig;
 import moe.plushie.armourers_workshop.init.ModItemMatchers;
 import moe.plushie.armourers_workshop.init.ModItemTags;

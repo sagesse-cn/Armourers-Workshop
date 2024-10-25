@@ -1,7 +1,7 @@
 package moe.plushie.armourers_workshop.core.client.other;
 
+import moe.plushie.armourers_workshop.core.math.OpenMath;
 import moe.plushie.armourers_workshop.init.ModLog;
-import moe.plushie.armourers_workshop.utils.MathUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import org.lwjgl.opengl.GL15;
@@ -21,11 +21,20 @@ public class VertexIndexObject {
     private int capacity;
     private IndexType type = IndexType.BYTE;
 
-    public VertexIndexObject(int i, int j, IndexGenerator generator) {
-        this.vertexStride = i;
-        this.indexStride = j;
+    public VertexIndexObject(int vertexStride, int indexStride, IndexGenerator generator) {
+        this.vertexStride = vertexStride;
+        this.indexStride = indexStride;
         this.generator = generator;
         this.id = GL15.glGenBuffers();
+    }
+
+    public static void unbind() {
+        GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, 0);
+    }
+
+    public void bind() {
+        GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, id);
+        uploadStorageIfNeeded(capacity);
     }
 
     public void ensureCapacity(int i) {
@@ -34,30 +43,21 @@ public class VertexIndexObject {
         }
     }
 
-    public void bind() {
-        GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, id);
-        uploadStorageIfNeeded(capacity);
-    }
-
-    public static void unbind() {
-        GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, 0);
-    }
-
     private void uploadStorageIfNeeded(int total) {
         if (total <= size) {
             return;
         }
-        total = MathUtils.roundToward(total * 2, indexStride);
+        total = OpenMath.roundToward(total * 2, indexStride);
         ModLog.debug("growing index buffer {} => {}.", size, total);
         var indexType = IndexType.least(total);
-        var bufferSize = MathUtils.roundToward(total * indexType.bytes, 4);
+        var bufferSize = OpenMath.roundToward(total * indexType.bytes, 4);
         GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, bufferSize, GL15.GL_DYNAMIC_DRAW);
         var buffer = GL15.glMapBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, GL15.GL_WRITE_ONLY);
         if (buffer == null) {
             throw new RuntimeException("Failed to map GL buffer");
         }
         type = indexType;
-        var builder = createBuilder(buffer);
+        var builder = indexType.builder(buffer);
         for (int k = 0; k < total; k += indexStride) {
             generator.accept(builder, k * vertexStride / indexStride);
         }
@@ -65,16 +65,12 @@ public class VertexIndexObject {
         size = total;
     }
 
-    private IntConsumer createBuilder(ByteBuffer buffer) {
-        return switch (type) {
-            case BYTE -> i -> buffer.put((byte) i);
-            case SHORT -> i -> buffer.putShort((short) i);
-            default -> buffer::putInt;
-        };
+    public int stride(int count) {
+        return (count / vertexStride) * indexStride;
     }
 
-    public IndexType type() {
-        return this.type;
+    public int type() {
+        return type.asGLType;
     }
 
     public enum IndexType {
@@ -96,6 +92,14 @@ public class VertexIndexObject {
                 return SHORT;
             }
             return BYTE;
+        }
+
+        public IntConsumer builder(ByteBuffer buffer) {
+            return switch (this) {
+                case BYTE -> i -> buffer.put((byte) i);
+                case SHORT -> i -> buffer.putShort((short) i);
+                default -> buffer::putInt;
+            };
         }
     }
 

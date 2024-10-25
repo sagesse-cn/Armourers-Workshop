@@ -1,17 +1,18 @@
 package moe.plushie.armourers_workshop.utils;
 
+import moe.plushie.armourers_workshop.api.core.IRegistryHolder;
 import moe.plushie.armourers_workshop.api.core.IResourceLocation;
 import moe.plushie.armourers_workshop.api.registry.IRegistry;
-import moe.plushie.armourers_workshop.api.registry.IRegistryHolder;
+import moe.plushie.armourers_workshop.core.utils.Collections;
+import moe.plushie.armourers_workshop.core.utils.Objects;
+import moe.plushie.armourers_workshop.core.utils.OpenResourceLocation;
 import moe.plushie.armourers_workshop.init.ModConstants;
 import moe.plushie.armourers_workshop.init.ModLog;
-import moe.plushie.armourers_workshop.utils.ext.OpenResourceLocation;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -50,7 +51,7 @@ public class TypedRegistry<T> implements IRegistry<T> {
     }
 
     public static <T> TypedRegistry<T> create(String name, Class<?> type, Function<T, ResourceLocation> keyProvider, Function<ResourceLocation, T> valueProvider, RegisterProvider<T> registerProvider) {
-        KeyProvider<T> keyProvider1 = value -> ObjectUtils.flatMap(keyProvider.apply(value), OpenResourceLocation::create);
+        KeyProvider<T> keyProvider1 = value -> Objects.flatMap(keyProvider.apply(value), OpenResourceLocation::create);
         ValueProvider<T> valueProvider1 = key -> valueProvider.apply(key.toLocation());
         return new TypedRegistry<>(name, type, keyProvider1, valueProvider1, registerProvider);
     }
@@ -95,7 +96,7 @@ public class TypedRegistry<T> implements IRegistry<T> {
     public static <T> IResourceLocation findKey(T value) {
         for (var registry : INSTANCES) {
             if (registry.getType().isInstance(value)) {
-                TypedRegistry<T> registry1 = ObjectUtils.unsafeCast(registry);
+                TypedRegistry<T> registry1 = Objects.unsafeCast(registry);
                 return registry1.getKey(value);
             }
         }
@@ -105,7 +106,7 @@ public class TypedRegistry<T> implements IRegistry<T> {
     public static <T> Collection<IRegistryHolder<? extends T>> findEntries(Class<T> clazz) {
         for (var registry : INSTANCES) {
             if (clazz.isAssignableFrom(registry.getType())) {
-                TypedRegistry<T> registry1 = ObjectUtils.unsafeCast(registry);
+                TypedRegistry<T> registry1 = Objects.unsafeCast(registry);
                 return registry1.getEntries();
             }
         }
@@ -157,7 +158,7 @@ public class TypedRegistry<T> implements IRegistry<T> {
         }
 
         public static <T extends S, S> Entry<T> cast(IResourceLocation registryName, Supplier<S> value) {
-            Supplier<T> targetValue = ObjectUtils.unsafeCast(value);
+            Supplier<T> targetValue = Objects.unsafeCast(value);
             return new Entry<>(registryName, targetValue);
         }
 

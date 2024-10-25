@@ -1,7 +1,7 @@
 package moe.plushie.armourers_workshop.compatibility.forge.extensions.net.minecraft.client.renderer.GameRenderer;
 
 import moe.plushie.armourers_workshop.api.annotation.Available;
-import moe.plushie.armourers_workshop.api.registry.IRegistryHolder;
+import moe.plushie.armourers_workshop.api.core.IRegistryHolder;
 import moe.plushie.armourers_workshop.compatibility.client.AbstractItemStackRendererProvider;
 import moe.plushie.armourers_workshop.compatibility.forge.AbstractForgeClientEventsImpl;
 import moe.plushie.armourers_workshop.compatibility.forge.AbstractForgeItemRenderer;

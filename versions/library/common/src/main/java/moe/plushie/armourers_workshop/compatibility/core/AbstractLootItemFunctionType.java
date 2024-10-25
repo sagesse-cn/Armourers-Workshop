@@ -5,7 +5,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import moe.plushie.armourers_workshop.api.annotation.Available;
 import moe.plushie.armourers_workshop.api.common.ILootFunction;
 import moe.plushie.armourers_workshop.api.common.ILootFunctionType;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
+import moe.plushie.armourers_workshop.core.utils.Objects;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.ValidationContext;
@@ -29,7 +29,7 @@ public class AbstractLootItemFunctionType<T extends ILootFunction> implements IL
 
     public static <T extends ILootFunction> AbstractLootItemFunctionType<T> conditional(MapCodec<T> codec) {
         LootItemFunctionType<?>[] type = {null};
-        type[0] = new LootItemFunctionType<>(ConditionalFunction.createCodec(() -> ObjectUtils.unsafeCast(type[0]), codec));
+        type[0] = new LootItemFunctionType<>(ConditionalFunction.createCodec(() -> Objects.unsafeCast(type[0]), codec));
         return new AbstractLootItemFunctionType<>(type[0]);
     }
 

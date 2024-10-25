@@ -2,13 +2,12 @@ package com.apple.library.impl;
 
 import com.apple.library.coregraphics.CGAffineTransform;
 import com.apple.library.foundation.NSRange;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
+import moe.plushie.armourers_workshop.core.math.OpenMatrix3f;
+import moe.plushie.armourers_workshop.core.math.OpenMatrix4f;
 import moe.plushie.armourers_workshop.utils.TickUtils;
-import moe.plushie.armourers_workshop.utils.math.OpenMatrix3f;
-import moe.plushie.armourers_workshop.utils.math.OpenMatrix4f;
 
 @SuppressWarnings("unused")
-public class ObjectUtilsImpl extends ObjectUtils {
+public class ObjectUtilsImpl extends ObjectImpl {
 
     private static final OpenMatrix3f SHARED_MATRIX_3x3 = OpenMatrix3f.createScaleMatrix(1, 1, 1);
     private static final OpenMatrix4f SHARED_MATRIX_4x4 = OpenMatrix4f.createScaleMatrix(1, 1, 1);

@@ -4,24 +4,24 @@ import com.mojang.authlib.GameProfile;
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.ByteBufOutputStream;
 import io.netty.buffer.Unpooled;
-import moe.plushie.armourers_workshop.api.painting.IPaintColor;
-import moe.plushie.armourers_workshop.api.registry.IRegistryEntry;
+import moe.plushie.armourers_workshop.api.core.IRegistryEntry;
+import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintColor;
+import moe.plushie.armourers_workshop.builder.data.PlayerTextureDescriptor;
 import moe.plushie.armourers_workshop.core.data.color.BlockPaintColor;
-import moe.plushie.armourers_workshop.core.data.color.ColorScheme;
-import moe.plushie.armourers_workshop.core.data.color.PaintColor;
 import moe.plushie.armourers_workshop.core.data.transform.SkinItemTransforms;
+import moe.plushie.armourers_workshop.core.math.Rectangle3i;
+import moe.plushie.armourers_workshop.core.math.Vector3f;
+import moe.plushie.armourers_workshop.core.math.Vector3i;
 import moe.plushie.armourers_workshop.core.skin.SkinDescriptor;
 import moe.plushie.armourers_workshop.core.skin.SkinMarker;
+import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
+import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintData;
+import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintScheme;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperties;
-import moe.plushie.armourers_workshop.core.texture.PlayerTextureDescriptor;
-import moe.plushie.armourers_workshop.core.texture.SkinPaintData;
 import moe.plushie.armourers_workshop.utils.Constants;
 import moe.plushie.armourers_workshop.utils.DataSerializers;
 import moe.plushie.armourers_workshop.utils.SkinFileUtils;
 import moe.plushie.armourers_workshop.utils.StreamUtils;
-import moe.plushie.armourers_workshop.utils.math.Rectangle3i;
-import moe.plushie.armourers_workshop.utils.math.Vector3f;
-import moe.plushie.armourers_workshop.utils.math.Vector3i;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Rotations;
 import net.minecraft.nbt.CompoundTag;
@@ -338,27 +338,27 @@ public class OptionalAPI {
         }
     }
 
-    public static ColorScheme getOptionalColorScheme(@This CompoundTag tag, String key, ColorScheme defaultValue) {
+    public static SkinPaintScheme getOptionalColorScheme(@This CompoundTag tag, String key, SkinPaintScheme defaultValue) {
         if (tag.contains(key, Constants.TagFlags.COMPOUND)) {
-            return new ColorScheme(tag.getCompound(key));
+            return new SkinPaintScheme(tag.getCompound(key));
         }
         return defaultValue;
     }
 
-    public static void putOptionalColorScheme(@This CompoundTag tag, String key, ColorScheme value, ColorScheme defaultValue) {
+    public static void putOptionalColorScheme(@This CompoundTag tag, String key, SkinPaintScheme value, SkinPaintScheme defaultValue) {
         if (_shouldPutValue(tag, key, value, defaultValue)) {
             tag.put(key, value.serializeNBT());
         }
     }
 
-    public static IPaintColor getOptionalPaintColor(@This CompoundTag tag, String key, IPaintColor defaultValue) {
+    public static ISkinPaintColor getOptionalPaintColor(@This CompoundTag tag, String key, ISkinPaintColor defaultValue) {
         if (tag != null && tag.contains(key, Constants.TagFlags.INT)) {
-            return PaintColor.of(tag.getInt(key));
+            return SkinPaintColor.of(tag.getInt(key));
         }
         return defaultValue;
     }
 
-    public static void putOptionalPaintColor(@This CompoundTag tag, String key, IPaintColor value, IPaintColor defaultValue) {
+    public static void putOptionalPaintColor(@This CompoundTag tag, String key, ISkinPaintColor value, ISkinPaintColor defaultValue) {
         if (_shouldPutValue(tag, key, value, defaultValue)) {
             tag.putInt(key, value.getRawValue());
         }

@@ -9,7 +9,7 @@ import com.apple.library.uikit.UIComboItem;
 import com.apple.library.uikit.UIControl;
 import com.apple.library.uikit.UITextField;
 import com.apple.library.uikit.UITextFieldDelegate;
-import moe.plushie.armourers_workshop.api.skin.ISkinPaintType;
+import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintType;
 import moe.plushie.armourers_workshop.builder.data.palette.Palette;
 import moe.plushie.armourers_workshop.builder.data.palette.PaletteManager;
 import moe.plushie.armourers_workshop.core.client.gui.widget.ConfirmDialog;

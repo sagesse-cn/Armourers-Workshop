@@ -1,6 +1,7 @@
 package moe.plushie.armourers_workshop.api.registry;
 
 import moe.plushie.armourers_workshop.api.common.IItemGroup;
+import moe.plushie.armourers_workshop.api.core.IRegistryHolder;
 import moe.plushie.armourers_workshop.compatibility.client.AbstractItemStackRendererProvider;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;

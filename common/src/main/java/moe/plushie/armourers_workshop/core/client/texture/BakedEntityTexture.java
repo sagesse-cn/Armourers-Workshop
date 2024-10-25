@@ -2,19 +2,18 @@ package moe.plushie.armourers_workshop.core.client.texture;
 
 import com.mojang.blaze3d.platform.NativeImage;
 import moe.plushie.armourers_workshop.api.core.IResourceLocation;
-import moe.plushie.armourers_workshop.api.math.ITexturePos;
-import moe.plushie.armourers_workshop.api.skin.ISkinPartType;
-import moe.plushie.armourers_workshop.core.data.color.PaintColor;
+import moe.plushie.armourers_workshop.api.core.math.ITexturePos;
+import moe.plushie.armourers_workshop.api.skin.part.ISkinPartType;
 import moe.plushie.armourers_workshop.core.data.color.TexturedPaintColor;
-import moe.plushie.armourers_workshop.core.skin.painting.SkinPaintTypes;
-import moe.plushie.armourers_workshop.core.texture.PlayerTextureModel;
+import moe.plushie.armourers_workshop.core.math.OpenMath;
+import moe.plushie.armourers_workshop.core.math.Rectangle3i;
+import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
+import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintTypes;
+import moe.plushie.armourers_workshop.core.skin.paint.texture.PlayerTextureModel;
+import moe.plushie.armourers_workshop.core.utils.OpenDirection;
 import moe.plushie.armourers_workshop.init.platform.EnvironmentManager;
-import moe.plushie.armourers_workshop.utils.MathUtils;
-import moe.plushie.armourers_workshop.utils.math.Rectangle3i;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.Minecraft;
-import net.minecraft.core.Direction;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -25,8 +24,8 @@ import java.util.Objects;
 @Environment(EnvType.CLIENT)
 public class BakedEntityTexture {
 
-    private final HashMap<Integer, PaintColor> allColors = new HashMap<>();
-    private final HashMap<ISkinPartType, HashMap<Integer, PaintColor>> allParts = new HashMap<>();
+    private final HashMap<Integer, SkinPaintColor> allColors = new HashMap<>();
+    private final HashMap<ISkinPartType, HashMap<Integer, SkinPaintColor>> allParts = new HashMap<>();
     private final HashMap<ISkinPartType, Rectangle3i> allBounds = new HashMap<>();
 
     private String model;
@@ -69,8 +68,8 @@ public class BakedEntityTexture {
             allBounds.put(entry.getKey(), box.getBounds());
             box.forEach((texture, x, y, z, dir) -> {
                 int color = accessor.getRGB(texture.getU(), texture.getV());
-                if (PaintColor.isOpaque(color)) {
-                    PaintColor paintColor = TexturedPaintColor.of(color, SkinPaintTypes.NORMAL);
+                if (SkinPaintColor.isOpaque(color)) {
+                    var paintColor = TexturedPaintColor.of(color, SkinPaintTypes.NORMAL);
                     part.put(getPosKey(x, y, z, dir), paintColor);
                     allColors.put(getUVKey(texture.getU(), texture.getV()), paintColor);
                 }
@@ -79,27 +78,27 @@ public class BakedEntityTexture {
         this.isLoaded = true;
     }
 
-    public PaintColor getColor(ITexturePos texturePos) {
+    public SkinPaintColor getColor(ITexturePos texturePos) {
         return getColor(texturePos.getU(), texturePos.getV());
     }
 
-    public PaintColor getColor(int u, int v) {
+    public SkinPaintColor getColor(int u, int v) {
         return allColors.get(getUVKey(u, v));
     }
 
-    public PaintColor getColor(int x, int y, int z, Direction dir, ISkinPartType partType) {
+    public SkinPaintColor getColor(int x, int y, int z, OpenDirection dir, ISkinPartType partType) {
         var part = allParts.get(partType);
         var bounds = allBounds.get(partType);
         if (part == null || bounds == null) {
             return null;
         }
-        x = MathUtils.clamp(x, bounds.getMinX(), bounds.getMaxX() - 1);
-        y = MathUtils.clamp(y, bounds.getMinY(), bounds.getMaxY() - 1);
-        z = MathUtils.clamp(z, bounds.getMinZ(), bounds.getMaxZ() - 1);
+        x = OpenMath.clamp(x, bounds.getMinX(), bounds.getMaxX() - 1);
+        y = OpenMath.clamp(y, bounds.getMinY(), bounds.getMaxY() - 1);
+        z = OpenMath.clamp(z, bounds.getMinZ(), bounds.getMaxZ() - 1);
         return part.get(getPosKey(x, y, z, dir));
     }
 
-    private int getPosKey(int x, int y, int z, Direction dir) {
+    private int getPosKey(int x, int y, int z, OpenDirection dir) {
         return (dir.get3DDataValue() & 0xff) << 24 | (z & 0xff) << 16 | (y & 0xff) << 8 | (x & 0xff);
     }
 

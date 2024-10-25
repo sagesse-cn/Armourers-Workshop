@@ -6,8 +6,8 @@ import com.mojang.blaze3d.platform.Window;
 import moe.plushie.armourers_workshop.api.client.IBufferSource;
 import moe.plushie.armourers_workshop.api.client.IVertexConsumer;
 import moe.plushie.armourers_workshop.core.client.other.SkinRenderType;
+import moe.plushie.armourers_workshop.core.math.OpenMath;
 import moe.plushie.armourers_workshop.init.ModLog;
-import moe.plushie.armourers_workshop.utils.MathUtils;
 import moe.plushie.armourers_workshop.utils.RenderSystem;
 import net.minecraft.client.Minecraft;
 import org.jetbrains.annotations.Nullable;
@@ -391,14 +391,14 @@ public class ClipContextImpl {
                 var ty2 = 0f;
 
                 // some small triangle with length of 1 pixel.
-                var pi2 = MathUtils.PI_D2;
+                var pi2 = OpenMath.PIHalf_f;
                 var ts = (int) (pi2 * Math.abs(width)); // 2 * pi * r / 4
                 for (var idx = 0; idx <= ts; idx++) {
                     var ap = pi2 * idx / ts;
                     tx1 = tx2;
                     ty1 = ty2;
-                    tx2 = width * MathUtils.cos(ap);
-                    ty2 = height * MathUtils.sin(ap);
+                    tx2 = width * OpenMath.cos(ap);
+                    ty2 = height * OpenMath.sin(ap);
                     if (idx < 1) {
                         continue;
                     }

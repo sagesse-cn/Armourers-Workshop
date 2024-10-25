@@ -2,7 +2,6 @@ package moe.plushie.armourers_workshop.core.data;
 
 import moe.plushie.armourers_workshop.core.network.ExecuteAlertPacket;
 import moe.plushie.armourers_workshop.init.platform.NetworkManager;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -35,8 +34,7 @@ public class UserNotifications {
     }
 
     private static void sendToPlayer(ExecuteAlertPacket packet, Player player) {
-        ServerPlayer serverPlayer = ObjectUtils.safeCast(player, ServerPlayer.class);
-        if (serverPlayer != null) {
+        if (player instanceof ServerPlayer serverPlayer) {
             NetworkManager.sendToTracking(packet, serverPlayer);
         }
     }

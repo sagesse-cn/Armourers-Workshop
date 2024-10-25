@@ -2,8 +2,8 @@ package moe.plushie.armourers_workshop.utils;
 
 import moe.plushie.armourers_workshop.api.client.model.IModelPart;
 import moe.plushie.armourers_workshop.api.client.model.IModelPartPose;
-import moe.plushie.armourers_workshop.api.math.IPoseStack;
-import moe.plushie.armourers_workshop.utils.math.Vector3f;
+import moe.plushie.armourers_workshop.api.core.math.IPoseStack;
+import moe.plushie.armourers_workshop.core.math.Vector3f;
 import net.minecraft.client.model.geom.ModelPart;
 
 public class ModelPartHolder implements IModelPart, IModelPartPose {

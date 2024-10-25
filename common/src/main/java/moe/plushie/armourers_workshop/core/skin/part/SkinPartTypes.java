@@ -1,6 +1,6 @@
 package moe.plushie.armourers_workshop.core.skin.part;
 
-import moe.plushie.armourers_workshop.api.skin.ISkinPartType;
+import moe.plushie.armourers_workshop.api.skin.part.ISkinPartType;
 import moe.plushie.armourers_workshop.core.skin.part.advanced.AdvancedPartType;
 import moe.plushie.armourers_workshop.core.skin.part.block.BlockPartType;
 import moe.plushie.armourers_workshop.core.skin.part.block.MultiBlockPartType;
@@ -23,8 +23,8 @@ import moe.plushie.armourers_workshop.core.skin.part.other.PartitionPartType;
 import moe.plushie.armourers_workshop.core.skin.part.other.UnknownPartType;
 import moe.plushie.armourers_workshop.core.skin.part.wings.LeftWingPartType;
 import moe.plushie.armourers_workshop.core.skin.part.wings.RightWingPartType;
+import moe.plushie.armourers_workshop.core.utils.OpenResourceLocation;
 import moe.plushie.armourers_workshop.init.ModLog;
-import moe.plushie.armourers_workshop.utils.ext.OpenResourceLocation;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -93,7 +93,7 @@ public final class SkinPartTypes {
 //    public static final ISkinPartType PLAYER_RIGHT_SLEEVE = register("player.sleeves.rightSleeve", new UnknownPartType());
 
     public static final ISkinPartType ADVANCED = register("part.advanced_part", new AdvancedPartType());
-    
+
     public static final ISkinPartType ADVANCED_LOCATOR = register("part.locator", new AdvancedPartType());
     public static final ISkinPartType ADVANCED_STATIC = register("part.static", new AdvancedPartType());
     public static final ISkinPartType ADVANCED_FLOAT = register("part.float", new AdvancedPartType());

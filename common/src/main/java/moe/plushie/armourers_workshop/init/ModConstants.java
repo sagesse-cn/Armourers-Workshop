@@ -1,6 +1,6 @@
 package moe.plushie.armourers_workshop.init;
 
-import moe.plushie.armourers_workshop.utils.ext.OpenResourceLocation;
+import moe.plushie.armourers_workshop.core.utils.OpenResourceLocation;
 
 import java.util.ArrayList;
 import java.util.Collection;

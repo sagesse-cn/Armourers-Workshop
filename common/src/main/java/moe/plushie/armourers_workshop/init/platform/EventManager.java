@@ -2,7 +2,7 @@ package moe.plushie.armourers_workshop.init.platform;
 
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import moe.plushie.armourers_workshop.api.registry.IEventHandler;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
+import moe.plushie.armourers_workshop.core.utils.Objects;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,7 +21,7 @@ public class EventManager {
     public static <E> void listen(Class<E> eventType, IEventHandler.Priority priority, boolean receiveCancelled, Consumer<E> subscriber) {
         var handler = SOURCES.get(eventType);
         if (handler != null) {
-            handler.listen(priority, receiveCancelled, ObjectUtils.unsafeCast(subscriber));
+            handler.listen(priority, receiveCancelled, Objects.unsafeCast(subscriber));
         }
         // save it to custom post.
         HANDLERS.computeIfAbsent(eventType, key -> new ArrayList<>()).add(subscriber);
@@ -30,7 +30,7 @@ public class EventManager {
     public static <E> void post(Class<? super E> eventType, E event) {
         var handlers = HANDLERS.get(eventType);
         if (handlers != null) {
-            handlers.forEach(it -> it.accept(ObjectUtils.unsafeCast(event)));
+            handlers.forEach(it -> it.accept(Objects.unsafeCast(event)));
         }
     }
 

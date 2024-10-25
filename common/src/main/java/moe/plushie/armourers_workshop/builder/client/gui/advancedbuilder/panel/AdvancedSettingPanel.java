@@ -14,8 +14,8 @@ import moe.plushie.armourers_workshop.core.skin.SkinTypes;
 import moe.plushie.armourers_workshop.core.skin.document.SkinDocumentNode;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperties;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperty;
+import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.init.ModTextures;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -23,7 +23,7 @@ import java.util.Collection;
 public class AdvancedSettingPanel extends AdvancedPanel {
 
     private static final ImmutableMap<ISkinType, Collection<ISkinProperty<?>>> VALUES = new ImmutableMap.Builder<ISkinType, Collection<ISkinProperty<?>>>()
-            .put(SkinTypes.OUTFIT, ObjectUtils.map(
+            .put(SkinTypes.OUTFIT, Collections.newList(
                     SkinProperty.OVERRIDE_MODEL_HEAD,
                     SkinProperty.OVERRIDE_MODEL_CHEST,
                     SkinProperty.OVERRIDE_MODEL_LEFT_ARM,
@@ -44,13 +44,13 @@ public class AdvancedSettingPanel extends AdvancedPanel {
                     SkinProperty.LIMIT_LEGS_LIMBS,
                     SkinProperty.KEEP_OVERLAY_COLOR
             ))
-            .put(SkinTypes.ARMOR_HEAD, ObjectUtils.map(
+            .put(SkinTypes.ARMOR_HEAD, Collections.newList(
                     SkinProperty.OVERRIDE_MODEL_HEAD,
                     SkinProperty.OVERRIDE_OVERLAY_HAT,
                     SkinProperty.OVERRIDE_EQUIPMENT_HELMET,
                     SkinProperty.KEEP_OVERLAY_COLOR
             ))
-            .put(SkinTypes.ARMOR_CHEST, ObjectUtils.map(
+            .put(SkinTypes.ARMOR_CHEST, Collections.newList(
                     SkinProperty.OVERRIDE_MODEL_CHEST,
                     SkinProperty.OVERRIDE_MODEL_LEFT_ARM,
                     SkinProperty.OVERRIDE_MODEL_RIGHT_ARM,
@@ -61,7 +61,7 @@ public class AdvancedSettingPanel extends AdvancedPanel {
                     SkinProperty.OVERRIDE_EQUIPMENT_CHESTPLATE,
                     SkinProperty.KEEP_OVERLAY_COLOR
             ))
-            .put(SkinTypes.ARMOR_FEET, ObjectUtils.map(
+            .put(SkinTypes.ARMOR_FEET, Collections.newList(
                     SkinProperty.OVERRIDE_MODEL_LEFT_LEG,
                     SkinProperty.OVERRIDE_MODEL_RIGHT_LEG,
                     SkinProperty.OVERRIDE_OVERLAY_LEFT_PANTS,
@@ -69,7 +69,7 @@ public class AdvancedSettingPanel extends AdvancedPanel {
                     SkinProperty.OVERRIDE_EQUIPMENT_LEGGINGS,
                     SkinProperty.KEEP_OVERLAY_COLOR
             ))
-            .put(SkinTypes.ARMOR_LEGS, ObjectUtils.map(
+            .put(SkinTypes.ARMOR_LEGS, Collections.newList(
                     SkinProperty.OVERRIDE_MODEL_LEFT_LEG,
                     SkinProperty.OVERRIDE_MODEL_RIGHT_LEG,
                     SkinProperty.OVERRIDE_OVERLAY_LEFT_PANTS,
@@ -78,18 +78,18 @@ public class AdvancedSettingPanel extends AdvancedPanel {
                     SkinProperty.LIMIT_LEGS_LIMBS,
                     SkinProperty.KEEP_OVERLAY_COLOR
             ))
-            .put(SkinTypes.ARMOR_WINGS, ObjectUtils.map(
+            .put(SkinTypes.ARMOR_WINGS, Collections.newList(
                     SkinProperty.KEEP_OVERLAY_COLOR
             ))
-            .put(SkinTypes.ITEM_SWORD, ObjectUtils.map())
-            .put(SkinTypes.ITEM_SHIELD, ObjectUtils.map())
-            .put(SkinTypes.ITEM_BOW, ObjectUtils.map())
-            .put(SkinTypes.ITEM_TRIDENT, ObjectUtils.map())
-            .put(SkinTypes.ITEM_PICKAXE, ObjectUtils.map())
-            .put(SkinTypes.ITEM_AXE, ObjectUtils.map())
-            .put(SkinTypes.ITEM_SHOVEL, ObjectUtils.map())
-            .put(SkinTypes.ITEM_HOE, ObjectUtils.map())
-            .put(SkinTypes.BLOCK, ObjectUtils.map(
+            .put(SkinTypes.ITEM_SWORD, Collections.newList())
+            .put(SkinTypes.ITEM_SHIELD, Collections.newList())
+            .put(SkinTypes.ITEM_BOW, Collections.newList())
+            .put(SkinTypes.ITEM_TRIDENT, Collections.newList())
+            .put(SkinTypes.ITEM_PICKAXE, Collections.newList())
+            .put(SkinTypes.ITEM_AXE, Collections.newList())
+            .put(SkinTypes.ITEM_SHOVEL, Collections.newList())
+            .put(SkinTypes.ITEM_HOE, Collections.newList())
+            .put(SkinTypes.BLOCK, Collections.newList(
                     SkinProperty.BLOCK_GLOWING,
                     SkinProperty.BLOCK_LADDER,
                     SkinProperty.BLOCK_NO_COLLISION,
@@ -102,7 +102,7 @@ public class AdvancedSettingPanel extends AdvancedPanel {
                     SkinProperty.BLOCK_INVENTORY_HEIGHT
             ))
 
-            .put(SkinTypes.HORSE, ObjectUtils.map(
+            .put(SkinTypes.HORSE, Collections.newList(
                     SkinProperty.OVERRIDE_MODEL_HEAD,
                     SkinProperty.OVERRIDE_MODEL_CHEST,
                     SkinProperty.OVERRIDE_MODEL_LEFT_FRONT_LEG,

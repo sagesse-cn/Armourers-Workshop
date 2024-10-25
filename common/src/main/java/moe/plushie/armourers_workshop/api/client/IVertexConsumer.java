@@ -1,6 +1,6 @@
 package moe.plushie.armourers_workshop.api.client;
 
-import moe.plushie.armourers_workshop.api.math.IPoseStack;
+import moe.plushie.armourers_workshop.api.core.math.IPoseStack;
 import moe.plushie.armourers_workshop.utils.ColorUtils;
 
 public interface IVertexConsumer {

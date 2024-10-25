@@ -13,12 +13,12 @@ import moe.plushie.armourers_workshop.core.data.GenericProperty;
 import moe.plushie.armourers_workshop.core.network.CustomPacket;
 import moe.plushie.armourers_workshop.core.permission.BlockPermission;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPartTypes;
+import moe.plushie.armourers_workshop.core.utils.Objects;
 import moe.plushie.armourers_workshop.init.ModLog;
 import moe.plushie.armourers_workshop.init.ModPermissions;
 import moe.plushie.armourers_workshop.utils.BlockUtils;
 import moe.plushie.armourers_workshop.utils.Constants;
 import moe.plushie.armourers_workshop.utils.DataSerializers;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -165,7 +165,7 @@ public class UpdateArmourerPacket extends CustomPacket {
                 return;
             }
             if (action != null) {
-                T value = ObjectUtils.unsafeCast(packet.fieldValue.getValue());
+                T value = Objects.unsafeCast(packet.fieldValue.getValue());
                 action.accept(packet, player, blockEntity, container, value);
             } else {
                 packet.fieldValue.apply(blockEntity);

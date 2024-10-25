@@ -1,13 +1,13 @@
 package moe.plushie.armourers_workshop.library.data.impl;
 
-import moe.plushie.armourers_workshop.api.data.IDataPackObject;
+import moe.plushie.armourers_workshop.core.skin.serializer.io.IODataObject;
 
 public class ServerResponse {
 
     private final boolean valid;
     private final String message;
 
-    public ServerResponse(IDataPackObject object) {
+    public ServerResponse(IODataObject object) {
         this.valid = validFromJSON(object.get("valid"));
         this.message = object.get("reason").stringValue();
     }
@@ -20,7 +20,7 @@ public class ServerResponse {
         return message;
     }
 
-    private boolean validFromJSON(IDataPackObject object) {
+    private boolean validFromJSON(IODataObject object) {
         return switch (object.type()) {
             case BOOLEAN -> object.boolValue();
             case STRING -> object.stringValue().equals("true");

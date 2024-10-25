@@ -2,17 +2,19 @@ package moe.plushie.armourers_workshop.core.client.animation;
 
 import moe.plushie.armourers_workshop.api.skin.property.ISkinProperties;
 import moe.plushie.armourers_workshop.core.client.bake.BakedSkinPart;
-import moe.plushie.armourers_workshop.core.data.transform.SkinTransform;
+import moe.plushie.armourers_workshop.core.math.OpenMath;
+import moe.plushie.armourers_workshop.core.math.OpenTransform3f;
+import moe.plushie.armourers_workshop.core.math.Vector3f;
 import moe.plushie.armourers_workshop.core.skin.animation.SkinAnimation;
 import moe.plushie.armourers_workshop.core.skin.animation.SkinAnimationFunction;
 import moe.plushie.armourers_workshop.core.skin.animation.SkinAnimationLoop;
 import moe.plushie.armourers_workshop.core.skin.animation.SkinAnimationValue;
-import moe.plushie.armourers_workshop.core.skin.molang.MolangVirtualMachine;
-import moe.plushie.armourers_workshop.core.skin.molang.core.Constant;
-import moe.plushie.armourers_workshop.core.skin.molang.core.Expression;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
-import moe.plushie.armourers_workshop.utils.ThreadUtils;
-import moe.plushie.armourers_workshop.utils.math.Vector3f;
+import moe.plushie.armourers_workshop.core.skin.animation.molang.MolangVirtualMachine;
+import moe.plushie.armourers_workshop.core.skin.animation.molang.core.Constant;
+import moe.plushie.armourers_workshop.core.skin.animation.molang.core.Expression;
+import moe.plushie.armourers_workshop.core.utils.Collections;
+import moe.plushie.armourers_workshop.core.utils.Objects;
+import moe.plushie.armourers_workshop.core.utils.OpenSequenceSource;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
@@ -24,7 +26,7 @@ import java.util.Map;
 
 public class AnimationController {
 
-    private final int id = ThreadUtils.nextId(AnimationController.class);
+    private final int id = OpenSequenceSource.nextInt(AnimationController.class);
 
     private final String name;
     private final SkinAnimation animation;
@@ -86,11 +88,11 @@ public class AnimationController {
 
     @Override
     public String toString() {
-        return ObjectUtils.makeDescription(this, "name", name, "duration", duration, "loop", loop);
+        return Objects.toString(this, "name", name, "duration", duration, "loop", loop);
     }
 
     public Collection<BakedSkinPart> getParts() {
-        return ObjectUtils.map(bones, it -> it.part);
+        return Collections.compactMap(bones, it -> it.part);
     }
 
     public String getName() {
@@ -152,7 +154,7 @@ public class AnimationController {
             for (var value : linkedValues) {
                 namedValues.computeIfAbsent(value.getKey(), key -> new ArrayList<>()).add(value);
             }
-            return ObjectUtils.map(namedValues.entrySet(), it -> new Channel(it.getKey(), duration, it.getValue()));
+            return Collections.compactMap(namedValues.entrySet(), it -> new Channel(it.getKey(), duration, it.getValue()));
         }
 
         private Output linkTo(BakedSkinPart bone) {
@@ -164,7 +166,7 @@ public class AnimationController {
             }
             // if part have a non-standard transform (preview mode),
             // we wil think this part can't be support animation.
-            if (!(bone.getPart().getTransform() instanceof SkinTransform parent)) {
+            if (!(bone.getPart().getTransform() instanceof OpenTransform3f parent)) {
                 return new Output(null);
             }
             // we will replace the standard transform to animated transform.
@@ -211,7 +213,7 @@ public class AnimationController {
             for (var value : values) {
                 var time = AnimationController.toTime(value.getTime());
                 var point = compile(value.getPoints(), defaultValue);
-                builders.add(new FragmentBuilder(time, value.getFunction(), point.getLeft(), point.getRight()));
+                builders.add(new FragmentBuilder(time, value.getFunction(), point.getKey(), point.getValue()));
             }
             builders.sort(Comparator.comparingInt(it -> it.leftTime));
             if (!builders.isEmpty()) {
@@ -225,7 +227,7 @@ public class AnimationController {
                 left.rightValue = right.leftValue;
             }
             builders.removeIf(it -> it.leftTime == it.rightTime);
-            return ObjectUtils.map(builders, FragmentBuilder::build);
+            return Collections.compactMap(builders, FragmentBuilder::build);
         }
 
         private Pair<Value, Value> compile(List<Object> points, float defaultValue) {
@@ -293,15 +295,11 @@ public class AnimationController {
                 var from = startValue.get();
                 var to = endValue.get();
                 var t = function.apply(time / (float) length);
-                var tx = lerp(from.getX(), to.getX(), t);
-                var ty = lerp(from.getY(), to.getY(), t);
-                var tz = lerp(from.getZ(), to.getZ(), t);
+                var tx = OpenMath.lerp(t, from.getX(), to.getX());
+                var ty = OpenMath.lerp(t, from.getY(), to.getY());
+                var tz = OpenMath.lerp(t, from.getZ(), to.getZ());
                 selector.apply(output, tx, ty, tz);
             }
-        }
-
-        public float lerp(float start, float end, float t) {
-            return start + (end - start) * t;
         }
 
         public boolean contains(int time) {

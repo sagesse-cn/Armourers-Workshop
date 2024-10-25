@@ -2,10 +2,10 @@ package moe.plushie.armourers_workshop.core.entity;
 
 import moe.plushie.armourers_workshop.api.common.IEntityDataBuilder;
 import moe.plushie.armourers_workshop.api.common.IEntityHandler;
+import moe.plushie.armourers_workshop.builder.data.PlayerTextureDescriptor;
 import moe.plushie.armourers_workshop.compatibility.core.AbstractLivingEntity;
 import moe.plushie.armourers_workshop.core.capability.SkinWardrobe;
 import moe.plushie.armourers_workshop.core.item.option.MannequinToolOptions;
-import moe.plushie.armourers_workshop.core.texture.PlayerTextureDescriptor;
 import moe.plushie.armourers_workshop.init.ModDataComponents;
 import moe.plushie.armourers_workshop.init.ModEntitySerializers;
 import moe.plushie.armourers_workshop.init.ModEntityTypes;

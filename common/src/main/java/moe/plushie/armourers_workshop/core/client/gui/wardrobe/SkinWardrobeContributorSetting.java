@@ -8,8 +8,8 @@ import com.apple.library.uikit.UIControl;
 import com.apple.library.uikit.UILabel;
 import moe.plushie.armourers_workshop.core.capability.SkinWardrobe;
 import moe.plushie.armourers_workshop.core.network.UpdateWardrobePacket;
+import moe.plushie.armourers_workshop.core.utils.Objects;
 import moe.plushie.armourers_workshop.init.platform.NetworkManager;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
@@ -41,7 +41,7 @@ public class SkinWardrobeContributorSetting extends SkinWardrobeBaseSetting {
         checkBox.setTitle(getDisplayText("label.enableContributorMagic"));
         checkBox.setSelected(option.getOrDefault(wardrobe, true));
         checkBox.addTarget(this, UIControl.Event.VALUE_CHANGED, (self, c) -> {
-            UICheckBox checkBox1 = ObjectUtils.unsafeCast(c);
+            UICheckBox checkBox1 = Objects.unsafeCast(c);
             NetworkManager.sendToServer(option.buildPacket(self.wardrobe, checkBox1.isSelected()));
         });
         this.addSubview(checkBox);

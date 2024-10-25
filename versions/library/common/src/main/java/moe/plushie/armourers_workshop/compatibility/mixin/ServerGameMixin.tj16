@@ -2,7 +2,7 @@ package moe.plushie.armourers_workshop.compatibility.mixin;
 
 import moe.plushie.armourers_workshop.api.annotation.Available;
 import moe.plushie.armourers_workshop.core.entity.MannequinEntity;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
+import moe.plushie.armourers_workshop.core.utils.Objects;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.world.entity.Entity;
@@ -22,7 +22,7 @@ public class ServerGameMixin {
         if (!callback.getReturnValue()) {
             return;
         }
-        ServerLevel level = ObjectUtils.safeCast(entity.level, ServerLevel.class);
+        ServerLevel level = Objects.safeCast(entity.level, ServerLevel.class);
         if (level != null) {
             AABB alignedBB = entity.getBoundingBox().inflate(0.0625D).expandTowards(0.0D, -0.55D, 0.0D);
             boolean flag = level.getEntityCollisions(entity, alignedBB, e -> e instanceof MannequinEntity).allMatch(VoxelShape::isEmpty);

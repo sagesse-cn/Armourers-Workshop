@@ -1,7 +1,7 @@
 package moe.plushie.armourers_workshop.library.data.impl;
 
 import io.netty.buffer.ByteBuf;
-import moe.plushie.armourers_workshop.api.data.IDataPackObject;
+import moe.plushie.armourers_workshop.core.skin.serializer.io.IODataObject;
 import moe.plushie.armourers_workshop.init.ModLog;
 import moe.plushie.armourers_workshop.utils.StreamUtils;
 
@@ -24,7 +24,7 @@ public class ServerRequest {
     private final ArrayList<String> query = new ArrayList<>();
     private final ArrayList<String> body = new ArrayList<>();
 
-    public static ServerRequest fromJSON(IDataPackObject object) {
+    public static ServerRequest fromJSON(IODataObject object) {
         ServerRequest request = new ServerRequest();
         object.get("path").ifPresent(it -> request.path = it.stringValue());
         object.get("query").allValues().forEach(it -> request.query.add(it.stringValue()));

@@ -5,11 +5,11 @@ import moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk.ChunkFlags;
 import moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk.ChunkInputStream;
 import moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk.ChunkOutputStream;
 import moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk.ChunkType;
+import moe.plushie.armourers_workshop.core.utils.Objects;
 
 import java.io.IOException;
 import java.util.Collection;
 import java.util.LinkedHashMap;
-import java.util.Objects;
 
 public abstract class ChunkSerializer<V, C> {
 

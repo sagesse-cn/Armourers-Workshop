@@ -9,27 +9,27 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import moe.plushie.armourers_workshop.api.common.IArgumentSerializer;
 import moe.plushie.armourers_workshop.api.common.IArgumentType;
 import moe.plushie.armourers_workshop.api.network.IFriendlyByteBuf;
-import moe.plushie.armourers_workshop.core.data.color.PaintColor;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
+import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
+import moe.plushie.armourers_workshop.core.utils.Collections;
 import net.minecraft.commands.CommandSourceStack;
 
 import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
 
-public class ColorArgumentType implements IArgumentType<PaintColor> {
+public class ColorArgumentType implements IArgumentType<SkinPaintColor> {
 
-    private static final Collection<String> EXAMPLES = ObjectUtils.map("[paintType:]#RRGGBB", "[paintType:]R,G,B");
+    private static final Collection<String> EXAMPLES = Collections.newList("[paintType:]#RRGGBB", "[paintType:]R,G,B");
 
     public ColorArgumentType() {
         super();
     }
 
-    public static PaintColor getColor(CommandContext<CommandSourceStack> context, String name) {
-        return context.getArgument(name, PaintColor.class);
+    public static SkinPaintColor getColor(CommandContext<CommandSourceStack> context, String name) {
+        return context.getArgument(name, SkinPaintColor.class);
     }
 
     @Override
-    public PaintColor parse(final StringReader reader) throws CommandSyntaxException {
+    public SkinPaintColor parse(final StringReader reader) throws CommandSyntaxException {
         var parser = new ColorParser(reader).parse();
         return parser.getPaintColor();
     }

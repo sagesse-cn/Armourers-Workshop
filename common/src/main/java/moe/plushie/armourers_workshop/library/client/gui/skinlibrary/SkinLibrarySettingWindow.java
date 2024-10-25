@@ -8,13 +8,13 @@ import com.apple.library.uikit.UIComboItem;
 import com.apple.library.uikit.UIControl;
 import com.apple.library.uikit.UITextField;
 import moe.plushie.armourers_workshop.core.client.gui.widget.ConfirmDialog;
+import moe.plushie.armourers_workshop.core.data.DataEncryptMethod;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperties;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperty;
-import moe.plushie.armourers_workshop.core.data.DataEncryptMethod;
 import moe.plushie.armourers_workshop.core.skin.serializer.SkinFileOptions;
 import moe.plushie.armourers_workshop.core.skin.serializer.SkinSerializer;
+import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.init.ModMenuOptions;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
 
 public class SkinLibrarySettingWindow extends ConfirmDialog {
 
@@ -110,7 +110,7 @@ public class SkinLibrarySettingWindow extends ConfirmDialog {
     }
 
     private void addEncryptView() {
-        var modes = ObjectUtils.map(DataEncryptMethod.values(), it -> it.method() + "Mode");
+        var modes = Collections.compactMap(DataEncryptMethod.values(), it -> it.method() + "Mode");
         int defaultSelectedIndex = properties.get(Option.ENCRYPTED_MODE);
         if (defaultSelectedIndex >= modes.size()) {
             defaultSelectedIndex = 0;
@@ -119,7 +119,7 @@ public class SkinLibrarySettingWindow extends ConfirmDialog {
         var comboBox = new UIComboBox(new CGRect(16, contentHeight, 80, 20));
         var textBox = new UITextField(new CGRect(104, contentHeight, width - 104 - 16, 20));
         comboBox.setSelectedIndex(defaultSelectedIndex);
-        comboBox.reloadData(ObjectUtils.map(modes, it -> new UIComboItem(NSString.localizedString("skin-library.setting." + it))));
+        comboBox.reloadData(Collections.compactMap(modes, it -> new UIComboItem(NSString.localizedString("skin-library.setting." + it))));
         comboBox.addTarget(this, UIControl.Event.VALUE_CHANGED, (self, sender) -> {
             var selectedIndex1 = comboBox.selectedIndex();
             properties.put(Option.ENCRYPTED_MODE, selectedIndex1);

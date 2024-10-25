@@ -6,7 +6,7 @@ import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.ByteBufOutputStream;
 import moe.plushie.armourers_workshop.core.skin.serializer.SkinFileOptions;
 import moe.plushie.armourers_workshop.core.skin.serializer.v20.ChunkSerializer;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
+import moe.plushie.armourers_workshop.core.utils.Objects;
 
 import javax.crypto.Cipher;
 import javax.crypto.CipherInputStream;
@@ -46,7 +46,7 @@ public class ChunkContext {
     private void setupWithOptions(SkinFileOptions options) throws Exception {
         // decode security key from options.
         if (options.getSecurityData() != null && options.getSecurityKey() != null) {
-            securityKey = ObjectUtils.decodeHex(options.getSecurityKey().toCharArray());
+            securityKey = Objects.decodeHex(options.getSecurityKey().toCharArray());
             securityTypes = SIMPLE_ENCRYPT;
         }
     }

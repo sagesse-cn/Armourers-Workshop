@@ -1,5 +1,6 @@
 package moe.plushie.armourers_workshop.api.registry;
 
+import moe.plushie.armourers_workshop.api.core.IRegistryHolder;
 import moe.plushie.armourers_workshop.api.core.IResourceLocation;
 
 import java.util.Collection;
@@ -20,8 +21,8 @@ public interface IRegistry<T> {
     /**
      * Adds a new supplier to the list of entries to be registered, and returns a RegistryObject that will be populated with the created entry automatically.
      *
-     * @param name The new entry's name, it will automatically have the modid prefixed.
-     * @param provider  A factory for the new entry, it should return a new instance every time it is called.
+     * @param name     The new entry's name, it will automatically have the modid prefixed.
+     * @param provider A factory for the new entry, it should return a new instance every time it is called.
      * @return A RegistryObject that will be updated with when the entries in the registry change.
      */
     <I extends T> IRegistryHolder<I> register(String name, Supplier<? extends I> provider);

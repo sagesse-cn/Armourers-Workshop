@@ -11,15 +11,15 @@ import com.apple.library.uikit.UIImage;
 import com.apple.library.uikit.UILabel;
 import com.apple.library.uikit.UIView;
 import com.apple.library.uikit.UIWindow;
-import moe.plushie.armourers_workshop.api.painting.IPaintColor;
-import moe.plushie.armourers_workshop.api.skin.ISkinPaintType;
+import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintColor;
+import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintType;
 import moe.plushie.armourers_workshop.core.capability.SkinWardrobe;
 import moe.plushie.armourers_workshop.core.client.texture.BakedEntityTexture;
 import moe.plushie.armourers_workshop.core.client.texture.PlayerTextureLoader;
-import moe.plushie.armourers_workshop.core.data.color.PaintColor;
 import moe.plushie.armourers_workshop.core.data.slot.SkinSlotType;
 import moe.plushie.armourers_workshop.core.network.UpdateWardrobePacket;
-import moe.plushie.armourers_workshop.core.skin.painting.SkinPaintTypes;
+import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
+import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintTypes;
 import moe.plushie.armourers_workshop.init.ModTextures;
 import moe.plushie.armourers_workshop.init.platform.NetworkManager;
 import moe.plushie.armourers_workshop.utils.ColorUtils;
@@ -79,7 +79,7 @@ public class SkinWardrobeColorSetting extends SkinWardrobeBaseSetting {
         private final int slot;
         private final ISkinPaintType paintType;
 
-        private IPaintColor color;
+        private ISkinPaintColor color;
         private UIButton pickerButton;
 
         public ColorPicker(ISkinPaintType paintType, CGRect frame, boolean enableAutoPick) {
@@ -138,7 +138,7 @@ public class SkinWardrobeColorSetting extends SkinWardrobeBaseSetting {
             CGPoint point = event.locationInWindow();
             CGRect frame = window.frame();
             int rgb = RenderSystem.getPixelColor(point.x + frame.x, point.y + frame.y);
-            updateColor(PaintColor.of(rgb, SkinPaintTypes.NORMAL));
+            updateColor(SkinPaintColor.of(rgb, SkinPaintTypes.NORMAL));
         }
 
         public void end(UIEvent event) {
@@ -164,15 +164,15 @@ public class SkinWardrobeColorSetting extends SkinWardrobeBaseSetting {
             if (texture != null) {
                 setColor(getColorFromTexture(texture));
             } else {
-                setColor(PaintColor.WHITE);
+                setColor(SkinPaintColor.WHITE);
             }
         }
 
-        private PaintColor getColorFromTexture(BakedEntityTexture texture) {
+        private SkinPaintColor getColorFromTexture(BakedEntityTexture texture) {
             if (texture == null) {
                 return null;
             }
-            var colors = new ArrayList<PaintColor>();
+            var colors = new ArrayList<SkinPaintColor>();
             if (paintType == SkinPaintTypes.SKIN) {
                 colors.add(texture.getColor(11, 13));
                 colors.add(texture.getColor(12, 13));
@@ -197,14 +197,14 @@ public class SkinWardrobeColorSetting extends SkinWardrobeBaseSetting {
             if (c == 0) {
                 return null; // :p a wrong texture
             }
-            return PaintColor.of(r / c, g / c, b / c, SkinPaintTypes.NORMAL);
+            return SkinPaintColor.of(r / c, g / c, b / c, SkinPaintTypes.NORMAL);
         }
 
-        private IPaintColor getColor() {
+        private ISkinPaintColor getColor() {
             return ColorUtils.getColor(wardrobe.getInventory().getItem(slot));
         }
 
-        private void setColor(IPaintColor newValue) {
+        private void setColor(ISkinPaintColor newValue) {
             if (pickerButton != null) {
                 pickerButton.setSelected(false);
                 pickerButton = null;
@@ -216,7 +216,7 @@ public class SkinWardrobeColorSetting extends SkinWardrobeBaseSetting {
             NetworkManager.sendToServer(UpdateWardrobePacket.dying(wardrobe, slot, newValue));
         }
 
-        private void updateColor(IPaintColor paintColor) {
+        private void updateColor(ISkinPaintColor paintColor) {
             color = paintColor;
             if (paintColor != null) {
                 colorView.setBackgroundColor(new UIColor(paintColor.getRGB()));

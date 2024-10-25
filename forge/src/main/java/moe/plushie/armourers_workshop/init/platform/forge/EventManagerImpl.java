@@ -6,7 +6,6 @@ import moe.plushie.armourers_workshop.compatibility.forge.AbstractForgeCommonEve
 import moe.plushie.armourers_workshop.init.environment.EnvironmentExecutor;
 import moe.plushie.armourers_workshop.init.environment.EnvironmentType;
 
-import java.util.Objects;
 import java.util.function.Supplier;
 
 public class EventManagerImpl {

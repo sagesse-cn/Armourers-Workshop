@@ -1,7 +1,7 @@
 package moe.plushie.armourers_workshop.core.client.skinrender.patch;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import moe.plushie.armourers_workshop.api.math.IPoseStack;
+import moe.plushie.armourers_workshop.api.core.math.IPoseStack;
 import moe.plushie.armourers_workshop.core.armature.thirdparty.EpicFlightTransformProvider;
 import moe.plushie.armourers_workshop.core.client.bake.BakedArmatureTransformer;
 import moe.plushie.armourers_workshop.core.client.other.EntityRenderData;
@@ -84,7 +84,7 @@ public class EpicFightEntityRendererPatch<T extends LivingEntity> extends Entity
     public void setTransformProvider(EpicFlightTransformProvider newTransformProvider) {
         transformProvider = newTransformProvider;
         if (transformerModel != null) {
-            transformerModel.setAssociatedObject(newTransformProvider, EpicFlightTransformProvider.KEY);
+            transformerModel.setAssociatedObject(EpicFlightTransformProvider.KEY, newTransformProvider);
         }
     }
 

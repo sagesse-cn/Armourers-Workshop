@@ -2,10 +2,10 @@ package moe.plushie.armourers_workshop.core.client.other;
 
 import com.mojang.blaze3d.platform.NativeImage;
 import moe.plushie.armourers_workshop.api.core.IResourceLocation;
-import moe.plushie.armourers_workshop.core.data.color.PaintColor;
-import moe.plushie.armourers_workshop.core.texture.PlayerTexture;
-import moe.plushie.armourers_workshop.core.texture.SkinPaintData;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
+import moe.plushie.armourers_workshop.builder.data.PlayerTexture;
+import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
+import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintData;
+import moe.plushie.armourers_workshop.core.utils.Objects;
 import moe.plushie.armourers_workshop.utils.RenderSystem;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -14,8 +14,6 @@ import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.TextureManager;
 import org.lwjgl.opengl.GL11;
-
-import java.util.Objects;
 
 @Environment(EnvType.CLIENT)
 public class SkinDynamicTexture extends DynamicTexture {
@@ -41,7 +39,7 @@ public class SkinDynamicTexture extends DynamicTexture {
     public void setRefer(IResourceLocation refer) {
         if (!Objects.equals(this.refer, refer)) {
             this.refer = refer;
-            this.referTexture = ObjectUtils.flatMap(refer, it -> textureManager.getTexture(it.toLocation()));
+            this.referTexture = Objects.flatMap(refer, it -> textureManager.getTexture(it.toLocation()));
             this.downloadedImage = null;
             this.setNeedsUpdate();
         }
@@ -86,7 +84,7 @@ public class SkinDynamicTexture extends DynamicTexture {
         for (var iy = 0; iy < paintData.getHeight(); ++iy) {
             for (var ix = 0; ix < paintData.getWidth(); ++ix) {
                 var color = paintData.getColor(ix, iy);
-                if (PaintColor.isOpaque(color)) {
+                if (SkinPaintColor.isOpaque(color)) {
                     var r = color >> 16 & 0xff;
                     var g = color >> 8 & 0xff;
                     var b = color & 0xff;

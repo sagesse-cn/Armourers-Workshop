@@ -12,11 +12,11 @@ import moe.plushie.armourers_workshop.core.skin.property.SkinProperties;
 import moe.plushie.armourers_workshop.core.skin.serializer.SkinFileHeader;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IInputStream;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IOutputStream;
+import moe.plushie.armourers_workshop.core.utils.Objects;
 import moe.plushie.armourers_workshop.library.data.SkinLibraryFile;
 import moe.plushie.armourers_workshop.library.data.SkinLibraryManager;
 import moe.plushie.armourers_workshop.library.data.SkinLibrarySetting;
 import moe.plushie.armourers_workshop.utils.Constants;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
 import moe.plushie.armourers_workshop.utils.SkinFileUtils;
 import net.minecraft.world.entity.player.Player;
 
@@ -73,7 +73,7 @@ public class UpdateLibraryFilesPacket extends CustomPacket {
             var dataStream = new DataOutputStream(new GZIPOutputStream(stream));
             var outputStream = IOutputStream.of(dataStream);
             for (var file : files) {
-                var properties = ObjectUtils.safeCast(file.getSkinProperties(), SkinProperties.class);
+                var properties = Objects.safeCast(file.getSkinProperties(), SkinProperties.class);
                 outputStream.writeString(file.getPath());
                 outputStream.writeBoolean(properties == null); // is directory
                 if (properties != null) {

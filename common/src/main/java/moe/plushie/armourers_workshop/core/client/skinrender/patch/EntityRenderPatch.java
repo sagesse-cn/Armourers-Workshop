@@ -7,7 +7,7 @@ import moe.plushie.armourers_workshop.core.client.bake.BakedArmatureTransformer;
 import moe.plushie.armourers_workshop.core.client.other.EntityRenderData;
 import moe.plushie.armourers_workshop.core.client.other.SkinRenderContext;
 import moe.plushie.armourers_workshop.core.client.skinrender.SkinRendererManager;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
+import moe.plushie.armourers_workshop.core.utils.Objects;
 import moe.plushie.armourers_workshop.utils.TickUtils;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -39,7 +39,7 @@ public abstract class EntityRenderPatch<T extends Entity> {
         var renderPatch = renderData.getRenderPatch();
         if (!clazz.isInstance(renderPatch) || !renderPatch.isValid()) {
             var renderPatch1 = provider.apply(renderData);
-            renderPatch = ObjectUtils.unsafeCast(renderPatch1);
+            renderPatch = Objects.unsafeCast(renderPatch1);
             renderData.setRenderPatch(renderPatch);
             if (renderPatch == null) {
                 return; // can't create.
@@ -48,7 +48,7 @@ public abstract class EntityRenderPatch<T extends Entity> {
         renderPatch.onInit(entity, partialTicks, packedLight, poseStackIn, entityRenderer);
         renderPatch.onActivate(entity);
         if (handler != null) {
-            handler.accept(ObjectUtils.unsafeCast(renderPatch));
+            handler.accept(Objects.unsafeCast(renderPatch));
         }
         renderData.onActivate();
     }
@@ -59,7 +59,7 @@ public abstract class EntityRenderPatch<T extends Entity> {
             var renderPatch = renderData.getRenderPatch();
             if (clazz.isInstance(renderPatch)) {
                 if (handler != null) {
-                    handler.accept(ObjectUtils.unsafeCast(renderPatch));
+                    handler.accept(Objects.unsafeCast(renderPatch));
                 }
                 renderPatch.onApply(entity, poseStackIn, bufferSourceIn);
             }
@@ -74,7 +74,7 @@ public abstract class EntityRenderPatch<T extends Entity> {
             if (clazz.isInstance(renderPatch)) {
                 renderPatch.onDeactivate(entity);
                 if (handler != null) {
-                    handler.accept(ObjectUtils.unsafeCast(renderPatch));
+                    handler.accept(Objects.unsafeCast(renderPatch));
                 }
             }
             renderData.onDeactivate();

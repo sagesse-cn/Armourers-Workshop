@@ -6,8 +6,8 @@ import com.apple.library.coregraphics.CGPoint;
 import com.apple.library.coregraphics.CGRect;
 import com.apple.library.uikit.UIControl;
 import com.apple.library.uikit.UIEvent;
+import moe.plushie.armourers_workshop.core.math.OpenMath;
 import moe.plushie.armourers_workshop.init.ModTextures;
-import moe.plushie.armourers_workshop.utils.MathUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
@@ -66,7 +66,7 @@ public class SkinRatingView extends UIControl {
             rating = hoveredValue;
         }
 
-        int stars = MathUtils.floor(rating / 2F);
+        int stars = OpenMath.floori(rating / 2F);
         int halfStar = rating % 2;
         for (int i = 0; i < stars; i++) {
             context.drawImage(ModTextures.RATING, i * 16, 0, 16, 16, 0, 0, 256, 256);
@@ -81,7 +81,7 @@ public class SkinRatingView extends UIControl {
     }
 
     public void setValue(int value) {
-        this.value = MathUtils.clamp(value, 0, getMaxValue());
+        this.value = OpenMath.clamp(value, 0, getMaxValue());
     }
 
     public int getMaxValue() {
@@ -95,6 +95,6 @@ public class SkinRatingView extends UIControl {
     }
 
     private int getRatingAtPos(CGPoint point) {
-        return MathUtils.clamp(MathUtils.floor((point.x + 8) / 8f), 0, maxValue);
+        return OpenMath.clamp(OpenMath.floori((point.x + 8) / 8f), 0, maxValue);
     }
 }

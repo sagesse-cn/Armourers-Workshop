@@ -1,6 +1,5 @@
 package moe.plushie.armourers_workshop.init;
 
-import com.google.common.collect.Lists;
 import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -10,18 +9,20 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.context.ParsedCommandNode;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
-import moe.plushie.armourers_workshop.api.skin.ISkinPaintType;
+import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintType;
 import moe.plushie.armourers_workshop.core.capability.SkinWardrobe;
 import moe.plushie.armourers_workshop.core.data.DataDomain;
 import moe.plushie.armourers_workshop.core.data.UserNotifications;
-import moe.plushie.armourers_workshop.core.data.color.ColorScheme;
 import moe.plushie.armourers_workshop.core.data.slot.ItemOverrideType;
 import moe.plushie.armourers_workshop.core.data.slot.SkinSlotType;
+import moe.plushie.armourers_workshop.core.math.OpenMath;
 import moe.plushie.armourers_workshop.core.network.UpdateAnimationPacket;
 import moe.plushie.armourers_workshop.core.skin.SkinDescriptor;
 import moe.plushie.armourers_workshop.core.skin.SkinLoader;
-import moe.plushie.armourers_workshop.core.skin.exporter.SkinExportManager;
-import moe.plushie.armourers_workshop.core.skin.painting.SkinPaintTypes;
+import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintScheme;
+import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintTypes;
+import moe.plushie.armourers_workshop.core.skin.serializer.exporter.SkinExportManager;
+import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.init.command.ColorArgumentType;
 import moe.plushie.armourers_workshop.init.command.ColorSchemeArgumentType;
 import moe.plushie.armourers_workshop.init.command.FileArgumentType;
@@ -33,8 +34,6 @@ import moe.plushie.armourers_workshop.init.platform.NetworkManager;
 import moe.plushie.armourers_workshop.init.platform.event.common.RegisterCommandsEvent;
 import moe.plushie.armourers_workshop.library.data.SkinLibraryManager;
 import moe.plushie.armourers_workshop.utils.ColorUtils;
-import moe.plushie.armourers_workshop.utils.MathUtils;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
 import moe.plushie.armourers_workshop.utils.TranslateUtils;
 import moe.plushie.armourers_workshop.utils.TypedRegistry;
 import net.minecraft.Util;
@@ -165,7 +164,7 @@ public class ModCommands {
     }
 
     static ArgumentBuilder<CommandSourceStack, ?> resizableSlotNames() {
-        return Commands.argument("slot_name", new ListArgumentType(ObjectUtils.compactMap(SkinSlotType.values(), slotType -> {
+        return Commands.argument("slot_name", new ListArgumentType(Collections.compactMap(SkinSlotType.values(), slotType -> {
             if (slotType.isResizable()) {
                 return slotType.getName();
             }
@@ -174,11 +173,11 @@ public class ModCommands {
     }
 
     static ArgumentBuilder<CommandSourceStack, ?> slotNames() {
-        return Commands.argument("slot_name", new ListArgumentType(ObjectUtils.map(SkinSlotType.values(), SkinSlotType::getName)));
+        return Commands.argument("slot_name", new ListArgumentType(Collections.compactMap(SkinSlotType.values(), SkinSlotType::getName)));
     }
 
     static ArgumentBuilder<CommandSourceStack, ?> overrideTypes() {
-        return Commands.argument("skin_type", new ListArgumentType(ObjectUtils.map(ItemOverrideType.values(), ItemOverrideType::getName)));
+        return Commands.argument("skin_type", new ListArgumentType(Collections.compactMap(ItemOverrideType.values(), ItemOverrideType::getName)));
     }
 
     static ArgumentBuilder<CommandSourceStack, ?> skins() {
@@ -186,7 +185,7 @@ public class ModCommands {
     }
 
     static ArgumentBuilder<CommandSourceStack, ?> addOrRemote() {
-        return Commands.argument("operator", new ListArgumentType(Lists.newArrayList("add", "remove")));
+        return Commands.argument("operator", new ListArgumentType(Collections.newList("add", "remove")));
     }
 
     private static class Executor {
@@ -397,7 +396,7 @@ public class ModCommands {
                     continue;
                 }
                 int amount = IntegerArgumentType.getInteger(context, "amount");
-                wardrobe.setUnlockedSize(slotType, MathUtils.clamp(amount, 0, slotType.getMaxSize()));
+                wardrobe.setUnlockedSize(slotType, OpenMath.clamp(amount, 0, slotType.getMaxSize()));
                 wardrobe.broadcast();
             }
             return 1;
@@ -408,7 +407,7 @@ public class ModCommands {
             if (identifier.isEmpty()) {
                 throw ERROR_MISSING_SKIN.create(identifier);
             }
-            var scheme = ColorScheme.EMPTY;
+            var scheme = SkinPaintScheme.EMPTY;
             if (containsNode(context, "dying")) {
                 scheme = ColorSchemeArgumentType.getColorScheme(context, "dying");
             }

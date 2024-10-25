@@ -1,8 +1,9 @@
 package moe.plushie.armourers_workshop.core.data.color;
 
-import moe.plushie.armourers_workshop.api.painting.IPaintColor;
-import moe.plushie.armourers_workshop.api.skin.ISkinPaintType;
-import moe.plushie.armourers_workshop.core.skin.painting.SkinPaintTypes;
+import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintColor;
+import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintType;
+import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
+import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintTypes;
 
 import java.util.HashMap;
 import java.util.Set;
@@ -11,7 +12,7 @@ public class ColorDescriptor {
 
     private final HashMap<ISkinPaintType, Channel> channels = new HashMap<>();
 
-    public void add(IPaintColor color) {
+    public void add(ISkinPaintColor color) {
         var paintType = color.getPaintType();
         if (shouldRecordChannel(paintType)) {
             var ch = channels.computeIfAbsent(paintType, k -> new Channel());
@@ -38,7 +39,7 @@ public class ColorDescriptor {
         return channels.isEmpty();
     }
 
-    public IPaintColor getAverageColor(ISkinPaintType paintType) {
+    public ISkinPaintColor getAverageColor(ISkinPaintType paintType) {
         var channel = channels.get(paintType);
         if (channel != null) {
             return channel.getResolvedColor();
@@ -65,24 +66,24 @@ public class ColorDescriptor {
         int red = 0;
         int green = 0;
         int blue = 0;
-        IPaintColor resolvedColor;
+        ISkinPaintColor resolvedColor;
 
         void setChanged() {
             resolvedColor = null;
         }
 
-        IPaintColor getResolvedColor() {
+        ISkinPaintColor getResolvedColor() {
             if (resolvedColor != null) {
                 return resolvedColor;
             }
             if (total == 0) {
-                resolvedColor = PaintColor.CLEAR;
+                resolvedColor = SkinPaintColor.CLEAR;
                 return resolvedColor;
             }
             int r = red / total;
             int g = green / total;
             int b = blue / total;
-            resolvedColor = PaintColor.of(r, g, b, SkinPaintTypes.NORMAL);
+            resolvedColor = SkinPaintColor.of(r, g, b, SkinPaintTypes.NORMAL);
             return resolvedColor;
         }
     }

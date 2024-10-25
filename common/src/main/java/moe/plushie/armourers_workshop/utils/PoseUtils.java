@@ -1,7 +1,7 @@
 package moe.plushie.armourers_workshop.utils;
 
-import moe.plushie.armourers_workshop.utils.math.OpenMatrix3f;
-import moe.plushie.armourers_workshop.utils.math.OpenMatrix4f;
+import moe.plushie.armourers_workshop.core.math.OpenMatrix3f;
+import moe.plushie.armourers_workshop.core.math.OpenMatrix4f;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 

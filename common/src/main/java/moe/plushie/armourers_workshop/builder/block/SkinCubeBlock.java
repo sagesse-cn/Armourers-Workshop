@@ -1,7 +1,7 @@
 package moe.plushie.armourers_workshop.builder.block;
 
 import moe.plushie.armourers_workshop.api.common.IBlockTintColorProvider;
-import moe.plushie.armourers_workshop.api.painting.IPaintable;
+import moe.plushie.armourers_workshop.api.common.IPaintable;
 import moe.plushie.armourers_workshop.compatibility.core.AbstractBlockEntityProvider;
 import moe.plushie.armourers_workshop.compatibility.core.AbstractHorizontalBlock;
 import moe.plushie.armourers_workshop.core.data.OptionalDirection;
@@ -37,6 +37,7 @@ public class SkinCubeBlock extends AbstractHorizontalBlock implements AbstractBl
 
     public static OptionalDirection getMarker(BlockState blockState) {
         if (blockState.getOptionalValue(HAS_MARKER).orElse(false)) {
+            var facing = blockState.getValue(MARKER);
             return OptionalDirection.of(blockState.getValue(MARKER));
         }
         return OptionalDirection.NONE;

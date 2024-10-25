@@ -1,6 +1,6 @@
 package moe.plushie.armourers_workshop.init;
 
-import moe.plushie.armourers_workshop.api.registry.IRegistryHolder;
+import moe.plushie.armourers_workshop.api.core.IRegistryHolder;
 import moe.plushie.armourers_workshop.api.registry.ISoundEventBuilder;
 import moe.plushie.armourers_workshop.init.platform.BuilderManager;
 import net.minecraft.sounds.SoundEvent;

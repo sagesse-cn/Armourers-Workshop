@@ -9,10 +9,10 @@ import com.apple.library.foundation.NSString;
 import com.apple.library.uikit.UIFont;
 import moe.plushie.armourers_workshop.api.annotation.Available;
 import moe.plushie.armourers_workshop.api.client.IBufferSource;
-import moe.plushie.armourers_workshop.api.math.IPoseStack;
+import moe.plushie.armourers_workshop.api.core.math.IPoseStack;
 import moe.plushie.armourers_workshop.compatibility.client.AbstractBufferSource;
 import moe.plushie.armourers_workshop.compatibility.client.AbstractPoseStack;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
+import moe.plushie.armourers_workshop.core.utils.Objects;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.GuiGraphics;
@@ -38,7 +38,7 @@ public class AbstractGraphicsRenderer implements CGGraphicsRenderer, CGGraphicsS
     }
 
     public static GuiGraphics of(CGGraphicsContext context) {
-        AbstractGraphicsRenderer impl = ObjectUtils.unsafeCast(context.state());
+        AbstractGraphicsRenderer impl = Objects.unsafeCast(context.state());
         return impl.graphics;
     }
 

@@ -2,16 +2,16 @@ package moe.plushie.armourers_workshop.core.client.render;
 
 import com.apple.library.uikit.UIColor;
 import moe.plushie.armourers_workshop.api.client.IBufferSource;
-import moe.plushie.armourers_workshop.api.math.IPoseStack;
+import moe.plushie.armourers_workshop.api.core.math.IPoseStack;
 import moe.plushie.armourers_workshop.compatibility.client.AbstractBufferSource;
 import moe.plushie.armourers_workshop.compatibility.client.AbstractPoseStack;
 import moe.plushie.armourers_workshop.core.client.other.SkinRenderType;
 import moe.plushie.armourers_workshop.core.data.MannequinHitResult;
 import moe.plushie.armourers_workshop.core.data.SkinBlockPlaceContext;
+import moe.plushie.armourers_workshop.core.math.Vector3f;
 import moe.plushie.armourers_workshop.core.skin.SkinDescriptor;
 import moe.plushie.armourers_workshop.core.skin.SkinTypes;
 import moe.plushie.armourers_workshop.utils.ShapeTesselator;
-import moe.plushie.armourers_workshop.utils.math.Vector3f;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Camera;
@@ -33,11 +33,11 @@ public class HighlightPlacementRenderer {
         poseStack.pushPose();
 
         var f = 1 / 16.f;
-        var origin = new Vector3f(renderInfo.getPosition());
+        var origin = renderInfo.getPosition();
         var context = new SkinBlockPlaceContext(player, InteractionHand.MAIN_HAND, itemStack, traceResult);
         var location = context.getClickedPos();
 
-        poseStack.translate(location.getX() - origin.getX(), location.getY() - origin.getY(), location.getZ() - origin.getZ());
+        poseStack.translate(location.getX() - (float) origin.x(), location.getY() - (float) origin.y(), location.getZ() - (float) origin.z());
         poseStack.translate(0.5f, 0.5f, 0.5f);
         poseStack.scale(f, f, f);
 
@@ -57,13 +57,13 @@ public class HighlightPlacementRenderer {
     }
 
     public static void renderEntity(Player player, BlockHitResult traceResult, Camera renderInfo, IPoseStack poseStack, IBufferSource bufferSource) {
-        var origin = new Vector3f(renderInfo.getPosition());
+        var origin = renderInfo.getPosition();
         var target = MannequinHitResult.test(player, origin, traceResult.getLocation(), traceResult.getBlockPos());
         poseStack.pushPose();
 
-        var location = new Vector3f(target.getLocation());
+        var location = target.getLocation();
 
-        poseStack.translate(location.getX() - origin.getX(), location.getY() - origin.getY(), location.getZ() - origin.getZ());
+        poseStack.translate((float) (location.x() - origin.x()), (float) (location.y() - origin.y()), (float) (location.z() - origin.z()));
         poseStack.rotate(Vector3f.YP.rotationDegrees(-target.getRotation()));
 
         var model = SkinItemRenderer.getInstance().getMannequinModel();

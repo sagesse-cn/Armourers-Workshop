@@ -36,7 +36,6 @@
 //import moe.plushie.armourers_workshop.init.ModLog;
 //import moe.plushie.armourers_workshop.init.ModTextures;
 //import moe.plushie.armourers_workshop.init.platform.EnvironmentManager;
-//import moe.plushie.armourers_workshop.utils.ObjectUtils;
 //import moe.plushie.armourers_workshop.utils.SkinFileStreamUtils;
 //import moe.plushie.armourers_workshop.utils.SkinFileUtils;
 //import moe.plushie.armourers_workshop.utils.math.Vector3f;
@@ -206,7 +205,7 @@
 //            checkBox.setTitle(NSString.localizedString("armourer.skinSettings." + p.getKey()));
 //            checkBox.setSelected(p.getDefaultValue());
 //            checkBox.addTarget(this, UIControl.Event.VALUE_CHANGED, (self, c) -> {
-//                UICheckBox checkBox1 = ObjectUtils.unsafeCast(c);
+//                UICheckBox checkBox1 = Objects.unsafeCast(c);
 //                self.values.put(p, checkBox1.isSelected());
 //            });
 //            boxes.add(checkBox);

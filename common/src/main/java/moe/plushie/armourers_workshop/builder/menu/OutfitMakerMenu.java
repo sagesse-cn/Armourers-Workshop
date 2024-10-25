@@ -3,10 +3,9 @@ package moe.plushie.armourers_workshop.builder.menu;
 import com.google.common.collect.Iterables;
 import com.mojang.authlib.GameProfile;
 import moe.plushie.armourers_workshop.api.common.IGlobalPos;
-import moe.plushie.armourers_workshop.api.skin.ISkinPartTypeTextured;
+import moe.plushie.armourers_workshop.api.skin.part.ISkinPartTypeTextured;
 import moe.plushie.armourers_workshop.builder.blockentity.OutfitMakerBlockEntity;
 import moe.plushie.armourers_workshop.core.data.UserNotifications;
-import moe.plushie.armourers_workshop.core.data.color.PaintColor;
 import moe.plushie.armourers_workshop.core.data.slot.SkinSlot;
 import moe.plushie.armourers_workshop.core.data.slot.SkinSlotType;
 import moe.plushie.armourers_workshop.core.menu.AbstractBlockEntityMenu;
@@ -16,10 +15,11 @@ import moe.plushie.armourers_workshop.core.skin.SkinLoader;
 import moe.plushie.armourers_workshop.core.skin.SkinTypes;
 import moe.plushie.armourers_workshop.core.skin.exception.SkinLoadException;
 import moe.plushie.armourers_workshop.core.skin.exception.TranslatableException;
+import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
+import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintData;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPart;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperties;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperty;
-import moe.plushie.armourers_workshop.core.texture.SkinPaintData;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -201,7 +201,7 @@ public class OutfitMakerMenu extends AbstractBlockEntityMenu<OutfitMakerBlockEnt
                 var x = pos.getU() + ix;
                 var y = pos.getV() + iy;
                 var color = srcPaint.getColor(x, y);
-                if (PaintColor.isOpaque(color)) {
+                if (SkinPaintColor.isOpaque(color)) {
                     desPaint.setColor(x, y, color);
                 }
             }

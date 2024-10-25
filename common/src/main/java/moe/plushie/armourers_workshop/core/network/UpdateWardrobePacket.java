@@ -5,7 +5,7 @@ import moe.plushie.armourers_workshop.api.data.IGenericValue;
 import moe.plushie.armourers_workshop.api.network.IClientPacketHandler;
 import moe.plushie.armourers_workshop.api.network.IFriendlyByteBuf;
 import moe.plushie.armourers_workshop.api.network.IServerPacketHandler;
-import moe.plushie.armourers_workshop.api.painting.IPaintColor;
+import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintColor;
 import moe.plushie.armourers_workshop.compatibility.core.data.AbstractDataSerializer;
 import moe.plushie.armourers_workshop.compatibility.core.data.AbstractEntityDataSerializer;
 import moe.plushie.armourers_workshop.core.capability.SkinWardrobe;
@@ -14,12 +14,12 @@ import moe.plushie.armourers_workshop.core.data.GenericProperty;
 import moe.plushie.armourers_workshop.core.data.slot.SkinSlotType;
 import moe.plushie.armourers_workshop.core.entity.MannequinEntity;
 import moe.plushie.armourers_workshop.core.menu.SkinWardrobeMenu;
+import moe.plushie.armourers_workshop.core.utils.Objects;
 import moe.plushie.armourers_workshop.init.ModDataComponents;
 import moe.plushie.armourers_workshop.init.ModItems;
 import moe.plushie.armourers_workshop.init.ModLog;
 import moe.plushie.armourers_workshop.init.platform.NetworkManager;
 import moe.plushie.armourers_workshop.utils.DataSerializers;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.server.level.ServerPlayer;
@@ -69,7 +69,7 @@ public class UpdateWardrobePacket extends CustomPacket {
         return new UpdateWardrobePacket(wardrobe, Type.SYNC, tag, null);
     }
 
-    public static UpdateWardrobePacket dying(SkinWardrobe wardrobe, int slot, IPaintColor color) {
+    public static UpdateWardrobePacket dying(SkinWardrobe wardrobe, int slot, ISkinPaintColor color) {
         var compoundNBT = new CompoundTag();
         compoundNBT.putInt("Slot", slot);
         compoundNBT.putOptionalPaintColor("Color", color, null);
@@ -217,13 +217,13 @@ public class UpdateWardrobePacket extends CustomPacket {
             return TYPE.create(dataSerializer).getter((source) -> {
                 var entity = source.getEntity();
                 if (entity != null) {
-                    return supplier.apply(ObjectUtils.unsafeCast(entity));
+                    return supplier.apply(Objects.unsafeCast(entity));
                 }
                 return null;
             }).setter((source, value) -> {
                 var entity = source.getEntity();
                 if (entity != null) {
-                    applier.accept(ObjectUtils.unsafeCast(entity), value);
+                    applier.accept(Objects.unsafeCast(entity), value);
                 }
             }).build(Field::new);
         }

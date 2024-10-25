@@ -1,14 +1,14 @@
 package moe.plushie.armourers_workshop.core.skin.document;
 
-import moe.plushie.armourers_workshop.api.skin.ISkinPartType;
-import moe.plushie.armourers_workshop.core.data.transform.SkinTransform;
+import moe.plushie.armourers_workshop.api.skin.part.ISkinPartType;
+import moe.plushie.armourers_workshop.core.math.OpenMath;
+import moe.plushie.armourers_workshop.core.math.OpenTransform3f;
+import moe.plushie.armourers_workshop.core.math.Vector3f;
 import moe.plushie.armourers_workshop.core.skin.SkinDescriptor;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPartTypes;
+import moe.plushie.armourers_workshop.core.utils.OpenUUID;
 import moe.plushie.armourers_workshop.utils.Constants;
-import moe.plushie.armourers_workshop.utils.MathUtils;
-import moe.plushie.armourers_workshop.utils.SkinUUID;
 import moe.plushie.armourers_workshop.utils.TranslateUtils;
-import moe.plushie.armourers_workshop.utils.math.Vector3f;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 
@@ -20,7 +20,7 @@ public class SkinDocumentNode {
     private Vector3f rotation = Vector3f.ZERO;
     private Vector3f scale = Vector3f.ONE;
     private Vector3f pivot = Vector3f.ZERO;
-    private SkinTransform transform = null;
+    private OpenTransform3f transform = null;
 
     private ISkinPartType type;
     private SkinDescriptor skin = SkinDescriptor.EMPTY;
@@ -38,7 +38,7 @@ public class SkinDocumentNode {
     private String cachedTypeName;
 
     public SkinDocumentNode(String name) {
-        this(SkinUUID.randomUUIDString(), name);
+        this(OpenUUID.randomUUIDString(), name);
     }
 
     public SkinDocumentNode(String id, String name) {
@@ -103,7 +103,7 @@ public class SkinDocumentNode {
             return;
         }
         children.remove(index);
-        children.add(MathUtils.clamp(toIndex, 0, children.size()), node);
+        children.add(OpenMath.clamp(toIndex, 0, children.size()), node);
         if (listener != null) {
             listener.documentDidMoveNode(this, node, toIndex);
         }
@@ -226,7 +226,7 @@ public class SkinDocumentNode {
     }
 
 
-    public SkinTransform getTransform() {
+    public OpenTransform3f getTransform() {
         if (transform != null) {
             return transform;
         }
@@ -242,7 +242,7 @@ public class SkinDocumentNode {
         if (isMirror) {
             scale = scale.scaling(-1, 1, 1);
         }
-        transform = SkinTransform.create(translate, rotation, scale, pivot, Vector3f.ZERO);
+        transform = OpenTransform3f.create(translate, rotation, scale, pivot, Vector3f.ZERO);
         return transform;
     }
 

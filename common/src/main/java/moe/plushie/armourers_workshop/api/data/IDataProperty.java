@@ -8,7 +8,8 @@ public interface IDataProperty<T> {
 
     void set(T value);
 
-    @Nullable T get();
+    @Nullable
+    T get();
 
     default T getOrDefault(T defaultValue) {
         T value = get();

@@ -1,6 +1,6 @@
 package moe.plushie.armourers_workshop.api.common;
 
-import moe.plushie.armourers_workshop.api.registry.IRegistryEntry;
+import moe.plushie.armourers_workshop.api.core.IRegistryEntry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;

@@ -2,13 +2,13 @@ package moe.plushie.armourers_workshop.builder.client.gui.advancedbuilder.docume
 
 import com.google.common.collect.ImmutableMap;
 import moe.plushie.armourers_workshop.api.armature.IJoint;
-import moe.plushie.armourers_workshop.api.skin.ISkinPartType;
 import moe.plushie.armourers_workshop.api.skin.ISkinType;
+import moe.plushie.armourers_workshop.api.skin.part.ISkinPartType;
 import moe.plushie.armourers_workshop.core.armature.Armature;
 import moe.plushie.armourers_workshop.core.armature.Armatures;
+import moe.plushie.armourers_workshop.core.math.Vector3f;
 import moe.plushie.armourers_workshop.core.skin.SkinTypes;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPartTypes;
-import moe.plushie.armourers_workshop.utils.math.Vector3f;
 
 import java.util.Map;
 import java.util.function.Function;

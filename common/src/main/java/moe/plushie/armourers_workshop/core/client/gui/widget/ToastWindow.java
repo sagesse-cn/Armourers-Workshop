@@ -10,9 +10,8 @@ import com.apple.library.uikit.UILabel;
 import com.apple.library.uikit.UIWindow;
 import moe.plushie.armourers_workshop.api.core.IResourceLocation;
 import moe.plushie.armourers_workshop.core.skin.SkinDescriptor;
+import moe.plushie.armourers_workshop.core.utils.OpenResourceLocation;
 import moe.plushie.armourers_workshop.init.ModTextures;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
-import moe.plushie.armourers_workshop.utils.ext.OpenResourceLocation;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -95,8 +94,7 @@ public class ToastWindow extends UIWindow {
 
     public void setIcon(Object icon) {
         this.icon = icon;
-        CompoundTag tag = ObjectUtils.safeCast(icon, CompoundTag.class);
-        if (tag == null) {
+        if (!(icon instanceof CompoundTag tag)) {
             this.updateIconRect();
             return;
         }

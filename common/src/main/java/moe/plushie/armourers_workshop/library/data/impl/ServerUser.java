@@ -1,6 +1,6 @@
 package moe.plushie.armourers_workshop.library.data.impl;
 
-import moe.plushie.armourers_workshop.api.data.IDataPackObject;
+import moe.plushie.armourers_workshop.core.skin.serializer.io.IODataObject;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -26,7 +26,7 @@ public class ServerUser {
         this.permissions = permissions;
     }
 
-    public static ServerUser fromJSON(IDataPackObject object) {
+    public static ServerUser fromJSON(IODataObject object) {
         String id = object.get("id").stringValue();
         UUID uuid = UUID.fromString(object.get("uuid").stringValue());
         String name = object.get("username").stringValue();

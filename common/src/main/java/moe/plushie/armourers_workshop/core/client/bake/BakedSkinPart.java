@@ -1,15 +1,15 @@
 package moe.plushie.armourers_workshop.core.client.bake;
 
-import moe.plushie.armourers_workshop.api.skin.ISkinPartType;
+import moe.plushie.armourers_workshop.api.skin.part.ISkinPartType;
 import moe.plushie.armourers_workshop.core.client.texture.PlayerTextureLoader;
 import moe.plushie.armourers_workshop.core.data.color.ColorDescriptor;
-import moe.plushie.armourers_workshop.core.data.color.ColorScheme;
 import moe.plushie.armourers_workshop.core.data.transform.SkinPartTransform;
-import moe.plushie.armourers_workshop.core.skin.painting.SkinPaintTypes;
+import moe.plushie.armourers_workshop.core.math.OpenVoxelShape;
+import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintScheme;
+import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintTypes;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPart;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperties;
-import moe.plushie.armourers_workshop.utils.ThreadUtils;
-import moe.plushie.armourers_workshop.utils.math.OpenVoxelShape;
+import moe.plushie.armourers_workshop.core.utils.OpenSequenceSource;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import org.jetbrains.annotations.Nullable;
@@ -19,10 +19,10 @@ import java.util.ArrayList;
 @Environment(EnvType.CLIENT)
 public class BakedSkinPart {
 
-    private final int id = ThreadUtils.nextId(BakedSkinPart.class);
+    private final int id = OpenSequenceSource.nextInt(BakedSkinPart.class);
 
     private final SkinPart part;
-    private final BakedCubeQuads quads;
+    private final BakedGeometryQuads quads;
     private final SkinPartTransform transform;
     private final ColorDescriptor descriptor;
     private final ArrayList<BakedSkinPart> children = new ArrayList<>();
@@ -30,7 +30,7 @@ public class BakedSkinPart {
     private float renderPolygonOffset;
     private boolean shouldRender = true;
 
-    public BakedSkinPart(SkinPart part, SkinPartTransform transform, BakedCubeQuads quads) {
+    public BakedSkinPart(SkinPart part, SkinPartTransform transform, BakedGeometryQuads quads) {
         this.part = part;
         this.quads = quads;
         this.transform = transform;
@@ -47,7 +47,7 @@ public class BakedSkinPart {
     }
 
     @Nullable
-    public Object requirements(ColorScheme scheme) {
+    public Object requirements(SkinPaintScheme scheme) {
         if (descriptor.isEmpty() || scheme.isEmpty()) {
             return null;
         }
@@ -134,7 +134,7 @@ public class BakedSkinPart {
         return part.getProperties();
     }
 
-    public BakedCubeQuads getQuads() {
+    public BakedGeometryQuads getQuads() {
         return quads;
     }
 }

@@ -2,16 +2,15 @@ package moe.plushie.armourers_workshop.core.armature;
 
 import moe.plushie.armourers_workshop.api.common.IEntityTypeProvider;
 import moe.plushie.armourers_workshop.api.core.IResourceLocation;
-import moe.plushie.armourers_workshop.api.data.IDataPackObject;
-import moe.plushie.armourers_workshop.api.math.ITransformf;
-import moe.plushie.armourers_workshop.core.data.transform.SkinTransform;
-import moe.plushie.armourers_workshop.core.texture.TextureBox;
-import moe.plushie.armourers_workshop.core.texture.TextureData;
-import moe.plushie.armourers_workshop.utils.ext.OpenResourceLocation;
-import moe.plushie.armourers_workshop.utils.math.Rectangle2f;
-import moe.plushie.armourers_workshop.utils.math.Vector2f;
-import moe.plushie.armourers_workshop.utils.math.Vector3f;
-import net.minecraft.core.Direction;
+import moe.plushie.armourers_workshop.core.math.OpenTransform3f;
+import moe.plushie.armourers_workshop.core.math.Rectangle2f;
+import moe.plushie.armourers_workshop.core.math.Vector2f;
+import moe.plushie.armourers_workshop.core.math.Vector3f;
+import moe.plushie.armourers_workshop.core.skin.paint.texture.TextureBox;
+import moe.plushie.armourers_workshop.core.skin.paint.texture.TextureData;
+import moe.plushie.armourers_workshop.core.skin.serializer.io.IODataObject;
+import moe.plushie.armourers_workshop.core.utils.OpenDirection;
+import moe.plushie.armourers_workshop.core.utils.OpenResourceLocation;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
@@ -26,7 +25,7 @@ public class ArmatureSerializers {
     private static final HashMap<String, Supplier<? extends JointModifier>> NAMED_MODIFIERS = new HashMap<>();
     private static final HashMap<String, Function<ArmatureTransformerContext, ? extends ArmaturePlugin>> NAMED_PLUGINS = new HashMap<>();
 
-    public static Vector3f readVector(IDataPackObject object, Vector3f defaultValue) {
+    public static Vector3f readVector(IODataObject object, Vector3f defaultValue) {
         switch (object.type()) {
             case ARRAY: {
                 if (object.size() != 3) {
@@ -50,19 +49,19 @@ public class ArmatureSerializers {
         return defaultValue;
     }
 
-    public static SkinTransform readTransform(IDataPackObject object) {
+    public static OpenTransform3f readTransform(IODataObject object) {
         if (object.isNull()) {
-            return SkinTransform.IDENTITY;
+            return OpenTransform3f.IDENTITY;
         }
         var translate = readVector(object.get("translate"), Vector3f.ZERO);
         var scale = readVector(object.get("scale"), Vector3f.ONE);
         var rotation = readVector(object.get("rotation"), Vector3f.ZERO);
         var pivot = readVector(object.get("pivot"), Vector3f.ZERO);
         var afterTranslate = readVector(object.get("afterTranslate"), Vector3f.ZERO);
-        return SkinTransform.create(translate, rotation, scale, pivot, afterTranslate);
+        return OpenTransform3f.create(translate, rotation, scale, pivot, afterTranslate);
     }
 
-    public static JointShape readShape(IDataPackObject object) {
+    public static JointShape readShape(IODataObject object) {
         if (object.isNull()) {
             return null;
         }
@@ -76,7 +75,7 @@ public class ArmatureSerializers {
         return new JointShape(origin, size, inflate, transform, textureBox, children);
     }
 
-    public static Map<Direction, Rectangle2f> readShapeTextureUVs(IDataPackObject object, Vector3f size) {
+    public static Map<OpenDirection, Rectangle2f> readShapeTextureUVs(IODataObject object, Vector3f size) {
         switch (object.type()) {
             case ARRAY: {
                 if (object.size() < 2) {
@@ -91,8 +90,8 @@ public class ArmatureSerializers {
                 }
                 var textureData = new TextureData("", 255, 255);
                 var textureBox = new TextureBox(size.getX(), size.getY(), size.getZ(), mirror, new Vector2f(u, v), textureData);
-                var uvs = new EnumMap<Direction, Rectangle2f>(Direction.class);
-                for (var dir : Direction.values()) {
+                var uvs = new EnumMap<OpenDirection, Rectangle2f>(OpenDirection.class);
+                for (var dir : OpenDirection.values()) {
                     var key = textureBox.getTexture(dir);
                     if (key != null) {
                         uvs.put(dir, new Rectangle2f(key.getU(), key.getV(), key.getWidth(), key.getHeight()));
@@ -103,7 +102,7 @@ public class ArmatureSerializers {
             case DICTIONARY: {
                 var textureData = new TextureData("", 255, 255);
                 var textureBox = new TextureBox(size.getX(), size.getY(), size.getZ(), false, null, textureData);
-                for (var dir : Direction.values()) {
+                for (var dir : OpenDirection.values()) {
                     var ob = object.get(dir.getName());
                     if (ob.size() >= 4) {
                         float u = ob.at(0).floatValue();
@@ -113,8 +112,8 @@ public class ArmatureSerializers {
                         textureBox.putTextureRect(dir, new Rectangle2f(u, v, n - u, m - v));
                     }
                 }
-                var uvs = new EnumMap<Direction, Rectangle2f>(Direction.class);
-                for (var dir : Direction.values()) {
+                var uvs = new EnumMap<OpenDirection, Rectangle2f>(OpenDirection.class);
+                for (var dir : OpenDirection.values()) {
                     var key = textureBox.getTexture(dir);
                     if (key != null) {
                         uvs.put(dir, new Rectangle2f(key.getU(), key.getV(), key.getWidth(), key.getHeight()));
@@ -129,11 +128,11 @@ public class ArmatureSerializers {
         return null;
     }
 
-    public static IEntityTypeProvider<?> readEntityType(IDataPackObject object) {
+    public static IEntityTypeProvider<?> readEntityType(IODataObject object) {
         return IEntityTypeProvider.of(object.stringValue());
     }
 
-    public static IResourceLocation readResourceLocation(IDataPackObject object) {
+    public static IResourceLocation readResourceLocation(IODataObject object) {
         return OpenResourceLocation.parse(object.stringValue());
     }
 

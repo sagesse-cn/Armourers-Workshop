@@ -2,7 +2,7 @@ package moe.plushie.armourers_workshop.core.client.gui.widget;
 
 import com.apple.library.coregraphics.CGRect;
 import com.apple.library.uikit.UIFont;
-import moe.plushie.armourers_workshop.utils.MathUtils;
+import moe.plushie.armourers_workshop.core.math.OpenMath;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
@@ -30,7 +30,7 @@ public class NotificationDialog extends ConfirmDialog {
     @Override
     public void sizeToFit() {
         var bounding = message().boundingRectWithFont(UIFont.systemFont());
-        var minWidth = MathUtils.clamp(bounding.width, 120, 280) + 40;
+        var minWidth = OpenMath.clamp(bounding.width, 120, 280) + 40;
         var bounds = bounds();
         bounds = new CGRect(0, 0, minWidth, bounds.height);
         setBounds(bounds);

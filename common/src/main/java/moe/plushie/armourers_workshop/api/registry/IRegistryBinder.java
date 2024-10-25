@@ -1,5 +1,7 @@
 package moe.plushie.armourers_workshop.api.registry;
 
+import moe.plushie.armourers_workshop.api.core.IRegistryHolder;
+
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 

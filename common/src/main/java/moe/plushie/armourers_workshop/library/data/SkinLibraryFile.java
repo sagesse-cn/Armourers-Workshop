@@ -7,8 +7,8 @@ import moe.plushie.armourers_workshop.api.skin.property.ISkinProperties;
 import moe.plushie.armourers_workshop.core.data.DataDomain;
 import moe.plushie.armourers_workshop.core.skin.SkinTypes;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperty;
+import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.utils.Constants;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
 import moe.plushie.armourers_workshop.utils.SkinFileUtils;
 import org.apache.logging.log4j.util.Strings;
 
@@ -184,7 +184,7 @@ public class SkinLibraryFile implements Comparable<SkinLibraryFile>, ISkinLibrar
             values.add(properties.get(SkinProperty.ALL_AUTHOR_NAME));
             values.add(properties.get(SkinProperty.ALL_FLAVOUR_TEXT));
         }
-        searchableContentList = ObjectUtils.compactMap(values, s -> {
+        searchableContentList = Collections.compactMap(values, s -> {
             if (Strings.isNotBlank(s)) {
                 return s.toLowerCase();
             }

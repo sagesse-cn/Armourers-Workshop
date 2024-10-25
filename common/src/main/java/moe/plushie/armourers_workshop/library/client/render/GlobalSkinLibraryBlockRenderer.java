@@ -1,13 +1,13 @@
 package moe.plushie.armourers_workshop.library.client.render;
 
 import moe.plushie.armourers_workshop.api.client.IBufferSource;
-import moe.plushie.armourers_workshop.api.math.IPoseStack;
+import moe.plushie.armourers_workshop.api.core.math.IPoseStack;
 import moe.plushie.armourers_workshop.compatibility.client.renderer.AbstractBlockEntityRenderer;
 import moe.plushie.armourers_workshop.core.client.other.SkinRenderType;
+import moe.plushie.armourers_workshop.core.math.OpenQuaternion3f;
 import moe.plushie.armourers_workshop.library.block.GlobalSkinLibraryBlock;
 import moe.plushie.armourers_workshop.utils.ext.OpenModelPart;
 import moe.plushie.armourers_workshop.utils.ext.OpenModelPartBuilder;
-import moe.plushie.armourers_workshop.utils.math.OpenQuaternionf;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.Direction;
@@ -45,7 +45,7 @@ public class GlobalSkinLibraryBlockRenderer<T extends BlockEntity> extends Abstr
 
         if (entity.getLevel() != null) {
             float angle = (entity.getLevel().getGameTime()) % 360 + partialTicks;
-            poseStack.rotate(new OpenQuaternionf(angle * 4, angle, angle * 2, true));
+            poseStack.rotate(new OpenQuaternion3f(angle * 4, angle, angle * 2, true));
         }
 
         var builder = bufferSource.getBuffer(SkinRenderType.BLOCK_EARTH);

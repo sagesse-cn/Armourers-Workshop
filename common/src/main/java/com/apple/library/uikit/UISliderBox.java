@@ -155,7 +155,7 @@ public class UISliderBox extends UIControl {
 
     private void updateValueWithEvent(UIEvent event) {
         CGPoint point = event.locationInView(contentView);
-        double value = point.x / (double)contentView.bounds().width;
+        double value = point.x / (double) contentView.bounds().width;
         if (Math.abs(value - 0.5) < 0.01) {
             value = 0.5; // attract to mid value.
         }
@@ -206,7 +206,7 @@ public class UISliderBox extends UIControl {
         float height = rect.height;
         float valueWidth = middleView.frame().width;
         double progress = (value - minValue) / (maxValue - minValue);
-        int x = (int)((width - valueWidth) * progress);
+        int x = (int) ((width - valueWidth) * progress);
         return new CGRect(x, 0, valueWidth, height);
     }
 

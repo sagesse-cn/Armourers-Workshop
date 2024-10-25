@@ -57,7 +57,7 @@ public class TextInputImpl {
         }
         // paste some text into selected range.
         if (InputManagerImpl.isPaste(key)) {
-             if (isEditable) {
+            if (isEditable) {
                 storage.insertText(InputManagerImpl.getClipboard());
             }
             return true;

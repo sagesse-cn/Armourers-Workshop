@@ -1,14 +1,12 @@
 package moe.plushie.armourers_workshop.builder.entity;
 
 import moe.plushie.armourers_workshop.core.entity.SeatEntity;
+import moe.plushie.armourers_workshop.core.math.OpenNearPlane;
 import moe.plushie.armourers_workshop.init.ModEntityTypes;
-import moe.plushie.armourers_workshop.utils.math.OpenNearPlane;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
-import net.minecraft.world.entity.EntityDimensions;
-import net.minecraft.world.entity.Pose;
 
 @Environment(EnvType.CLIENT)
 public class CameraEntity extends SeatEntity {

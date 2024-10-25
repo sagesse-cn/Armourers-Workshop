@@ -12,7 +12,6 @@ import moe.plushie.armourers_workshop.init.ModConstants;
 import moe.plushie.armourers_workshop.init.ModContext;
 import moe.plushie.armourers_workshop.init.ModLog;
 import moe.plushie.armourers_workshop.init.platform.EnvironmentManager;
-import moe.plushie.armourers_workshop.utils.TickUtils;
 import net.minecraft.world.entity.player.Player;
 
 import java.io.ObjectInputStream;

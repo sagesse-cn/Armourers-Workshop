@@ -1,7 +1,7 @@
 package moe.plushie.armourers_workshop.compatibility.extensions.net.minecraft.world.item.ItemStack;
 
 import moe.plushie.armourers_workshop.api.common.IDataComponentType;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
+import moe.plushie.armourers_workshop.core.utils.Objects;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
@@ -21,11 +21,11 @@ public class ComponentAPI {
 
     @Nullable
     public static <T> T get(@This ItemStack stack, IDataComponentType<? super T> key) {
-        return ObjectUtils.unsafeCast(key.get(stack));
+        return Objects.unsafeCast(key.get(stack));
     }
 
     public static <T> T getOrDefault(@This ItemStack stack, IDataComponentType<? super T> key, T defaultValue) {
-        return ObjectUtils.unsafeCast(key.getOrDefault(stack, defaultValue));
+        return Objects.unsafeCast(key.getOrDefault(stack, defaultValue));
     }
 
     public static <T> void remove(@This ItemStack stack, IDataComponentType<? super T> key) {

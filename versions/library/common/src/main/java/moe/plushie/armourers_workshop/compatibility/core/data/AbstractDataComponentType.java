@@ -3,7 +3,7 @@ package moe.plushie.armourers_workshop.compatibility.core.data;
 import com.mojang.serialization.Codec;
 import moe.plushie.armourers_workshop.api.annotation.Available;
 import moe.plushie.armourers_workshop.api.common.IDataComponentType;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
+import moe.plushie.armourers_workshop.core.utils.Objects;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
@@ -108,7 +108,7 @@ public class AbstractDataComponentType<T> implements DataComponentType<T>, IData
         @Nullable
         @Override
         public T get(ItemStack itemStack) {
-            CustomData customData = itemStack.get(target);
+            var customData = itemStack.get(target);
             if (customData != null) {
                 return decode(customData.getUnsafe());
             }
@@ -117,7 +117,7 @@ public class AbstractDataComponentType<T> implements DataComponentType<T>, IData
 
         @Override
         public T getOrDefault(ItemStack itemStack, T defaultValue) {
-            CustomData customData = itemStack.get(target);
+            var customData = itemStack.get(target);
             if (customData != null) {
                 return decode(customData.getUnsafe());
             }
@@ -130,11 +130,11 @@ public class AbstractDataComponentType<T> implements DataComponentType<T>, IData
         }
 
         private CompoundTag encode(T value) {
-            return ObjectUtils.unsafeCast(value);
+            return Objects.unsafeCast(value);
         }
 
         private T decode(CompoundTag tag) {
-            return ObjectUtils.unsafeCast(tag);
+            return Objects.unsafeCast(tag);
         }
     }
 }

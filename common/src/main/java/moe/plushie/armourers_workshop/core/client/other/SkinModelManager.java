@@ -1,10 +1,10 @@
 package moe.plushie.armourers_workshop.core.client.other;
 
 import moe.plushie.armourers_workshop.ArmourersWorkshop;
-import moe.plushie.armourers_workshop.api.skin.ISkinPartType;
+import moe.plushie.armourers_workshop.api.skin.part.ISkinPartType;
 import moe.plushie.armourers_workshop.core.client.bake.BakedItemModel;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPartTypes;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
+import moe.plushie.armourers_workshop.core.utils.Objects;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
@@ -43,8 +43,8 @@ public class SkinModelManager {
     }
 
     public BakedModel getModel(ISkinPartType partType, @Nullable BakedItemModel itemModel, ItemStack itemStack, @Nullable Level level, @Nullable Entity entity) {
-        var clientWorld = ObjectUtils.safeCast(level, ClientLevel.class);
-        var livingEntity = ObjectUtils.safeCast(entity, LivingEntity.class);
+        var clientWorld = Objects.safeCast(level, ClientLevel.class);
+        var livingEntity = Objects.safeCast(entity, LivingEntity.class);
         // we prefer to use the overridden item model.
         if (itemModel != null) {
             return itemModel.resolve(itemModel, itemStack, clientWorld, livingEntity, 0);

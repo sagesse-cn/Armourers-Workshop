@@ -14,7 +14,7 @@ public class EpicFightJointBinder extends JointModifier {
     }
 
     @Override
-    public IJointTransform apply(IJoint joint, IModel model, IJointTransform transform){
+    public IJointTransform apply(IJoint joint, IModel model, IJointTransform transform) {
         return poseStack -> {
             var transform1 = model.getAssociatedObject(EpicFlightTransformProvider.KEY).apply(name);
 

@@ -1,7 +1,7 @@
 package moe.plushie.armourers_workshop.init.mixin.fabric;
 
+import moe.plushie.armourers_workshop.core.utils.Objects;
 import moe.plushie.armourers_workshop.init.platform.fabric.event.ClientStartupEvents;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.main.GameConfig;
 import org.spongepowered.asm.mixin.Mixin;
@@ -14,7 +14,7 @@ public class FabricMinecraftMixin {
 
     @Inject(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;resizeDisplay()V"))
     private void aw2$didInit(GameConfig gameConfig, CallbackInfo ci) {
-        Minecraft minecraft = ObjectUtils.unsafeCast(this);
+        Minecraft minecraft = Objects.unsafeCast(this);
         ClientStartupEvents.CLIENT_WILL_START.invoker().onClientWillStart(minecraft);
     }
 }

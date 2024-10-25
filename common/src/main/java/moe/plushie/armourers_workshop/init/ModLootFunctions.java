@@ -3,8 +3,8 @@ package moe.plushie.armourers_workshop.init;
 import com.mojang.serialization.MapCodec;
 import moe.plushie.armourers_workshop.api.common.ILootFunction;
 import moe.plushie.armourers_workshop.api.common.ILootFunctionType;
+import moe.plushie.armourers_workshop.api.core.IRegistryHolder;
 import moe.plushie.armourers_workshop.api.registry.ILootFunctionTypeBuilder;
-import moe.plushie.armourers_workshop.api.registry.IRegistryHolder;
 import moe.plushie.armourers_workshop.init.function.SkinRandomlyFunction;
 import moe.plushie.armourers_workshop.init.platform.BuilderManager;
 

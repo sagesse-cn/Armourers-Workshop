@@ -2,12 +2,12 @@ package moe.plushie.armourers_workshop.compatibility.forge;
 
 import moe.plushie.armourers_workshop.api.annotation.Available;
 import moe.plushie.armourers_workshop.api.common.ICapabilityType;
+import moe.plushie.armourers_workshop.api.core.IRegistryHolder;
 import moe.plushie.armourers_workshop.api.core.IResourceLocation;
 import moe.plushie.armourers_workshop.api.data.IDataSerializerProvider;
-import moe.plushie.armourers_workshop.api.registry.IRegistryHolder;
 import moe.plushie.armourers_workshop.core.capability.SkinWardrobe;
 import moe.plushie.armourers_workshop.core.capability.SkinWardrobeStorage;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
+import moe.plushie.armourers_workshop.core.utils.Objects;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -38,7 +38,7 @@ public abstract class AbstractForgeCapabilityManager {
 
     public static <T> IRegistryHolder<ICapabilityType<T>> register(IResourceLocation registryName, Class<T> type, Function<Entity, Optional<T>> factory) {
         if (type == SkinWardrobe.class) {
-            return ObjectUtils.unsafeCast(createWardrobeCapabilityType(registryName, ObjectUtils.unsafeCast(factory)));
+            return Objects.unsafeCast(createWardrobeCapabilityType(registryName, Objects.unsafeCast(factory)));
         }
         throw new AssertionError();
     }

@@ -1,10 +1,10 @@
 package moe.plushie.armourers_workshop.core.armature;
 
-import moe.plushie.armourers_workshop.api.math.ITransformf;
-import moe.plushie.armourers_workshop.utils.math.Rectangle2f;
-import moe.plushie.armourers_workshop.utils.math.Rectangle3f;
-import moe.plushie.armourers_workshop.utils.math.Vector3f;
-import net.minecraft.core.Direction;
+import moe.plushie.armourers_workshop.api.core.math.ITransform3f;
+import moe.plushie.armourers_workshop.core.math.Rectangle2f;
+import moe.plushie.armourers_workshop.core.math.Rectangle3f;
+import moe.plushie.armourers_workshop.core.math.Vector3f;
+import moe.plushie.armourers_workshop.core.utils.OpenDirection;
 
 import java.util.List;
 import java.util.Map;
@@ -12,11 +12,11 @@ import java.util.Map;
 public class JointShape {
 
     private final Rectangle3f rect;
-    private final ITransformf transform;
+    private final ITransform3f transform;
     private final List<JointShape> children;
-    private final Map<Direction, Rectangle2f> uvs;
+    private final Map<OpenDirection, Rectangle2f> uvs;
 
-    public JointShape(Vector3f origin, Vector3f size, float inflate, ITransformf transform, Map<Direction, Rectangle2f> uvs, List<JointShape> children) {
+    public JointShape(Vector3f origin, Vector3f size, float inflate, ITransform3f transform, Map<OpenDirection, Rectangle2f> uvs, List<JointShape> children) {
         float x = origin.getX() - inflate;
         float y = origin.getY() - inflate;
         float z = origin.getZ() - inflate;
@@ -29,7 +29,7 @@ public class JointShape {
         this.uvs = uvs;
     }
 
-    public Rectangle2f getUV(Direction dir) {
+    public Rectangle2f getUV(OpenDirection dir) {
         if (uvs != null) {
             return uvs.get(dir);
         }
@@ -40,7 +40,7 @@ public class JointShape {
         return children;
     }
 
-    public ITransformf transform() {
+    public ITransform3f transform() {
         return transform;
     }
 

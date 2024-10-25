@@ -1,8 +1,8 @@
 package moe.plushie.armourers_workshop.builder.item;
 
+import moe.plushie.armourers_workshop.api.common.IBlockPaintViewer;
 import moe.plushie.armourers_workshop.api.common.IConfigurableToolProperty;
-import moe.plushie.armourers_workshop.api.painting.IBlockPaintViewer;
-import moe.plushie.armourers_workshop.api.registry.IRegistryHolder;
+import moe.plushie.armourers_workshop.api.core.IRegistryHolder;
 import moe.plushie.armourers_workshop.builder.blockentity.ArmourerBlockEntity;
 import moe.plushie.armourers_workshop.builder.item.impl.IPaintToolAction;
 import moe.plushie.armourers_workshop.builder.item.impl.IPaintToolSelector;
@@ -10,8 +10,8 @@ import moe.plushie.armourers_workshop.builder.item.option.PaintingToolOptions;
 import moe.plushie.armourers_workshop.builder.other.CubeChangesCollector;
 import moe.plushie.armourers_workshop.builder.other.CubePaintingEvent;
 import moe.plushie.armourers_workshop.builder.other.CubeSelector;
-import moe.plushie.armourers_workshop.core.data.color.PaintColor;
-import moe.plushie.armourers_workshop.core.skin.painting.SkinPaintTypes;
+import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
+import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintTypes;
 import moe.plushie.armourers_workshop.init.ModSounds;
 import moe.plushie.armourers_workshop.utils.ColorUtils;
 import moe.plushie.armourers_workshop.utils.TranslateUtils;
@@ -82,7 +82,7 @@ public class BlendingToolItem extends AbstractColoredToolItem implements IBlockP
                 }
             }
         });
-        var paintColor = PaintColor.of(ColorUtils.getAverageColor(colors), SkinPaintTypes.NORMAL);
+        var paintColor = SkinPaintColor.of(ColorUtils.getAverageColor(colors), SkinPaintTypes.NORMAL);
         return new CubePaintingEvent.BlendingAction(paintColor, intensity);
     }
 

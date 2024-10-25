@@ -6,9 +6,9 @@ import moe.plushie.armourers_workshop.core.data.transform.SkinItemTransforms;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPartTypes;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperties;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperty;
+import moe.plushie.armourers_workshop.core.utils.Objects;
 import moe.plushie.armourers_workshop.utils.DataSerializerKey;
 import moe.plushie.armourers_workshop.utils.DataTypeCodecs;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
 import net.minecraft.nbt.CompoundTag;
 
 import java.util.List;
@@ -150,7 +150,7 @@ public class SkinDocument {
 
     @Override
     public String toString() {
-        return ObjectUtils.makeDescription(this, "type", type);
+        return Objects.toString(this, "type", type);
     }
 
     private SkinDocumentNode _findNodeById(SkinDocumentNode parent, String id) {

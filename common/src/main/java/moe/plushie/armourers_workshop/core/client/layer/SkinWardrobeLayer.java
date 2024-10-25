@@ -2,7 +2,7 @@ package moe.plushie.armourers_workshop.core.client.layer;
 
 import moe.plushie.armourers_workshop.api.client.IBufferSource;
 import moe.plushie.armourers_workshop.api.client.model.IModel;
-import moe.plushie.armourers_workshop.api.math.IPoseStack;
+import moe.plushie.armourers_workshop.api.core.math.IPoseStack;
 import moe.plushie.armourers_workshop.compatibility.AbstractRenderLayer;
 import moe.plushie.armourers_workshop.compatibility.client.AbstractPoseStack;
 import moe.plushie.armourers_workshop.core.client.bake.BakedArmature;
@@ -12,11 +12,11 @@ import moe.plushie.armourers_workshop.core.client.other.SkinItemSource;
 import moe.plushie.armourers_workshop.core.client.other.SkinRenderType;
 import moe.plushie.armourers_workshop.core.client.skinrender.SkinRenderer;
 import moe.plushie.armourers_workshop.core.client.skinrender.patch.EpicFightEntityRendererPatch;
+import moe.plushie.armourers_workshop.core.math.Vector3f;
+import moe.plushie.armourers_workshop.core.utils.Objects;
 import moe.plushie.armourers_workshop.init.ModContributors;
 import moe.plushie.armourers_workshop.utils.ModelHolder;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
 import moe.plushie.armourers_workshop.utils.RenderSystem;
-import moe.plushie.armourers_workshop.utils.math.Vector3f;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.model.EntityModel;
@@ -59,7 +59,7 @@ public class SkinWardrobeLayer<T extends Entity, V extends EntityModel<T>, M ext
             return;
         }
         var poseStack1 = poseStack;
-        var epicFlightContext = ObjectUtils.safeCast(renderPatch, EpicFightEntityRendererPatch.class);
+        var epicFlightContext = Objects.safeCast(renderPatch, EpicFightEntityRendererPatch.class);
         if (epicFlightContext != null) {
             poseStack = epicFlightContext.getOverridePose();
         }

@@ -2,7 +2,7 @@ package moe.plushie.armourers_workshop.core.client.model;
 
 import moe.plushie.armourers_workshop.api.client.model.IModelPart;
 import moe.plushie.armourers_workshop.api.client.model.IModelPartPose;
-import moe.plushie.armourers_workshop.api.math.IPoseStack;
+import moe.plushie.armourers_workshop.api.core.math.IPoseStack;
 
 public class LinkedModelPartPose implements IModelPartPose {
 

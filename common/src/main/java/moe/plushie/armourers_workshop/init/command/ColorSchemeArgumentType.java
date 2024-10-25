@@ -9,32 +9,29 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import moe.plushie.armourers_workshop.api.common.IArgumentSerializer;
 import moe.plushie.armourers_workshop.api.common.IArgumentType;
 import moe.plushie.armourers_workshop.api.network.IFriendlyByteBuf;
-import moe.plushie.armourers_workshop.api.skin.ISkinPaintType;
-import moe.plushie.armourers_workshop.core.data.color.ColorScheme;
-import moe.plushie.armourers_workshop.core.data.color.PaintColor;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
+import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintScheme;
+import moe.plushie.armourers_workshop.core.utils.Collections;
 import net.minecraft.commands.CommandSourceStack;
 
 import java.util.Collection;
-import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-public class ColorSchemeArgumentType implements IArgumentType<ColorScheme> {
+public class ColorSchemeArgumentType implements IArgumentType<SkinPaintScheme> {
 
-    private static final Collection<String> EXAMPLES = ObjectUtils.map("<dyeIndex=[paintType:]#RRGGBB>", "<dyeIndex=[paintType:]R,G,B>");
+    private static final Collection<String> EXAMPLES = Collections.newList("<dyeIndex=[paintType:]#RRGGBB>", "<dyeIndex=[paintType:]R,G,B>");
 
     public ColorSchemeArgumentType() {
         super();
     }
 
-    public static ColorScheme getColorScheme(CommandContext<CommandSourceStack> context, String name) {
-        return context.getArgument(name, ColorScheme.class);
+    public static SkinPaintScheme getColorScheme(CommandContext<CommandSourceStack> context, String name) {
+        return context.getArgument(name, SkinPaintScheme.class);
     }
 
     @Override
-    public ColorScheme parse(final StringReader reader) throws CommandSyntaxException {
+    public SkinPaintScheme parse(final StringReader reader) throws CommandSyntaxException {
         var parser = new ColorSchemeParser(reader).parse();
-        var colorScheme = new ColorScheme();
+        var colorScheme = new SkinPaintScheme();
         for (var entry : parser.getProperties().entrySet()) {
             colorScheme.setColor(entry.getKey(), entry.getValue());
         }

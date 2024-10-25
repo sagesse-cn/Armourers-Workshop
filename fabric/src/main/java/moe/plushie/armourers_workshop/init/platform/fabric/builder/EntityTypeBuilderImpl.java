@@ -1,9 +1,9 @@
 package moe.plushie.armourers_workshop.init.platform.fabric.builder;
 
 import moe.plushie.armourers_workshop.api.common.IEntityType;
+import moe.plushie.armourers_workshop.api.core.IRegistryHolder;
 import moe.plushie.armourers_workshop.api.registry.IEntityTypeBuilder;
 import moe.plushie.armourers_workshop.api.registry.IRegistryBinder;
-import moe.plushie.armourers_workshop.api.registry.IRegistryHolder;
 import moe.plushie.armourers_workshop.compatibility.client.AbstractEntityRendererProvider;
 import moe.plushie.armourers_workshop.compatibility.fabric.AbstractFabricRegistries;
 import moe.plushie.armourers_workshop.init.environment.EnvironmentExecutor;

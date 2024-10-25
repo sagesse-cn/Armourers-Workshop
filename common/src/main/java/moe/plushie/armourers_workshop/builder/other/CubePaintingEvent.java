@@ -1,15 +1,15 @@
 package moe.plushie.armourers_workshop.builder.other;
 
+import moe.plushie.armourers_workshop.api.common.IPaintable;
 import moe.plushie.armourers_workshop.api.network.IFriendlyByteBuf;
-import moe.plushie.armourers_workshop.api.painting.IPaintColor;
-import moe.plushie.armourers_workshop.api.painting.IPaintable;
+import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintColor;
 import moe.plushie.armourers_workshop.builder.blockentity.BoundingBoxBlockEntity;
 import moe.plushie.armourers_workshop.builder.item.impl.IPaintToolAction;
 import moe.plushie.armourers_workshop.builder.item.impl.IPaintToolSelector;
-import moe.plushie.armourers_workshop.core.data.color.PaintColor;
 import moe.plushie.armourers_workshop.core.data.color.TexturedPaintColor;
+import moe.plushie.armourers_workshop.core.math.OpenMath;
+import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
 import moe.plushie.armourers_workshop.utils.ColorUtils;
-import moe.plushie.armourers_workshop.utils.MathUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Player;
@@ -109,8 +109,10 @@ public class CubePaintingEvent {
             action.encode(buffer);
         }
 
+        @Override
         public abstract void apply(Level level, BlockPos pos, Direction dir, IPaintable provider, @Nullable Player player);
 
+        @Override
         public Action build(Level level, BlockPos pos, Direction dir, IPaintable provider, @Nullable Player player) {
             return this;
         }
@@ -120,7 +122,7 @@ public class CubePaintingEvent {
 
     public static abstract class MixedAction extends Action {
 
-        public abstract IPaintColor resolve(BlockPos pos, Direction dir, IPaintColor sourceColor);
+        public abstract ISkinPaintColor resolve(BlockPos pos, Direction dir, ISkinPaintColor sourceColor);
 
         @Override
         public Action build(Level level, BlockPos pos, Direction dir, IPaintable provider, @Nullable Player player) {
@@ -147,23 +149,23 @@ public class CubePaintingEvent {
 
     public static class SetAction extends Action {
 
-        final IPaintColor destinationColor;
+        final ISkinPaintColor destinationColor;
 
         final boolean usePaintColor;
         final boolean usePaintType;
 
-        public SetAction(IPaintColor paintColor) {
+        public SetAction(ISkinPaintColor paintColor) {
             this(paintColor, true, true);
         }
 
-        public SetAction(IPaintColor paintColor, boolean usePaintColor, boolean usePaintType) {
+        public SetAction(ISkinPaintColor paintColor, boolean usePaintColor, boolean usePaintType) {
             this.destinationColor = paintColor;
             this.usePaintColor = usePaintColor;
             this.usePaintType = usePaintType;
         }
 
         public SetAction(IFriendlyByteBuf buffer) {
-            this.destinationColor = PaintColor.of(buffer.readInt());
+            this.destinationColor = SkinPaintColor.of(buffer.readInt());
             this.usePaintColor = buffer.readBoolean();
             this.usePaintType = buffer.readBoolean();
         }
@@ -182,7 +184,7 @@ public class CubePaintingEvent {
             }
         }
 
-        public IPaintColor resolve(BlockPos pos, Direction dir, IPaintable provider) {
+        public ISkinPaintColor resolve(BlockPos pos, Direction dir, IPaintable provider) {
             // when no needs processing required, ignore.
             if (usePaintType && usePaintColor) {
                 return destinationColor;
@@ -196,7 +198,7 @@ public class CubePaintingEvent {
             if (usePaintType) {
                 paintType = destinationColor.getPaintType();
             }
-            return PaintColor.of(paintColor, paintType);
+            return SkinPaintColor.of(paintColor, paintType);
         }
     }
 
@@ -216,9 +218,9 @@ public class CubePaintingEvent {
         public void apply(Level level, BlockPos pos, Direction dir, IPaintable provider, @Nullable Player player) {
             if (provider.shouldChangeColor(dir)) {
                 if (level.getBlockEntity(pos) instanceof BoundingBoxBlockEntity) {
-                    provider.setColor(dir, PaintColor.CLEAR);
+                    provider.setColor(dir, SkinPaintColor.CLEAR);
                 } else {
-                    provider.setColor(dir, PaintColor.WHITE);
+                    provider.setColor(dir, SkinPaintColor.WHITE);
                 }
             }
         }
@@ -242,10 +244,10 @@ public class CubePaintingEvent {
         }
 
         @Override
-        public IPaintColor resolve(BlockPos pos, Direction dir, IPaintColor sourceColor) {
+        public ISkinPaintColor resolve(BlockPos pos, Direction dir, ISkinPaintColor sourceColor) {
             int rgb = sourceColor.getRGB();
             rgb = ColorUtils.makeColorBighter(rgb, intensity);
-            return PaintColor.of(rgb, sourceColor.getPaintType());
+            return SkinPaintColor.of(rgb, sourceColor.getPaintType());
         }
     }
 
@@ -276,14 +278,14 @@ public class CubePaintingEvent {
         }
 
         @Override
-        public IPaintColor resolve(BlockPos pos, Direction dir, IPaintColor sourceColor) {
+        public ISkinPaintColor resolve(BlockPos pos, Direction dir, ISkinPaintColor sourceColor) {
             int rgb = sourceColor.getRGB();
             if (this.isShadeOnly) {
                 rgb = ColorUtils.addShadeNoise(rgb, intensity, getRandom(pos, dir));
             } else {
                 rgb = ColorUtils.addColorNoise(rgb, intensity, getRandom(pos, dir));
             }
-            return PaintColor.of(rgb, sourceColor.getPaintType());
+            return SkinPaintColor.of(rgb, sourceColor.getPaintType());
         }
 
         private Random getRandom(BlockPos pos, Direction dir) {
@@ -296,14 +298,14 @@ public class CubePaintingEvent {
 
     public static class HueAction extends MixedAction {
 
-        final IPaintColor destinationColor;
+        final ISkinPaintColor destinationColor;
 
         final boolean changeHue;
         final boolean changeSaturation;
         final boolean changeBrightness;
         final boolean changePaintType;
 
-        public HueAction(IPaintColor paintColor, boolean hue, boolean saturation, boolean brightness, boolean paintType) {
+        public HueAction(ISkinPaintColor paintColor, boolean hue, boolean saturation, boolean brightness, boolean paintType) {
             this.destinationColor = paintColor;
             this.changeHue = hue;
             this.changeSaturation = saturation;
@@ -312,7 +314,7 @@ public class CubePaintingEvent {
         }
 
         public HueAction(IFriendlyByteBuf buffer) {
-            this.destinationColor = PaintColor.of(buffer.readInt());
+            this.destinationColor = SkinPaintColor.of(buffer.readInt());
             this.changeHue = buffer.readBoolean();
             this.changeSaturation = buffer.readBoolean();
             this.changeBrightness = buffer.readBoolean();
@@ -329,7 +331,7 @@ public class CubePaintingEvent {
         }
 
         @Override
-        public IPaintColor resolve(BlockPos pos, Direction dir, IPaintColor sourceColor) {
+        public ISkinPaintColor resolve(BlockPos pos, Direction dir, ISkinPaintColor sourceColor) {
             float[] sourceHSB = ColorUtils.RGBtoHSB(sourceColor);
             float[] destinationHSB = ColorUtils.RGBtoHSB(destinationColor);
             if (!changeHue) {
@@ -343,24 +345,24 @@ public class CubePaintingEvent {
             }
             int rgb = ColorUtils.HSBtoRGB(destinationHSB);
             if (!changePaintType) {
-                return PaintColor.of(rgb, sourceColor.getPaintType());
+                return SkinPaintColor.of(rgb, sourceColor.getPaintType());
             }
-            return PaintColor.of(rgb, destinationColor.getPaintType());
+            return SkinPaintColor.of(rgb, destinationColor.getPaintType());
         }
     }
 
     public static class BlendingAction extends MixedAction {
 
         final int intensity;
-        final IPaintColor destinationColor;
+        final ISkinPaintColor destinationColor;
 
-        public BlendingAction(IPaintColor destinationColor, int intensity) {
+        public BlendingAction(ISkinPaintColor destinationColor, int intensity) {
             this.destinationColor = destinationColor;
             this.intensity = intensity;
         }
 
         public BlendingAction(IFriendlyByteBuf buffer) {
-            this.destinationColor = PaintColor.of(buffer.readInt());
+            this.destinationColor = SkinPaintColor.of(buffer.readInt());
             this.intensity = buffer.readInt();
         }
 
@@ -371,7 +373,7 @@ public class CubePaintingEvent {
         }
 
         @Override
-        public IPaintColor resolve(BlockPos pos, Direction dir, IPaintColor sourceColor) {
+        public ISkinPaintColor resolve(BlockPos pos, Direction dir, ISkinPaintColor sourceColor) {
             int destRGB = destinationColor.getRGB();
             int destR = ColorUtils.getRed(destRGB);
             int destG = ColorUtils.getGreen(destRGB);
@@ -384,17 +386,17 @@ public class CubePaintingEvent {
 
             float newR = destR / 100F * intensity;
             newR += oldR / 100F * (100 - intensity);
-            newR = MathUtils.clamp((int) newR, 0, 255);
+            newR = OpenMath.clamp((int) newR, 0, 255);
 
             float newG = destG / 100F * intensity;
             newG += oldG / 100F * (100 - intensity);
-            newG = MathUtils.clamp((int) newG, 0, 255);
+            newG = OpenMath.clamp((int) newG, 0, 255);
 
             float newB = destB / 100F * intensity;
             newB += oldB / 100F * (100 - intensity);
-            newB = MathUtils.clamp((int) newB, 0, 255);
+            newB = OpenMath.clamp((int) newB, 0, 255);
 
-            return PaintColor.of((int) newR, (int) newG, (int) newB, sourceColor.getPaintType());
+            return SkinPaintColor.of((int) newR, (int) newG, (int) newB, sourceColor.getPaintType());
         }
     }
 

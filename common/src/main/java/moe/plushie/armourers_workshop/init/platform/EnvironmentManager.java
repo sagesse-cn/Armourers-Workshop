@@ -3,6 +3,7 @@ package moe.plushie.armourers_workshop.init.platform;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import moe.plushie.armourers_workshop.api.config.IConfigSpec;
 import moe.plushie.armourers_workshop.api.core.IResourceManager;
+import moe.plushie.armourers_workshop.core.skin.serializer.SkinServerType;
 import moe.plushie.armourers_workshop.init.environment.EnvironmentPlatformType;
 import moe.plushie.armourers_workshop.init.environment.EnvironmentType;
 import moe.plushie.armourers_workshop.utils.Constants;
@@ -51,6 +52,16 @@ public class EnvironmentManager {
     @ExpectPlatform
     public static MinecraftServer getServer() {
         throw new AssertionError();
+    }
+
+    public static SkinServerType getServerType(MinecraftServer server) {
+        if (server == null) {
+            return SkinServerType.CLIENT;
+        }
+        if (server.isDedicatedServer()) {
+            return SkinServerType.DEDICATED_SERVER;
+        }
+        return SkinServerType.INTEGRATED_SERVER;
     }
 
     @Environment(EnvType.CLIENT)

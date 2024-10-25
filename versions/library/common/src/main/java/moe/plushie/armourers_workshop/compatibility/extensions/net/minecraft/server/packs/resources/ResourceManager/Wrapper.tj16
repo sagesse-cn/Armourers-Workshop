@@ -4,7 +4,7 @@ import moe.plushie.armourers_workshop.api.annotation.Available;
 import moe.plushie.armourers_workshop.api.core.IResource;
 import moe.plushie.armourers_workshop.api.core.IResourceLocation;
 import moe.plushie.armourers_workshop.api.core.IResourceManager;
-import moe.plushie.armourers_workshop.utils.ext.OpenResourceLocation;
+import moe.plushie.armourers_workshop.core.utils.OpenResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 
@@ -39,9 +39,9 @@ public class Wrapper {
                         if (!key.getNamespace().equals(target.getNamespace())) {
                             return;
                         }
-                        for (Resource resource : resourceManager.getResources(key)) {
+                        for (var resource : resourceManager.getResources(key)) {
                             try {
-                                IResourceLocation key1 = OpenResourceLocation.create(key);
+                                var key1 = OpenResourceLocation.create(key);
                                 consumer.accept(key1, wrap(key1, resource));
                             } catch (Exception exception) {
                                 exception.printStackTrace();

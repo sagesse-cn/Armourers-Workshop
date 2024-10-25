@@ -6,7 +6,7 @@ import moe.plushie.armourers_workshop.api.skin.property.ISkinProperties;
 import moe.plushie.armourers_workshop.api.skin.property.ISkinProperty;
 import moe.plushie.armourers_workshop.compatibility.api.AbstractItemTransformType;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperty;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
+import moe.plushie.armourers_workshop.core.utils.Collections;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.world.entity.Entity;
@@ -63,12 +63,12 @@ public class SkinOverriddenManager {
             .build();
 
     private static final ImmutableMap<ISkinProperty<Boolean>, Collection<ISkinProperty<Boolean>>> OVERRIDDEN_MODEL_TO_OVERLAY = new ImmutableMap.Builder<ISkinProperty<Boolean>, Collection<ISkinProperty<Boolean>>>()
-            .put(SkinProperty.OVERRIDE_MODEL_HEAD, ObjectUtils.map(SkinProperty.OVERRIDE_OVERLAY_HAT))
-            .put(SkinProperty.OVERRIDE_MODEL_CHEST, ObjectUtils.map(SkinProperty.OVERRIDE_OVERLAY_JACKET, SkinProperty.OVERRIDE_OVERLAY_CLOAK))
-            .put(SkinProperty.OVERRIDE_MODEL_LEFT_ARM, ObjectUtils.map(SkinProperty.OVERRIDE_OVERLAY_LEFT_SLEEVE))
-            .put(SkinProperty.OVERRIDE_MODEL_RIGHT_ARM, ObjectUtils.map(SkinProperty.OVERRIDE_OVERLAY_RIGHT_SLEEVE))
-            .put(SkinProperty.OVERRIDE_MODEL_LEFT_LEG, ObjectUtils.map(SkinProperty.OVERRIDE_OVERLAY_LEFT_PANTS))
-            .put(SkinProperty.OVERRIDE_MODEL_RIGHT_LEG, ObjectUtils.map(SkinProperty.OVERRIDE_OVERLAY_RIGHT_PANTS))
+            .put(SkinProperty.OVERRIDE_MODEL_HEAD, Collections.newList(SkinProperty.OVERRIDE_OVERLAY_HAT))
+            .put(SkinProperty.OVERRIDE_MODEL_CHEST, Collections.newList(SkinProperty.OVERRIDE_OVERLAY_JACKET, SkinProperty.OVERRIDE_OVERLAY_CLOAK))
+            .put(SkinProperty.OVERRIDE_MODEL_LEFT_ARM, Collections.newList(SkinProperty.OVERRIDE_OVERLAY_LEFT_SLEEVE))
+            .put(SkinProperty.OVERRIDE_MODEL_RIGHT_ARM, Collections.newList(SkinProperty.OVERRIDE_OVERLAY_RIGHT_SLEEVE))
+            .put(SkinProperty.OVERRIDE_MODEL_LEFT_LEG, Collections.newList(SkinProperty.OVERRIDE_OVERLAY_LEFT_PANTS))
+            .put(SkinProperty.OVERRIDE_MODEL_RIGHT_LEG, Collections.newList(SkinProperty.OVERRIDE_OVERLAY_RIGHT_PANTS))
             .build();
 
     private final HashSet<ISkinProperty<Boolean>> disabledProperties = new HashSet<>();

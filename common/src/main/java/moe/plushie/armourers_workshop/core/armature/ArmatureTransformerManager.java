@@ -3,12 +3,13 @@ package moe.plushie.armourers_workshop.core.armature;
 import moe.plushie.armourers_workshop.api.client.model.IModel;
 import moe.plushie.armourers_workshop.api.common.IEntityTypeProvider;
 import moe.plushie.armourers_workshop.api.core.IResourceLocation;
-import moe.plushie.armourers_workshop.api.data.IDataPackObject;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
+import moe.plushie.armourers_workshop.core.skin.serializer.io.IODataObject;
 import net.minecraft.world.entity.EntityType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
 
 public abstract class ArmatureTransformerManager {
 
@@ -25,7 +26,7 @@ public abstract class ArmatureTransformerManager {
         pendingBuilders.clear();
     }
 
-    public void append(IDataPackObject object, IResourceLocation location) {
+    public void append(IODataObject object, IResourceLocation location) {
         var builder = createBuilder(location);
         pendingBuilders.put(location, builder);
         builder.load(object);
@@ -87,7 +88,7 @@ public abstract class ArmatureTransformerManager {
             });
         }
         if (entityType != null) {
-            var resultBuilders = ObjectUtils.find(entityBuilders, entityType, IEntityTypeProvider::get);
+            var resultBuilders = find(entityBuilders, entityType, IEntityTypeProvider::get);
             if (resultBuilders != null) {
                 finalBuilders.addAll(resultBuilders);
             }
@@ -101,5 +102,14 @@ public abstract class ArmatureTransformerManager {
 
     public int getVersion() {
         return version;
+    }
+
+    public static <K, V, R> V find(Map<K, V> map, R req, Function<K, R> resolver) {
+        for (Map.Entry<K, V> entry : map.entrySet()) {
+            if (req.equals(resolver.apply(entry.getKey()))) {
+                return entry.getValue();
+            }
+        }
+        return null;
     }
 }

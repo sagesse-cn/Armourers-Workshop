@@ -2,8 +2,8 @@ package moe.plushie.armourers_workshop.init.platform.fabric.builder;
 
 import com.mojang.serialization.Codec;
 import moe.plushie.armourers_workshop.api.common.IDataComponentType;
+import moe.plushie.armourers_workshop.api.core.IRegistryHolder;
 import moe.plushie.armourers_workshop.api.registry.IDataComponentTypeBuilder;
-import moe.plushie.armourers_workshop.api.registry.IRegistryHolder;
 import moe.plushie.armourers_workshop.compatibility.core.data.AbstractDataComponentType;
 import moe.plushie.armourers_workshop.compatibility.fabric.AbstractFabricRegistries;
 import moe.plushie.armourers_workshop.init.ModConstants;

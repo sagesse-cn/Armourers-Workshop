@@ -1,6 +1,6 @@
 package moe.plushie.armourers_workshop.api.common;
 
-import moe.plushie.armourers_workshop.api.math.IVector3f;
+import moe.plushie.armourers_workshop.api.core.math.IVector3f;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;

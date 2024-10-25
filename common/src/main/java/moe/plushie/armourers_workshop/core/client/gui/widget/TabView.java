@@ -183,6 +183,7 @@ public class TabView extends UIView {
     public static class EntryBuilder {
 
         public final Entry view;
+
         public EntryBuilder(Entry view) {
             this.view = view;
         }

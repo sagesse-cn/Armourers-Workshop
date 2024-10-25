@@ -24,10 +24,10 @@ import moe.plushie.armourers_workshop.core.client.gui.widget.MenuWindow;
 import moe.plushie.armourers_workshop.core.client.gui.widget.SkinComboBox;
 import moe.plushie.armourers_workshop.core.client.gui.widget.SkinFileList;
 import moe.plushie.armourers_workshop.core.data.DataDomain;
-import moe.plushie.armourers_workshop.core.data.color.ColorScheme;
 import moe.plushie.armourers_workshop.core.data.ticket.Tickets;
 import moe.plushie.armourers_workshop.core.skin.SkinDescriptor;
 import moe.plushie.armourers_workshop.core.skin.SkinTypes;
+import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintScheme;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperty;
 import moe.plushie.armourers_workshop.core.skin.serializer.SkinFileOptions;
 import moe.plushie.armourers_workshop.init.ModLog;
@@ -544,7 +544,7 @@ public class SkinLibraryWindow extends MenuWindow<SkinLibraryMenu> implements UI
 //            source = DataDomain.DATABASE_LINK;
 //        }
         // check skin load status (only non-encrypted skin).
-        var descriptor = new SkinDescriptor(selectedFile.getSkinIdentifier(), selectedFile.getSkinType(), ColorScheme.EMPTY);
+        var descriptor = new SkinDescriptor(selectedFile.getSkinIdentifier(), selectedFile.getSkinType(), SkinPaintScheme.EMPTY);
         if (securityData == null) {
             var bakedSkin = SkinBakery.getInstance().loadSkin(descriptor, Tickets.RENDERER);
             if (bakedSkin == null) {

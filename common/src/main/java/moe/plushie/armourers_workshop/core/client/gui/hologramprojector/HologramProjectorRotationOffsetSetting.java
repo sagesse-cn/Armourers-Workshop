@@ -6,10 +6,10 @@ import com.apple.library.uikit.UICheckBox;
 import com.apple.library.uikit.UIControl;
 import com.apple.library.uikit.UISliderBox;
 import moe.plushie.armourers_workshop.core.blockentity.HologramProjectorBlockEntity;
+import moe.plushie.armourers_workshop.core.math.Vector3f;
 import moe.plushie.armourers_workshop.core.network.UpdateHologramProjectorPacket;
+import moe.plushie.armourers_workshop.core.utils.Objects;
 import moe.plushie.armourers_workshop.init.platform.NetworkManager;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
-import moe.plushie.armourers_workshop.utils.math.Vector3f;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
@@ -46,18 +46,18 @@ public class HologramProjectorRotationOffsetSetting extends HologramProjectorBas
 
     private void setup() {
         setupOption(11, 75, UpdateHologramProjectorPacket.Field.SHOWS_ROTATION_POINT, "showRotationPoint");
-        Vector3f value = field.get(entity);
-        sliderX = setupSlider(11, 30, "X: ", value.x());
-        sliderY = setupSlider(11, 45, "Y: ", value.y());
-        sliderZ = setupSlider(11, 60, "Z: ", value.z());
+        var value = field.get(entity);
+        sliderX = setupSlider(11, 30, "X: ", value.getX());
+        sliderY = setupSlider(11, 45, "Y: ", value.getY());
+        sliderZ = setupSlider(11, 60, "Z: ", value.getZ());
     }
 
     private void setupOption(int x, int y, UpdateHologramProjectorPacket.Field<Boolean> field, String key) {
-        UICheckBox checkBox = new UICheckBox(new CGRect(x, y, 178, 10));
+        var checkBox = new UICheckBox(new CGRect(x, y, 178, 10));
         checkBox.setTitle(getDisplayText(key));
         checkBox.setSelected(field.get(entity));
         checkBox.addTarget(this, UIControl.Event.VALUE_CHANGED, (self, c) -> {
-            UICheckBox checkBox1 = ObjectUtils.unsafeCast(c);
+            UICheckBox checkBox1 = Objects.unsafeCast(c);
             field.set(entity, checkBox1.isSelected());
         });
         addSubview(checkBox);

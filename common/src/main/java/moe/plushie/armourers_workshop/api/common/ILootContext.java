@@ -7,5 +7,6 @@ public interface ILootContext {
 
     <T> T getParameter(ILootContextParam<T> param);
 
-    @Nullable <T> T getOptionalParameter(ILootContextParam<T> param);
+    @Nullable
+    <T> T getOptionalParameter(ILootContextParam<T> param);
 }

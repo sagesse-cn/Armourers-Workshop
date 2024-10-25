@@ -2,12 +2,12 @@ package moe.plushie.armourers_workshop.builder.item;
 
 import moe.plushie.armourers_workshop.api.common.IItemColorProvider;
 import moe.plushie.armourers_workshop.api.common.ITooltipContext;
-import moe.plushie.armourers_workshop.api.painting.IPaintColor;
+import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintColor;
 import moe.plushie.armourers_workshop.compatibility.core.AbstractBlockItem;
 import moe.plushie.armourers_workshop.core.data.color.BlockPaintColor;
-import moe.plushie.armourers_workshop.core.data.color.PaintColor;
 import moe.plushie.armourers_workshop.core.item.impl.IPaintProvider;
 import moe.plushie.armourers_workshop.core.item.impl.IPaintToolPicker;
+import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
 import moe.plushie.armourers_workshop.init.ModDataComponents;
 import moe.plushie.armourers_workshop.utils.ColorUtils;
 import moe.plushie.armourers_workshop.utils.Constants;
@@ -70,7 +70,7 @@ public class SkinCubeItem extends AbstractBlockItem implements IItemColorProvide
     }
 
     @Override
-    public void setItemColor(ItemStack itemStack, IPaintColor paintColor) {
+    public void setItemColor(ItemStack itemStack, ISkinPaintColor paintColor) {
         var entityTag = new CompoundTag();
         var color = new BlockPaintColor(paintColor);
         var oldEntityTag = itemStack.get(ModDataComponents.BLOCK_ENTITY_DATA.get());
@@ -84,8 +84,8 @@ public class SkinCubeItem extends AbstractBlockItem implements IItemColorProvide
     }
 
     @Override
-    public IPaintColor getItemColor(ItemStack itemStack) {
-        return ColorUtils.getColorOrDefault(itemStack, PaintColor.WHITE);
+    public ISkinPaintColor getItemColor(ItemStack itemStack) {
+        return ColorUtils.getColorOrDefault(itemStack, SkinPaintColor.WHITE);
     }
 
     @Nullable

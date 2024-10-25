@@ -9,7 +9,7 @@ import net.minecraft.world.entity.LivingEntity;
 
 public interface AbstractEntityRendererLayerProvider extends AbstractEntityRendererProviderImpl {
 
-    <T extends LivingEntity, M extends HumanoidModel<T>, A extends HumanoidModel<T>> RenderLayer<T, M> createHumanoidArmorLayer(Context context, A innerModel, A outerModel) ;
+    <T extends LivingEntity, M extends HumanoidModel<T>, A extends HumanoidModel<T>> RenderLayer<T, M> createHumanoidArmorLayer(Context context, A innerModel, A outerModel);
 
     <T extends LivingEntity, M extends EntityModel<T> & ArmedModel> RenderLayer<T, M> createItemInHandLayer(Context context);
 

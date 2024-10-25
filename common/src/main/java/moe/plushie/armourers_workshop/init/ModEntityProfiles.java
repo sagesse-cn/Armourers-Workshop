@@ -3,12 +3,12 @@ package moe.plushie.armourers_workshop.init;
 import moe.plushie.armourers_workshop.api.common.IEntityTypeProvider;
 import moe.plushie.armourers_workshop.api.core.IResourceLocation;
 import moe.plushie.armourers_workshop.api.data.IDataPackBuilder;
-import moe.plushie.armourers_workshop.api.data.IDataPackObject;
+import moe.plushie.armourers_workshop.core.armature.ArmatureTransformerManager;
 import moe.plushie.armourers_workshop.core.data.DataPackType;
 import moe.plushie.armourers_workshop.core.data.slot.SkinSlotType;
 import moe.plushie.armourers_workshop.core.entity.EntityProfile;
+import moe.plushie.armourers_workshop.core.skin.serializer.io.IODataObject;
 import moe.plushie.armourers_workshop.init.platform.DataPackManager;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
 import moe.plushie.armourers_workshop.utils.SkinFileUtils;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -17,6 +17,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
@@ -58,7 +59,7 @@ public class ModEntityProfiles {
 
     @Nullable
     public static <T extends Entity> EntityProfile getProfile(EntityType<T> entityType) {
-        return ObjectUtils.find(ALL_ENTITIES, entityType, IEntityTypeProvider::get);
+        return ArmatureTransformerManager.find(ALL_ENTITIES, entityType, IEntityTypeProvider::get);
     }
 
     @Nullable
@@ -80,7 +81,7 @@ public class ModEntityProfiles {
         }
 
         @Override
-        public void append(IDataPackObject object, IResourceLocation location) {
+        public void append(IODataObject object, IResourceLocation location) {
             if (object.get("replace").boolValue()) {
                 locked = false;
                 supports.clear();
@@ -122,12 +123,12 @@ public class ModEntityProfiles {
 
         private static void freeze() {
             //
-            ObjectUtils.difference(ALL_ENTITY_PROFILES, PENDING_ENTITY_PROFILES, (registryName, entityProfile) -> {
+            difference(ALL_ENTITY_PROFILES, PENDING_ENTITY_PROFILES, (registryName, entityProfile) -> {
                 ModLog.debug("Unregistering Entity Profile '{}'", registryName);
             }, (registryName, entityProfile) -> {
                 ModLog.debug("Registering Entity Profile '{}'", registryName);
             });
-            ObjectUtils.difference(ALL_ENTITIES, PENDING_ENTITIES, dispatch(REMOVE_HANDLERS), dispatch(INSERT_HANDLERS));
+            difference(ALL_ENTITIES, PENDING_ENTITIES, dispatch(REMOVE_HANDLERS), dispatch(INSERT_HANDLERS));
             // apply changes
             ALL_ENTITIES.clear();
             ALL_ENTITY_PROFILES.clear();
@@ -135,6 +136,19 @@ public class ModEntityProfiles {
             ALL_ENTITY_PROFILES.putAll(PENDING_ENTITY_PROFILES);
             PENDING_ENTITIES.clear();
             PENDING_ENTITY_PROFILES.clear();
+        }
+
+
+        private static <K, V> void difference(Map<K, V> oldValue, Map<K, V> newValue, BiConsumer<K, V> removeHandler, BiConsumer<K, V> insertHandler) {
+            var insertEntities = new HashMap<K, V>();
+            var removedEntities = new HashMap<K, V>(oldValue);
+            newValue.forEach((key, value) -> {
+                if (removedEntities.remove(key) == null) {
+                    insertEntities.put(key, value);
+                }
+            });
+            removedEntities.forEach(removeHandler);
+            insertEntities.forEach(insertHandler);
         }
     }
 }

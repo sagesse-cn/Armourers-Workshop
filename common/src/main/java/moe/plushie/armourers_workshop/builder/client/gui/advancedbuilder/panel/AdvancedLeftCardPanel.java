@@ -8,12 +8,11 @@ import com.apple.library.uikit.UIControl;
 import com.apple.library.uikit.UILabel;
 import com.apple.library.uikit.UITextField;
 import com.apple.library.uikit.UIView;
-import com.google.common.base.Objects;
 import moe.plushie.armourers_workshop.api.data.IDataProperty;
 import moe.plushie.armourers_workshop.builder.client.gui.advancedbuilder.document.DocumentConnector;
 import moe.plushie.armourers_workshop.builder.client.gui.advancedbuilder.document.DocumentEditor;
 import moe.plushie.armourers_workshop.builder.data.properties.DataProperty;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
+import moe.plushie.armourers_workshop.core.utils.Objects;
 
 public class AdvancedLeftCardPanel extends UIView {
 
@@ -60,7 +59,7 @@ public class AdvancedLeftCardPanel extends UIView {
         });
         property.addObserver((newValue) -> {
             String oldValue = textField.text();
-            if (!Objects.equal(oldValue, newValue)) {
+            if (!Objects.equals(oldValue, newValue)) {
                 textField.setText(newValue);
             }
         });
@@ -74,7 +73,7 @@ public class AdvancedLeftCardPanel extends UIView {
         checkBox.setAutoresizingMask(AutoresizingMask.flexibleWidth | AutoresizingMask.flexibleTopMargin);
         checkBox.setSelected(property.getOrDefault(false));
         checkBox.addTarget(this, UIControl.Event.VALUE_CHANGED, (self, c) -> {
-            UICheckBox checkBox1 = ObjectUtils.unsafeCast(c);
+            UICheckBox checkBox1 = Objects.unsafeCast(c);
             property.set(checkBox1.isSelected());
         });
         addSubview(checkBox);

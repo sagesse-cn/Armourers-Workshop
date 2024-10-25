@@ -4,7 +4,7 @@ import moe.plushie.armourers_workshop.api.armature.IJoint;
 import moe.plushie.armourers_workshop.api.armature.IJointTransform;
 import moe.plushie.armourers_workshop.api.client.model.IModel;
 import moe.plushie.armourers_workshop.core.armature.JointModifier;
-import moe.plushie.armourers_workshop.utils.math.Vector3f;
+import moe.plushie.armourers_workshop.core.math.Vector3f;
 
 public class DefaultSkirtJointModifier extends JointModifier {
 

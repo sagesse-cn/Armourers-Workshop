@@ -1,6 +1,5 @@
 package com.apple.library.quartzcore;
 
-import com.apple.library.impl.ObjectUtilsImpl;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
@@ -61,9 +60,8 @@ public class CATransaction {
     }
 
     public static void _removeAnimation(CAAnimation animation, String keyPath) {
-        PassData pass = ObjectUtilsImpl.safeCast(animation._animationData(), PassData.class);
-        if (pass != null) {
-            pass.remove(animation);
+        if (animation._animationData() instanceof PassData passData) {
+            passData.remove(animation);
         }
     }
 
@@ -117,7 +115,7 @@ public class CATransaction {
                 double t = animation._currentTime(tp);
                 double dur = animation.duration();
                 if (t >= dur) {
-                    it.getRight().run();
+                    it.getValue().run();
                     iterator.remove();
                 }
             }

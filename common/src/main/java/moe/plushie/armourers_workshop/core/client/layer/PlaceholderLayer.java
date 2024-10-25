@@ -1,7 +1,7 @@
 package moe.plushie.armourers_workshop.core.client.layer;
 
 import moe.plushie.armourers_workshop.api.client.IBufferSource;
-import moe.plushie.armourers_workshop.api.math.IPoseStack;
+import moe.plushie.armourers_workshop.api.core.math.IPoseStack;
 import moe.plushie.armourers_workshop.compatibility.AbstractRenderLayer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;

@@ -7,8 +7,8 @@ import com.apple.library.coregraphics.CGSize;
 import com.apple.library.foundation.NSString;
 import com.apple.library.uikit.UIControl;
 import com.apple.library.uikit.UIEvent;
+import moe.plushie.armourers_workshop.core.math.OpenMath;
 import moe.plushie.armourers_workshop.init.ModTextures;
-import moe.plushie.armourers_workshop.utils.MathUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
@@ -47,8 +47,8 @@ public class InventoryBox extends UIControl {
         int v = 0;
         float width = bounds().width;
         float height = bounds().height;
-        float hoverWidth = MathUtils.clamp(mouseOffset.x, 0, width);
-        float hoverHeight = MathUtils.clamp(mouseOffset.y, 0, height);
+        float hoverWidth = OpenMath.clamp(mouseOffset.x, 0, width);
+        float hoverHeight = OpenMath.clamp(mouseOffset.y, 0, height);
         for (int iy = 0; iy < height; iy += itemSize.height) {
             for (int ix = 0; ix < width; ix += itemSize.width) {
                 int iu = u;

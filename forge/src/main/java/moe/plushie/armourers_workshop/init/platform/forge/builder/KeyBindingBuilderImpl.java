@@ -5,9 +5,9 @@ import moe.plushie.armourers_workshop.api.client.key.IKeyBinding;
 import moe.plushie.armourers_workshop.api.client.key.IKeyModifier;
 import moe.plushie.armourers_workshop.api.registry.IKeyBindingBuilder;
 import moe.plushie.armourers_workshop.compatibility.forge.AbstractForgeKeyMapping;
+import moe.plushie.armourers_workshop.core.utils.Objects;
 import moe.plushie.armourers_workshop.init.platform.EventManager;
 import moe.plushie.armourers_workshop.init.platform.event.client.RenderFrameEvent;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
 import moe.plushie.armourers_workshop.utils.ext.OpenKeyModifier;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.network.chat.Component;
@@ -69,7 +69,7 @@ public class KeyBindingBuilderImpl<T extends IKeyBinding> implements IKeyBinding
                 return binding.getOpenKeyModifier();
             }
         };
-        return ObjectUtils.unsafeCast(binding1);
+        return Objects.unsafeCast(binding1);
     }
 
     public static class OnceKeyBinding extends AbstractForgeKeyMapping {

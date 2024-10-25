@@ -10,7 +10,6 @@ import moe.plushie.armourers_workshop.compatibility.client.AbstractRenderSheet;
 import moe.plushie.armourers_workshop.core.client.bake.BakedSkin;
 import moe.plushie.armourers_workshop.core.client.shader.ShaderVertexMerger;
 import moe.plushie.armourers_workshop.core.client.shader.ShaderVertexObject;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.RenderType;
@@ -55,8 +54,7 @@ public class SkinVertexBufferBuilder implements IBufferSource {
 
     private static void attach(IBufferSource bufferSource, RenderType renderType, Runnable action) {
         var buffer = bufferSource.getBuffer(renderType);
-        var attachable = ObjectUtils.safeCast(renderType, IRenderAttachable.class);
-        if (attachable != null) {
+        if (renderType instanceof IRenderAttachable attachable) {
             attachable.attachRenderTask(buffer, action);
         }
     }

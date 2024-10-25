@@ -5,9 +5,10 @@ import moe.plushie.armourers_workshop.api.core.IResourceLocation;
 import moe.plushie.armourers_workshop.api.permission.IPermissionContext;
 import moe.plushie.armourers_workshop.api.permission.IPermissionNode;
 import moe.plushie.armourers_workshop.api.registry.IPermissionNodeBuilder;
+import moe.plushie.armourers_workshop.core.utils.Objects;
+import moe.plushie.armourers_workshop.core.utils.OpenResourceLocation;
 import moe.plushie.armourers_workshop.init.ModConstants;
 import moe.plushie.armourers_workshop.init.ModLog;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
 import net.minecraft.network.chat.Component;
 
 public class PermissionNodeBuilderImpl<T extends IPermissionNode> implements IPermissionNodeBuilder<T> {
@@ -19,12 +20,12 @@ public class PermissionNodeBuilderImpl<T extends IPermissionNode> implements IPe
 
     @Override
     public T build(String name) {
-        IResourceLocation registryName = ModConstants.key(name);
+        var registryName = ModConstants.key(name);
         ModLog.debug("Registering Permission '{}'", registryName);
-        return ObjectUtils.unsafeCast(makeNode(registryName));
+        return Objects.unsafeCast(makeNode(registryName));
     }
 
-    private IPermissionNode makeNode(IResourceLocation registryName) {
+    private IPermissionNode makeNode(OpenResourceLocation registryName) {
         String key = registryName.toLanguageKey();
         return new IPermissionNode() {
 

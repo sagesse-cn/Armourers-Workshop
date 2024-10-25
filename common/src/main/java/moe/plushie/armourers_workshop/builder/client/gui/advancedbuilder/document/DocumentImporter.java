@@ -5,18 +5,18 @@ import com.apple.library.uikit.UIColor;
 import moe.plushie.armourers_workshop.api.common.IResultHandler;
 import moe.plushie.armourers_workshop.api.skin.ISkinType;
 import moe.plushie.armourers_workshop.core.client.gui.notification.UserNotificationCenter;
-import moe.plushie.armourers_workshop.core.data.transform.SkinTransform;
+import moe.plushie.armourers_workshop.core.math.OpenTransform3f;
+import moe.plushie.armourers_workshop.core.math.Vector3f;
 import moe.plushie.armourers_workshop.core.skin.Skin;
 import moe.plushie.armourers_workshop.core.skin.SkinTypes;
 import moe.plushie.armourers_workshop.core.skin.exception.TranslatableException;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPart;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperty;
 import moe.plushie.armourers_workshop.core.skin.serializer.SkinSerializer;
-import moe.plushie.armourers_workshop.core.skin.transformer.blockbench.BlockBenchExporter;
-import moe.plushie.armourers_workshop.core.skin.transformer.blockbench.BlockBenchPack;
-import moe.plushie.armourers_workshop.core.skin.transformer.blockbench.BlockBenchPackReader;
+import moe.plushie.armourers_workshop.core.skin.serializer.importer.blockbench.BlockBenchExporter;
+import moe.plushie.armourers_workshop.core.skin.serializer.importer.blockbench.BlockBenchPack;
+import moe.plushie.armourers_workshop.core.skin.serializer.importer.blockbench.BlockBenchPackReader;
 import moe.plushie.armourers_workshop.init.environment.EnvironmentExecutor;
-import moe.plushie.armourers_workshop.utils.math.Vector3f;
 import net.minecraft.client.Minecraft;
 
 import java.io.File;
@@ -150,7 +150,7 @@ public class DocumentImporter {
 
     private void extractToRootPart(SkinPart part, Stack<SkinPart> parent, List<SkinPart> rootParts) {
         // search all child part.
-        var children = new ArrayList<>(part.getParts());
+        var children = new ArrayList<>(part.getChildren());
         for (var child : children) {
             parent.push(part);
             extractToRootPart(child, parent, rootParts);
@@ -169,13 +169,13 @@ public class DocumentImporter {
             var builder = new SkinPart.Builder(entry.getType());
             builder.name(part.getName());
             builder.transform(convertToLocal(part, entry, parent));
-            builder.cubes(part.getCubeData());
-            builder.children(part.getParts());
+            builder.geometries(part.getGeometries());
+            builder.children(part.getChildren());
             rootParts.add(builder.build());
         }
     }
 
-    private SkinTransform convertToLocal(SkinPart part, DocumentBoneMapper.Entry entry, Stack<SkinPart> parent) {
+    private OpenTransform3f convertToLocal(SkinPart part, DocumentBoneMapper.Entry entry, Stack<SkinPart> parent) {
         // TODO: @SAGESSE add built-in pivot support.
         //var origin = getParentOrigin(parent).adding(transform.getTranslate());
         //translate = origin;
@@ -183,11 +183,11 @@ public class DocumentImporter {
         //pivot = transform.getPivot();
         var translate = entry.getOffset(); // 0 + offset
         var rotation = Vector3f.ZERO; // never use rotation on the built-in part type.
-        return SkinTransform.create(translate, rotation, Vector3f.ONE);
+        return OpenTransform3f.create(translate, rotation, Vector3f.ONE);
     }
 
     private Vector3f getPackOrigin(BlockBenchPack pack) {
-        // relocation the block model origin to the center(8, 8, 8).
+        // relocation the block model origin to the bottom-center(0, 8, 0).
         if (targetType == SkinTypes.BLOCK) {
             // work in java_block.
             if (pack.getFormat().equals("java_block")) {
@@ -206,7 +206,7 @@ public class DocumentImporter {
     private Vector3f getParentOrigin(Stack<SkinPart> parent) {
         var origin = Vector3f.ZERO;
         for (var part : parent) {
-            if (part.getTransform() instanceof SkinTransform transform) {
+            if (part.getTransform() instanceof OpenTransform3f transform) {
                 origin = origin.adding(transform.getTranslate());
             }
         }

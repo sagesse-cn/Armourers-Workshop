@@ -1,6 +1,6 @@
 package moe.plushie.armourers_workshop.library.data.impl;
 
-import moe.plushie.armourers_workshop.api.data.IDataPackObject;
+import moe.plushie.armourers_workshop.core.skin.serializer.io.IODataObject;
 
 import java.util.ArrayList;
 
@@ -10,7 +10,7 @@ public class SearchResult {
     private int totalResults;
     private final ArrayList<ServerSkin> skins = new ArrayList<>();
 
-    public static SearchResult fromJSON(IDataPackObject json) {
+    public static SearchResult fromJSON(IODataObject json) {
         SearchResult result = new SearchResult();
         json.get("results").allValues().forEach(it -> result.skins.add(new ServerSkin(it)));
         result.totalPages = json.get("totalPages").intValue();

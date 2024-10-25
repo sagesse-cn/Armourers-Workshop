@@ -33,7 +33,7 @@ public class StringEncoderImpl {
     }
 
     private void flush() {
-        String value = builder.toString();
+        var value = builder.toString();
         component.append(Component.literal(value).setStyle(style));
     }
 }

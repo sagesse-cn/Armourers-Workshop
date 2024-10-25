@@ -1,6 +1,6 @@
 package moe.plushie.armourers_workshop.core.client.gui.widget;
 
-import moe.plushie.armourers_workshop.utils.MathUtils;
+import moe.plushie.armourers_workshop.core.math.OpenMath;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -46,7 +46,7 @@ public class TreeNode {
             return;
         }
         children.remove(index);
-        children.add(MathUtils.clamp(toIndex, 0, children.size()), node);
+        children.add(OpenMath.clamp(toIndex, 0, children.size()), node);
         setNeedsDisplay();
     }
 

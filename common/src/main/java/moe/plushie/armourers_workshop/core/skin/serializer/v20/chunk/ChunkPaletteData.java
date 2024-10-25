@@ -1,16 +1,16 @@
 package moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk;
 
-import moe.plushie.armourers_workshop.api.common.ITextureProvider;
-import moe.plushie.armourers_workshop.api.painting.IPaintColor;
-import moe.plushie.armourers_workshop.api.skin.ISkinPaintType;
-import moe.plushie.armourers_workshop.core.data.color.PaintColor;
-import moe.plushie.armourers_workshop.core.skin.painting.SkinPaintTypes;
+import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintColor;
+import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintType;
+import moe.plushie.armourers_workshop.api.skin.paint.texture.ITextureProvider;
+import moe.plushie.armourers_workshop.core.math.Vector2f;
+import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
+import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintTypes;
+import moe.plushie.armourers_workshop.core.skin.paint.texture.TextureOptions;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IInputStream;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IOutputStream;
-import moe.plushie.armourers_workshop.core.texture.TextureOptions;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
-import moe.plushie.armourers_workshop.utils.SliceRandomlyAccessor;
-import moe.plushie.armourers_workshop.utils.math.Vector2f;
+import moe.plushie.armourers_workshop.core.utils.Collections;
+import moe.plushie.armourers_workshop.core.utils.OpenSliceAccessor;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -19,10 +19,10 @@ import java.util.LinkedHashMap;
 
 public class ChunkPaletteData implements ChunkVariable {
 
-    private IPaintColor[] paintColors;
+    private SkinPaintColor[] paintColors;
     private final LinkedHashMap<Integer, ChunkColorSection> sections = new LinkedHashMap<>();
 
-    private SliceRandomlyAccessor<IPaintColor> paintColorAccessor;
+    private OpenSliceAccessor<SkinPaintColor> paintColorAccessor;
 
     private int freezeCount = 0;
 
@@ -49,14 +49,14 @@ public class ChunkPaletteData implements ChunkVariable {
         return _mutableSectionAt(SkinPaintTypes.NORMAL, 3).putColor(rawValue);
     }
 
-    public ChunkColorSection.ColorRef writeColor(IPaintColor color) {
+    public ChunkColorSection.ColorRef writeColor(ISkinPaintColor color) {
         int rawValue = color.getRawValue();
         return _mutableSectionAt(color.getPaintType(), 3).putColor(rawValue);
     }
 
-    public IPaintColor readColor(int index) {
+    public SkinPaintColor readColor(int index) {
         if (paintColors == null || paintColorAccessor == null) {
-            return PaintColor.WHITE;
+            return SkinPaintColor.WHITE;
         }
         var paintColor = paintColors[index];
         if (paintColor != null) {
@@ -67,11 +67,11 @@ public class ChunkPaletteData implements ChunkVariable {
         return paintColor;
     }
 
-    public IPaintColor readColor(ChunkInputStream stream) throws IOException {
+    public ISkinPaintColor readColor(ChunkInputStream stream) throws IOException {
         return readColor(ChunkColorSection.ColorRef.readFromStream(colorUsedIndex, stream));
     }
 
-    public IPaintColor readColorFromStream(byte[] bytes, int offset) {
+    public ISkinPaintColor readColorFromStream(byte[] bytes, int offset) {
         return readColor(ChunkColorSection.ColorRef.readFromStream(colorUsedIndex, offset, bytes));
     }
 
@@ -141,8 +141,8 @@ public class ChunkPaletteData implements ChunkVariable {
             }
         }
         // yep, we have a fixed color table.
-        paintColors = new IPaintColor[colorOffset];
-        paintColorAccessor = new SliceRandomlyAccessor<>(ObjectUtils.map(sections.values(), ColorAccessor::new));
+        paintColors = new SkinPaintColor[colorOffset];
+        paintColorAccessor = new OpenSliceAccessor<>(Collections.compactMap(sections.values(), ColorAccessor::new));
         // regenerate index use info.
         colorUsedIndex = flags & 0x0f;
         textureUsedIndex = (flags >> 4) & 0x0f;
@@ -217,7 +217,7 @@ public class ChunkPaletteData implements ChunkVariable {
         return 4;
     }
 
-    public static class ColorAccessor implements SliceRandomlyAccessor.Provider<IPaintColor> {
+    public static class ColorAccessor implements OpenSliceAccessor.Provider<SkinPaintColor> {
 
         private final ChunkColorSection section;
 
@@ -226,7 +226,7 @@ public class ChunkPaletteData implements ChunkVariable {
         }
 
         @Override
-        public IPaintColor get(int index) {
+        public SkinPaintColor get(int index) {
             return section.getColor(index);
         }
 

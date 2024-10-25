@@ -18,8 +18,8 @@ import com.apple.library.uikit.UIMenuController;
 import com.apple.library.uikit.UIMenuControllerDelegate;
 import com.apple.library.uikit.UIMenuItem;
 import com.apple.library.uikit.UIScrollView;
+import moe.plushie.armourers_workshop.core.utils.Objects;
 import moe.plushie.armourers_workshop.init.ModTextures;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -255,7 +255,7 @@ public class TreeView extends UIScrollView implements UIMenuControllerDelegate {
                 return;
             }
             // switch selected status if needed.
-            TreeView treeView = ObjectUtils.safeCast(superview(), TreeView.class);
+            var treeView = Objects.safeCast(superview(), TreeView.class);
             if (treeView != null) {
                 treeView.selectNode(node);
                 SoundManagerImpl.click();

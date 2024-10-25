@@ -2,8 +2,8 @@ package moe.plushie.armourers_workshop.compatibility.extensions.net.minecraft.cl
 
 import moe.plushie.armourers_workshop.api.annotation.Available;
 import moe.plushie.armourers_workshop.api.client.model.IModelBabyPose;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
-import moe.plushie.armourers_workshop.utils.math.Vector3f;
+import moe.plushie.armourers_workshop.core.utils.Objects;
+import moe.plushie.armourers_workshop.core.math.Vector3f;
 import net.minecraft.client.model.AgeableListModel;
 import net.minecraft.client.model.Model;
 
@@ -15,7 +15,7 @@ import manifold.ext.rt.api.This;
 public class BabyPose {
 
     public static IModelBabyPose getBabyPose(@This Model model) {
-        var model1 = ObjectUtils.safeCast(model, AgeableListModel.class);
+        var model1 = Objects.safeCast(model, AgeableListModel.class);
         if (model1 == null) {
             return null;
         }

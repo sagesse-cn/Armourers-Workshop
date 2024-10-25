@@ -1,5 +1,7 @@
 package moe.plushie.armourers_workshop.api.skin;
 
+import moe.plushie.armourers_workshop.api.skin.part.ISkinPart;
+
 import java.util.List;
 
 public interface ISkin {

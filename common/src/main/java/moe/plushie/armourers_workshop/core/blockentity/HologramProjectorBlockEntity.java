@@ -6,15 +6,15 @@ import moe.plushie.armourers_workshop.core.block.HologramProjectorBlock;
 import moe.plushie.armourers_workshop.core.client.bake.SkinBakery;
 import moe.plushie.armourers_workshop.core.client.other.SkinItemSource;
 import moe.plushie.armourers_workshop.core.data.ticket.Tickets;
+import moe.plushie.armourers_workshop.core.math.OpenMath;
+import moe.plushie.armourers_workshop.core.math.OpenQuaternion3f;
+import moe.plushie.armourers_workshop.core.math.Rectangle3f;
+import moe.plushie.armourers_workshop.core.math.Vector3f;
 import moe.plushie.armourers_workshop.core.skin.SkinDescriptor;
 import moe.plushie.armourers_workshop.utils.Constants;
 import moe.plushie.armourers_workshop.utils.DataSerializerKey;
 import moe.plushie.armourers_workshop.utils.DataTypeCodecs;
-import moe.plushie.armourers_workshop.utils.MathUtils;
 import moe.plushie.armourers_workshop.utils.NonNullItemList;
-import moe.plushie.armourers_workshop.utils.math.OpenQuaternionf;
-import moe.plushie.armourers_workshop.utils.math.Rectangle3f;
-import moe.plushie.armourers_workshop.utils.math.Vector3f;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
@@ -24,6 +24,8 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.AttachFace;
 import org.apache.commons.lang3.tuple.Pair;
+
+import java.util.Map;
 
 public class HologramProjectorBlockEntity extends RotableContainerBlockEntity {
 
@@ -36,7 +38,7 @@ public class HologramProjectorBlockEntity extends RotableContainerBlockEntity {
     private static final DataSerializerKey<Float> SCALE_KEY = DataSerializerKey.create("Scale", DataTypeCodecs.FLOAT, 1.0f);
     private static final DataSerializerKey<Integer> POWER_MODE_KEY = DataSerializerKey.create("PowerMode", DataTypeCodecs.INT, 0);
 
-    private static final ImmutableMap<?, Vector3f> FACING_TO_ROT = new ImmutableMap.Builder<Object, Vector3f>()
+    private static final Map<?, Vector3f> FACING_TO_ROT = new ImmutableMap.Builder<Object, Vector3f>()
             .put(Pair.of(AttachFace.CEILING, Direction.EAST), new Vector3f(180, 270, 0))
             .put(Pair.of(AttachFace.CEILING, Direction.NORTH), new Vector3f(180, 180, 0))
             .put(Pair.of(AttachFace.CEILING, Direction.WEST), new Vector3f(180, 90, 0))
@@ -53,7 +55,7 @@ public class HologramProjectorBlockEntity extends RotableContainerBlockEntity {
 
     private final NonNullItemList items = new NonNullItemList(1);
 
-    private OpenQuaternionf renderRotations;
+    private OpenQuaternion3f renderRotations;
 
     private int powerMode = 0;
     private float modelScale = 1.0f;
@@ -236,14 +238,14 @@ public class HologramProjectorBlockEntity extends RotableContainerBlockEntity {
 
     @Override
     @Environment(EnvType.CLIENT)
-    public OpenQuaternionf getRenderRotations(BlockState blockState) {
+    public OpenQuaternion3f getRenderRotations(BlockState blockState) {
         if (renderRotations != null) {
             return renderRotations;
         }
         var face = blockState.getOptionalValue(HologramProjectorBlock.FACE).orElse(AttachFace.FLOOR);
         var facing = blockState.getOptionalValue(HologramProjectorBlock.FACING).orElse(Direction.NORTH);
         var rot = FACING_TO_ROT.getOrDefault(Pair.of(face, facing), Vector3f.ZERO);
-        renderRotations = new OpenQuaternionf(rot.getX(), rot.getY(), rot.getZ(), true);
+        renderRotations = new OpenQuaternion3f(rot.getX(), rot.getY(), rot.getZ(), true);
         return renderRotations;
     }
 
@@ -265,17 +267,17 @@ public class HologramProjectorBlockEntity extends RotableContainerBlockEntity {
         var rotationRadius = 0.0f;
 
         if (!rect.equals(Rectangle3f.ZERO)) {
-            var x = MathUtils.absMax(rect.getMinX(), rect.getMaxX());
-            var y = MathUtils.absMax(rect.getMinY(), rect.getMaxY());
-            var z = MathUtils.absMax(rect.getMinZ(), rect.getMaxZ());
-            modelRadius = MathUtils.sqrt(x * x + y * y + z * z);
+            float x = Math.max(Math.abs(rect.getMinX()), Math.abs(rect.getMaxX()));
+            float y = Math.max(Math.abs(rect.getMinY()), Math.abs(rect.getMaxY()));
+            float z = Math.max(Math.abs(rect.getMinZ()), Math.abs(rect.getMaxZ()));
+            modelRadius = OpenMath.sqrt(x * x + y * y + z * z);
         }
 
         if (!rotationOffset.equals(Vector3f.ZERO)) {
             var x = Math.abs(rotationOffset.getX());
             var y = Math.abs(rotationOffset.getY());
             var z = Math.abs(rotationOffset.getZ());
-            rotationRadius = MathUtils.sqrt(x * x + y * y + z * z);
+            rotationRadius = OpenMath.sqrt(x * x + y * y + z * z);
         }
 
         var tr = (rotationRadius + modelRadius) * scale;

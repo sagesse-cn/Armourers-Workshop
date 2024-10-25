@@ -153,7 +153,7 @@ public interface ViewImpl {
             if (tx != 0 || ty != 0) {
                 translate.concat(CGAffineTransform.createTranslation(-tx, -ty));
             }
-            if (it.getRight()) {
+            if (it.getValue()) {
                 translate.invert();
             }
             // the first eval, we will get the offset from current view to common view,

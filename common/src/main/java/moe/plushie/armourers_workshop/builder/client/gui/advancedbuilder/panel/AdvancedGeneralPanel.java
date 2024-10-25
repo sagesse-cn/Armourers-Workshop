@@ -4,19 +4,16 @@ import com.apple.library.coregraphics.CGAffineTransform;
 import com.apple.library.coregraphics.CGRect;
 import com.apple.library.uikit.UIImage;
 import com.apple.library.uikit.UIView;
-import moe.plushie.armourers_workshop.api.action.ICanOverride;
-import moe.plushie.armourers_workshop.builder.blockentity.AdvancedBuilderBlockEntity;
+import moe.plushie.armourers_workshop.api.skin.part.features.ICanOverride;
 import moe.plushie.armourers_workshop.builder.client.gui.advancedbuilder.AdvancedBuilderWindow;
 import moe.plushie.armourers_workshop.builder.client.gui.advancedbuilder.document.DocumentConnector;
 import moe.plushie.armourers_workshop.builder.client.gui.advancedbuilder.document.DocumentEditor;
 import moe.plushie.armourers_workshop.builder.client.gui.widget.PartPickerView;
 import moe.plushie.armourers_workshop.builder.network.AdvancedImportPacket;
 import moe.plushie.armourers_workshop.core.skin.SkinTypes;
-import moe.plushie.armourers_workshop.core.skin.document.SkinDocumentNode;
-import moe.plushie.armourers_workshop.core.skin.part.SkinPartTypes;
+import moe.plushie.armourers_workshop.core.utils.Objects;
 import moe.plushie.armourers_workshop.init.ModTextures;
 import moe.plushie.armourers_workshop.init.platform.NetworkManager;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
 
 public class AdvancedGeneralPanel extends AdvancedPanel {
 
@@ -68,7 +65,7 @@ public class AdvancedGeneralPanel extends AdvancedPanel {
 
     private void pickAction() {
         var node = connector.getNode();
-        var window = ObjectUtils.safeCast(window(), AdvancedBuilderWindow.class);
+        var window = Objects.safeCast(window(), AdvancedBuilderWindow.class);
         if (node == null || window == null) {
             return;
         }

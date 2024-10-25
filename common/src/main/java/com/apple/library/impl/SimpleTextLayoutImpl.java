@@ -6,6 +6,7 @@ import com.apple.library.coregraphics.CGSize;
 import com.apple.library.foundation.NSString;
 import com.apple.library.uikit.UIFont;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -33,7 +34,10 @@ public class SimpleTextLayoutImpl {
             lines.removeLast();
         }
         // transform the char sequence to text line.
-        this.textLines = ObjectUtilsImpl.map(lines, text -> new Line(text, font));
+        this.textLines = new ArrayList<>();
+        for (var text : lines) {
+            this.textLines.add(new Line(text, font));
+        }
 
         var textWidth = 0f;
         var textHeight = 0f;

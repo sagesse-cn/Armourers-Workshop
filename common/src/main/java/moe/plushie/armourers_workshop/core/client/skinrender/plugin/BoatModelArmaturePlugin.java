@@ -4,7 +4,7 @@ import moe.plushie.armourers_workshop.api.client.model.IModelProvider;
 import moe.plushie.armourers_workshop.core.armature.ArmaturePlugin;
 import moe.plushie.armourers_workshop.core.armature.ArmatureTransformerContext;
 import moe.plushie.armourers_workshop.core.client.model.LinkedModel;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
+import moe.plushie.armourers_workshop.core.utils.Objects;
 import net.minecraft.world.entity.Entity;
 
 public class BoatModelArmaturePlugin extends ArmaturePlugin {
@@ -17,7 +17,7 @@ public class BoatModelArmaturePlugin extends ArmaturePlugin {
         context.addEntityRendererListener(entityRenderer -> {
             // force cast to model provider.
             if (entityRenderer instanceof IModelProvider<?>) {
-                modelProvider = ObjectUtils.unsafeCast(entityRenderer);
+                modelProvider = Objects.unsafeCast(entityRenderer);
             }
         });
     }

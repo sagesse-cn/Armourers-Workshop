@@ -1,7 +1,7 @@
 package moe.plushie.armourers_workshop.core.client.render;
 
 import moe.plushie.armourers_workshop.api.client.IBufferSource;
-import moe.plushie.armourers_workshop.api.math.IPoseStack;
+import moe.plushie.armourers_workshop.api.core.math.IPoseStack;
 import moe.plushie.armourers_workshop.compatibility.client.AbstractPoseStack;
 import moe.plushie.armourers_workshop.core.armature.Armatures;
 import moe.plushie.armourers_workshop.core.client.animation.AnimationManager;
@@ -9,7 +9,7 @@ import moe.plushie.armourers_workshop.core.client.bake.BakedArmature;
 import moe.plushie.armourers_workshop.core.client.bake.BakedSkin;
 import moe.plushie.armourers_workshop.core.client.other.SkinRenderContext;
 import moe.plushie.armourers_workshop.core.client.skinrender.SkinRenderer;
-import moe.plushie.armourers_workshop.core.data.color.ColorScheme;
+import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintScheme;
 import moe.plushie.armourers_workshop.utils.RenderSystem;
 import moe.plushie.armourers_workshop.utils.TickUtils;
 import net.fabricmc.api.EnvType;
@@ -40,7 +40,7 @@ public class ExtendedBlockRenderer {
         context.setModelViewStack(AbstractPoseStack.create(RenderSystem.getExtendedModelViewStack()));
 
         skin.setupAnim(entity, armature, context);
-        SkinRenderer.render(entity, armature, skin, ColorScheme.EMPTY, context);
+        SkinRenderer.render(entity, armature, skin, SkinPaintScheme.EMPTY, context);
 
         poseStack.popPose();
     }

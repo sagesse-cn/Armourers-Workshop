@@ -1,6 +1,6 @@
 package moe.plushie.armourers_workshop.api.client.model;
 
-import moe.plushie.armourers_workshop.api.math.IPoseStack;
+import moe.plushie.armourers_workshop.api.core.math.IPoseStack;
 
 public interface IModelPartPose {
 

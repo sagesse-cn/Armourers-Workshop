@@ -2,21 +2,22 @@ package moe.plushie.armourers_workshop.builder.data.undo.action;
 
 import com.google.common.collect.ImmutableMap;
 import moe.plushie.armourers_workshop.api.action.IUserAction;
-import moe.plushie.armourers_workshop.api.painting.IPaintColor;
-import moe.plushie.armourers_workshop.api.painting.IPaintable;
-import moe.plushie.armourers_workshop.core.data.color.PaintColor;
+import moe.plushie.armourers_workshop.api.common.IPaintable;
+import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintColor;
+import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class SetBlockColorAction extends BlockUserAction {
 
-    private final ImmutableMap<Direction, IPaintColor> newValue;
+    private final ImmutableMap<Direction, ISkinPaintColor> newValue;
 
-    public SetBlockColorAction(Level level, BlockPos pos, HashMap<Direction, IPaintColor> newValue) {
+    public SetBlockColorAction(Level level, BlockPos pos, Map<Direction, ISkinPaintColor> newValue) {
         super(level, pos);
         this.newValue = ImmutableMap.copyOf(newValue);
     }
@@ -24,11 +25,11 @@ public class SetBlockColorAction extends BlockUserAction {
     @Override
     public IUserAction apply() throws RuntimeException {
         var target = (IPaintable) getBlockEntity();
-        var oldValue = new HashMap<Direction, IPaintColor>();
+        var oldValue = new HashMap<Direction, ISkinPaintColor>();
         for (var direction : newValue.keySet()) {
             var paintColor = target.getColor(direction);
             if (paintColor == null) {
-                paintColor = PaintColor.CLEAR;
+                paintColor = SkinPaintColor.CLEAR;
             }
             oldValue.put(direction, paintColor);
         }

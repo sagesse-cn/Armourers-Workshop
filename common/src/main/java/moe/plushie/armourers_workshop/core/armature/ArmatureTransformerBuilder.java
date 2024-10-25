@@ -4,12 +4,12 @@ import moe.plushie.armourers_workshop.api.armature.IJoint;
 import moe.plushie.armourers_workshop.api.armature.IJointTransform;
 import moe.plushie.armourers_workshop.api.common.IEntityTypeProvider;
 import moe.plushie.armourers_workshop.api.core.IResourceLocation;
-import moe.plushie.armourers_workshop.api.data.IDataPackObject;
 import moe.plushie.armourers_workshop.core.armature.core.AfterTransformModifier;
 import moe.plushie.armourers_workshop.core.armature.core.DefaultOverriddenArmaturePlugin;
-import moe.plushie.armourers_workshop.core.data.transform.SkinTransform;
-import moe.plushie.armourers_workshop.utils.ext.OpenResourceLocation;
-import moe.plushie.armourers_workshop.utils.math.Vector3f;
+import moe.plushie.armourers_workshop.core.math.OpenTransform3f;
+import moe.plushie.armourers_workshop.core.math.Vector3f;
+import moe.plushie.armourers_workshop.core.skin.serializer.io.IODataObject;
+import moe.plushie.armourers_workshop.core.utils.OpenResourceLocation;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -22,7 +22,7 @@ public abstract class ArmatureTransformerBuilder {
 
     protected IResourceLocation parent;
     protected Armature armature;
-    protected IDataPackObject contents;
+    protected IODataObject contents;
 
     protected final IResourceLocation name;
     protected final ArrayList<IResourceLocation> models = new ArrayList<>();
@@ -36,7 +36,7 @@ public abstract class ArmatureTransformerBuilder {
         this.name = name;
     }
 
-    public void load(IDataPackObject object) {
+    public void load(IODataObject object) {
         object.get("parent").ifPresent(it -> {
             parent = OpenResourceLocation.parse(it.stringValue());
         });
@@ -113,7 +113,7 @@ public abstract class ArmatureTransformerBuilder {
         return name;
     }
 
-    private void _parseContentWithParent(IDataPackObject object, Collection<ArmatureTransformerBuilder> hierarchy) {
+    private void _parseContentWithParent(IODataObject object, Collection<ArmatureTransformerBuilder> hierarchy) {
         // if load has been completed, ignore.
         if (armature != null || object == null) {
             return;
@@ -130,7 +130,7 @@ public abstract class ArmatureTransformerBuilder {
         }
     }
 
-    private void _parseContent(IDataPackObject object) {
+    private void _parseContent(IODataObject object) {
         // read all joint
         object.get("joint").entrySet().forEach(it -> {
             var joint = armature.getJoint(it.getKey());
@@ -152,7 +152,7 @@ public abstract class ArmatureTransformerBuilder {
         contents = null;
     }
 
-    private Collection<JointModifier> _parseModelModifiers(IDataPackObject object) {
+    private Collection<JointModifier> _parseModelModifiers(IODataObject object) {
         switch (object.type()) {
             case STRING: {
                 return _parseJointTargets(object);
@@ -171,7 +171,7 @@ public abstract class ArmatureTransformerBuilder {
         }
     }
 
-    private Collection<JointModifier> _parseJointTargets(IDataPackObject object) {
+    private Collection<JointModifier> _parseJointTargets(IODataObject object) {
         switch (object.type()) {
             case DICTIONARY: {
                 return _parseJointTargets(object.get("target"));
@@ -189,7 +189,7 @@ public abstract class ArmatureTransformerBuilder {
         }
     }
 
-    private Collection<JointModifier> _parseModifiers(IDataPackObject object) {
+    private Collection<JointModifier> _parseModifiers(IODataObject object) {
         switch (object.type()) {
             case ARRAY: {
                 var modifiers = new ArrayList<JointModifier>();
@@ -223,7 +223,7 @@ public abstract class ArmatureTransformerBuilder {
         }
     }
 
-    private Collection<JointModifier> _parseTransformModifiers(IDataPackObject object) {
+    private Collection<JointModifier> _parseTransformModifiers(IODataObject object) {
         var transform = ArmatureSerializers.readTransform(object);
         if (transform.isIdentity()) {
             return Collections.emptyList();
@@ -232,38 +232,38 @@ public abstract class ArmatureTransformerBuilder {
     }
 
 
-    private Collection<String> _parseOverrideModifiers(IDataPackObject object) {
+    private Collection<String> _parseOverrideModifiers(IODataObject object) {
         return switch (object.type()) {
             case STRING -> Collections.singleton(object.stringValue());
-            case ARRAY -> object.collect(IDataPackObject::stringValue);
+            case ARRAY -> object.collect(IODataObject::stringValue);
             default -> Collections.emptyList();
         };
     }
 
-    private void _parseTranslateModifiers(String name, IDataPackObject object) {
+    private void _parseTranslateModifiers(String name, IODataObject object) {
         var value = ArmatureSerializers.readVector(object, Vector3f.ZERO);
         if (value.equals(Vector3f.ZERO)) {
             return;
         }
-        var transform = SkinTransform.createTranslateTransform(value);
+        var transform = OpenTransform3f.createTranslateTransform(value);
         _addTransformModifier(name, new AfterTransformModifier(transform));
     }
 
-    private void _parseRotateModifiers(String name, IDataPackObject object) {
+    private void _parseRotateModifiers(String name, IODataObject object) {
         var value = ArmatureSerializers.readVector(object, Vector3f.ZERO);
         if (value.equals(Vector3f.ZERO)) {
             return;
         }
-        var transform = SkinTransform.createRotationTransform(value);
+        var transform = OpenTransform3f.createRotationTransform(value);
         _addTransformModifier(name, new AfterTransformModifier(transform));
     }
 
-    private void _parseScaleModifiers(String name, IDataPackObject object) {
+    private void _parseScaleModifiers(String name, IODataObject object) {
         var value = ArmatureSerializers.readVector(object, Vector3f.ONE);
         if (value.equals(Vector3f.ONE)) {
             return;
         }
-        var transform = SkinTransform.createScaleTransform(value);
+        var transform = OpenTransform3f.createScaleTransform(value);
         _addTransformModifier(name, new AfterTransformModifier(transform));
     }
 

@@ -3,7 +3,7 @@ package moe.plushie.armourers_workshop.compatibility.forge;
 import com.google.common.collect.ImmutableMap;
 import moe.plushie.armourers_workshop.api.annotation.Available;
 import moe.plushie.armourers_workshop.api.registry.IEventHandler;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
+import moe.plushie.armourers_workshop.core.utils.Objects;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.fml.event.IModBusEvent;
@@ -33,7 +33,7 @@ public class AbstractForgeEventBus {
 
     public static <E extends Event, T> void observer(Class<E> eventType, EventPriority priority, boolean receiveCancelled, Consumer<T> handler, Function<E, T> transform) {
         Object key = Triple.of(eventType, priority, receiveCancelled);
-        ArrayList<Consumer<T>> handlers = ObjectUtils.unsafeCast(LISTENERS.computeIfAbsent(key, key1 -> {
+        ArrayList<Consumer<T>> handlers = Objects.unsafeCast(LISTENERS.computeIfAbsent(key, key1 -> {
             ArrayList<Consumer<T>> queue = new ArrayList<>();
             Consumer<E> listener = event -> queue.forEach(element -> element.accept(transform.apply(event)));
             if (IModBusEvent.class.isAssignableFrom(eventType)) {

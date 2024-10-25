@@ -2,15 +2,14 @@ package moe.plushie.armourers_workshop.core.client.other;
 
 import com.google.common.collect.Iterators;
 import moe.plushie.armourers_workshop.api.client.IBufferSource;
-import moe.plushie.armourers_workshop.api.math.IPoseStack;
+import moe.plushie.armourers_workshop.api.core.math.IPoseStack;
 import moe.plushie.armourers_workshop.compatibility.api.AbstractItemTransformType;
 import moe.plushie.armourers_workshop.compatibility.client.AbstractBufferSource;
 import moe.plushie.armourers_workshop.compatibility.client.AbstractPoseStack;
-import moe.plushie.armourers_workshop.core.client.animation.AnimatedTransform;
 import moe.plushie.armourers_workshop.core.client.animation.AnimationManager;
 import moe.plushie.armourers_workshop.core.client.bake.BakedSkin;
-import moe.plushie.armourers_workshop.core.data.color.ColorScheme;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
+import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintScheme;
+import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.utils.TickUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -24,7 +23,7 @@ import java.util.function.Function;
 public class SkinRenderContext implements ConcurrentRenderingContext {
 
     public static final SkinRenderContext EMPTY = new SkinRenderContext();
-    private static final Iterator<SkinRenderContext> POOL = Iterators.cycle(ObjectUtils.makeItems(100, i -> new SkinRenderContext()));
+    private static final Iterator<SkinRenderContext> POOL = Iterators.cycle(Collections.newList(100, i -> new SkinRenderContext()));
 
     protected int lightmap = 0xf000f0;
     protected int overlay = OverlayTexture.NO_OVERLAY;
@@ -39,7 +38,7 @@ public class SkinRenderContext implements ConcurrentRenderingContext {
 
     protected SkinItemSource itemSource;
 
-    protected ColorScheme colorScheme = ColorScheme.EMPTY;
+    protected SkinPaintScheme colorScheme = SkinPaintScheme.EMPTY;
     protected AnimationManager animationManager;
     protected AbstractItemTransformType transformType = AbstractItemTransformType.NONE;
 
@@ -76,7 +75,7 @@ public class SkinRenderContext implements ConcurrentRenderingContext {
         this.outlineColor = 0;
         this.partialTicks = 0;
 
-        this.colorScheme = ColorScheme.EMPTY;
+        this.colorScheme = SkinPaintScheme.EMPTY;
         this.transformType = AbstractItemTransformType.NONE;
         this.itemSource = SkinItemSource.EMPTY;
 
@@ -132,11 +131,11 @@ public class SkinRenderContext implements ConcurrentRenderingContext {
         return animationTicks;
     }
 
-    public void setColorScheme(ColorScheme colorScheme) {
+    public void setColorScheme(SkinPaintScheme colorScheme) {
         this.colorScheme = colorScheme;
     }
 
-    public ColorScheme getColorScheme() {
+    public SkinPaintScheme getColorScheme() {
         return colorScheme;
     }
 

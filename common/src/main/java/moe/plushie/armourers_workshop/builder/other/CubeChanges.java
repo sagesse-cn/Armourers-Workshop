@@ -1,13 +1,13 @@
 package moe.plushie.armourers_workshop.builder.other;
 
 import moe.plushie.armourers_workshop.api.action.IUserAction;
+import moe.plushie.armourers_workshop.api.common.IPaintable;
 import moe.plushie.armourers_workshop.api.common.IWorldUpdateTask;
-import moe.plushie.armourers_workshop.api.painting.IPaintColor;
-import moe.plushie.armourers_workshop.api.painting.IPaintable;
+import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintColor;
 import moe.plushie.armourers_workshop.builder.data.undo.action.ActionRuntimeException;
-import moe.plushie.armourers_workshop.core.data.color.PaintColor;
+import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
+import moe.plushie.armourers_workshop.core.utils.Objects;
 import moe.plushie.armourers_workshop.utils.Constants;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -27,7 +27,7 @@ public class CubeChanges implements IUserAction, IWorldUpdateTask {
 
     private BlockState blockState;
     private CompoundTag nbt;
-    private Map<Direction, IPaintColor> colors;
+    private Map<Direction, ISkinPaintColor> colors;
 
     public CubeChanges(Level level, BlockPos blockPos) {
         this.level = level;
@@ -42,14 +42,14 @@ public class CubeChanges implements IUserAction, IWorldUpdateTask {
         this.nbt = nbt;
     }
 
-    public void setColor(Direction dir, IPaintColor color) {
+    public void setColor(Direction dir, ISkinPaintColor color) {
         if (this.colors == null) {
             this.colors = new HashMap<>();
         }
         this.colors.put(dir, color);
     }
 
-    public void setColors(Map<Direction, IPaintColor> colors) {
+    public void setColors(Map<Direction, ISkinPaintColor> colors) {
         this.colors = colors;
     }
 
@@ -96,18 +96,19 @@ public class CubeChanges implements IUserAction, IWorldUpdateTask {
             isChangedNBT = true;
         }
         if (isChangedNBT) {
-            ObjectUtils.ifPresent(level.getBlockEntity(blockPos), blockEntity -> {
+            Objects.flatMap(level.getBlockEntity(blockPos), blockEntity -> {
                 var newTag = blockEntity.saveFullData(level.registryAccess());
                 changes.setCompoundTag(newTag);
+                return newTag;
             });
         } else if (colors != null) {
             var blockEntity = level.getBlockEntity(blockPos);
             if (blockEntity instanceof IPaintable target) {
-                var oldValue = new HashMap<Direction, IPaintColor>();
+                var oldValue = new HashMap<Direction, ISkinPaintColor>();
                 for (var direction : colors.keySet()) {
                     var paintColor = target.getColor(direction);
                     if (paintColor == null) {
-                        paintColor = PaintColor.CLEAR;
+                        paintColor = SkinPaintColor.CLEAR;
                     }
                     oldValue.put(direction, paintColor);
                 }

@@ -3,7 +3,6 @@ package moe.plushie.armourers_workshop.core.client.skinrender;
 import com.google.common.collect.ImmutableMap;
 import moe.plushie.armourers_workshop.api.core.IResourceLocation;
 import moe.plushie.armourers_workshop.api.data.IDataPackBuilder;
-import moe.plushie.armourers_workshop.api.data.IDataPackObject;
 import moe.plushie.armourers_workshop.compatibility.client.model.AbstractModelHolder;
 import moe.plushie.armourers_workshop.compatibility.client.model.AbstractSkinnableModel;
 import moe.plushie.armourers_workshop.core.armature.ArmatureSerializers;
@@ -25,6 +24,7 @@ import moe.plushie.armourers_workshop.core.client.skinrender.plugin.MinecartMode
 import moe.plushie.armourers_workshop.core.client.skinrender.plugin.TridentModelArmaturePlugin;
 import moe.plushie.armourers_workshop.core.client.skinrender.plugin.VillagerModelArmaturePlugin;
 import moe.plushie.armourers_workshop.core.data.DataPackType;
+import moe.plushie.armourers_workshop.core.skin.serializer.io.IODataObject;
 import moe.plushie.armourers_workshop.init.platform.DataPackManager;
 import net.minecraft.client.model.Model;
 
@@ -230,7 +230,7 @@ public class SkinRendererManager2 extends ArmatureSerializers {
         }
 
         @Override
-        public void append(IDataPackObject object, IResourceLocation file) {
+        public void append(IODataObject object, IResourceLocation file) {
             var type = object.get("type").stringValue();
             var manager = MANAGERS.get(type);
             if (manager != null) {

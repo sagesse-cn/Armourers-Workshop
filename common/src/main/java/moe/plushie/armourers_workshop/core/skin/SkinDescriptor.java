@@ -4,7 +4,8 @@ import moe.plushie.armourers_workshop.api.skin.ISkinDescriptor;
 import moe.plushie.armourers_workshop.api.skin.ISkinToolType;
 import moe.plushie.armourers_workshop.api.skin.ISkinType;
 import moe.plushie.armourers_workshop.core.data.ItemStackStorage;
-import moe.plushie.armourers_workshop.core.data.color.ColorScheme;
+import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintScheme;
+import moe.plushie.armourers_workshop.core.utils.Objects;
 import moe.plushie.armourers_workshop.init.ModConfig;
 import moe.plushie.armourers_workshop.init.ModDataComponents;
 import moe.plushie.armourers_workshop.init.ModItems;
@@ -12,7 +13,6 @@ import moe.plushie.armourers_workshop.utils.Constants;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 
-import java.util.Objects;
 import java.util.function.BooleanSupplier;
 
 public class SkinDescriptor implements ISkinDescriptor {
@@ -22,31 +22,31 @@ public class SkinDescriptor implements ISkinDescriptor {
     private final String identifier;
     private final ISkinType type;
     private final Options options;
-    private final ColorScheme colorScheme;
+    private final SkinPaintScheme colorScheme;
 
     // not a required property, but it can help we reduce memory usage and improve performance.
     private ItemStack skinItemStack;
 
     public SkinDescriptor(String identifier) {
-        this(identifier, SkinTypes.UNKNOWN, Options.DEFAULT, ColorScheme.EMPTY);
+        this(identifier, SkinTypes.UNKNOWN, Options.DEFAULT, SkinPaintScheme.EMPTY);
     }
 
     public SkinDescriptor(String identifier, ISkinType type) {
-        this(identifier, type, Options.DEFAULT, ColorScheme.EMPTY);
+        this(identifier, type, Options.DEFAULT, SkinPaintScheme.EMPTY);
     }
 
-    public SkinDescriptor(String identifier, ISkinType type, ColorScheme colorScheme) {
+    public SkinDescriptor(String identifier, ISkinType type, SkinPaintScheme colorScheme) {
         this(identifier, type, Options.DEFAULT, colorScheme);
     }
 
-    public SkinDescriptor(String identifier, ISkinType type, Options options, ColorScheme colorScheme) {
+    public SkinDescriptor(String identifier, ISkinType type, Options options, SkinPaintScheme colorScheme) {
         this.identifier = identifier;
         this.type = type;
         this.options = options;
         this.colorScheme = colorScheme;
     }
 
-    public SkinDescriptor(SkinDescriptor descriptor, ColorScheme colorScheme) {
+    public SkinDescriptor(SkinDescriptor descriptor, SkinPaintScheme colorScheme) {
         this(descriptor.getIdentifier(), descriptor.getType(), descriptor.getOptions(), colorScheme);
     }
 
@@ -54,7 +54,7 @@ public class SkinDescriptor implements ISkinDescriptor {
         this.identifier = tag.getString(Constants.Key.SKIN_IDENTIFIER);
         this.type = SkinTypes.byName(tag.getString(Constants.Key.SKIN_TYPE));
         this.options = tag.getOptionalSkinOptions(Constants.Key.SKIN_OPTIONS, Options.DEFAULT);
-        this.colorScheme = tag.getOptionalColorScheme(Constants.Key.SKIN_DYE, ColorScheme.EMPTY);
+        this.colorScheme = tag.getOptionalColorScheme(Constants.Key.SKIN_DYE, SkinPaintScheme.EMPTY);
     }
 
     public static SkinDescriptor of(ItemStack itemStack) {
@@ -93,7 +93,7 @@ public class SkinDescriptor implements ISkinDescriptor {
         nbt.putString(Constants.Key.SKIN_TYPE, type.getRegistryName().toString());
         nbt.putString(Constants.Key.SKIN_IDENTIFIER, identifier);
         nbt.putOptionalSkinOptions(Constants.Key.SKIN_OPTIONS, options, Options.DEFAULT);
-        nbt.putOptionalColorScheme(Constants.Key.SKIN_DYE, colorScheme, ColorScheme.EMPTY);
+        nbt.putOptionalColorScheme(Constants.Key.SKIN_DYE, colorScheme, SkinPaintScheme.EMPTY);
         return nbt;
     }
 
@@ -118,7 +118,7 @@ public class SkinDescriptor implements ISkinDescriptor {
         return this == EMPTY;
     }
 
-    public ColorScheme getColorScheme() {
+    public SkinPaintScheme getColorScheme() {
         return colorScheme;
     }
 

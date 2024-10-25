@@ -1,7 +1,7 @@
 package moe.plushie.armourers_workshop.init.mixin.fabric;
 
+import moe.plushie.armourers_workshop.core.utils.Objects;
 import moe.plushie.armourers_workshop.init.platform.fabric.event.EntityLifecycleEvents;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
@@ -23,7 +23,7 @@ public class FabricLivingEntityMixin {
 
     @Inject(method = "onClimbable", at = @At("HEAD"), cancellable = true)
     public void aw2$isClimbing(CallbackInfoReturnable<Boolean> cir) {
-        LivingEntity entity = ObjectUtils.unsafeCast(this);
+        LivingEntity entity = Objects.unsafeCast(this);
         Level level = entity.getLevel();
         BlockPos blockPos = entity.blockPosition();
         InteractionResult result = EntityLifecycleEvents.ALLOW_CLIMBING.invoker().allowClimbing(entity, blockPos, level.getBlockState(blockPos));

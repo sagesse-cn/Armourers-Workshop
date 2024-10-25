@@ -1,6 +1,6 @@
 package moe.plushie.armourers_workshop.library.data.impl;
 
-import moe.plushie.armourers_workshop.api.data.IDataPackObject;
+import moe.plushie.armourers_workshop.core.skin.serializer.io.IODataObject;
 import moe.plushie.armourers_workshop.init.ModLog;
 import moe.plushie.armourers_workshop.utils.StreamUtils;
 
@@ -48,7 +48,7 @@ public class MinecraftAuth {
             try {
                 // returns non 204 if error occurred
                 String result = performPostRequest(new URL(JOIN_URL), data, "application/json");
-                IDataPackObject object = StreamUtils.fromPackObject(result);
+                IODataObject object = StreamUtils.fromPackObject(result);
                 if (object != null && object.get("error") != null) {
                     throw new RuntimeException(object.get("error").stringValue());
                 }

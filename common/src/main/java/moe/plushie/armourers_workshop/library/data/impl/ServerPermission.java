@@ -160,7 +160,7 @@ public enum ServerPermission {
 
     private final String id;
     private final boolean isSSLRequired;
-    
+
     ServerPermission(String id, boolean isSSLRequired) {
         this.id = id;
         this.isSSLRequired = isSSLRequired;

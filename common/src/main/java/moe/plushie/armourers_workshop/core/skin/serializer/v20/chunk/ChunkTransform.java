@@ -1,12 +1,12 @@
 package moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk;
 
-import moe.plushie.armourers_workshop.api.math.IPoseStack;
-import moe.plushie.armourers_workshop.api.skin.ISkinTransform;
-import moe.plushie.armourers_workshop.core.data.transform.SkinTransform;
-import moe.plushie.armourers_workshop.utils.math.OpenMatrix3f;
-import moe.plushie.armourers_workshop.utils.math.OpenMatrix4f;
-import moe.plushie.armourers_workshop.utils.math.OpenPoseStack;
-import moe.plushie.armourers_workshop.utils.math.Vector3f;
+import moe.plushie.armourers_workshop.api.core.math.IPoseStack;
+import moe.plushie.armourers_workshop.api.core.math.ITransform;
+import moe.plushie.armourers_workshop.core.math.OpenMatrix3f;
+import moe.plushie.armourers_workshop.core.math.OpenMatrix4f;
+import moe.plushie.armourers_workshop.core.math.OpenPoseStack;
+import moe.plushie.armourers_workshop.core.math.OpenTransform3f;
+import moe.plushie.armourers_workshop.core.math.Vector3f;
 
 import java.io.IOException;
 import java.nio.FloatBuffer;
@@ -39,7 +39,7 @@ public class ChunkTransform {
     public ChunkTransform() {
     }
 
-    public ChunkTransform(SkinTransform transform) {
+    public ChunkTransform(OpenTransform3f transform) {
         if (transform.isIdentity()) {
             this.setIdentity();
             return;
@@ -55,14 +55,14 @@ public class ChunkTransform {
         this.buffer = buffer;
     }
 
-    public static ChunkTransform of(ISkinTransform transform) {
-        if (transform instanceof SkinTransform) {
-            return new ChunkTransform((SkinTransform) transform);
+    public static ChunkTransform of(ITransform transform) {
+        if (transform instanceof OpenTransform3f) {
+            return new ChunkTransform((OpenTransform3f) transform);
         }
         return flat(transform);
     }
 
-    public static ChunkTransform flat(ISkinTransform transform) {
+    public static ChunkTransform flat(ITransform transform) {
         FloatBuffer buffer = FloatBuffer.allocate(16);
         OpenPoseStack poseStack = new OpenPoseStack();
         transform.apply(poseStack);
@@ -124,16 +124,16 @@ public class ChunkTransform {
         return buffer == null && scale == null;
     }
 
-    public ISkinTransform build() {
+    public ITransform build() {
         if (isIdentity()) {
-            return SkinTransform.IDENTITY;
+            return OpenTransform3f.IDENTITY;
         }
         if (buffer != null) {
             var pose = new OpenMatrix4f(buffer);
             var normal = new OpenMatrix3f(buffer);
             return new FlatTransform(pose, normal);
         }
-        return SkinTransform.create(translate, rotation, scale, pivot, afterTranslate);
+        return OpenTransform3f.create(translate, rotation, scale, pivot, afterTranslate);
     }
 
     private static Vector3f readVector(FloatBuffer buffer, int offset) {
@@ -177,7 +177,7 @@ public class ChunkTransform {
         }
     }
 
-    public static class FlatTransform implements ISkinTransform {
+    public static class FlatTransform implements ITransform {
 
         private final OpenMatrix4f pose;
         private final OpenMatrix3f normal;

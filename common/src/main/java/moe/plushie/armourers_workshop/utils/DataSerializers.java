@@ -8,18 +8,18 @@ import moe.plushie.armourers_workshop.api.common.IGlobalPos;
 import moe.plushie.armourers_workshop.api.common.IMenuSerializer;
 import moe.plushie.armourers_workshop.api.common.IPlayerDataSerializer;
 import moe.plushie.armourers_workshop.api.network.IFriendlyByteBuf;
-import moe.plushie.armourers_workshop.api.painting.IPaintColor;
 import moe.plushie.armourers_workshop.api.skin.ISkinType;
+import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintColor;
+import moe.plushie.armourers_workshop.builder.data.PlayerTextureDescriptor;
 import moe.plushie.armourers_workshop.compatibility.core.data.AbstractEntityDataSerializer;
 import moe.plushie.armourers_workshop.core.capability.SkinWardrobe;
-import moe.plushie.armourers_workshop.core.data.color.PaintColor;
 import moe.plushie.armourers_workshop.core.entity.EntityProfile;
+import moe.plushie.armourers_workshop.core.math.Vector3f;
 import moe.plushie.armourers_workshop.core.skin.SkinTypes;
+import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperties;
-import moe.plushie.armourers_workshop.core.texture.PlayerTextureDescriptor;
 import moe.plushie.armourers_workshop.init.ModConfig;
 import moe.plushie.armourers_workshop.init.ModEntityProfiles;
-import moe.plushie.armourers_workshop.utils.math.Vector3f;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Rotations;
 import net.minecraft.nbt.CompoundTag;
@@ -83,15 +83,15 @@ public class DataSerializers {
         }
     };
 
-    public static final IEntitySerializer<IPaintColor> PAINT_COLOR = new IEntitySerializer<IPaintColor>() {
+    public static final IEntitySerializer<ISkinPaintColor> PAINT_COLOR = new IEntitySerializer<ISkinPaintColor>() {
         @Override
-        public void write(IFriendlyByteBuf buffer, IPaintColor color) {
+        public void write(IFriendlyByteBuf buffer, ISkinPaintColor color) {
             buffer.writeInt(color.getRawValue());
         }
 
         @Override
-        public IPaintColor read(IFriendlyByteBuf buffer) {
-            return PaintColor.of(buffer.readInt());
+        public ISkinPaintColor read(IFriendlyByteBuf buffer) {
+            return SkinPaintColor.of(buffer.readInt());
         }
     };
 

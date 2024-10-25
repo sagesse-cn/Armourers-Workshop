@@ -8,8 +8,8 @@ import com.apple.library.uikit.UIControl;
 import com.apple.library.uikit.UIEvent;
 import com.apple.library.uikit.UIImage;
 import com.apple.library.uikit.UIImageView;
+import moe.plushie.armourers_workshop.core.math.OpenMath;
 import moe.plushie.armourers_workshop.init.ModTextures;
-import moe.plushie.armourers_workshop.utils.MathUtils;
 
 import java.util.HashMap;
 
@@ -115,7 +115,7 @@ public class ScrollIndicator extends UIControl {
         if (y > maxY) {
             return 1;
         }
-        return (y - minY) / (float)(maxY - minY);
+        return (y - minY) / (maxY - minY);
     }
 
     private void upAction(UIControl sender) {
@@ -247,7 +247,7 @@ public class ScrollIndicator extends UIControl {
     }
 
     public void setValue(float value) {
-        this.value = MathUtils.clamp(value, 0, 1);
+        this.value = OpenMath.clamp(value, 0, 1);
         this.updateOffsetIfNeeded();
     }
 

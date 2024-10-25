@@ -251,6 +251,7 @@ public class UIButton extends UIControl {
         cachedCurrentTitle = currentTitle;
         cachedCurrentImage = currentImage;
     }
+
     private void setNeedsRemakeLayouts() {
         cachedTitleRect = null;
         cachedIconRect = null;

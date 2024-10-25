@@ -2,11 +2,11 @@ package moe.plushie.armourers_workshop.core.skin;
 
 import moe.plushie.armourers_workshop.api.core.IResourceLocation;
 import moe.plushie.armourers_workshop.api.skin.ISkinArmorType;
-import moe.plushie.armourers_workshop.api.skin.ISkinPartType;
+import moe.plushie.armourers_workshop.api.skin.ISkinEquipmentSlot;
 import moe.plushie.armourers_workshop.api.skin.ISkinToolType;
 import moe.plushie.armourers_workshop.api.skin.ISkinType;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
-import net.minecraft.world.entity.EquipmentSlot;
+import moe.plushie.armourers_workshop.api.skin.part.ISkinPartType;
+import moe.plushie.armourers_workshop.core.utils.Objects;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
@@ -46,7 +46,7 @@ public class SkinType implements ISkinType {
 
     @Override
     public String toString() {
-        return ObjectUtils.makeDescription(this, "id", id, "name", registryName);
+        return Objects.toString(this, "id", id, "name", registryName);
     }
 
     @Override
@@ -56,15 +56,15 @@ public class SkinType implements ISkinType {
 
 
     public static class Armor extends SkinType implements ISkinArmorType {
-        protected EquipmentSlot slotType;
+        protected ISkinEquipmentSlot slotType;
 
-        public Armor(String name, int id, EquipmentSlot slotType, List<? extends ISkinPartType> parts) {
+        public Armor(String name, int id, ISkinEquipmentSlot slotType, List<? extends ISkinPartType> parts) {
             super(name, id, parts);
             this.slotType = slotType;
         }
 
         @Override
-        public EquipmentSlot getSlotType() {
+        public ISkinEquipmentSlot getSlotType() {
             return slotType;
         }
     }

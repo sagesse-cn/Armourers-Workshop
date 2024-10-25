@@ -79,11 +79,11 @@ public class AbstractForgeConfigSpec extends AbstractConfigSpec {
         }));
 
         // bind the config to spec.
-        AbstractForgeConfigSpec spec = (AbstractForgeConfigSpec) pair.getLeft().build();
-        spec.bind(pair.getRight(), ForgeConfigSpec::save);
+        AbstractForgeConfigSpec spec = (AbstractForgeConfigSpec) pair.getKey().build();
+        spec.bind(pair.getValue(), ForgeConfigSpec::save);
 
         // registry the config into loader.
-        ForgeConfigSpec config = pair.getRight();
+        ForgeConfigSpec config = pair.getValue();
         ModLoadingContext.get().registerConfig(ModConfig.Type.valueOf(type.name()), config);
 
         return spec;

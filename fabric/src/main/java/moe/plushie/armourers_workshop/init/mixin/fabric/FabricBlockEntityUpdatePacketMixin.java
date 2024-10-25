@@ -2,7 +2,7 @@ package moe.plushie.armourers_workshop.init.mixin.fabric;
 
 import moe.plushie.armourers_workshop.api.common.IBlockEntityHandler;
 import moe.plushie.armourers_workshop.compatibility.core.data.AbstractDataSerializer;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
+import moe.plushie.armourers_workshop.core.utils.Objects;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -22,7 +22,7 @@ public class FabricBlockEntityUpdatePacketMixin {
         if (level == null) {
             return;
         }
-        ClientboundBlockEntityDataPacket packet = ObjectUtils.unsafeCast(this);
+        ClientboundBlockEntityDataPacket packet = Objects.unsafeCast(this);
         BlockEntity blockEntity = level.getBlockEntity(packet.getPos());
         if (blockEntity instanceof IBlockEntityHandler entityHandler) {
             AbstractDataSerializer serializer = AbstractDataSerializer.wrap(packet.getTag(), level.registryAccess());

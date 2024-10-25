@@ -6,7 +6,7 @@ import com.apple.library.coregraphics.CGSize;
 import com.apple.library.uikit.UIWindow;
 import com.apple.library.uikit.UIWindowManager;
 import moe.plushie.armourers_workshop.compatibility.client.gui.AbstractMenuScreen;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
+import moe.plushie.armourers_workshop.core.utils.Objects;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
@@ -28,7 +28,7 @@ public class ContainerMenuScreen<M extends AbstractContainerMenu, W extends UIWi
         super(menu, inventory, title);
 
         this.window = window;
-        this.menuWindow = ObjectUtils.safeCast(window, MenuWindow.class);
+        this.menuWindow = Objects.safeCast(window, MenuWindow.class);
 
         this.manager = new UIWindowManager();
         this.manager.addWindow(window);

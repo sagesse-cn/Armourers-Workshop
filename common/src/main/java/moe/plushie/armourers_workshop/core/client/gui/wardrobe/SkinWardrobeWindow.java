@@ -12,10 +12,10 @@ import moe.plushie.armourers_workshop.core.client.gui.widget.TabView;
 import moe.plushie.armourers_workshop.core.data.slot.SkinSlotType;
 import moe.plushie.armourers_workshop.core.entity.MannequinEntity;
 import moe.plushie.armourers_workshop.core.menu.SkinWardrobeMenu;
+import moe.plushie.armourers_workshop.core.utils.Objects;
 import moe.plushie.armourers_workshop.init.ModConfig;
 import moe.plushie.armourers_workshop.init.ModContributors;
 import moe.plushie.armourers_workshop.init.ModTextures;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.world.entity.Entity;
@@ -142,7 +142,7 @@ public class SkinWardrobeWindow<M extends SkinWardrobeMenu> extends MenuWindow<M
     }
 
     private void switchTab(TabView.Entry entry) {
-        menu.setGroup(ObjectUtils.safeCast(entry.target(), SkinWardrobeMenu.Group.class));
+        menu.setGroup(Objects.safeCast(entry.target(), SkinWardrobeMenu.Group.class));
         inventoryView.setHidden(!menu.shouldRenderInventory());
     }
 

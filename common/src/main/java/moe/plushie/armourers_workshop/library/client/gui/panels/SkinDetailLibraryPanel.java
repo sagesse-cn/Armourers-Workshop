@@ -13,6 +13,7 @@ import com.apple.library.uikit.UIFont;
 import com.apple.library.uikit.UIScreen;
 import com.apple.library.uikit.UIView;
 import moe.plushie.armourers_workshop.api.core.IResourceLocation;
+import moe.plushie.armourers_workshop.builder.data.PlayerTextureDescriptor;
 import moe.plushie.armourers_workshop.compatibility.client.AbstractBufferSource;
 import moe.plushie.armourers_workshop.core.client.bake.BakedSkin;
 import moe.plushie.armourers_workshop.core.client.bake.SkinBakery;
@@ -22,7 +23,7 @@ import moe.plushie.armourers_workshop.core.client.render.ExtendedItemRenderer;
 import moe.plushie.armourers_workshop.core.client.texture.PlayerTextureLoader;
 import moe.plushie.armourers_workshop.core.data.ticket.Ticket;
 import moe.plushie.armourers_workshop.core.skin.SkinDescriptor;
-import moe.plushie.armourers_workshop.core.texture.PlayerTextureDescriptor;
+import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.init.ModLog;
 import moe.plushie.armourers_workshop.init.ModTextures;
 import moe.plushie.armourers_workshop.init.platform.EnvironmentManager;
@@ -34,7 +35,6 @@ import moe.plushie.armourers_workshop.library.data.impl.ReportType;
 import moe.plushie.armourers_workshop.library.data.impl.ServerPermission;
 import moe.plushie.armourers_workshop.library.data.impl.ServerSkin;
 import moe.plushie.armourers_workshop.library.data.impl.ServerUser;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
 import moe.plushie.armourers_workshop.utils.RenderSystem;
 import moe.plushie.armourers_workshop.utils.SkinFileStreamUtils;
 import moe.plushie.armourers_workshop.utils.TranslateUtils;
@@ -236,7 +236,7 @@ public class SkinDetailLibraryPanel extends AbstractLibraryPanel {
         dialog.setMessageColor(new UIColor(0x7f0000));
         dialog.setMessage(getDisplayText("dialog.report_skin.label.report_warning"));
         dialog.setPlaceholder(getDisplayText("dialog.report_skin.optional_message"));
-        dialog.setReportTypes(ObjectUtils.map(reportTypes, t -> new NSString(TranslateUtils.title(t.getLangKey()))));
+        dialog.setReportTypes(Collections.compactMap(reportTypes, t -> new NSString(TranslateUtils.title(t.getLangKey()))));
         dialog.showInView(this, () -> {
             if (!dialog.isCancelled()) {
                 ReportType reportType = reportTypes[dialog.getReportType()];

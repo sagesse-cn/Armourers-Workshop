@@ -12,20 +12,18 @@ import com.apple.library.uikit.UIScreen;
 import com.apple.library.uikit.UIView;
 import moe.plushie.armourers_workshop.ArmourersWorkshop;
 import moe.plushie.armourers_workshop.api.client.IBufferSource;
-import moe.plushie.armourers_workshop.api.core.IResourceLocation;
 import moe.plushie.armourers_workshop.compatibility.client.AbstractBufferSource;
 import moe.plushie.armourers_workshop.core.client.bake.SkinBakery;
 import moe.plushie.armourers_workshop.core.client.render.ExtendedItemRenderer;
 import moe.plushie.armourers_workshop.core.data.ticket.Ticket;
+import moe.plushie.armourers_workshop.core.math.OpenMath;
 import moe.plushie.armourers_workshop.core.skin.SkinDescriptor;
 import moe.plushie.armourers_workshop.init.ModTextures;
-import moe.plushie.armourers_workshop.utils.MathUtils;
 import moe.plushie.armourers_workshop.utils.RenderSystem;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Consumer;
 
 @Environment(EnvType.CLIENT)
@@ -177,7 +175,7 @@ public abstract class SkinPreviewList<T> extends UIView {
             int frames = 18;
 
             int frame = (int) ((System.currentTimeMillis() / speed) % frames);
-            int u = MathUtils.floor(frame / 9f);
+            int u = OpenMath.floori(frame / 9f);
             int v = frame - u * 9;
             context.drawResizableImage(ModTextures.SKIN_PANEL, x + 8, y + 8, width - 16, height - 16, u * 28, v * 28, 27, 27, 256, 256);
             return;

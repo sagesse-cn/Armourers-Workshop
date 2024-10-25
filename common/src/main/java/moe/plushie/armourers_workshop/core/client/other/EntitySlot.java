@@ -1,8 +1,8 @@
 package moe.plushie.armourers_workshop.core.client.other;
 
 import moe.plushie.armourers_workshop.core.client.bake.BakedSkin;
-import moe.plushie.armourers_workshop.core.data.color.ColorScheme;
 import moe.plushie.armourers_workshop.core.skin.SkinDescriptor;
+import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintScheme;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperty;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.entity.Entity;
@@ -14,12 +14,12 @@ public class EntitySlot {
     protected final ItemStack itemStack;
     protected final SkinDescriptor descriptor;
     protected final BakedSkin bakedSkin;
-    protected final ColorScheme bakedScheme;
+    protected final SkinPaintScheme bakedScheme;
     protected final Type slotType;
     protected final float renderPriority;
     protected final boolean keepOverlayColor;
 
-    public EntitySlot(ItemStack itemStack, SkinDescriptor descriptor, BakedSkin bakedSkin, ColorScheme entityScheme, float renderPriority, Type slotType) {
+    public EntitySlot(ItemStack itemStack, SkinDescriptor descriptor, BakedSkin bakedSkin, SkinPaintScheme entityScheme, float renderPriority, Type slotType) {
         this.itemStack = itemStack;
         this.descriptor = descriptor;
         this.bakedSkin = bakedSkin;
@@ -29,7 +29,7 @@ public class EntitySlot {
         this.keepOverlayColor = bakedSkin.getProperties().get(SkinProperty.KEEP_OVERLAY_COLOR);
     }
 
-    public static ColorScheme baking(ColorScheme skinScheme, ColorScheme entityScheme, Type slotType) {
+    public static SkinPaintScheme baking(SkinPaintScheme skinScheme, SkinPaintScheme entityScheme, Type slotType) {
         // when player held item we can't use the entity scheme.
         if (slotType == Type.IN_HELD) {
             return skinScheme;
@@ -53,7 +53,7 @@ public class EntitySlot {
         return bakedSkin;
     }
 
-    public ColorScheme getBakedScheme() {
+    public SkinPaintScheme getBakedScheme() {
         return bakedScheme;
     }
 

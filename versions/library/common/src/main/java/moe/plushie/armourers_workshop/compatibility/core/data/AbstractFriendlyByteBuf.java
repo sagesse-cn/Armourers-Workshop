@@ -2,7 +2,7 @@ package moe.plushie.armourers_workshop.compatibility.core.data;
 
 import io.netty.buffer.ByteBuf;
 import moe.plushie.armourers_workshop.api.core.IResourceLocation;
-import moe.plushie.armourers_workshop.utils.ext.OpenResourceLocation;
+import moe.plushie.armourers_workshop.core.utils.OpenResourceLocation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.phys.BlockHitResult;

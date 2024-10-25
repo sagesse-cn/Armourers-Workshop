@@ -1,8 +1,8 @@
 package moe.plushie.armourers_workshop.core.skin.part.other;
 
+import moe.plushie.armourers_workshop.core.math.Rectangle3i;
+import moe.plushie.armourers_workshop.core.math.Vector3i;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPartType;
-import moe.plushie.armourers_workshop.utils.math.Rectangle3i;
-import moe.plushie.armourers_workshop.utils.math.Vector3i;
 
 public class UnknownPartType extends SkinPartType {
 

@@ -1,6 +1,7 @@
 package moe.plushie.armourers_workshop.api.skin;
 
-import moe.plushie.armourers_workshop.api.registry.IRegistryEntry;
+import moe.plushie.armourers_workshop.api.core.IRegistryEntry;
+import moe.plushie.armourers_workshop.api.skin.part.ISkinPartType;
 
 import java.util.List;
 

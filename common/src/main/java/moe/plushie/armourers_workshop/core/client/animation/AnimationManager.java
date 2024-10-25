@@ -7,11 +7,12 @@ import moe.plushie.armourers_workshop.core.data.EntityAction;
 import moe.plushie.armourers_workshop.core.data.EntityActionSet;
 import moe.plushie.armourers_workshop.core.data.EntityActionTarget;
 import moe.plushie.armourers_workshop.core.data.EntityActions;
+import moe.plushie.armourers_workshop.core.math.OpenMath;
 import moe.plushie.armourers_workshop.core.skin.SkinDescriptor;
+import moe.plushie.armourers_workshop.core.utils.Collections;
+import moe.plushie.armourers_workshop.core.utils.Objects;
 import moe.plushie.armourers_workshop.init.ModConfig;
 import moe.plushie.armourers_workshop.init.ModLog;
-import moe.plushie.armourers_workshop.utils.MathUtils;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
 import moe.plushie.armourers_workshop.utils.TickUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -101,7 +102,7 @@ public class AnimationManager {
                 state.tick(animationTicks);
                 if (state.isCompleted()) {
                     iterator.remove();
-                    entry.getRight().run();
+                    entry.getValue().run();
                 }
             }
         }
@@ -157,7 +158,7 @@ public class AnimationManager {
 
     private void rebuildTriggerableEntities() {
         triggerableEntries.clear();
-        triggerableEntries.addAll(ObjectUtils.filter(allEntries.values(), Entry::hasTriggerableAnimation));
+        triggerableEntries.addAll(Collections.filter(allEntries.values(), Entry::hasTriggerableAnimation));
     }
 
     protected void debugLog(String message, Object... arguments) {
@@ -210,8 +211,8 @@ public class AnimationManager {
         }
 
         public void play(AnimationController animationController, float time, CompoundTag properties) {
-            var speed = MathUtils.clamp(properties.getOptionalNumber("speed", 1).floatValue(), 0.0001f, 1000.0f);
-            var playCount = MathUtils.clamp(properties.getOptionalInt("repeat", 0), -1, 1000);
+            var speed = OpenMath.clamp(properties.getOptionalNumber("speed", 1).floatValue(), 0.0001f, 1000.0f);
+            var playCount = OpenMath.clamp(properties.getOptionalInt("repeat", 0), -1, 1000);
             var needsLock = properties.getOptionalBoolean("lock", true);
             // play parallel animation (simple).
             if (animationController.isParallel()) {
@@ -260,7 +261,7 @@ public class AnimationManager {
 
         private void play(TriggerableController newValue, @Nullable TriggerableController oldValue, float time, float speed, int playCount, boolean needLock) {
             var toAnimationController = newValue.animationController;
-            var fromAnimationController = ObjectUtils.flatMap(oldValue, it -> it.animationController);
+            var fromAnimationController = Objects.flatMap(oldValue, it -> it.animationController);
 
             // clear prev play state.
             if (fromAnimationController != null) {

@@ -4,7 +4,7 @@ import moe.plushie.armourers_workshop.api.skin.property.ISkinProperties;
 import moe.plushie.armourers_workshop.api.skin.property.ISkinProperty;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IInputStream;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IOutputStream;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
+import moe.plushie.armourers_workshop.core.utils.Objects;
 import net.minecraft.nbt.ByteTag;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.DoubleTag;
@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 
 public class SkinProperties implements ISkinProperties {
@@ -54,7 +53,7 @@ public class SkinProperties implements ISkinProperties {
     @Override
     public <T> T get(ISkinProperty<T> property) {
         var value = properties.getOrDefault(property.getKey(), property.getDefaultValue());
-        return ObjectUtils.unsafeCast(value);
+        return Objects.unsafeCast(value);
     }
 
     @Override
@@ -297,7 +296,7 @@ public class SkinProperties implements ISkinProperties {
             } else {
                 value = properties.getOrDefault(property.getKey(), property.getDefaultValue());
             }
-            return ObjectUtils.unsafeCast(value);
+            return Objects.unsafeCast(value);
         }
 
         @Override

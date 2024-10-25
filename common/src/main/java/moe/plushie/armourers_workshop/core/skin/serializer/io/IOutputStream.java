@@ -1,16 +1,16 @@
 package moe.plushie.armourers_workshop.core.skin.serializer.io;
 
 import io.netty.buffer.ByteBuf;
-import moe.plushie.armourers_workshop.api.math.IRectangle3f;
-import moe.plushie.armourers_workshop.api.math.IRectangle3i;
-import moe.plushie.armourers_workshop.api.math.ITransformf;
-import moe.plushie.armourers_workshop.api.math.IVector3f;
-import moe.plushie.armourers_workshop.api.math.IVector3i;
-import moe.plushie.armourers_workshop.api.registry.IRegistryEntry;
-import moe.plushie.armourers_workshop.core.data.transform.SkinTransform;
+import moe.plushie.armourers_workshop.api.core.IRegistryEntry;
+import moe.plushie.armourers_workshop.api.core.math.IRectangle3f;
+import moe.plushie.armourers_workshop.api.core.math.IRectangle3i;
+import moe.plushie.armourers_workshop.api.core.math.ITransform3f;
+import moe.plushie.armourers_workshop.api.core.math.IVector3f;
+import moe.plushie.armourers_workshop.api.core.math.IVector3i;
+import moe.plushie.armourers_workshop.core.math.OpenTransform3f;
+import moe.plushie.armourers_workshop.core.skin.paint.texture.TextureAnimation;
+import moe.plushie.armourers_workshop.core.skin.paint.texture.TextureProperties;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperties;
-import moe.plushie.armourers_workshop.core.texture.TextureAnimation;
-import moe.plushie.armourers_workshop.core.texture.TextureProperties;
 import moe.plushie.armourers_workshop.utils.SkinFileUtils;
 import net.minecraft.nbt.CompoundTag;
 
@@ -154,9 +154,9 @@ public interface IOutputStream {
         stream.writeFloat(rect.getDepth());
     }
 
-    default void writeTransformf(ITransformf transform) throws IOException {
-        if (transform instanceof SkinTransform) {
-            ((SkinTransform) transform).writeToStream(this);
+    default void writeTransformf(ITransform3f transform) throws IOException {
+        if (transform instanceof OpenTransform3f) {
+            ((OpenTransform3f) transform).writeToStream(this);
         }
     }
 

@@ -3,8 +3,8 @@ package moe.plushie.armourers_workshop.compatibility.fabric.mixin;
 import com.apple.library.coregraphics.CGGraphicsContext;
 import moe.plushie.armourers_workshop.api.annotation.Available;
 import moe.plushie.armourers_workshop.compatibility.client.gui.AbstractGraphicsRenderer;
+import moe.plushie.armourers_workshop.core.utils.Objects;
 import moe.plushie.armourers_workshop.init.platform.fabric.event.RenderTooltipEvents;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
@@ -30,7 +30,7 @@ public class FabricGuiGraphicsMixin {
         if (itemStack.isEmpty()) {
             return;
         }
-        GuiGraphics graphics = ObjectUtils.unsafeCast(this);
+        GuiGraphics graphics = Objects.unsafeCast(this);
         int screenWidth = graphics.guiWidth();
         int screenHeight = graphics.guiHeight();
         int i = 0;

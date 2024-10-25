@@ -1,7 +1,6 @@
 package moe.plushie.armourers_workshop.compatibility.mixin;
 
 import moe.plushie.armourers_workshop.api.annotation.Available;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
 import moe.plushie.armourers_workshop.utils.SkinUtils;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -17,6 +16,6 @@ public class VehicleEntityBreakMixin {
 
     @Inject(method = "spawnAtLocation(Lnet/minecraft/world/item/ItemStack;F)Lnet/minecraft/world/entity/item/ItemEntity;", at = @At(value = "HEAD"))
     public void aw2$spawnAtLocation(ItemStack itemStack, float f, CallbackInfoReturnable<ItemEntity> cir) {
-        SkinUtils.saveVehicleSkin(ObjectUtils.unsafeCast(this), itemStack);
+        SkinUtils.saveVehicleSkin(Entity.class.cast(this), itemStack);
     }
 }

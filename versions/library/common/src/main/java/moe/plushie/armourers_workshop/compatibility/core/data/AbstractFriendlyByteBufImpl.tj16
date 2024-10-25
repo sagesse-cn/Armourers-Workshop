@@ -3,7 +3,7 @@ package moe.plushie.armourers_workshop.compatibility.core.data;
 import io.netty.buffer.ByteBuf;
 import moe.plushie.armourers_workshop.api.annotation.Available;
 import moe.plushie.armourers_workshop.api.network.IFriendlyByteBuf;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
+import moe.plushie.armourers_workshop.core.utils.Objects;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -19,7 +19,7 @@ public abstract class AbstractFriendlyByteBufImpl implements IFriendlyByteBuf {
     }
 
     protected static FriendlyByteBuf cast(ByteBuf buf) {
-        FriendlyByteBuf source = ObjectUtils.safeCast(buf, FriendlyByteBuf.class);
+        FriendlyByteBuf source = Objects.safeCast(buf, FriendlyByteBuf.class);
         if (source == null) {
             source = new FriendlyByteBuf(buf);
         }

@@ -6,12 +6,13 @@ import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
 import com.mojang.math.Vector4f;
 import moe.plushie.armourers_workshop.api.annotation.Available;
-import moe.plushie.armourers_workshop.api.math.IMatrix3f;
-import moe.plushie.armourers_workshop.api.math.IMatrix4f;
-import moe.plushie.armourers_workshop.api.math.IQuaternionf;
+import moe.plushie.armourers_workshop.api.core.math.IMatrix3f;
+import moe.plushie.armourers_workshop.api.core.math.IMatrix4f;
+import moe.plushie.armourers_workshop.api.core.math.IQuaternion3f;
 import moe.plushie.armourers_workshop.core.data.cache.ObjectPool;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
-import moe.plushie.armourers_workshop.utils.math.OpenPoseStack;
+import moe.plushie.armourers_workshop.core.math.OpenPoseStack;
+import moe.plushie.armourers_workshop.core.utils.MatrixBuffers;
+import moe.plushie.armourers_workshop.core.utils.Objects;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
@@ -28,11 +29,11 @@ public abstract class AbstractPoseStackImpl {
 
     private static final Quaternion CONVERTER_QUAT = new Quaternion(0, 0, 0, 1);
 
-    private static final FloatBuffer BUFFER3x3 = ObjectUtils.createFloatBuffer(9);
-    private static final FloatBuffer BUFFER4x4 = ObjectUtils.createFloatBuffer(16);
+    private static final FloatBuffer BUFFER3x3 = MatrixBuffers.createFloatBuffer(9);
+    private static final FloatBuffer BUFFER4x4 = MatrixBuffers.createFloatBuffer(16);
 
     public static Matrix3f convertMatrix(IMatrix3f mat) {
-        AbstractMatrix3f newValue = ObjectUtils.safeCast(mat, AbstractMatrix3f.class);
+        AbstractMatrix3f newValue = Objects.safeCast(mat, AbstractMatrix3f.class);
         if (newValue != null) {
             return newValue.mat;
         }
@@ -42,7 +43,7 @@ public abstract class AbstractPoseStackImpl {
     }
 
     public static Matrix4f convertMatrix(IMatrix4f mat) {
-        AbstractMatrix4f newValue = ObjectUtils.safeCast(mat, AbstractMatrix4f.class);
+        AbstractMatrix4f newValue = Objects.safeCast(mat, AbstractMatrix4f.class);
         if (newValue != null) {
             return newValue.mat;
         }
@@ -51,12 +52,12 @@ public abstract class AbstractPoseStackImpl {
         return CONVERTER_MAT4.mat;
     }
 
-    public static Quaternion convertQuaternion(IQuaternionf q) {
+    public static Quaternion convertQuaternion(IQuaternion3f q) {
         CONVERTER_QUAT.set(q.x(), q.y(), q.z(), q.w());
         return CONVERTER_QUAT;
     }
 
-    public static Quaternion copyQuaternion(IQuaternionf q) {
+    public static Quaternion copyQuaternion(IQuaternion3f q) {
         return new Quaternion(q.x(), q.y(), q.z(), q.w());
     }
 
@@ -100,7 +101,7 @@ public abstract class AbstractPoseStackImpl {
         }
 
         @Override
-        public void rotate(IQuaternionf q) {
+        public void rotate(IQuaternion3f q) {
             mat.mul(convertQuaternion(q));
         }
 
@@ -228,7 +229,7 @@ public abstract class AbstractPoseStackImpl {
         }
 
         @Override
-        public void rotate(IQuaternionf q) {
+        public void rotate(IQuaternion3f q) {
             mat.multiply(convertQuaternion(q));
         }
 

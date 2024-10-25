@@ -1,9 +1,9 @@
 package moe.plushie.armourers_workshop.builder.other;
 
-import moe.plushie.armourers_workshop.utils.MathUtils;
-import moe.plushie.armourers_workshop.utils.math.OpenQuaternionf;
-import moe.plushie.armourers_workshop.utils.math.Vector3i;
-import moe.plushie.armourers_workshop.utils.math.Vector4f;
+import moe.plushie.armourers_workshop.core.math.OpenMath;
+import moe.plushie.armourers_workshop.core.math.OpenQuaternion3f;
+import moe.plushie.armourers_workshop.core.math.Vector3i;
+import moe.plushie.armourers_workshop.core.math.Vector4f;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
@@ -16,7 +16,7 @@ public class CubeTransform {
     public final Direction direction;
     public final Rotation rotation;
     public final Rotation invRotation;
-    public final OpenQuaternionf rotationDegrees;
+    public final OpenQuaternion3f rotationDegrees;
 
     public CubeTransform(Level level, BlockPos blockPos, Direction direction) {
         this.level = level;
@@ -36,12 +36,12 @@ public class CubeTransform {
         };
     }
 
-    public static OpenQuaternionf getRotationDegrees(Direction dir) {
+    public static OpenQuaternion3f getRotationDegrees(Direction dir) {
         return switch (dir) {
-            case SOUTH -> new OpenQuaternionf(0, 180, 0, true);
-            case WEST -> new OpenQuaternionf(0, 90, 0, true);
-            case EAST -> new OpenQuaternionf(0, -90, 0, true);
-            default -> OpenQuaternionf.ONE;
+            case SOUTH -> new OpenQuaternion3f(0, 180, 0, true);
+            case WEST -> new OpenQuaternion3f(0, 90, 0, true);
+            case EAST -> new OpenQuaternion3f(0, -90, 0, true);
+            default -> OpenQuaternion3f.ONE;
         };
     }
 
@@ -59,13 +59,13 @@ public class CubeTransform {
 
     public BlockPos mul(int x, int y, int z) {
         // in this case not need to apply matrix transform.
-        if (rotationDegrees == OpenQuaternionf.ONE) {
+        if (rotationDegrees == OpenQuaternion3f.ONE) {
             return blockPos.offset(x, y, z);
         }
         // we increase 0.5 offset to avoid down-cast incorrect by float accuracy problems.
         var off = new Vector4f(x + 0.5f, y + 0.5f, z + 0.5f, 1);
         off.transform(rotationDegrees);
-        return blockPos.offset(MathUtils.floor(off.x()), MathUtils.floor(off.y()), MathUtils.floor(off.z()));
+        return blockPos.offset(OpenMath.floori(off.getX()), OpenMath.floori(off.getY()), OpenMath.floori(off.getZ()));
     }
 
 }

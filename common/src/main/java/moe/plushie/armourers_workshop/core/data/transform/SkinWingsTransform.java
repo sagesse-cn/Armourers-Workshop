@@ -1,20 +1,20 @@
 package moe.plushie.armourers_workshop.core.data.transform;
 
-import moe.plushie.armourers_workshop.api.action.ICanRotation;
-import moe.plushie.armourers_workshop.api.math.IPoseStack;
-import moe.plushie.armourers_workshop.api.skin.ISkinPartType;
-import moe.plushie.armourers_workshop.api.skin.ISkinTransform;
+import moe.plushie.armourers_workshop.api.core.math.IPoseStack;
+import moe.plushie.armourers_workshop.api.core.math.ITransform;
+import moe.plushie.armourers_workshop.api.skin.part.ISkinPartType;
+import moe.plushie.armourers_workshop.api.skin.part.features.ICanRotation;
+import moe.plushie.armourers_workshop.core.math.Vector3f;
 import moe.plushie.armourers_workshop.core.skin.SkinMarker;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperties;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperty;
-import moe.plushie.armourers_workshop.utils.math.Vector3f;
-import net.minecraft.core.Direction;
+import moe.plushie.armourers_workshop.core.utils.OpenDirection;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.Nullable;
 
-public class SkinWingsTransform implements ISkinTransform {
+public class SkinWingsTransform implements ITransform {
 
     private float animationTicks = 0;
     private boolean isFallFlying = false;
@@ -94,7 +94,7 @@ public class SkinWingsTransform implements ISkinTransform {
         return -minAngle - fullAngle * ((angle + 1D) / 2);
     }
 
-    private Vector3f getRotationMatrix(Direction direction) {
+    private Vector3f getRotationMatrix(OpenDirection direction) {
         return switch (direction) {
             case UP -> Vector3f.YP;
             case DOWN -> Vector3f.YN;

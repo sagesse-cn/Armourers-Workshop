@@ -1,13 +1,12 @@
 package moe.plushie.armourers_workshop.core.client.skinrender.plugin;
 
-import moe.plushie.armourers_workshop.api.data.IAssociatedContainerKey;
 import moe.plushie.armourers_workshop.core.armature.ArmaturePlugin;
 import moe.plushie.armourers_workshop.core.armature.ArmatureTransformerContext;
 import moe.plushie.armourers_workshop.core.client.other.EntityRenderData;
+import moe.plushie.armourers_workshop.core.math.OpenMath;
+import moe.plushie.armourers_workshop.core.math.Vector3f;
 import moe.plushie.armourers_workshop.init.ModDebugger;
-import moe.plushie.armourers_workshop.utils.DataStorageKey;
-import moe.plushie.armourers_workshop.utils.MathUtils;
-import moe.plushie.armourers_workshop.utils.math.Vector3f;
+import moe.plushie.armourers_workshop.utils.DataContainerKey;
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.entity.Entity;
@@ -17,7 +16,7 @@ import net.minecraft.world.level.block.state.properties.RailShape;
 
 public class MinecartModelArmaturePlugin extends ArmaturePlugin {
 
-    private static final IAssociatedContainerKey<Boolean> IS_FLAPPED = DataStorageKey.of("isFlapped", Boolean.class, () -> false);
+    private static final DataContainerKey<Boolean> IS_FLAPPED = DataContainerKey.of("isFlapped", Boolean.class, () -> false);
 
     public MinecartModelArmaturePlugin(ArmatureTransformerContext context) {
     }
@@ -51,9 +50,9 @@ public class MinecartModelArmaturePlugin extends ArmaturePlugin {
             return renderData.getAssociatedObject(IS_FLAPPED);
         }
         var level = entity.getLevel();
-        var i = MathUtils.floor(MathUtils.lerp(partialTicks, entity.xOld, entity.getX()));
-        var j = MathUtils.floor(MathUtils.lerp(partialTicks, entity.yOld, entity.getY()));
-        var k = MathUtils.floor(MathUtils.lerp(partialTicks, entity.zOld, entity.getZ()));
+        var i = OpenMath.floori(OpenMath.lerp(partialTicks, entity.xOld, entity.getX()));
+        var j = OpenMath.floori(OpenMath.lerp(partialTicks, entity.yOld, entity.getY()));
+        var k = OpenMath.floori(OpenMath.lerp(partialTicks, entity.zOld, entity.getZ()));
         if (level.getBlockState(new BlockPos(i, j - 1, k)).is(BlockTags.RAILS)) {
             --j;
         }
@@ -64,7 +63,7 @@ public class MinecartModelArmaturePlugin extends ArmaturePlugin {
         }
         var shape = blockState.getValue(((BaseRailBlock) blockState.getBlock()).getShapeProperty());
         var result = isFlapped(shape, dx, dz);
-        renderData.setAssociatedObject(result, IS_FLAPPED);
+        renderData.setAssociatedObject(IS_FLAPPED, result);
         return result;
     }
 

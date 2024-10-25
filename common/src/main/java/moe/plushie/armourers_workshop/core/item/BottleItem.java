@@ -6,10 +6,10 @@ import moe.plushie.armourers_workshop.api.common.IItemPropertiesProvider;
 import moe.plushie.armourers_workshop.api.common.IItemTintColorProvider;
 import moe.plushie.armourers_workshop.api.common.ITooltipContext;
 import moe.plushie.armourers_workshop.api.core.IResourceLocation;
-import moe.plushie.armourers_workshop.api.painting.IPaintColor;
+import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintColor;
 import moe.plushie.armourers_workshop.core.item.impl.IPaintProvider;
 import moe.plushie.armourers_workshop.core.item.impl.IPaintToolPicker;
-import moe.plushie.armourers_workshop.core.skin.painting.SkinPaintTypes;
+import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintTypes;
 import moe.plushie.armourers_workshop.init.ModConstants;
 import moe.plushie.armourers_workshop.utils.ColorUtils;
 import moe.plushie.armourers_workshop.utils.TranslateUtils;
@@ -58,12 +58,12 @@ public class BottleItem extends FlavouredItem implements IItemTintColorProvider,
     }
 
     @Override
-    public void setItemColor(ItemStack itemStack, IPaintColor paintColor) {
+    public void setItemColor(ItemStack itemStack, ISkinPaintColor paintColor) {
         ColorUtils.setColor(itemStack, paintColor);
     }
 
     @Override
-    public IPaintColor getItemColor(ItemStack itemStack) {
+    public ISkinPaintColor getItemColor(ItemStack itemStack) {
         return ColorUtils.getColor(itemStack);
     }
 

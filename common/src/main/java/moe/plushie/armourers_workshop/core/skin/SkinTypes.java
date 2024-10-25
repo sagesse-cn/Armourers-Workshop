@@ -1,13 +1,14 @@
 package moe.plushie.armourers_workshop.core.skin;
 
-import moe.plushie.armourers_workshop.api.skin.ISkinPartType;
+import moe.plushie.armourers_workshop.api.skin.ISkinEquipmentSlot;
 import moe.plushie.armourers_workshop.api.skin.ISkinType;
+import moe.plushie.armourers_workshop.api.skin.part.ISkinPartType;
 import moe.plushie.armourers_workshop.core.data.slot.ItemOverrideType;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPartTypes;
+import moe.plushie.armourers_workshop.core.utils.Collections;
+import moe.plushie.armourers_workshop.core.utils.OpenEquipmentSlot;
+import moe.plushie.armourers_workshop.core.utils.OpenResourceLocation;
 import moe.plushie.armourers_workshop.init.ModLog;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
-import moe.plushie.armourers_workshop.utils.ext.OpenResourceLocation;
-import net.minecraft.world.entity.EquipmentSlot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,10 +21,10 @@ public final class SkinTypes {
 
     public static final ISkinType UNKNOWN = register("unknown", 255, SkinPartTypes.UNKNOWN);
 
-    public static final ISkinType ARMOR_HEAD = registerArmor("head", 1, EquipmentSlot.HEAD, SkinPartTypes.BIPPED_HEAD);
-    public static final ISkinType ARMOR_CHEST = registerArmor("chest", 2, EquipmentSlot.CHEST, SkinPartTypes.BIPPED_CHEST, SkinPartTypes.BIPPED_LEFT_ARM, SkinPartTypes.BIPPED_RIGHT_ARM);
-    public static final ISkinType ARMOR_LEGS = registerArmor("legs", 3, EquipmentSlot.LEGS, SkinPartTypes.BIPPED_LEFT_THIGH, SkinPartTypes.BIPPED_RIGHT_THIGH, SkinPartTypes.BIPPED_SKIRT);
-    public static final ISkinType ARMOR_FEET = registerArmor("feet", 4, EquipmentSlot.FEET, SkinPartTypes.BIPPED_LEFT_FOOT, SkinPartTypes.BIPPED_RIGHT_FOOT);
+    public static final ISkinType ARMOR_HEAD = registerArmor("head", 1, OpenEquipmentSlot.HEAD, SkinPartTypes.BIPPED_HEAD);
+    public static final ISkinType ARMOR_CHEST = registerArmor("chest", 2, OpenEquipmentSlot.CHEST, SkinPartTypes.BIPPED_CHEST, SkinPartTypes.BIPPED_LEFT_ARM, SkinPartTypes.BIPPED_RIGHT_ARM);
+    public static final ISkinType ARMOR_LEGS = registerArmor("legs", 3, OpenEquipmentSlot.LEGS, SkinPartTypes.BIPPED_LEFT_THIGH, SkinPartTypes.BIPPED_RIGHT_THIGH, SkinPartTypes.BIPPED_SKIRT);
+    public static final ISkinType ARMOR_FEET = registerArmor("feet", 4, OpenEquipmentSlot.FEET, SkinPartTypes.BIPPED_LEFT_FOOT, SkinPartTypes.BIPPED_RIGHT_FOOT);
     public static final ISkinType ARMOR_WINGS = registerArmor("wings", 5, null, SkinPartTypes.BIPPED_LEFT_WING, SkinPartTypes.BIPPED_RIGHT_WING);
 
     public static final ISkinType OUTFIT = registerArmor("outfit", 6, null, SkinTypes.ARMOR_HEAD, SkinTypes.ARMOR_CHEST, SkinTypes.ARMOR_LEGS, SkinTypes.ARMOR_FEET, SkinTypes.ARMOR_WINGS);
@@ -70,14 +71,14 @@ public final class SkinTypes {
     }
 
     private static ISkinType register(String name, int id, ISkinPartType... parts) {
-        return register(name, new SkinType(name, id, ObjectUtils.map(parts)));
+        return register(name, new SkinType(name, id, Collections.newList(parts)));
     }
 
-    private static ISkinType registerArmor(String name, int id, EquipmentSlot slotType, ISkinPartType... parts) {
-        return register(name, new SkinType.Armor(name, id, slotType, ObjectUtils.map(parts)));
+    private static ISkinType registerArmor(String name, int id, ISkinEquipmentSlot slotType, ISkinPartType... parts) {
+        return register(name, new SkinType.Armor(name, id, slotType, Collections.newList(parts)));
     }
 
-    private static ISkinType registerArmor(String name, int id, EquipmentSlot slotType, ISkinType... types) {
+    private static ISkinType registerArmor(String name, int id, ISkinEquipmentSlot slotType, ISkinType... types) {
         var partTypes = new ArrayList<ISkinPartType>();
         for (var type : types) {
             partTypes.addAll(type.getParts());
@@ -86,7 +87,7 @@ public final class SkinTypes {
     }
 
     private static ISkinType registerItem(String name, int id, ItemOverrideType overrideType, ISkinPartType... parts) {
-        return register(name, new SkinType.Tool(name, id, ObjectUtils.map(parts), overrideType::isOverrideItem));
+        return register(name, new SkinType.Tool(name, id, Collections.newList(parts), overrideType::isOverrideItem));
     }
 
     private static ISkinType register(String name, SkinType type) {

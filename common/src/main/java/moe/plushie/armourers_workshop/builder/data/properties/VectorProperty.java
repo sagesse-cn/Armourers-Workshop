@@ -1,6 +1,6 @@
 package moe.plushie.armourers_workshop.builder.data.properties;
 
-import moe.plushie.armourers_workshop.utils.math.Vector3f;
+import moe.plushie.armourers_workshop.core.math.Vector3f;
 
 import java.util.function.BiConsumer;
 import java.util.function.Function;

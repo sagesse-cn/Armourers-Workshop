@@ -14,16 +14,15 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import com.google.common.collect.ObjectArrays;
+import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.init.ModLog;
 import moe.plushie.armourers_workshop.init.platform.EnvironmentManager;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -120,7 +119,7 @@ public class FabricConfigSpec extends UnmodifiableConfigWrapper<UnmodifiableConf
 
     public synchronized boolean isCorrect(CommentedConfig config) {
         LinkedList<String> parentPath = new LinkedList<>();
-        return correct(this.config, config, parentPath, Collections.unmodifiableList(parentPath), (a, b, c, d) -> {
+        return correct(this.config, config, parentPath, Collections.newList(parentPath), (a, b, c, d) -> {
         }, null, true) == 0;
     }
 
@@ -138,7 +137,7 @@ public class FabricConfigSpec extends UnmodifiableConfigWrapper<UnmodifiableConf
         int ret = -1;
         try {
             isCorrecting = true;
-            ret = correct(this.config, config, parentPath, Collections.unmodifiableList(parentPath), listener, commentListener, false);
+            ret = correct(this.config, config, parentPath, Collections.newList(parentPath), listener, commentListener, false);
         } finally {
             isCorrecting = false;
         }
@@ -405,11 +404,11 @@ public class FabricConfigSpec extends UnmodifiableConfigWrapper<UnmodifiableConf
         }
 
         public <V extends Enum<V>> EnumValue<V> defineEnum(List<String> path, V defaultValue, @SuppressWarnings("unchecked") V... acceptableValues) {
-            return defineEnum(path, defaultValue, ObjectUtils.map(acceptableValues));
+            return defineEnum(path, defaultValue, Collections.newList(acceptableValues));
         }
 
         public <V extends Enum<V>> EnumValue<V> defineEnum(List<String> path, V defaultValue, EnumGetMethod converter, @SuppressWarnings("unchecked") V... acceptableValues) {
-            return defineEnum(path, defaultValue, converter, ObjectUtils.map(acceptableValues));
+            return defineEnum(path, defaultValue, converter, Collections.newList(acceptableValues));
         }
 
         public <V extends Enum<V>> EnumValue<V> defineEnum(String path, V defaultValue, Collection<V> acceptableValues) {

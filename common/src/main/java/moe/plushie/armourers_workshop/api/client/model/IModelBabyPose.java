@@ -1,6 +1,6 @@
 package moe.plushie.armourers_workshop.api.client.model;
 
-import moe.plushie.armourers_workshop.api.math.IVector3f;
+import moe.plushie.armourers_workshop.api.core.math.IVector3f;
 
 public interface IModelBabyPose {
 

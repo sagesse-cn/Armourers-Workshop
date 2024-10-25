@@ -3,17 +3,18 @@ package moe.plushie.armourers_workshop.core.skin;
 import moe.plushie.armourers_workshop.api.skin.ISkin;
 import moe.plushie.armourers_workshop.api.skin.ISkinType;
 import moe.plushie.armourers_workshop.core.data.transform.SkinItemTransforms;
+import moe.plushie.armourers_workshop.core.math.Rectangle3f;
+import moe.plushie.armourers_workshop.core.math.Rectangle3i;
+import moe.plushie.armourers_workshop.core.math.Vector3i;
 import moe.plushie.armourers_workshop.core.skin.animation.SkinAnimation;
+import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintData;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPart;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperties;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperty;
+import moe.plushie.armourers_workshop.core.skin.property.SkinSettings;
 import moe.plushie.armourers_workshop.core.skin.serializer.SkinSerializer;
-import moe.plushie.armourers_workshop.core.texture.SkinPaintData;
-import moe.plushie.armourers_workshop.core.texture.SkinPreviewData;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
-import moe.plushie.armourers_workshop.utils.ThreadUtils;
-import moe.plushie.armourers_workshop.utils.math.Rectangle3i;
-import net.minecraft.core.BlockPos;
+import moe.plushie.armourers_workshop.core.utils.Objects;
+import moe.plushie.armourers_workshop.core.utils.OpenSequenceSource;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -36,7 +37,7 @@ public class Skin implements ISkin {
     private final SkinPreviewData previewData;
     private final Object blobs;
 
-    private Map<BlockPos, Rectangle3i> blockBounds;
+    private Map<Vector3i, Rectangle3f> blockBounds;
 
     protected Skin(int id, int version, ISkinType type, SkinProperties properties, SkinSettings settings, SkinPaintData paintData, SkinPreviewData previewData, List<SkinAnimation> skinAnimations, List<SkinPart> skinParts, Object blobs) {
         this.id = id;
@@ -63,7 +64,7 @@ public class Skin implements ISkin {
         return properties;
     }
 
-    public Map<BlockPos, Rectangle3i> getBlockBounds() {
+    public Map<Vector3i, Rectangle3f> getBlockBounds() {
         if (blockBounds != null) {
             return blockBounds;
         }
@@ -72,7 +73,7 @@ public class Skin implements ISkin {
             return blockBounds;
         }
         var collisionBox = settings.getCollisionBox();
-        blockBounds.put(BlockPos.ZERO, Rectangle3i.ZERO);
+        blockBounds.put(Vector3i.ZERO, Rectangle3f.ZERO);
         if (collisionBox != null) {
             for (var rect : collisionBox) {
                 var rect1 = new Rectangle3i(rect);
@@ -85,7 +86,7 @@ public class Skin implements ISkin {
                 int tw = rect1.getWidth();
                 int th = rect1.getHeight();
                 int td = rect1.getDepth();
-                blockBounds.put(new BlockPos(bx, by, bz), new Rectangle3i(-tx, -ty, tz, -tw, -th, td));
+                blockBounds.put(new Vector3i(bx, by, bz), new Rectangle3f(-tx, -ty, tz, -tw, -th, td));
             }
             return blockBounds;
         }
@@ -159,7 +160,7 @@ public class Skin implements ISkin {
 
     @Override
     public String toString() {
-        return ObjectUtils.makeDescription(this, "type", type.getRegistryName().toString(), "properties", properties, "settings", settings, "animations", animations, "paintData", paintData, "previewData", previewData);
+        return Objects.toString(this, "type", type.getRegistryName().toString(), "properties", properties, "settings", settings, "animations", animations, "paintData", paintData, "previewData", previewData);
     }
 
     public List<SkinMarker> getMarkers() {
@@ -199,7 +200,7 @@ public class Skin implements ISkin {
         }
 
         public static int generateId() {
-            return ThreadUtils.nextId(Skin.class);
+            return OpenSequenceSource.nextInt(Skin.class);
         }
 
         public Builder properties(SkinProperties properties) {

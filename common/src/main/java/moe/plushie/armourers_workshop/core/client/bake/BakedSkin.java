@@ -3,10 +3,10 @@ package moe.plushie.armourers_workshop.core.client.bake;
 import com.google.common.collect.Range;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import moe.plushie.armourers_workshop.api.action.ICanHeld;
-import moe.plushie.armourers_workshop.api.action.ICanUse;
 import moe.plushie.armourers_workshop.api.client.IBakedSkin;
 import moe.plushie.armourers_workshop.api.skin.ISkinType;
+import moe.plushie.armourers_workshop.api.skin.part.features.ICanHeld;
+import moe.plushie.armourers_workshop.api.skin.part.features.ICanUse;
 import moe.plushie.armourers_workshop.api.skin.property.ISkinProperties;
 import moe.plushie.armourers_workshop.core.client.animation.AnimationContext;
 import moe.plushie.armourers_workshop.core.client.animation.AnimationController;
@@ -19,27 +19,26 @@ import moe.plushie.armourers_workshop.core.client.skinrender.SkinRenderer;
 import moe.plushie.armourers_workshop.core.client.texture.PlayerTextureLoader;
 import moe.plushie.armourers_workshop.core.data.cache.PrimaryKey;
 import moe.plushie.armourers_workshop.core.data.color.ColorDescriptor;
-import moe.plushie.armourers_workshop.core.data.color.ColorScheme;
 import moe.plushie.armourers_workshop.core.data.transform.SkinItemTransforms;
 import moe.plushie.armourers_workshop.core.data.transform.SkinWingsTransform;
+import moe.plushie.armourers_workshop.core.math.OpenMatrix4f;
+import moe.plushie.armourers_workshop.core.math.OpenQuaternion3f;
+import moe.plushie.armourers_workshop.core.math.OpenVoxelShape;
+import moe.plushie.armourers_workshop.core.math.Rectangle3f;
+import moe.plushie.armourers_workshop.core.math.Vector3i;
+import moe.plushie.armourers_workshop.core.math.Vector4f;
 import moe.plushie.armourers_workshop.core.skin.Skin;
 import moe.plushie.armourers_workshop.core.skin.SkinTypes;
 import moe.plushie.armourers_workshop.core.skin.animation.SkinAnimation;
+import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintScheme;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPartTypes;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperties;
 import moe.plushie.armourers_workshop.core.skin.serializer.SkinUsedCounter;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
+import moe.plushie.armourers_workshop.core.utils.Collections;
+import moe.plushie.armourers_workshop.core.utils.OpenSequenceSource;
 import moe.plushie.armourers_workshop.utils.SkinUtils;
-import moe.plushie.armourers_workshop.utils.ThreadUtils;
-import moe.plushie.armourers_workshop.utils.math.OpenMatrix4f;
-import moe.plushie.armourers_workshop.utils.math.OpenQuaternionf;
-import moe.plushie.armourers_workshop.utils.math.OpenVoxelShape;
-import moe.plushie.armourers_workshop.utils.math.Rectangle3f;
-import moe.plushie.armourers_workshop.utils.math.Rectangle3i;
-import moe.plushie.armourers_workshop.utils.math.Vector4f;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.Nullable;
 
@@ -47,18 +46,19 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 @Environment(EnvType.CLIENT)
 public class BakedSkin implements IBakedSkin {
 
-    private final int id = ThreadUtils.nextId(BakedSkinPart.class);
+    private final int id = OpenSequenceSource.nextInt(BakedSkinPart.class);
 
     private final String identifier;
     private final Skin skin;
     private final ISkinType skinType;
     private final HashMap<Object, Rectangle3f> cachedBounds = new HashMap<>();
-    private final HashMap<BlockPos, Rectangle3i> cachedBlockBounds = new HashMap<>();
+    private final HashMap<Vector3i, Rectangle3f> cachedBlockBounds = new HashMap<>();
 
     private final ArrayList<SkinWingsTransform> cachedWingsTransforms = new ArrayList<>();
     private final ArrayList<BakedItemTransform> cachedItemTransforms = new ArrayList<>();
@@ -73,11 +73,11 @@ public class BakedSkin implements IBakedSkin {
     private final ColorDescriptor colorDescriptor;
     private final SkinUsedCounter usedCounter;
 
-    private final ColorScheme colorScheme;
+    private final SkinPaintScheme colorScheme;
     private final BakedItemModel resolvedItemModel;
-    private final Int2ObjectMap<ColorScheme> resolvedColorSchemes = new Int2ObjectOpenHashMap<>();
+    private final Int2ObjectMap<SkinPaintScheme> resolvedColorSchemes = new Int2ObjectOpenHashMap<>();
 
-    public BakedSkin(String identifier, ISkinType skinType, ArrayList<BakedSkinPart> bakedParts, Skin skin, ColorScheme colorScheme, ColorDescriptor colorDescriptor, SkinUsedCounter usedCounter) {
+    public BakedSkin(String identifier, ISkinType skinType, ArrayList<BakedSkinPart> bakedParts, Skin skin, SkinPaintScheme colorScheme, ColorDescriptor colorDescriptor, SkinUsedCounter usedCounter) {
         this.identifier = identifier;
         this.skin = skin;
         this.skinType = skinType;
@@ -101,9 +101,9 @@ public class BakedSkin implements IBakedSkin {
         cachedLocatorTransforms.forEach(it -> it.setup(entity, bakedArmature, context));
     }
 
-    public ColorScheme resolve(Entity entity, ColorScheme scheme) {
+    public SkinPaintScheme resolve(Entity entity, SkinPaintScheme scheme) {
         if (colorDescriptor.isEmpty()) {
-            return ColorScheme.EMPTY;
+            return SkinPaintScheme.EMPTY;
         }
         var resolvedColorScheme = resolvedColorSchemes.computeIfAbsent(entity.getId(), k -> colorScheme.copy());
         // we can't bind textures to skin when the item stack rendering.
@@ -151,7 +151,7 @@ public class BakedSkin implements IBakedSkin {
         return skinAnimationControllers;
     }
 
-    public ColorScheme getColorScheme() {
+    public SkinPaintScheme getColorScheme() {
         return colorScheme;
     }
 
@@ -172,7 +172,7 @@ public class BakedSkin implements IBakedSkin {
         return usedCounter;
     }
 
-    public HashMap<BlockPos, Rectangle3i> getBlockBounds() {
+    public Map<Vector3i, Rectangle3f> getBlockBounds() {
         return cachedBlockBounds;
     }
 
@@ -187,7 +187,7 @@ public class BakedSkin implements IBakedSkin {
         var matrix = OpenMatrix4f.createScaleMatrix(1, 1, 1);
         var shape = getRenderShape(entity, BakedArmature.defaultBy(skinType), itemSource);
         if (rotation != null) {
-            matrix.rotate(new OpenQuaternionf(rotation.getX(), rotation.getY(), rotation.getZ(), true));
+            matrix.rotate(new OpenQuaternion3f(rotation.getX(), rotation.getY(), rotation.getZ(), true));
             shape.mul(matrix);
         }
         bounds = shape.bounds().copy();
@@ -195,9 +195,9 @@ public class BakedSkin implements IBakedSkin {
             var center = new Vector4f(bounds.getCenter());
             matrix.invert();
             center.transform(matrix);
-            bounds.setX(center.x() - bounds.getWidth() / 2);
-            bounds.setY(center.y() - bounds.getHeight() / 2);
-            bounds.setZ(center.z() - bounds.getDepth() / 2);
+            bounds.setX(center.getX() - bounds.getWidth() / 2);
+            bounds.setY(center.getY() - bounds.getHeight() / 2);
+            bounds.setZ(center.getZ() - bounds.getDepth() / 2);
         }
         cachedBounds.put(key.copy(), bounds);
         return bounds;
@@ -290,7 +290,7 @@ public class BakedSkin implements IBakedSkin {
             return results;
         }
         var namedParts = new HashMap<String, BakedSkinPart>();
-        ObjectUtils.eachTree(skinParts, BakedSkinPart::getChildren, part -> {
+        Collections.eachTree(skinParts, BakedSkinPart::getChildren, part -> {
             var partType = part.getType();
             var partName = partType.getName();
             if (partType == SkinPartTypes.ADVANCED) {

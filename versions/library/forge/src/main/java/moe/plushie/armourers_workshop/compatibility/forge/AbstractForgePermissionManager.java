@@ -9,7 +9,6 @@ import moe.plushie.armourers_workshop.core.permission.BlockPermissionContext;
 import moe.plushie.armourers_workshop.core.permission.PlayerPermissionContext;
 import moe.plushie.armourers_workshop.core.permission.TargetPermissionContext;
 import moe.plushie.armourers_workshop.init.platform.forge.builder.PermissionNodeBuilderImpl;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
@@ -67,17 +66,14 @@ public abstract class AbstractForgePermissionManager {
     }
 
     private static PermissionDynamicContext<?>[] makeContexts(IPermissionContext context) {
-        ArrayList<PermissionDynamicContext<?>> contexts = new ArrayList<>();
-        PlayerPermissionContext player = ObjectUtils.safeCast(context, PlayerPermissionContext.class);
-        if (player != null && player.player != null) {
+        var contexts = new ArrayList<PermissionDynamicContext<?>>();
+        if (context instanceof PlayerPermissionContext player && player.player != null) {
             contexts.add(PLAYER.createContext(player.player));
         }
-        TargetPermissionContext target = ObjectUtils.safeCast(context, TargetPermissionContext.class);
-        if (target != null && target.target != null) {
+        if (context instanceof TargetPermissionContext target && target.target != null) {
             contexts.add(TARGET.createContext(target.target));
         }
-        BlockPermissionContext block = ObjectUtils.safeCast(context, BlockPermissionContext.class);
-        if (block != null) {
+        if (context instanceof BlockPermissionContext block) {
             if (block.blockPos != null) {
                 contexts.add(BLOCK_POS.createContext(block.blockPos));
             }

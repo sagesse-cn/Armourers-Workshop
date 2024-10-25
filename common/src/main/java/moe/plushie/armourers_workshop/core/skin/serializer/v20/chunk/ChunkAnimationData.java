@@ -1,11 +1,11 @@
 package moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk;
 
+import moe.plushie.armourers_workshop.api.core.utils.IPair;
 import moe.plushie.armourers_workshop.core.skin.animation.SkinAnimation;
 import moe.plushie.armourers_workshop.core.skin.animation.SkinAnimationLoop;
 import moe.plushie.armourers_workshop.core.skin.animation.SkinAnimationValue;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IInputStream;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IOutputStream;
-import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -88,9 +88,9 @@ public class ChunkAnimationData {
 
         void writeToStream(IOutputStream stream) throws IOException {
             // merge similar channels.
-            var channels = new LinkedHashMap<Pair<String, String>, ArrayList<SkinAnimationValue>>();
+            var channels = new LinkedHashMap<IPair<String, String>, ArrayList<SkinAnimationValue>>();
             animation.getValues().forEach((bone, values) -> values.forEach(value -> {
-                var key = Pair.of(bone, value.getKey());
+                var key = IPair.of(bone, value.getKey());
                 channels.computeIfAbsent(key, k -> new ArrayList<>()).add(value);
             }));
             // write all value of channel.

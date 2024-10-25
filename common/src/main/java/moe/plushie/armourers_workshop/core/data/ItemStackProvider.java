@@ -26,7 +26,6 @@ public class ItemStackProvider implements IItemStackProvider {
     }
 
 
-
     @Override
     public Iterable<ItemStack> getArmorSlots(Entity entity) {
         Iterable<ItemStack> allArmourSlots = DEFAULT_EMPTY_LIST;

@@ -5,8 +5,8 @@ import moe.plushie.armourers_workshop.api.core.IResourceLocation;
 import moe.plushie.armourers_workshop.api.data.IDataSerializerProvider;
 import moe.plushie.armourers_workshop.compatibility.core.data.AbstractCapabilityStorage;
 import moe.plushie.armourers_workshop.core.capability.SkinWardrobeStorage;
+import moe.plushie.armourers_workshop.core.utils.Objects;
 import moe.plushie.armourers_workshop.utils.Constants;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
 import org.apache.commons.lang3.tuple.Pair;
@@ -52,7 +52,7 @@ public class CapabilityStorage {
         var storage = ((Provider) entity).getCapabilityStorage();
         var value = storage.capabilities.get(capabilityType);
         if (value != null) {
-            return ObjectUtils.unsafeCast(value.getValue());
+            return Objects.unsafeCast(value.getValue());
         }
         return Optional.empty();
     }
@@ -81,15 +81,15 @@ public class CapabilityStorage {
         if (this == NONE) {
             return;
         }
-        CompoundTag caps = getCapTag(tag);
+        var caps = getCapTag(tag);
         if (caps.isEmpty()) {
             return;
         }
         capabilities.values().forEach(pair -> {
             if (pair.getValue().orElse(null) instanceof IDataSerializerProvider provider) {
-                var tag1 = ObjectUtils.safeCast(caps.get(pair.getKey().registryName.toString()), CompoundTag.class);
-                if (tag1 != null) {
-                    provider.deserialize(SkinWardrobeStorage.reader(entity, tag1));
+                var containerTag = caps.get(pair.getKey().registryName.toString());
+                if (containerTag instanceof CompoundTag compoundTag) {
+                    provider.deserialize(SkinWardrobeStorage.reader(entity, compoundTag));
                 }
             }
         });
@@ -97,7 +97,7 @@ public class CapabilityStorage {
 
     private CompoundTag getCapTag(CompoundTag tag) {
         if (tag.contains(Constants.Key.OLD_CAPABILITY, Constants.TagFlags.COMPOUND)) {
-            CompoundTag caps = tag.getCompound(Constants.Key.OLD_CAPABILITY);
+            var caps = tag.getCompound(Constants.Key.OLD_CAPABILITY);
             if (tag.contains(Constants.Key.NEW_CAPABILITY, Constants.TagFlags.COMPOUND)) {
                 caps = caps.copy();
                 caps.merge(tag.getCompound(Constants.Key.NEW_CAPABILITY));

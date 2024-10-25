@@ -1,9 +1,9 @@
 package moe.plushie.armourers_workshop.library.data.impl;
 
 import moe.plushie.armourers_workshop.api.common.IResultHandler;
-import moe.plushie.armourers_workshop.api.data.IDataPackObject;
 import moe.plushie.armourers_workshop.core.data.DataDomain;
 import moe.plushie.armourers_workshop.core.skin.SkinDescriptor;
+import moe.plushie.armourers_workshop.core.skin.serializer.io.IODataObject;
 import moe.plushie.armourers_workshop.library.data.GlobalSkinLibrary;
 
 import java.util.HashMap;
@@ -31,7 +31,7 @@ public class ServerSkin {
         this.descriptor = descriptor;
     }
 
-    public ServerSkin(IDataPackObject object) {
+    public ServerSkin(IODataObject object) {
         this.id = object.get("id").stringValue();
         this.userId = object.get("user_id").stringValue();
         this.name = object.get("name").stringValue();

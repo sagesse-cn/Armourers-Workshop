@@ -3,12 +3,15 @@ package moe.plushie.armourers_workshop.utils;
 import com.google.common.collect.Lists;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
-import moe.plushie.armourers_workshop.api.painting.IPaintColor;
-import moe.plushie.armourers_workshop.api.skin.ISkinPartType;
 import moe.plushie.armourers_workshop.api.skin.ISkinType;
-import moe.plushie.armourers_workshop.core.data.color.ColorScheme;
-import moe.plushie.armourers_workshop.core.data.color.PaintColor;
+import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintColor;
+import moe.plushie.armourers_workshop.api.skin.part.ISkinPartType;
+import moe.plushie.armourers_workshop.builder.data.PlayerTextureDescriptor;
 import moe.plushie.armourers_workshop.core.holiday.Holiday;
+import moe.plushie.armourers_workshop.core.math.Rectangle3f;
+import moe.plushie.armourers_workshop.core.math.Rectangle3i;
+import moe.plushie.armourers_workshop.core.math.Vector3f;
+import moe.plushie.armourers_workshop.core.math.Vector3i;
 import moe.plushie.armourers_workshop.core.skin.SkinDescriptor;
 import moe.plushie.armourers_workshop.core.skin.SkinMarker;
 import moe.plushie.armourers_workshop.core.skin.SkinTypes;
@@ -17,15 +20,12 @@ import moe.plushie.armourers_workshop.core.skin.document.SkinDocumentNode;
 import moe.plushie.armourers_workshop.core.skin.document.SkinDocumentSettings;
 import moe.plushie.armourers_workshop.core.skin.document.SkinDocumentType;
 import moe.plushie.armourers_workshop.core.skin.document.SkinDocumentTypes;
+import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
+import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintData;
+import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintScheme;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPartTypes;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperties;
-import moe.plushie.armourers_workshop.core.texture.PlayerTextureDescriptor;
-import moe.plushie.armourers_workshop.core.texture.SkinPaintData;
 import moe.plushie.armourers_workshop.init.ModHolidays;
-import moe.plushie.armourers_workshop.utils.math.Rectangle3f;
-import moe.plushie.armourers_workshop.utils.math.Rectangle3i;
-import moe.plushie.armourers_workshop.utils.math.Vector3f;
-import moe.plushie.armourers_workshop.utils.math.Vector3i;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
@@ -100,9 +100,9 @@ public class DataTypeCodecs {
 
     public static final Codec<Holiday> HOLIDAY = STRING.xmap(ModHolidays::byName, Holiday::getName);
 
-    public static final Codec<IPaintColor> PAINT_COLOR = withAlternative(INT, STRING, ColorUtils::parseColor).xmap(PaintColor::of, IPaintColor::getRawValue);
+    public static final Codec<ISkinPaintColor> PAINT_COLOR = withAlternative(INT, STRING, ColorUtils::parseColor).xmap(SkinPaintColor::of, ISkinPaintColor::getRawValue);
 
-    public static final Codec<ColorScheme> COLOR_SCHEME = COMPOUND_TAG.xmap(ColorScheme::new, ColorScheme::serializeNBT);
+    public static final Codec<SkinPaintScheme> COLOR_SCHEME = COMPOUND_TAG.xmap(SkinPaintScheme::new, SkinPaintScheme::serializeNBT);
 
 
     public static <T, U> Codec<T> withAlternative(final Codec<T> primary, final Codec<U> alternative, final Function<U, T> converter) {

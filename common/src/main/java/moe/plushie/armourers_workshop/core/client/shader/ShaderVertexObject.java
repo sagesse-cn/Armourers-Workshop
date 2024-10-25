@@ -4,7 +4,7 @@ import com.mojang.blaze3d.vertex.VertexFormat;
 import moe.plushie.armourers_workshop.core.client.other.VertexArrayObject;
 import moe.plushie.armourers_workshop.core.client.other.VertexBufferObject;
 import moe.plushie.armourers_workshop.core.client.other.VertexIndexObject;
-import moe.plushie.armourers_workshop.utils.math.OpenPoseStack;
+import moe.plushie.armourers_workshop.core.math.OpenPoseStack;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.RenderType;

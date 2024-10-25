@@ -1,20 +1,19 @@
 package moe.plushie.armourers_workshop.core.client.other;
 
-import moe.plushie.armourers_workshop.api.data.IAssociatedContainer;
+import moe.plushie.armourers_workshop.api.core.math.IPoseStack;
 import moe.plushie.armourers_workshop.api.data.IAssociatedContainerKey;
-import moe.plushie.armourers_workshop.api.math.IPoseStack;
-import moe.plushie.armourers_workshop.api.painting.IPaintColor;
-import moe.plushie.armourers_workshop.api.skin.ISkinPaintType;
-import moe.plushie.armourers_workshop.api.skin.ISkinPartType;
+import moe.plushie.armourers_workshop.api.data.IAssociatedContainerProvider;
 import moe.plushie.armourers_workshop.api.skin.ISkinToolType;
 import moe.plushie.armourers_workshop.api.skin.ISkinType;
+import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintColor;
+import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintType;
+import moe.plushie.armourers_workshop.api.skin.part.ISkinPartType;
 import moe.plushie.armourers_workshop.core.blockentity.HologramProjectorBlockEntity;
 import moe.plushie.armourers_workshop.core.blockentity.SkinnableBlockEntity;
 import moe.plushie.armourers_workshop.core.capability.SkinWardrobe;
 import moe.plushie.armourers_workshop.core.client.animation.AnimationManager;
 import moe.plushie.armourers_workshop.core.client.bake.BakedSkin;
 import moe.plushie.armourers_workshop.core.client.bake.SkinBakery;
-import moe.plushie.armourers_workshop.core.data.color.ColorScheme;
 import moe.plushie.armourers_workshop.core.data.slot.SkinSlotType;
 import moe.plushie.armourers_workshop.core.data.ticket.Ticket;
 import moe.plushie.armourers_workshop.core.entity.EntityProfile;
@@ -22,11 +21,12 @@ import moe.plushie.armourers_workshop.core.entity.MannequinEntity;
 import moe.plushie.armourers_workshop.core.skin.SkinDescriptor;
 import moe.plushie.armourers_workshop.core.skin.SkinLocatorType;
 import moe.plushie.armourers_workshop.core.skin.SkinTypes;
+import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintScheme;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperty;
 import moe.plushie.armourers_workshop.init.ModConfig;
 import moe.plushie.armourers_workshop.init.ModItems;
 import moe.plushie.armourers_workshop.utils.ColorUtils;
-import moe.plushie.armourers_workshop.utils.DataStorage;
+import moe.plushie.armourers_workshop.utils.DataContainer;
 import moe.plushie.armourers_workshop.utils.RenderSystem;
 import moe.plushie.armourers_workshop.utils.TickUtils;
 import net.minecraft.world.entity.Entity;
@@ -43,7 +43,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
-public class EntitySlotsHandler<T> implements IAssociatedContainer, SkinBakery.IBakeListener {
+public class EntitySlotsHandler<T> implements IAssociatedContainerProvider, SkinBakery.IBakeListener {
 
     private final SlotProvider<T> entityProvider;
     private final WardrobeProvider wardrobeProvider;
@@ -67,7 +67,7 @@ public class EntitySlotsHandler<T> implements IAssociatedContainer, SkinBakery.I
     private final AnimationManager animationManager = new AnimationManager();
     private final SkinOverriddenManager overriddenManager = new SkinOverriddenManager();
 
-    private final DataStorage dataStorage = new DataStorage();
+    private final DataContainer dataStorage = new DataContainer();
 
     private int version = 0;
     private int lastVersion = Integer.MAX_VALUE;
@@ -222,13 +222,13 @@ public class EntitySlotsHandler<T> implements IAssociatedContainer, SkinBakery.I
         animatedSkins.put(slot.getDescriptor(), slot.getBakedSkin());
     }
 
-    public void onActivate(){
+    public void onActivate() {
     }
 
     public void onApply() {
     }
 
-    public void onDeactivate(){
+    public void onDeactivate() {
         locatorPoses.clear();
     }
 
@@ -285,7 +285,7 @@ public class EntitySlotsHandler<T> implements IAssociatedContainer, SkinBakery.I
         return allSkins;
     }
 
-    public ColorScheme getColorScheme() {
+    public SkinPaintScheme getColorScheme() {
         return wardrobeProvider.colorScheme;
     }
 
@@ -331,8 +331,8 @@ public class EntitySlotsHandler<T> implements IAssociatedContainer, SkinBakery.I
     }
 
     @Override
-    public <V> void setAssociatedObject(V value, IAssociatedContainerKey<V> key) {
-        dataStorage.setAssociatedObject(value, key);
+    public <V> void setAssociatedObject(IAssociatedContainerKey<V> key, V value) {
+        dataStorage.setAssociatedObject(key, value);
     }
 
     protected static abstract class SlotProvider<T> {
@@ -362,11 +362,11 @@ public class EntitySlotsHandler<T> implements IAssociatedContainer, SkinBakery.I
 
     protected static class WardrobeProvider extends SlotProvider<SkinWardrobe> {
 
-        protected final HashMap<ISkinPaintType, IPaintColor> dyeColors = new HashMap<>();
-        protected final HashMap<ISkinPaintType, IPaintColor> lastDyeColors = new HashMap<>();
+        protected final HashMap<ISkinPaintType, ISkinPaintColor> dyeColors = new HashMap<>();
+        protected final HashMap<ISkinPaintType, ISkinPaintColor> lastDyeColors = new HashMap<>();
 
         protected BitSet wardrobeFlags = new BitSet();
-        protected ColorScheme colorScheme = ColorScheme.EMPTY;
+        protected SkinPaintScheme colorScheme = SkinPaintScheme.EMPTY;
         protected EntityProfile profile = null;
 
         protected boolean enableExtraRenderer = false;
@@ -403,7 +403,7 @@ public class EntitySlotsHandler<T> implements IAssociatedContainer, SkinBakery.I
                 }
             }
             if (!lastDyeColors.equals(dyeColors)) {
-                colorScheme = new ColorScheme();
+                colorScheme = new SkinPaintScheme();
                 lastDyeColors.clear();
                 dyeColors.forEach((paintType, paintColor) -> {
                     lastDyeColors.put(paintType, paintColor);

@@ -1,9 +1,9 @@
 package moe.plushie.armourers_workshop.utils.ext;
 
 import moe.plushie.armourers_workshop.api.client.IVertexConsumer;
-import moe.plushie.armourers_workshop.api.math.IPoseStack;
-import moe.plushie.armourers_workshop.utils.math.OpenQuaternionf;
-import moe.plushie.armourers_workshop.utils.math.Vector3f;
+import moe.plushie.armourers_workshop.api.core.math.IPoseStack;
+import moe.plushie.armourers_workshop.core.math.OpenQuaternion3f;
+import moe.plushie.armourers_workshop.core.math.Vector3f;
 import net.minecraft.core.Direction;
 
 import java.util.List;
@@ -125,7 +125,7 @@ public class OpenModelPart {
     public void translateAndRotate(IPoseStack poseStack) {
         poseStack.translate(x / 16.0f, y / 16.0f, z / 16.0f);
         if (xRot != 0.0f || yRot != 0.0f || zRot != 0.0f) {
-            poseStack.rotate(OpenQuaternionf.fromZYX(zRot, yRot, xRot));
+            poseStack.rotate(OpenQuaternion3f.fromZYX(zRot, yRot, xRot));
         }
         if (xScale != 1.0F || yScale != 1.0F || zScale != 1.0F) {
             poseStack.scale(xScale, yScale, zScale);
@@ -133,7 +133,7 @@ public class OpenModelPart {
     }
 
     private void compile(IPoseStack.Pose pose, IVertexConsumer vertexConsumer, int light, int overlay, int color) {
-        for (Cube cube : cubes) {
+        for (var cube : cubes) {
             cube.compile(pose, vertexConsumer, light, overlay, color);
         }
     }

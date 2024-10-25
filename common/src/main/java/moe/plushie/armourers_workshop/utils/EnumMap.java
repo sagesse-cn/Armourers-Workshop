@@ -1,5 +1,7 @@
 package moe.plushie.armourers_workshop.utils;
 
+import moe.plushie.armourers_workshop.core.utils.Collections;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
@@ -25,8 +27,8 @@ public class EnumMap<K extends Enum<K>, V extends Enum<V>> {
         for (var value : values) {
             nameToValue.put(value.name(), value);
         }
-        var idToKey = ObjectUtils.map(values, value -> nameToKey.getOrDefault(value.name(), defaultKey));
-        var idToValue = ObjectUtils.map(keys, key -> nameToValue.getOrDefault(key.name(), defaultValue));
+        var idToKey = Collections.compactMap(values, value -> nameToKey.getOrDefault(value.name(), defaultKey));
+        var idToValue = Collections.compactMap(keys, key -> nameToValue.getOrDefault(key.name(), defaultValue));
         return new EnumMap<>(idToKey, idToValue);
     }
 

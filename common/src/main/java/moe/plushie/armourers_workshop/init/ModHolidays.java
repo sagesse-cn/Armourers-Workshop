@@ -6,7 +6,7 @@ import moe.plushie.armourers_workshop.core.holiday.Holiday;
 import moe.plushie.armourers_workshop.core.holiday.HolidayTracker;
 import moe.plushie.armourers_workshop.core.holiday.ValentinesHandler;
 import moe.plushie.armourers_workshop.core.item.GiftSackItem;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
+import moe.plushie.armourers_workshop.core.utils.Collections;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.Nullable;
@@ -49,7 +49,7 @@ public final class ModHolidays {
     }
 
     public static Collection<Holiday> getActiveHolidays() {
-        return ObjectUtils.filter(HOLIDAY_LIST, Holiday::isHolidayActive);
+        return Collections.filter(HOLIDAY_LIST, Holiday::isHolidayActive);
     }
 
     @Nullable

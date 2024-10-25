@@ -1,11 +1,11 @@
 package moe.plushie.armourers_workshop.core.skin.part.bow;
 
 import com.google.common.collect.Range;
-import moe.plushie.armourers_workshop.api.action.ICanHeld;
-import moe.plushie.armourers_workshop.api.action.ICanUse;
+import moe.plushie.armourers_workshop.api.skin.part.features.ICanHeld;
+import moe.plushie.armourers_workshop.api.skin.part.features.ICanUse;
+import moe.plushie.armourers_workshop.core.math.Rectangle3i;
+import moe.plushie.armourers_workshop.core.math.Vector3i;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPartType;
-import moe.plushie.armourers_workshop.utils.math.Rectangle3i;
-import moe.plushie.armourers_workshop.utils.math.Vector3i;
 
 public class BowPartType extends SkinPartType implements ICanHeld, ICanUse {
 

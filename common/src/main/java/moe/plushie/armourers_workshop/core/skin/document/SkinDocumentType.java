@@ -2,14 +2,15 @@ package moe.plushie.armourers_workshop.core.skin.document;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import moe.plushie.armourers_workshop.api.core.IRegistryEntry;
 import moe.plushie.armourers_workshop.api.core.IResourceLocation;
-import moe.plushie.armourers_workshop.api.registry.IRegistryEntry;
 import moe.plushie.armourers_workshop.api.skin.ISkinEquipmentType;
-import moe.plushie.armourers_workshop.api.skin.ISkinPartType;
 import moe.plushie.armourers_workshop.api.skin.ISkinType;
+import moe.plushie.armourers_workshop.api.skin.part.ISkinPartType;
 import moe.plushie.armourers_workshop.core.skin.SkinTypes;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPartTypes;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
+import moe.plushie.armourers_workshop.core.utils.Collections;
+import moe.plushie.armourers_workshop.core.utils.Objects;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -18,16 +19,16 @@ import java.util.List;
 public class SkinDocumentType implements IRegistryEntry {
 
     private static final ImmutableMap<ISkinPartType, Collection<ISkinPartType>> LINKED_PARTS = new ImmutableMap.Builder<ISkinPartType, Collection<ISkinPartType>>()
-            .put(SkinPartTypes.BIPPED_CHEST, ObjectUtils.map(SkinPartTypes.BIPPED_TORSO))
-            .put(SkinPartTypes.BIPPED_LEFT_ARM, ObjectUtils.map(SkinPartTypes.BIPPED_LEFT_HAND))
-            .put(SkinPartTypes.BIPPED_RIGHT_ARM, ObjectUtils.map(SkinPartTypes.BIPPED_RIGHT_HAND))
-            .put(SkinPartTypes.BIPPED_LEFT_THIGH, ObjectUtils.map(SkinPartTypes.BIPPED_LEFT_LEG))
-            .put(SkinPartTypes.BIPPED_RIGHT_THIGH, ObjectUtils.map(SkinPartTypes.BIPPED_RIGHT_LEG))
-            .put(SkinPartTypes.BIPPED_RIGHT_WING, ObjectUtils.map(SkinPartTypes.BIPPED_RIGHT_PHALANX))
-            .put(SkinPartTypes.BIPPED_LEFT_WING, ObjectUtils.map(SkinPartTypes.BIPPED_LEFT_PHALANX))
-            .put(SkinPartTypes.ITEM_SHIELD, ObjectUtils.map(SkinPartTypes.ITEM_SHIELD1))
-            .put(SkinPartTypes.ITEM_TRIDENT, ObjectUtils.map(SkinPartTypes.ITEM_TRIDENT1))
-            .put(SkinPartTypes.ITEM_FISHING_ROD, ObjectUtils.map(SkinPartTypes.ITEM_FISHING_ROD1))
+            .put(SkinPartTypes.BIPPED_CHEST, Collections.newList(SkinPartTypes.BIPPED_TORSO))
+            .put(SkinPartTypes.BIPPED_LEFT_ARM, Collections.newList(SkinPartTypes.BIPPED_LEFT_HAND))
+            .put(SkinPartTypes.BIPPED_RIGHT_ARM, Collections.newList(SkinPartTypes.BIPPED_RIGHT_HAND))
+            .put(SkinPartTypes.BIPPED_LEFT_THIGH, Collections.newList(SkinPartTypes.BIPPED_LEFT_LEG))
+            .put(SkinPartTypes.BIPPED_RIGHT_THIGH, Collections.newList(SkinPartTypes.BIPPED_RIGHT_LEG))
+            .put(SkinPartTypes.BIPPED_RIGHT_WING, Collections.newList(SkinPartTypes.BIPPED_RIGHT_PHALANX))
+            .put(SkinPartTypes.BIPPED_LEFT_WING, Collections.newList(SkinPartTypes.BIPPED_LEFT_PHALANX))
+            .put(SkinPartTypes.ITEM_SHIELD, Collections.newList(SkinPartTypes.ITEM_SHIELD1))
+            .put(SkinPartTypes.ITEM_TRIDENT, Collections.newList(SkinPartTypes.ITEM_TRIDENT1))
+            .put(SkinPartTypes.ITEM_FISHING_ROD, Collections.newList(SkinPartTypes.ITEM_FISHING_ROD1))
             .build();
 
     private static final ImmutableSet<ISkinPartType> DISABLED_PARTS = new ImmutableSet.Builder<ISkinPartType>()
@@ -77,7 +78,7 @@ public class SkinDocumentType implements IRegistryEntry {
 
     @Override
     public String toString() {
-        return ObjectUtils.makeDescription(this, "name", category, "id", registryName);
+        return Objects.toString(this, "name", category, "id", registryName);
     }
 
     private ArrayList<ISkinPartType> generatePartTypes(ISkinType type) {

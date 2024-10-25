@@ -10,7 +10,7 @@ import com.apple.library.uikit.UIEvent;
 import com.apple.library.uikit.UIFont;
 import com.apple.library.uikit.UIScrollView;
 import com.apple.library.uikit.UIView;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
+import moe.plushie.armourers_workshop.core.utils.Collections;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
@@ -129,7 +129,7 @@ public class ReportList extends UIScrollView {
 //
 //    public void setScrollAmount(int scrollAmount) {
 //        int oldScrollAmount = this.scrollAmount;
-//        this.scrollAmount = MathUtils.clamp(scrollAmount, 0, this.getMaxScroll());
+//        this.scrollAmount = OpenMath.clamp(scrollAmount, 0, this.getMaxScroll());
 //        if (this.listener != null && oldScrollAmount != this.scrollAmount) {
 //            this.listener.listDidScroll(this, this.scrollAmount);
 //        }
@@ -222,7 +222,7 @@ public class ReportList extends UIScrollView {
 
         public GuiDetailListItem(String[] names) {
             super(CGRect.ZERO);
-            this.names = ObjectUtils.map(names, NSString::new);
+            this.names = Collections.compactMap(names, NSString::new);
         }
 
         @Override

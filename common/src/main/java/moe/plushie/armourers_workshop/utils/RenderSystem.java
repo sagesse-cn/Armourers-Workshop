@@ -5,10 +5,11 @@ import com.apple.library.impl.ClipContextImpl;
 import com.apple.library.uikit.UIColor;
 import com.mojang.blaze3d.platform.Window;
 import moe.plushie.armourers_workshop.compatibility.client.AbstractRenderSystem;
-import moe.plushie.armourers_workshop.core.data.color.PaintColor;
-import moe.plushie.armourers_workshop.utils.math.OpenMatrix3f;
-import moe.plushie.armourers_workshop.utils.math.OpenMatrix4f;
-import moe.plushie.armourers_workshop.utils.math.Vector4f;
+import moe.plushie.armourers_workshop.core.math.OpenMatrix3f;
+import moe.plushie.armourers_workshop.core.math.OpenMatrix4f;
+import moe.plushie.armourers_workshop.core.math.Vector4f;
+import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
+import moe.plushie.armourers_workshop.core.utils.MatrixBuffers;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
@@ -29,12 +30,12 @@ public final class RenderSystem extends AbstractRenderSystem {
     private static final Storage<OpenMatrix4f> extendedLightmapTextureMatrix = new Storage<>(OpenMatrix4f.createScaleMatrix(1, 1, 1));
     private static final Storage<OpenMatrix4f> extendedModelViewMatrix = new Storage<>(OpenMatrix4f.createScaleMatrix(1, 1, 1));
     private static final Storage<Vector4f> extendedColorModulator = new Storage<>(Vector4f.ONE);
-    private static final Storage<PaintColor> extendedTintColor = new Storage<>(PaintColor.WHITE);
+    private static final Storage<SkinPaintColor> extendedTintColor = new Storage<>(SkinPaintColor.WHITE);
 
     private static final Storage<Float> extendedFogStart = new Storage<>(0.0f);
     private static final Storage<Float> extendedFogEnd = new Storage<>(0.0f);
 
-    private static final FloatBuffer BUFFER = ObjectUtils.createFloatBuffer(3);
+    private static final FloatBuffer BUFFER = MatrixBuffers.createFloatBuffer(3);
 
     public static void call(Runnable task) {
         if (isOnRenderThread()) {
@@ -70,7 +71,7 @@ public final class RenderSystem extends AbstractRenderSystem {
         setShaderColor(color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, color.getAlpha() / 255f);
     }
 
-    public static void setShaderColor(PaintColor color) {
+    public static void setShaderColor(SkinPaintColor color) {
         setShaderColor(color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, 1.0f);
     }
 
@@ -143,11 +144,11 @@ public final class RenderSystem extends AbstractRenderSystem {
         return extendedScissorFlags.get();
     }
 
-    public static void setExtendedTintColor(PaintColor tintColor) {
+    public static void setExtendedTintColor(SkinPaintColor tintColor) {
         extendedTintColor.set(tintColor);
     }
 
-    public static PaintColor getExtendedTintColor() {
+    public static SkinPaintColor getExtendedTintColor() {
         return extendedTintColor.get();
     }
 

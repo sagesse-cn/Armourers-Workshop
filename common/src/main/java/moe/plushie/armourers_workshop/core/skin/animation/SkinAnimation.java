@@ -1,6 +1,6 @@
 package moe.plushie.armourers_workshop.core.skin.animation;
 
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
+import moe.plushie.armourers_workshop.core.utils.Objects;
 
 import java.util.List;
 import java.util.Map;
@@ -40,6 +40,6 @@ public class SkinAnimation {
 
     @Override
     public String toString() {
-        return ObjectUtils.makeDescription(this, "name", name, "duration", duration, "loop", loop, "values", values);
+        return Objects.toString(this, "name", name, "duration", duration, "loop", loop, "values", values);
     }
 }

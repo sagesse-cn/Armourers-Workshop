@@ -1,21 +1,21 @@
 package moe.plushie.armourers_workshop.builder.blockentity;
 
 import moe.plushie.armourers_workshop.api.client.IBlockEntityExtendedRenderer;
+import moe.plushie.armourers_workshop.api.common.IPaintable;
 import moe.plushie.armourers_workshop.api.data.IDataSerializer;
-import moe.plushie.armourers_workshop.api.painting.IPaintColor;
-import moe.plushie.armourers_workshop.api.painting.IPaintable;
-import moe.plushie.armourers_workshop.api.skin.ISkinPartType;
+import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintColor;
+import moe.plushie.armourers_workshop.api.skin.part.ISkinPartType;
 import moe.plushie.armourers_workshop.builder.data.BoundingBox;
 import moe.plushie.armourers_workshop.core.blockentity.UpdatableBlockEntity;
-import moe.plushie.armourers_workshop.core.data.color.PaintColor;
-import moe.plushie.armourers_workshop.core.skin.painting.SkinPaintTypes;
+import moe.plushie.armourers_workshop.core.math.TexturePos;
+import moe.plushie.armourers_workshop.core.math.Vector3i;
+import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
+import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintTypes;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPartTypes;
 import moe.plushie.armourers_workshop.utils.BlockUtils;
 import moe.plushie.armourers_workshop.utils.DataSerializerKey;
 import moe.plushie.armourers_workshop.utils.DataTypeCodecs;
 import moe.plushie.armourers_workshop.utils.TextureUtils;
-import moe.plushie.armourers_workshop.utils.math.TexturePos;
-import moe.plushie.armourers_workshop.utils.math.Vector3i;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
@@ -99,7 +99,7 @@ public class BoundingBoxBlockEntity extends UpdatableBlockEntity implements IPai
         }
         for (var dir : Direction.values()) {
             var paintColor = getArmourerTextureColor(blockEntity, getTexturePos(blockEntity, dir));
-            if (paintColor != PaintColor.CLEAR) {
+            if (paintColor != SkinPaintColor.CLEAR) {
                 return true;
             }
         }
@@ -113,7 +113,7 @@ public class BoundingBoxBlockEntity extends UpdatableBlockEntity implements IPai
     }
 
     @Override
-    public IPaintColor getColor(Direction direction) {
+    public ISkinPaintColor getColor(Direction direction) {
         var blockEntity = getParentBlockEntity();
         var texturePos = getTexturePos(blockEntity, direction);
         var color = getArmourerTextureColor(blockEntity, texturePos);
@@ -125,16 +125,16 @@ public class BoundingBoxBlockEntity extends UpdatableBlockEntity implements IPai
         if (level != null && level.isClientSide()) {
             return getTextureColor(blockEntity, texturePos);
         }
-        return PaintColor.CLEAR;
+        return SkinPaintColor.CLEAR;
     }
 
     @Override
-    public void setColor(Direction direction, IPaintColor color) {
+    public void setColor(Direction direction, ISkinPaintColor color) {
         // ?
     }
 
     @Override
-    public void setColors(Map<Direction, IPaintColor> colors) {
+    public void setColors(Map<Direction, ISkinPaintColor> colors) {
         var blockEntity = getParentBlockEntity();
         colors.forEach((dir, color) -> setArmourerTextureColor(blockEntity, getTexturePos(blockEntity, dir), color));
     }
@@ -142,7 +142,7 @@ public class BoundingBoxBlockEntity extends UpdatableBlockEntity implements IPai
     @Override
     public boolean hasColor(Direction direction) {
         // bounding box can't support none paint type.
-        return getColor(direction) != PaintColor.CLEAR;
+        return getColor(direction) != SkinPaintColor.CLEAR;
     }
 
     public void clearArmourerTextureColors() {
@@ -150,22 +150,22 @@ public class BoundingBoxBlockEntity extends UpdatableBlockEntity implements IPai
         if (blockEntity == null || getLevel() == null) {
             return;
         }
-        for (Direction dir : Direction.values()) {
-            this.setArmourerTextureColor(blockEntity, getTexturePos(blockEntity, dir), PaintColor.CLEAR);
+        for (var dir : Direction.values()) {
+            this.setArmourerTextureColor(blockEntity, getTexturePos(blockEntity, dir), SkinPaintColor.CLEAR);
         }
     }
 
-    public IPaintColor getArmourerTextureColor(ArmourerBlockEntity blockEntity, TexturePos texturePos) {
+    public ISkinPaintColor getArmourerTextureColor(ArmourerBlockEntity blockEntity, TexturePos texturePos) {
         if (texturePos != null && blockEntity != null) {
             var color = blockEntity.getPaintColor(texturePos);
             if (color != null) {
                 return color;
             }
         }
-        return PaintColor.CLEAR;
+        return SkinPaintColor.CLEAR;
     }
 
-    public void setArmourerTextureColor(ArmourerBlockEntity blockEntity, TexturePos texturePos, IPaintColor color) {
+    public void setArmourerTextureColor(ArmourerBlockEntity blockEntity, TexturePos texturePos, ISkinPaintColor color) {
         if (texturePos != null && blockEntity != null) {
             blockEntity.setPaintColor(texturePos, color);
             BlockUtils.combine(blockEntity, blockEntity::sendBlockUpdates);
@@ -173,14 +173,14 @@ public class BoundingBoxBlockEntity extends UpdatableBlockEntity implements IPai
     }
 
     @Environment(EnvType.CLIENT)
-    private IPaintColor getTextureColor(ArmourerBlockEntity blockEntity, TexturePos texturePos) {
+    private ISkinPaintColor getTextureColor(ArmourerBlockEntity blockEntity, TexturePos texturePos) {
         if (texturePos != null && blockEntity != null) {
             var color = TextureUtils.getPlayerTextureModelColor(blockEntity.getTextureDescriptor(), texturePos);
             if (color != null) {
                 return color;
             }
         }
-        return PaintColor.CLEAR;
+        return SkinPaintColor.CLEAR;
     }
 
     private TexturePos getTexturePos(ArmourerBlockEntity blockEntity, Direction direction) {

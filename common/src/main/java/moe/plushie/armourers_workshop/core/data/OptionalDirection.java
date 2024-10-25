@@ -1,10 +1,10 @@
 package moe.plushie.armourers_workshop.core.data;
 
+import moe.plushie.armourers_workshop.core.utils.OpenDirection;
 import net.minecraft.core.Direction;
-import net.minecraft.util.StringRepresentable;
 import org.jetbrains.annotations.Nullable;
 
-public enum OptionalDirection implements StringRepresentable {
+public enum OptionalDirection {
 
     NONE,
     DOWN(Direction.DOWN),
@@ -27,6 +27,10 @@ public enum OptionalDirection implements StringRepresentable {
         this.direction = direction;
     }
 
+    public static OptionalDirection of(OpenDirection direction) {
+        return of(Direction.values()[direction.ordinal()]);
+    }
+
     public static OptionalDirection of(Direction direction) {
         for (var dir : values()) {
             if (direction.equals(dir.getDirection())) {
@@ -43,11 +47,6 @@ public enum OptionalDirection implements StringRepresentable {
 
     @Override
     public String toString() {
-        return name;
-    }
-
-    @Override
-    public String getSerializedName() {
         return name;
     }
 }

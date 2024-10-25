@@ -74,7 +74,7 @@ public class SearchBoxLibraryPanel extends AbstractLibraryPanel implements UITex
         skinTypeList.setAutoresizingMask(AutoresizingMask.flexibleLeftMargin);
         skinTypeList.setMaxRows(10);
         skinTypeList.addTarget(this, UIControl.Event.VALUE_CHANGED, (self, sender) -> {
-            self.skinType = ((SkinComboBox)sender).selectedSkin();
+            self.skinType = ((SkinComboBox) sender).selectedSkin();
             self.search(null);
         });
         addSubview(skinTypeList);

@@ -5,14 +5,14 @@ import com.apple.library.coregraphics.CGPoint;
 import com.apple.library.coregraphics.CGRect;
 import com.apple.library.uikit.UIColor;
 import com.apple.library.uikit.UIView;
-import moe.plushie.armourers_workshop.api.painting.IPaintColor;
-import moe.plushie.armourers_workshop.api.skin.ISkinPaintType;
+import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintColor;
+import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintType;
 import moe.plushie.armourers_workshop.core.client.texture.TextureAnimationController;
-import moe.plushie.armourers_workshop.core.data.color.PaintColor;
-import moe.plushie.armourers_workshop.core.skin.painting.SkinPaintTypes;
+import moe.plushie.armourers_workshop.core.math.Vector3f;
+import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
+import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintTypes;
 import moe.plushie.armourers_workshop.init.ModTextures;
 import moe.plushie.armourers_workshop.utils.TickUtils;
-import moe.plushie.armourers_workshop.utils.math.Vector3f;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
@@ -29,7 +29,7 @@ public class PaintColorView extends UIView {
     @Override
     public void render(CGPoint point, CGGraphicsContext context) {
         super.render(point, context);
-        var texture = paintType.getTexture();
+        var texture = paintType.getTextureKey();
         var textureMatrix = TextureAnimationController.DEFAULT.getTextureMatrix(TickUtils.animationTicks());
         var textureOffset = Vector3f.ZERO.transforming(textureMatrix);
         var cu = texture.getU();
@@ -47,11 +47,11 @@ public class PaintColorView extends UIView {
         }
     }
 
-    public PaintColor paintColor() {
-        return PaintColor.of(color.getRGB(), paintType);
+    public SkinPaintColor paintColor() {
+        return SkinPaintColor.of(color.getRGB(), paintType);
     }
 
-    public void setPaintColor(IPaintColor color) {
+    public void setPaintColor(ISkinPaintColor color) {
         setColor(new UIColor(color.getRGB()));
         setPaintType(color.getPaintType());
     }

@@ -11,10 +11,10 @@ public interface IPaintToolPicker {
 
     default InteractionResult usePickTool(UseOnContext context) {
         if (shouldUsePickTool(context)) {
-            Level level = context.getLevel();
-            BlockPos pos = context.getClickedPos();
-            Direction dir = context.getClickedFace();
-            return usePickTool(level, pos, dir, level.getBlockEntity(pos), context);
+            var level = context.getLevel();
+            var pos = context.getClickedPos();
+            var facing = context.getClickedFace();
+            return usePickTool(level, pos, facing, level.getBlockEntity(pos), context);
         }
         return InteractionResult.PASS;
     }

@@ -6,7 +6,6 @@ import moe.plushie.armourers_workshop.init.environment.EnvironmentType;
 import moe.plushie.armourers_workshop.init.platform.fabric.config.FabricConfig;
 import moe.plushie.armourers_workshop.init.platform.fabric.config.FabricConfigTracker;
 import moe.plushie.armourers_workshop.init.platform.fabric.event.ClientStartupEvents;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -41,12 +40,8 @@ public class ClientProxyImpl implements ClientModInitializer {
     }
 
     public ItemStack onPickItem(Player player, HitResult result) {
-        EntityHitResult result1 = ObjectUtils.safeCast(result, EntityHitResult.class);
-        if (result1 != null) {
-            IEntityHandler handler = ObjectUtils.safeCast(result1.getEntity(), IEntityHandler.class);
-            if (handler != null) {
-                return handler.getCustomPickResult(result);
-            }
+        if (result instanceof EntityHitResult hitResult && hitResult instanceof IEntityHandler handler) {
+            return handler.getCustomPickResult(result);
         }
         return ItemStack.EMPTY;
     }

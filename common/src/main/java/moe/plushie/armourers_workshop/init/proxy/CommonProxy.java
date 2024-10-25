@@ -11,7 +11,6 @@ import moe.plushie.armourers_workshop.core.data.TickTracker;
 import moe.plushie.armourers_workshop.core.entity.MannequinEntity;
 import moe.plushie.armourers_workshop.core.entity.SeatEntity;
 import moe.plushie.armourers_workshop.core.skin.SkinLoader;
-import moe.plushie.armourers_workshop.core.skin.serializer.SkinServerType;
 import moe.plushie.armourers_workshop.init.ModCommands;
 import moe.plushie.armourers_workshop.init.ModContext;
 import moe.plushie.armourers_workshop.init.ModEntityProfiles;
@@ -38,7 +37,6 @@ import moe.plushie.armourers_workshop.init.platform.event.common.ServerStoppingE
 import moe.plushie.armourers_workshop.library.data.GlobalSkinLibrary;
 import moe.plushie.armourers_workshop.library.data.SkinLibraryManager;
 import moe.plushie.armourers_workshop.utils.BlockUtils;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
 import moe.plushie.armourers_workshop.utils.SkinUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
@@ -72,7 +70,7 @@ public class CommonProxy {
         EventManager.listen(ServerStartingEvent.class, event -> {
             ModLog.debug("hello");
             DataManager.getInstance().connect(EnvironmentManager.getSkinDatabaseDirectory());
-            SkinLoader.getInstance().prepare(SkinServerType.of(event.getServer()));
+            SkinLoader.getInstance().prepare(EnvironmentManager.getServerType(event.getServer()));
         });
         EventManager.listen(ServerStartedEvent.class, event -> {
             ModLog.debug("init");
@@ -132,8 +130,7 @@ public class CommonProxy {
                 return;
             }
             var itemStack = player.getMainHandItem();
-            var handler = ObjectUtils.safeCast(itemStack.getItem(), IItemHandler.class);
-            if (handler != null) {
+            if (itemStack.getItem() instanceof IItemHandler handler) {
                 var result = handler.attackLivingEntity(itemStack, player, event.getTarget());
                 if (result.consumesAction()) {
                     event.setCancelled(true);

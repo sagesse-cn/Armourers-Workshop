@@ -1,7 +1,7 @@
 package moe.plushie.armourers_workshop.core.client.other;
 
 import moe.plushie.armourers_workshop.compatibility.api.AbstractItemTransformType;
-import moe.plushie.armourers_workshop.utils.math.Vector3f;
+import moe.plushie.armourers_workshop.core.math.Vector3f;
 import net.minecraft.world.item.ItemStack;
 
 public class SkinItemSource {

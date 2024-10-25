@@ -6,18 +6,18 @@ import moe.plushie.armourers_workshop.api.library.ISkinLibraryListener;
 import moe.plushie.armourers_workshop.core.client.other.SkinVertexBufferBuilder;
 import moe.plushie.armourers_workshop.core.data.DataTransformer;
 import moe.plushie.armourers_workshop.core.data.color.ColorDescriptor;
-import moe.plushie.armourers_workshop.core.data.color.ColorScheme;
 import moe.plushie.armourers_workshop.core.data.ticket.Ticket;
 import moe.plushie.armourers_workshop.core.data.transform.SkinPartTransform;
 import moe.plushie.armourers_workshop.core.skin.Skin;
 import moe.plushie.armourers_workshop.core.skin.SkinDescriptor;
 import moe.plushie.armourers_workshop.core.skin.SkinLoader;
+import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintScheme;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPart;
 import moe.plushie.armourers_workshop.core.skin.serializer.SkinUsedCounter;
+import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.init.ModConfig;
 import moe.plushie.armourers_workshop.init.ModLog;
 import moe.plushie.armourers_workshop.library.data.SkinLibraryManager;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
 import moe.plushie.armourers_workshop.utils.RenderSystem;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -164,12 +164,12 @@ public final class SkinBakery implements ISkinLibraryListener {
         var rootParts = new ArrayList<BakedSkinPart>();
         var bakedParts = new ArrayList<BakedSkinPart>();
 
-        var scheme = new ColorScheme();
+        var scheme = new SkinPaintScheme();
         var colorInfo = new ColorDescriptor();
 
         eachPart(skin.getParts(), null, (parent, part) -> {
             var children = new ArrayList<BakedSkinPart>();
-            BakedCubeQuads.from(part).forEach((partType, partTransform, quads) -> {
+            BakedGeometryQuads.from(part).forEach((partType, partTransform, quads) -> {
                 // when has a different part type, it means the skin part was split.
                 // for ensure data safety, we need create a blank skin part to manage data.
                 var usedPart = part;
@@ -194,12 +194,11 @@ public final class SkinBakery implements ISkinLibraryListener {
                     mainChildPart = bakedPart;
                 }
             }
-            usedCounter.add(part.getCubeData().getUsedCounter());
-            // part.clearCubeData();
+            usedCounter.add(part.getGeometries().getUsedCounter());
             return mainChildPart;
         });
 
-        BakedCubeQuads.from(skin.getPaintData()).forEach((partType, partTransform, quads) -> {
+        BakedGeometryQuads.from(skin.getPaintData()).forEach((partType, partTransform, quads) -> {
             var part = new SkinPart.Builder(partType).build();
             var bakedPart = new BakedSkinPart(part, new SkinPartTransform(part, partTransform), quads);
             bakedPart.setRenderPolygonOffset(20);
@@ -209,7 +208,7 @@ public final class SkinBakery implements ISkinLibraryListener {
 
         // we only bake special parts in preview mode.
         if (skin.getSettings().isPreviewMode()) {
-            BakedCubeQuads.from(skin.getPreviewData()).forEach((partType, partTransform, quads) -> {
+            BakedGeometryQuads.from(skin.getPreviewData()).forEach((partType, partTransform, quads) -> {
                 var part = new SkinPart.Builder(partType).build();
                 var bakedPart = new BakedSkinPart(part, new SkinPartTransform(part, partTransform), quads);
                 bakedPart.setRenderPolygonOffset(bakedParts.size());
@@ -219,7 +218,7 @@ public final class SkinBakery implements ISkinLibraryListener {
         }
 
         // collect color info from the all child parts.
-        ObjectUtils.eachTree(bakedParts, BakedSkinPart::getChildren, bakedPart -> {
+        Collections.eachTree(bakedParts, BakedSkinPart::getChildren, bakedPart -> {
             colorInfo.add(bakedPart.getColorInfo());
         });
 
@@ -258,7 +257,7 @@ public final class SkinBakery implements ISkinLibraryListener {
     private void eachPart(Collection<SkinPart> parts, BakedSkinPart parent, BiFunction<BakedSkinPart, SkinPart, BakedSkinPart> consumer) {
         for (var part : parts) {
             var value = consumer.apply(parent, part);
-            eachPart(part.getParts(), value, consumer);
+            eachPart(part.getChildren(), value, consumer);
         }
     }
 

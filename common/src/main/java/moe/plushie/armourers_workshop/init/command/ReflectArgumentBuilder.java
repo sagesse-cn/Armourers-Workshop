@@ -11,9 +11,9 @@ import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.tree.CommandNode;
+import moe.plushie.armourers_workshop.core.utils.Objects;
 import moe.plushie.armourers_workshop.init.network.ExecuteCommandPacket;
 import moe.plushie.armourers_workshop.init.platform.NetworkManager;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.server.level.ServerPlayer;
@@ -83,12 +83,12 @@ public class ReflectArgumentBuilder<S> extends LiteralArgumentBuilder<S> {
         for (Field field : object.getDeclaredFields()) {
             Function<Pair<Object, Field>, ArgumentBuilder<CommandSourceStack, ?>> function = FIELD_BUILDERS.get(field.getType());
             if (function != null) {
-                nodes.add(ObjectUtils.unsafeCast(function.apply(Pair.of(object, field)).build()));
+                nodes.add(Objects.unsafeCast(function.apply(Pair.of(object, field)).build()));
             }
         }
 //        for (Method method : object.getMethods()) {
 //            if (method.getParameterCount() == 0 && Modifier.isStatic(method.getModifiers())) {
-//                nodes.add(ObjectUtils.unsafeCast(ReflectArgumentBuilder.call(Pair.of(object, method)).build()));
+//                nodes.add(Objects.unsafeCast(ReflectArgumentBuilder.call(Pair.of(object, method)).build()));
 //            }
 //        }
         return nodes;

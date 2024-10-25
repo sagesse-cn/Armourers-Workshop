@@ -5,7 +5,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import moe.plushie.armourers_workshop.api.annotation.Available;
 import moe.plushie.armourers_workshop.compatibility.client.gui.AbstractGraphicsRenderer;
 import moe.plushie.armourers_workshop.init.platform.fabric.event.RenderTooltipEvents;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
+import moe.plushie.armourers_workshop.core.utils.Objects;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.item.ItemStack;
@@ -33,7 +33,7 @@ public class FabricScreenMixin {
 
     @Inject(method = "renderTooltip(Lcom/mojang/blaze3d/vertex/PoseStack;Ljava/util/List;II)V", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/vertex/PoseStack;pushPose()V", ordinal = 0), locals = LocalCapture.CAPTURE_FAILHARD)
     public void aw2$renderTooltip(PoseStack poseStack, List<? extends FormattedCharSequence> list, int mouseX, int mouseY, CallbackInfo ci, int w, int x, int y, int w2, int h) {
-        Screen screen = ObjectUtils.unsafeCast(this);
+        Screen screen = Objects.unsafeCast(this);
         int screenWidth = screen.width;
         int screenHeight = screen.height;
         ItemStack itemStack = RenderTooltipEvents.TOOLTIP_ITEM_STACK;

@@ -4,15 +4,15 @@ import com.google.common.hash.Hashing;
 import com.mojang.authlib.GameProfile;
 import com.mojang.blaze3d.platform.NativeImage;
 import moe.plushie.armourers_workshop.api.core.IResourceLocation;
+import moe.plushie.armourers_workshop.builder.data.PlayerTexture;
+import moe.plushie.armourers_workshop.builder.data.PlayerTextureDescriptor;
 import moe.plushie.armourers_workshop.core.entity.MannequinEntity;
-import moe.plushie.armourers_workshop.core.texture.PlayerTexture;
-import moe.plushie.armourers_workshop.core.texture.PlayerTextureDescriptor;
+import moe.plushie.armourers_workshop.core.utils.OpenResourceLocation;
 import moe.plushie.armourers_workshop.init.ModLog;
 import moe.plushie.armourers_workshop.init.ModTextures;
 import moe.plushie.armourers_workshop.init.platform.EnvironmentManager;
 import moe.plushie.armourers_workshop.utils.TextureUtils;
 import moe.plushie.armourers_workshop.utils.ThreadUtils;
-import moe.plushie.armourers_workshop.utils.ext.OpenResourceLocation;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
@@ -70,7 +70,7 @@ public class PlayerTextureLoader {
     }
 
     @Nullable
-    public BakedEntityTexture getTextureModel(IResourceLocation location) {
+    public BakedEntityTexture getTextureModel(OpenResourceLocation location) {
         if (location == null) {
             return null;
         }
@@ -82,7 +82,7 @@ public class PlayerTextureLoader {
         return null;
     }
 
-    public IResourceLocation getTextureLocation(Entity entity) {
+    public OpenResourceLocation getTextureLocation(Entity entity) {
         if (entity instanceof MannequinEntity) {
             var descriptor = entity.getEntityData().get(MannequinEntity.DATA_TEXTURE);
             var texture = loadTexture(descriptor);
@@ -184,7 +184,7 @@ public class PlayerTextureLoader {
         }));
     }
 
-    public void loadDefaultTexture(IResourceLocation location) {
+    public void loadDefaultTexture(OpenResourceLocation location) {
         boolean alex = location.equals(ALEX_SKIN_LOCATION);
         if (!alex && !location.equals(STEVE_SKIN_LOCATION)) {
             return; // not steve and alex
@@ -271,7 +271,7 @@ public class PlayerTextureLoader {
         });
     }
 
-    private synchronized void receivePlayerTexture(PlayerTextureDescriptor descriptor, IResourceLocation location, String url, String model) {
+    private synchronized void receivePlayerTexture(PlayerTextureDescriptor descriptor, OpenResourceLocation location, String url, String model) {
         var resolvedTexture = new PlayerTexture(url, location, model);
         var bakedTexture = getDownloadedTexture(url);
         bakedTexture.setResourceLocation(location);

@@ -7,21 +7,21 @@ import moe.plushie.armourers_workshop.core.block.SkinnableBlock;
 import moe.plushie.armourers_workshop.core.client.bake.SkinBakery;
 import moe.plushie.armourers_workshop.core.client.other.SkinItemSource;
 import moe.plushie.armourers_workshop.core.data.ticket.Tickets;
+import moe.plushie.armourers_workshop.core.math.OpenMatrix4f;
+import moe.plushie.armourers_workshop.core.math.OpenQuaternion3f;
+import moe.plushie.armourers_workshop.core.math.Rectangle3f;
+import moe.plushie.armourers_workshop.core.math.Rectangle3i;
+import moe.plushie.armourers_workshop.core.math.Vector3d;
+import moe.plushie.armourers_workshop.core.math.Vector3f;
 import moe.plushie.armourers_workshop.core.skin.SkinDescriptor;
 import moe.plushie.armourers_workshop.core.skin.SkinMarker;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperties;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperty;
+import moe.plushie.armourers_workshop.core.utils.Objects;
 import moe.plushie.armourers_workshop.utils.Constants;
 import moe.plushie.armourers_workshop.utils.DataSerializerKey;
 import moe.plushie.armourers_workshop.utils.DataTypeCodecs;
 import moe.plushie.armourers_workshop.utils.NonNullItemList;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
-import moe.plushie.armourers_workshop.utils.math.OpenMatrix4f;
-import moe.plushie.armourers_workshop.utils.math.OpenQuaternionf;
-import moe.plushie.armourers_workshop.utils.math.Rectangle3f;
-import moe.plushie.armourers_workshop.utils.math.Rectangle3i;
-import moe.plushie.armourers_workshop.utils.math.Vector3d;
-import moe.plushie.armourers_workshop.utils.math.Vector3f;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
@@ -80,7 +80,7 @@ public class SkinnableBlockEntity extends RotableContainerBlockEntity implements
     private SkinProperties properties;
     private SkinDescriptor descriptor = SkinDescriptor.EMPTY;
 
-    private OpenQuaternionf renderRotations;
+    private OpenQuaternion3f renderRotations;
     private AABB renderBoundingBox;
     private VoxelShape renderVoxelShape = null;
     private ItemStack droppedStack = null;
@@ -272,7 +272,7 @@ public class SkinnableBlockEntity extends RotableContainerBlockEntity implements
             return this;
         }
         if (getLevel() != null) {
-            return ObjectUtils.safeCast(getLevel().getBlockEntity(getParentPos()), SkinnableBlockEntity.class);
+            return Objects.safeCast(getLevel().getBlockEntity(getParentPos()), SkinnableBlockEntity.class);
         }
         return null;
     }
@@ -340,12 +340,12 @@ public class SkinnableBlockEntity extends RotableContainerBlockEntity implements
 
     @Override
     @Environment(EnvType.CLIENT)
-    public OpenQuaternionf getRenderRotations(BlockState blockState) {
+    public OpenQuaternion3f getRenderRotations(BlockState blockState) {
         if (renderRotations != null) {
             return renderRotations;
         }
         var r = getRotations(blockState);
-        renderRotations = new OpenQuaternionf(r.getX(), r.getY(), r.getZ(), true);
+        renderRotations = new OpenQuaternion3f(r.getX(), r.getY(), r.getZ(), true);
         return renderRotations;
     }
 

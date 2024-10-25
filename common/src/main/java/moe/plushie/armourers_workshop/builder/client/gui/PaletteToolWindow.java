@@ -11,14 +11,14 @@ import com.apple.library.uikit.UIImage;
 import com.apple.library.uikit.UIImageView;
 import com.apple.library.uikit.UILabel;
 import com.apple.library.uikit.UITextFieldDelegate;
-import moe.plushie.armourers_workshop.api.painting.IPaintColor;
+import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintColor;
 import moe.plushie.armourers_workshop.builder.client.gui.widget.PaletteEditingWindow;
 import moe.plushie.armourers_workshop.core.client.gui.widget.ClientMenuScreen;
 import moe.plushie.armourers_workshop.core.client.gui.widget.HSBSliderBox;
-import moe.plushie.armourers_workshop.core.data.color.PaintColor;
 import moe.plushie.armourers_workshop.core.menu.AbstractContainerMenu;
 import moe.plushie.armourers_workshop.core.network.UpdateConfigurableToolPacket;
-import moe.plushie.armourers_workshop.core.skin.painting.SkinPaintTypes;
+import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
+import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintTypes;
 import moe.plushie.armourers_workshop.init.ModTextures;
 import moe.plushie.armourers_workshop.init.platform.NetworkManager;
 import moe.plushie.armourers_workshop.utils.ColorUtils;
@@ -183,12 +183,12 @@ public class PaletteToolWindow extends PaletteEditingWindow<AbstractContainerMen
         reloadPalettes();
     }
 
-    protected IPaintColor getItemColor(ItemStack itemStack) {
+    protected ISkinPaintColor getItemColor(ItemStack itemStack) {
         var paintColor = ColorUtils.getColor(itemStack);
         if (paintColor != null) {
             return paintColor;
         }
-        return PaintColor.WHITE;
+        return SkinPaintColor.WHITE;
     }
 
     public Screen asScreen() {

@@ -1,12 +1,12 @@
 package moe.plushie.armourers_workshop.builder.other;
 
 import moe.plushie.armourers_workshop.api.common.IItemColorProvider;
-import moe.plushie.armourers_workshop.api.painting.IPaintColor;
-import moe.plushie.armourers_workshop.api.painting.IPaintable;
+import moe.plushie.armourers_workshop.api.common.IPaintable;
+import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintColor;
 import moe.plushie.armourers_workshop.builder.block.SkinCubeBlock;
 import moe.plushie.armourers_workshop.builder.item.SkinCubeItem;
 import moe.plushie.armourers_workshop.core.data.color.BlockPaintColor;
-import moe.plushie.armourers_workshop.core.data.color.PaintColor;
+import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
@@ -64,7 +64,7 @@ public class CubeReplacingEvent {
         if (sourceBlockColor != null) {
             var diff = 0;
             for (var dir : Direction.values()) {
-                var s = sourceBlockColor.getOrDefault(dir, PaintColor.WHITE);
+                var s = sourceBlockColor.getOrDefault(dir, SkinPaintColor.WHITE);
                 var t = cube.getColor(dir);
                 if (!Objects.equals(s, t)) {
                     diff += 1;
@@ -106,17 +106,17 @@ public class CubeReplacingEvent {
             return;
         }
         // we just need to replace the matching block colors.
-        var newColors = new HashMap<Direction, IPaintColor>();
+        var newColors = new HashMap<Direction, ISkinPaintColor>();
         for (var dir : Direction.values()) {
             var targetColor = cube.getColor(dir);
             if (sourceBlockColor != null) {
-                var sourceColor = sourceBlockColor.getOrDefault(dir, PaintColor.WHITE);
+                var sourceColor = sourceBlockColor.getOrDefault(dir, SkinPaintColor.WHITE);
                 if (!Objects.equals(sourceColor, targetColor)) {
                     newColors.put(dir, targetColor);
                     continue;
                 }
             }
-            var newColor = destinationBlockColor.getOrDefault(dir, PaintColor.WHITE);
+            var newColor = destinationBlockColor.getOrDefault(dir, SkinPaintColor.WHITE);
             var color = newColor.getRGB();
             if (keepColor) {
                 color = targetColor.getRGB();
@@ -125,7 +125,7 @@ public class CubeReplacingEvent {
             if (keepPaintType) {
                 paintType = targetColor.getPaintType();
             }
-            newColor = PaintColor.of(color, paintType);
+            newColor = SkinPaintColor.of(color, paintType);
             newColors.put(dir, newColor);
         }
         // apply all block color changes into tile entity.

@@ -2,12 +2,11 @@ package moe.plushie.armourers_workshop.core.data.source;
 
 import moe.plushie.armourers_workshop.api.data.IDataSource;
 import moe.plushie.armourers_workshop.core.skin.Skin;
+import moe.plushie.armourers_workshop.core.utils.OpenUUID;
 import moe.plushie.armourers_workshop.init.ModConfig;
 import moe.plushie.armourers_workshop.init.ModLog;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
 import moe.plushie.armourers_workshop.utils.SkinFileStreamUtils;
 import moe.plushie.armourers_workshop.utils.SkinFileUtils;
-import moe.plushie.armourers_workshop.utils.SkinUUID;
 import moe.plushie.armourers_workshop.utils.ThreadUtils;
 import net.minecraft.nbt.CompoundTag;
 
@@ -69,7 +68,7 @@ public abstract class SkinFileDataSource implements IDataSource {
     private String getFreeId() throws Exception {
         String uuid = lastGenUUID;
         while (uuid.isEmpty() || contains(uuid)) {
-            uuid = SkinUUID.randomUUIDString();
+            uuid = OpenUUID.randomUUIDString();
         }
         lastGenUUID = uuid;
         return uuid;
@@ -137,11 +136,11 @@ public abstract class SkinFileDataSource implements IDataSource {
                 keepAliveChecker = null;
             }
 
-            ObjectUtils.safeClose(removeStatement);
-            ObjectUtils.safeClose(insertStatement);
-            ObjectUtils.safeClose(existsStatement);
-            ObjectUtils.safeClose(searchStatement);
-            ObjectUtils.safeClose(queryStatement);
+            safeClose(removeStatement);
+            safeClose(insertStatement);
+            safeClose(existsStatement);
+            safeClose(searchStatement);
+            safeClose(queryStatement);
 
             connection.close();
         }
@@ -216,6 +215,16 @@ public abstract class SkinFileDataSource implements IDataSource {
                 }
             }, 0, seconds, TimeUnit.SECONDS);
             return executor;
+        }
+
+        private void safeClose(AutoCloseable closeable) {
+            try {
+                if (closeable != null) {
+                    closeable.close();
+                }
+            } catch (Exception exception) {
+                exception.printStackTrace();
+            }
         }
     }
 

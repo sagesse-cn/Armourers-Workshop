@@ -4,9 +4,8 @@ import com.apple.library.impl.EntityRendererImpl;
 import com.mojang.blaze3d.vertex.PoseStack;
 import moe.plushie.armourers_workshop.api.annotation.Available;
 import moe.plushie.armourers_workshop.compatibility.client.AbstractPoseStack;
+import moe.plushie.armourers_workshop.core.math.Vector3f;
 import moe.plushie.armourers_workshop.utils.RenderSystem;
-import moe.plushie.armourers_workshop.utils.math.OpenQuaternionf;
-import moe.plushie.armourers_workshop.utils.math.Vector3f;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
@@ -38,11 +37,11 @@ public class AbstractGraphicsRendererImpl {
         // custom entity renderer from the InventoryScreen.renderEntityInInventory
         float h = (float) Math.atan(focus.getX() / 40.0F);
         float l = (float) Math.atan(focus.getY() / 40.0F);
-        PoseStack poseStack = new PoseStack();
+        var poseStack = new PoseStack();
         poseStack.translate(0.0, 0.0, 1000.0);
         poseStack.scale(scale, scale, scale);
-        OpenQuaternionf quaternion = Vector3f.ZP.rotationDegrees(180.0f);
-        OpenQuaternionf quaternion2 = Vector3f.XP.rotationDegrees(l * 20.0f);
+        var quaternion = Vector3f.ZP.rotationDegrees(180.0f);
+        var quaternion2 = Vector3f.XP.rotationDegrees(l * 20.0f);
         quaternion.mul(Vector3f.YP.rotationDegrees(180.0f));
         quaternion.mul(quaternion2);
         poseStack.mulPose(quaternion);

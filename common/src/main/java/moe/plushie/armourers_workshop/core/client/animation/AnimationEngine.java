@@ -1,9 +1,9 @@
 package moe.plushie.armourers_workshop.core.client.animation;
 
 import moe.plushie.armourers_workshop.core.client.bake.BakedSkin;
-import moe.plushie.armourers_workshop.core.skin.molang.MolangVirtualMachine;
-import moe.plushie.armourers_workshop.core.skin.molang.core.Variable;
-import moe.plushie.armourers_workshop.utils.MathUtils;
+import moe.plushie.armourers_workshop.core.math.OpenMath;
+import moe.plushie.armourers_workshop.core.skin.animation.molang.MolangVirtualMachine;
+import moe.plushie.armourers_workshop.core.skin.animation.molang.core.Variable;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
@@ -97,7 +97,7 @@ public class AnimationEngine {
 
         GROUND_SPEED.set(() -> {
             var velocity = livingEntity.getDeltaMovement();
-            return MathUtils.sqrt((velocity.x * velocity.x) + (velocity.z * velocity.z));
+            return OpenMath.sqrt((velocity.x * velocity.x) + (velocity.z * velocity.z));
         });
         YAW_SPEED.set(() -> {
             float a = livingEntity.getViewYRot((float) animTime - 0.1f);

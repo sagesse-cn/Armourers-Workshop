@@ -1,9 +1,9 @@
 package moe.plushie.armourers_workshop.core.client.texture;
 
 import moe.plushie.armourers_workshop.core.client.other.SkinRenderType;
-import moe.plushie.armourers_workshop.core.texture.TextureAnimation;
-import moe.plushie.armourers_workshop.utils.MathUtils;
-import moe.plushie.armourers_workshop.utils.math.OpenMatrix4f;
+import moe.plushie.armourers_workshop.core.math.OpenMath;
+import moe.plushie.armourers_workshop.core.math.OpenMatrix4f;
+import moe.plushie.armourers_workshop.core.skin.paint.texture.TextureAnimation;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.RenderType;
@@ -33,7 +33,7 @@ public class TextureAnimationController {
 
     public static TextureAnimationController of(RenderType renderType) {
         // is default?
-        if (renderType == SkinRenderType.FACE_SOLID || renderType == SkinRenderType.FACE_LIGHTING || renderType == SkinRenderType.FACE_TRANSLUCENT || renderType == SkinRenderType.FACE_LIGHTING_TRANSLUCENT) {
+        if (renderType == SkinRenderType.BLOCK_FACE_SOLID || renderType == SkinRenderType.BLOCK_FACE_LIGHTING || renderType == SkinRenderType.BLOCK_FACE_TRANSLUCENT || renderType == SkinRenderType.BLOCK_FACE_LIGHTING_TRANSLUCENT) {
             return DEFAULT;
         }
         // is custom?
@@ -84,7 +84,7 @@ public class TextureAnimationController {
             var indexes = mode.getFrames();
             var frames = new OpenMatrix4f[indexes.length];
             for (var i = 0; i < indexes.length; ++i) {
-                frames[i] = _genTextureMatrix(MathUtils.clamp(indexes[i], 0, total - 1) / (float) total);
+                frames[i] = _genTextureMatrix(OpenMath.clamp(indexes[i], 0, total - 1) / (float) total);
             }
             return frames;
         }

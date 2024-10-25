@@ -1,9 +1,9 @@
 package moe.plushie.armourers_workshop.core.client.render;
 
 import moe.plushie.armourers_workshop.api.client.IVertexConsumer;
-import moe.plushie.armourers_workshop.api.math.IPoseStack;
-import moe.plushie.armourers_workshop.api.painting.IPaintColor;
-import moe.plushie.armourers_workshop.core.skin.painting.SkinPaintTypes;
+import moe.plushie.armourers_workshop.api.core.math.IPoseStack;
+import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintColor;
+import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintTypes;
 import net.minecraft.core.Direction;
 
 public class ExtendedFaceRenderer {
@@ -24,37 +24,7 @@ public class ExtendedFaceRenderer {
             {{1, 0, 0}, {1, 1, 0}, {1, 1, 1}, {1, 0, 1}, {1, 0, 0}},    // -x
     };
 
-/*
-    public static void render(int x, int y, int z, Direction direction, IPaintColor paintColor, int alpha, int lightmap, int overlay, PoseStack poseStack, VertexConsumer builder) {
-        auto pose = poseStack.last().pose();
-        auto normal = poseStack.last().normal();
-        auto paintType = paintColor.getPaintType();
-        float u = paintType.getU();
-        float v = paintType.getV();
-        int color = paintColor.getRGB();
-        int r = color >> 16 & 0xff;
-        int g = color >> 8 & 0xff;
-        int b = color & 0xff;
-        int a = alpha & 0xff;
-        if (overlay != 0) {
-            float q = (overlay >> 24 & 0xff) / 255f;
-            r = ColorUtils.mix(r, overlay >> 16 & 0xff, q);
-            g = ColorUtils.mix(g, overlay >> 8 & 0xff, q);
-            b = ColorUtils.mix(b, overlay & 0xff, q);
-        }
-        auto vertexes = SkinUtils.FACE_VERTEXES[direction.get3DDataValue()];
-        for (int i = 0; i < 4; ++i) {
-            builder.vertex(pose, x + vertexes[i][0], y + vertexes[i][1], z + vertexes[i][2])
-                    .color(r, g, b, a)
-                    .uv((u + FACE_MARK_TEXTURES[i][0]) / 256f, (v + FACE_MARK_TEXTURES[i][1]) / 256f)
-                    .overlayCoords(OverlayTexture.NO_OVERLAY)
-                    .uv2(lightmap)
-                    .normal(normal, vertexes[4][0], vertexes[4][1], vertexes[4][2])
-                    .endVertex();
-        }
-    }
-*/
-    public static void renderMarker(int x, int y, int z, Direction direction, IPaintColor paintColor, int alpha, int light, int overlay, IPoseStack poseStack, IVertexConsumer builder) {
+    public static void renderMarker(int x, int y, int z, Direction direction, ISkinPaintColor paintColor, int alpha, int light, int overlay, IPoseStack poseStack, IVertexConsumer builder) {
         if (paintColor.getPaintType() == SkinPaintTypes.NORMAL) {
             return;
         }
@@ -74,7 +44,7 @@ public class ExtendedFaceRenderer {
         }
     }
 
-    public static void render2(int x, int y, int z, Direction direction, IPaintColor paintColor, int alpha, int light, int overlay, IPoseStack poseStack, IVertexConsumer builder) {
+    public static void render2(int x, int y, int z, Direction direction, ISkinPaintColor paintColor, int alpha, int light, int overlay, IPoseStack poseStack, IVertexConsumer builder) {
         var entry = poseStack.last();
         var u = 0;
         var v = 0;

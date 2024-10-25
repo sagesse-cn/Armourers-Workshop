@@ -1,16 +1,17 @@
 package moe.plushie.armourers_workshop.core.data.transform;
 
-import moe.plushie.armourers_workshop.api.math.ITransformf;
+import moe.plushie.armourers_workshop.api.core.math.ITransform3f;
 import moe.plushie.armourers_workshop.compatibility.api.AbstractItemTransformType;
+import moe.plushie.armourers_workshop.core.math.OpenTransform3f;
+import moe.plushie.armourers_workshop.core.math.Vector3f;
 import moe.plushie.armourers_workshop.utils.Constants;
-import moe.plushie.armourers_workshop.utils.math.Vector3f;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.FloatTag;
 import net.minecraft.nbt.ListTag;
 
 import java.util.LinkedHashMap;
 
-public class SkinItemTransforms extends LinkedHashMap<String, ITransformf> {
+public class SkinItemTransforms extends LinkedHashMap<String, ITransform3f> {
 
     public SkinItemTransforms() {
     }
@@ -21,11 +22,11 @@ public class SkinItemTransforms extends LinkedHashMap<String, ITransformf> {
         }
     }
 
-    public void put(AbstractItemTransformType key, ITransformf value) {
+    public void put(AbstractItemTransformType key, ITransform3f value) {
         put(key.getName(), value);
     }
 
-    public ITransformf get(AbstractItemTransformType key) {
+    public ITransform3f get(AbstractItemTransformType key) {
         return super.get(key.getName());
     }
 
@@ -35,7 +36,7 @@ public class SkinItemTransforms extends LinkedHashMap<String, ITransformf> {
         return nbt;
     }
 
-    private ListTag serializeTransform(ITransformf transform) {
+    private ListTag serializeTransform(ITransform3f transform) {
         var tag = new ListTag();
         if (transform.isIdentity()) {
             return tag;
@@ -58,9 +59,9 @@ public class SkinItemTransforms extends LinkedHashMap<String, ITransformf> {
         return tag;
     }
 
-    private ITransformf deserializeTransform(ListTag tag) {
+    private ITransform3f deserializeTransform(ListTag tag) {
         if (tag.isEmpty() || tag.size() < 9) {
-            return SkinTransform.IDENTITY;
+            return OpenTransform3f.IDENTITY;
         }
         var tx = tag.getFloat(0);
         var ty = tag.getFloat(1);
@@ -77,6 +78,6 @@ public class SkinItemTransforms extends LinkedHashMap<String, ITransformf> {
         var sz = tag.getFloat(8);
         var scale = new Vector3f(sx, sy, sz);
 
-        return SkinTransform.create(translate, rotation, scale);
+        return OpenTransform3f.create(translate, rotation, scale);
     }
 }

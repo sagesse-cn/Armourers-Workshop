@@ -2,7 +2,7 @@ package moe.plushie.armourers_workshop.core.client.other;
 
 import com.mojang.blaze3d.vertex.VertexFormat;
 import moe.plushie.armourers_workshop.api.client.IRenderedBuffer;
-import moe.plushie.armourers_workshop.api.skin.ISkinPartType;
+import moe.plushie.armourers_workshop.api.skin.part.ISkinPartType;
 import moe.plushie.armourers_workshop.compatibility.client.AbstractVertexArrayObject;
 import moe.plushie.armourers_workshop.core.client.bake.BakedSkin;
 import moe.plushie.armourers_workshop.core.client.bake.BakedSkinPart;
@@ -12,12 +12,12 @@ import moe.plushie.armourers_workshop.core.client.texture.TextureManager;
 import moe.plushie.armourers_workshop.core.data.cache.CacheQueue;
 import moe.plushie.armourers_workshop.core.data.cache.ObjectPool;
 import moe.plushie.armourers_workshop.core.data.cache.ReferenceCounted;
-import moe.plushie.armourers_workshop.core.data.color.ColorScheme;
+import moe.plushie.armourers_workshop.core.math.OpenPoseStack;
+import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintScheme;
+import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.init.ModConfig;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
 import moe.plushie.armourers_workshop.utils.RenderSystem;
 import moe.plushie.armourers_workshop.utils.ThreadUtils;
-import moe.plushie.armourers_workshop.utils.math.OpenPoseStack;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import org.jetbrains.annotations.Nullable;
@@ -50,7 +50,7 @@ public class ConcurrentBufferCompiler {
     }
 
     @Nullable
-    public Group compile(BakedSkinPart part, BakedSkin skin, ColorScheme scheme, boolean isOutline) {
+    public Group compile(BakedSkinPart part, BakedSkin skin, SkinPaintScheme scheme, boolean isOutline) {
         var options = createOptions(isOutline);
         var key = Key.of(part.getId(), options, part.requirements(scheme));
         var group = CACHING.get(key);
@@ -110,7 +110,7 @@ public class ConcurrentBufferCompiler {
                 buildingTasks.add(compiledTask);
             });
             task.mergedTasks = mergedTasks;
-            task.usingTypes = ObjectUtils.flatMap(usingTypes, TextureManager.Entry::of);
+            task.usingTypes = Collections.compactMap(usingTypes, TextureManager.Entry::of);
         }
         link(pendingTasks, buildingTasks);
         //long totalTime = System.nanoTime() - startTime;
@@ -179,7 +179,7 @@ public class ConcurrentBufferCompiler {
         private final BakedSkin skin;
 
         private final int options;
-        private final ColorScheme scheme;
+        private final SkinPaintScheme scheme;
 
         private ArrayList<Pass> mergedTasks;
         private ArrayList<ReferenceCounted> usingTypes;
@@ -188,7 +188,7 @@ public class ConcurrentBufferCompiler {
 
         private boolean isComplied = false;
 
-        public Group(BakedSkinPart part, BakedSkin skin, int options, ColorScheme scheme) {
+        public Group(BakedSkinPart part, BakedSkin skin, int options, SkinPaintScheme scheme) {
             this.skin = skin;
             this.part = part;
             this.options = options;
@@ -241,6 +241,7 @@ public class ConcurrentBufferCompiler {
         final boolean isGrowing;
         final boolean isTranslucent;
         final boolean isOutline;
+        final boolean isUsingIndex;
 
         final float polygonOffset;
         final ISkinPartType partType;
@@ -266,12 +267,13 @@ public class ConcurrentBufferCompiler {
             this.isGrowing = SkinRenderType.isGrowing(renderType);
             this.isTranslucent = SkinRenderType.isTranslucent(renderType);
             this.isOutline = isOutline;
+            this.isUsingIndex = SkinRenderType.isUsingIndex(renderType);
         }
 
         public void upload(VertexBufferObject bufferObject) {
-            this.arrayObject = AbstractVertexArrayObject.create(format, vertexOffset, bufferObject, INDEXER);
+            this.indexObject = isUsingIndex ? INDEXER : null;
             this.bufferObject = bufferObject;
-            this.indexObject = INDEXER;
+            this.arrayObject = AbstractVertexArrayObject.create(format, vertexOffset, bufferObject, indexObject);
             this.isCompiled = true;
         }
 

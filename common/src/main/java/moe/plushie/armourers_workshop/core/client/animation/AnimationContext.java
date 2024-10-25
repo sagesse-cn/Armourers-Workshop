@@ -1,12 +1,12 @@
 package moe.plushie.armourers_workshop.core.client.animation;
 
 import moe.plushie.armourers_workshop.core.client.bake.BakedSkinPart;
-import moe.plushie.armourers_workshop.utils.MathUtils;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
+import moe.plushie.armourers_workshop.core.math.OpenMath;
+import moe.plushie.armourers_workshop.core.utils.Collections;
+import moe.plushie.armourers_workshop.core.utils.Objects;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -28,7 +28,7 @@ public class AnimationContext {
     public static AnimationContext from(List<BakedSkinPart> skinParts) {
         // find all animated transform and convert to snapshot.
         var context = new AnimationContext();
-        ObjectUtils.eachTree(skinParts, BakedSkinPart::getChildren, part -> {
+        Collections.eachTree(skinParts, BakedSkinPart::getChildren, part -> {
             for (var transform : part.getTransform().getChildren()) {
                 if (transform instanceof AnimatedTransform transform1) {
                     context.snapshots.add(new Snapshot(part, transform1));
@@ -53,8 +53,8 @@ public class AnimationContext {
     public void addAnimation(@Nullable AnimationController fromAnimationController, @Nullable AnimationController toAnimationController, float time, float speed, float duration) {
         // Find affected parts by from/to animation.
         var affectedParts = new ArrayList<BakedSkinPart>();
-        affectedParts.addAll(ObjectUtils.flatMap(fromAnimationController, AnimationController::getParts, Collections.emptyList()));
-        affectedParts.addAll(ObjectUtils.flatMap(toAnimationController, AnimationController::getParts, Collections.emptyList()));
+        affectedParts.addAll(Objects.flatMap(fromAnimationController, AnimationController::getParts, Collections.emptyList()));
+        affectedParts.addAll(Objects.flatMap(toAnimationController, AnimationController::getParts, Collections.emptyList()));
         for (var snapshot : snapshots) {
             if (snapshot instanceof Snapshot.Variant variant && affectedParts.contains(snapshot.part)) {
                 variant.beginTransiting(time, speed, duration);
@@ -160,15 +160,15 @@ public class AnimationContext {
                 var rr = toPoint.getRotation();
                 var ls = fromPoint.getScale();
                 var rs = toPoint.getScale();
-                float tx = MathUtils.lerp(p, lt.getX(), rt.getX());
-                float ty = MathUtils.lerp(p, lt.getY(), rt.getY());
-                float tz = MathUtils.lerp(p, lt.getZ(), rt.getZ());
-                float sx = MathUtils.lerp(p, ls.getX(), rs.getX());
-                float sy = MathUtils.lerp(p, ls.getY(), rs.getY());
-                float sz = MathUtils.lerp(p, ls.getZ(), rs.getZ());
-                float rx = MathUtils.lerp(p, lr.getX(), rr.getX());
-                float ry = MathUtils.lerp(p, lr.getY(), rr.getY());
-                float rz = MathUtils.lerp(p, lr.getZ(), rr.getZ());
+                float tx = OpenMath.lerp(p, lt.getX(), rt.getX());
+                float ty = OpenMath.lerp(p, lt.getY(), rt.getY());
+                float tz = OpenMath.lerp(p, lt.getZ(), rt.getZ());
+                float sx = OpenMath.lerp(p, ls.getX(), rs.getX());
+                float sy = OpenMath.lerp(p, ls.getY(), rs.getY());
+                float sz = OpenMath.lerp(p, ls.getZ(), rs.getZ());
+                float rx = OpenMath.lerp(p, lr.getX(), rr.getX());
+                float ry = OpenMath.lerp(p, lr.getY(), rr.getY());
+                float rz = OpenMath.lerp(p, lr.getZ(), rr.getZ());
                 output.clear();
                 output.setTranslate(tx, ty, tz);
                 output.setScale(sx, sy, sz);
@@ -199,7 +199,7 @@ public class AnimationContext {
             }
 
             public void update(float time) {
-                this.progress = MathUtils.clamp((time - beginTime) / duration, 0.0f, 1.0f);
+                this.progress = OpenMath.clamp((time - beginTime) / duration, 0.0f, 1.0f);
                 this.isCompleted = time > endTime;
             }
 

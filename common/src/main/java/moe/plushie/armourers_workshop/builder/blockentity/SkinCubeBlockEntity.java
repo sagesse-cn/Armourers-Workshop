@@ -1,14 +1,14 @@
 package moe.plushie.armourers_workshop.builder.blockentity;
 
 import moe.plushie.armourers_workshop.api.client.IBlockEntityExtendedRenderer;
+import moe.plushie.armourers_workshop.api.common.IPaintable;
 import moe.plushie.armourers_workshop.api.data.IDataSerializer;
-import moe.plushie.armourers_workshop.api.painting.IPaintColor;
-import moe.plushie.armourers_workshop.api.painting.IPaintable;
+import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintColor;
 import moe.plushie.armourers_workshop.builder.block.ArmourerBlock;
 import moe.plushie.armourers_workshop.core.blockentity.UpdatableBlockEntity;
 import moe.plushie.armourers_workshop.core.data.color.BlockPaintColor;
-import moe.plushie.armourers_workshop.core.data.color.PaintColor;
-import moe.plushie.armourers_workshop.core.skin.painting.SkinPaintTypes;
+import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
+import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintTypes;
 import moe.plushie.armourers_workshop.utils.BlockUtils;
 import moe.plushie.armourers_workshop.utils.DataSerializerKey;
 import moe.plushie.armourers_workshop.utils.DataTypeCodecs;
@@ -25,7 +25,7 @@ public class SkinCubeBlockEntity extends UpdatableBlockEntity implements IPainta
 
     private static final DataSerializerKey<CompoundTag> COLORS_KEY = DataSerializerKey.create("Color", DataTypeCodecs.COMPOUND_TAG, new CompoundTag());
 
-    protected BlockPaintColor colors = new BlockPaintColor(PaintColor.WHITE);
+    protected BlockPaintColor colors = new BlockPaintColor(SkinPaintColor.WHITE);
     protected boolean customRenderer = false;
 
     public SkinCubeBlockEntity(BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState) {
@@ -64,19 +64,19 @@ public class SkinCubeBlockEntity extends UpdatableBlockEntity implements IPainta
     }
 
     @Override
-    public IPaintColor getColor(Direction direction) {
-        return colors.getOrDefault(getResolvedDirection(direction), PaintColor.WHITE);
+    public ISkinPaintColor getColor(Direction direction) {
+        return colors.getOrDefault(getResolvedDirection(direction), SkinPaintColor.WHITE);
     }
 
     @Override
-    public void setColor(Direction direction, IPaintColor color) {
+    public void setColor(Direction direction, ISkinPaintColor color) {
         this.colors.put(getResolvedDirection(direction), color);
         this.customRenderer = checkRendererFromColors();
         BlockUtils.combine(this, this::sendBlockUpdates);
     }
 
     @Override
-    public void setColors(Map<Direction, IPaintColor> colors) {
+    public void setColors(Map<Direction, ISkinPaintColor> colors) {
         colors.forEach((direction, color) -> this.colors.put(getResolvedDirection(direction), color));
         this.customRenderer = checkRendererFromColors();
         BlockUtils.combine(this, this::sendBlockUpdates);

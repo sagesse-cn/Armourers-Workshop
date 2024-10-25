@@ -3,8 +3,9 @@ package moe.plushie.armourers_workshop.library.data;
 import moe.plushie.armourers_workshop.api.library.ISkinLibrary;
 import moe.plushie.armourers_workshop.api.library.ISkinLibraryListener;
 import moe.plushie.armourers_workshop.core.data.DataDomain;
-import moe.plushie.armourers_workshop.core.data.DataManager;
 import moe.plushie.armourers_workshop.core.data.DataEncryptMethod;
+import moe.plushie.armourers_workshop.core.data.DataManager;
+import moe.plushie.armourers_workshop.core.utils.OpenUUID;
 import moe.plushie.armourers_workshop.init.ModConfig;
 import moe.plushie.armourers_workshop.init.ModContext;
 import moe.plushie.armourers_workshop.init.ModLog;
@@ -13,7 +14,6 @@ import moe.plushie.armourers_workshop.init.platform.EnvironmentManager;
 import moe.plushie.armourers_workshop.init.platform.NetworkManager;
 import moe.plushie.armourers_workshop.library.network.UpdateLibraryFilesPacket;
 import moe.plushie.armourers_workshop.utils.Constants;
-import moe.plushie.armourers_workshop.utils.SkinUUID;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 
@@ -314,7 +314,7 @@ public abstract class SkinLibraryManager implements ISkinLibraryListener {
                 return privateKey;
             }
             var code = ModContext.t2(UUID.fromString("00000000-0000-0000-0000-000000000000"));
-            privateKey = new SkinUUID(code.getMostSignificantBits(), code.getLeastSignificantBits()).toString();
+            privateKey = new OpenUUID(code.getMostSignificantBits(), code.getLeastSignificantBits()).toString();
             return privateKey;
         }
 

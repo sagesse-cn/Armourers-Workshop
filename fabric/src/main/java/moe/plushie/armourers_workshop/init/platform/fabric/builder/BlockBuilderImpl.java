@@ -1,8 +1,8 @@
 package moe.plushie.armourers_workshop.init.platform.fabric.builder;
 
+import moe.plushie.armourers_workshop.api.core.IRegistryHolder;
 import moe.plushie.armourers_workshop.api.registry.IBlockBuilder;
 import moe.plushie.armourers_workshop.api.registry.IRegistryBinder;
-import moe.plushie.armourers_workshop.api.registry.IRegistryHolder;
 import moe.plushie.armourers_workshop.compatibility.api.AbstractBlockMaterial;
 import moe.plushie.armourers_workshop.compatibility.api.AbstractBlockMaterialColor;
 import moe.plushie.armourers_workshop.compatibility.fabric.AbstractFabricRegistries;

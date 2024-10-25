@@ -10,6 +10,7 @@ import com.apple.library.uikit.UILabel;
 import com.google.common.collect.Iterables;
 import moe.plushie.armourers_workshop.api.common.IResultHandler;
 import moe.plushie.armourers_workshop.api.skin.ISkinType;
+import moe.plushie.armourers_workshop.core.math.OpenMath;
 import moe.plushie.armourers_workshop.core.skin.SkinTypes;
 import moe.plushie.armourers_workshop.init.ModLog;
 import moe.plushie.armourers_workshop.init.ModTextures;
@@ -20,7 +21,6 @@ import moe.plushie.armourers_workshop.library.data.impl.SearchColumnType;
 import moe.plushie.armourers_workshop.library.data.impl.SearchOrderType;
 import moe.plushie.armourers_workshop.library.data.impl.SearchResult;
 import moe.plushie.armourers_workshop.library.data.impl.ServerSkin;
-import moe.plushie.armourers_workshop.utils.MathUtils;
 import moe.plushie.armourers_workshop.utils.RenderSystem;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -174,7 +174,7 @@ public class SearchResultsLibraryPanel extends AbstractLibraryPanel implements G
 
     private BiConsumer<SearchResultsLibraryPanel, UIControl> buildPageUpdater(int step) {
         return (self, sender) -> {
-            self.currentPage = MathUtils.clamp(self.currentPage + step, 0, self.totalPages - 1);
+            self.currentPage = OpenMath.clamp(self.currentPage + step, 0, self.totalPages - 1);
             fetchPage(self.currentPage);
             onPageDidChange();
             // auto request skin data for the previous/next page

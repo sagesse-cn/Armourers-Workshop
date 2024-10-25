@@ -1,7 +1,7 @@
 package moe.plushie.armourers_workshop.library.data.impl;
 
 import moe.plushie.armourers_workshop.api.common.IResultHandler;
-import moe.plushie.armourers_workshop.api.data.IDataPackObject;
+import moe.plushie.armourers_workshop.core.skin.serializer.io.IODataObject;
 import moe.plushie.armourers_workshop.utils.StreamUtils;
 import moe.plushie.armourers_workshop.utils.ThreadUtils;
 import org.jetbrains.annotations.Nullable;
@@ -26,7 +26,7 @@ public abstract class ServerSession {
 
     protected Executor notifier = Runnable::run;
 
-    protected <T> void request(String path, @Nullable Map<String, ?> parameters, Function<IDataPackObject, T> deserializer, IResultHandler<T> handlerIn) {
+    protected <T> void request(String path, @Nullable Map<String, ?> parameters, Function<IODataObject, T> deserializer, IResultHandler<T> handlerIn) {
         // we need to switch to a background thread to make sure everything is running correctly.
         submit(handlerIn, handlerOut -> {
             try {
@@ -38,11 +38,11 @@ public abstract class ServerSession {
         });
     }
 
-    protected <T> T request(String path, @Nullable Map<String, ?> parameters, Function<IDataPackObject, T> deserializer) throws Exception {
+    protected <T> T request(String path, @Nullable Map<String, ?> parameters, Function<IODataObject, T> deserializer) throws Exception {
         try {
             Callable<InputStream> task = buildTask(path, parameters);
             byte[] bytes = StreamUtils.toByteArray(task.call());
-            IDataPackObject responseData = StreamUtils.fromPackObject(new ByteArrayInputStream(bytes));
+            IODataObject responseData = StreamUtils.fromPackObject(new ByteArrayInputStream(bytes));
             if (responseData == null) {
                 throw new RuntimeException("can't parse the object from json");
             }
@@ -123,11 +123,11 @@ public abstract class ServerSession {
             return REQUESTS;
         }
         InputStream inputStream = getClass().getResourceAsStream("/data/armourers_workshop/skin/library/gsl.json");
-        IDataPackObject root = StreamUtils.fromPackObject(inputStream);
+        IODataObject root = StreamUtils.fromPackObject(inputStream);
         if (root == null) {
             throw new RuntimeException("missing gsl.json in data pack!");
         }
-        IDataPackObject server = root.get("server");
+        IODataObject server = root.get("server");
         server.entrySet().forEach(it -> {
             if (it.getKey().equals("/host")) {
                 it.getValue().allValues().forEach(url -> DEFAULT_URLs.add(url.stringValue()));

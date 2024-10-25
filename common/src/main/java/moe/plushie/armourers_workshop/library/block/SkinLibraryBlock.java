@@ -2,12 +2,12 @@ package moe.plushie.armourers_workshop.library.block;
 
 import moe.plushie.armourers_workshop.compatibility.core.AbstractBlockEntityProvider;
 import moe.plushie.armourers_workshop.compatibility.core.AbstractHorizontalBlock;
+import moe.plushie.armourers_workshop.core.utils.Objects;
 import moe.plushie.armourers_workshop.init.ModBlockEntityTypes;
 import moe.plushie.armourers_workshop.init.ModBlocks;
 import moe.plushie.armourers_workshop.init.ModMenuTypes;
 import moe.plushie.armourers_workshop.library.blockentity.SkinLibraryBlockEntity;
 import moe.plushie.armourers_workshop.utils.DataSerializers;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -45,7 +45,7 @@ public class SkinLibraryBlock extends AbstractHorizontalBlock implements Abstrac
         if (state.is(newState.getBlock())) {
             return;
         }
-        SkinLibraryBlockEntity blockEntity = ObjectUtils.safeCast(level.getBlockEntity(pos), SkinLibraryBlockEntity.class);
+        SkinLibraryBlockEntity blockEntity = Objects.safeCast(level.getBlockEntity(pos), SkinLibraryBlockEntity.class);
         if (blockEntity != null) {
             DataSerializers.dropContents(level, pos, blockEntity.getInventory());
         }

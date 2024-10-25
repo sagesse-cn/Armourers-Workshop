@@ -19,22 +19,22 @@ public class AbstractMenuScreen<T extends AbstractContainerMenu> extends Abstrac
         super.onClose();
     }
 
+    public CGPoint getContentOffset() {
+        return new CGPoint(leftPos, topPos);
+    }
+
     public void setContentOffset(CGPoint offset) {
         leftPos = (int) offset.getX();
         topPos = (int) offset.getY();
     }
 
-    public CGPoint getContentOffset() {
-        return new CGPoint(leftPos, topPos);
+    public CGSize getContentSize() {
+        return new CGSize(imageWidth, imageHeight);
     }
 
     public void setContentSize(CGSize size) {
         imageWidth = (int) size.getWidth();
         imageHeight = (int) size.getHeight();
-    }
-
-    public CGSize getContentSize() {
-        return new CGSize(imageWidth, imageHeight);
     }
 
     public CGSize getScreenSize() {

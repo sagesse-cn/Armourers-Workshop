@@ -1,14 +1,9 @@
 package moe.plushie.armourers_workshop.builder.client.gui.advancedbuilder.guide;
 
-import moe.plushie.armourers_workshop.api.math.ITransformf;
-import moe.plushie.armourers_workshop.api.skin.ISkinPartType;
-import moe.plushie.armourers_workshop.core.data.transform.SkinTransform;
-import moe.plushie.armourers_workshop.core.entity.MannequinEntity;
-import moe.plushie.armourers_workshop.core.skin.part.SkinPartTypes;
-import moe.plushie.armourers_workshop.core.skin.part.other.PartitionPartType;
-import moe.plushie.armourers_workshop.core.skin.part.wings.LeftWingPartType;
-import moe.plushie.armourers_workshop.core.skin.part.wings.RightWingPartType;
-import moe.plushie.armourers_workshop.utils.math.Vector3f;
+import moe.plushie.armourers_workshop.api.core.math.ITransform3f;
+import moe.plushie.armourers_workshop.api.skin.part.ISkinPartType;
+import moe.plushie.armourers_workshop.core.math.OpenTransform3f;
+import moe.plushie.armourers_workshop.core.math.Vector3f;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
@@ -48,7 +43,7 @@ public class AdvancedPartOffset {
 
     public static class Builder<T> {
 
-        private final HashMap<ISkinPartType, Function<T, ITransformf>> poses = new HashMap<>();
+        private final HashMap<ISkinPartType, Function<T, ITransform3f>> poses = new HashMap<>();
 
 //        public Builder<T> put(ISkinPartType partType) {
 //            return put(partType, partType.getRenderOffset());
@@ -75,21 +70,21 @@ public class AdvancedPartOffset {
             Vector3f translate = new Vector3f(tx, ty, tz);
             Vector3f rotation = new Vector3f(xRot, yRot, zRot);
             Vector3f afterTranslate = new Vector3f(ax, ay, az);
-            SkinTransform transform = SkinTransform.create(translate, rotation, Vector3f.ONE, Vector3f.ZERO, afterTranslate);
+            OpenTransform3f transform = OpenTransform3f.create(translate, rotation, Vector3f.ONE, Vector3f.ZERO, afterTranslate);
             return add(partType, it -> transform);
         }
 
 
         @Nullable
-        public ITransformf get(T entity, ISkinPartType partType) {
-            Function<T, ITransformf> provider = poses.get(partType);
+        public ITransform3f get(T entity, ISkinPartType partType) {
+            Function<T, ITransform3f> provider = poses.get(partType);
             if (provider != null) {
                 return provider.apply(entity);
             }
             return null;
         }
 
-        private Builder<T> add(ISkinPartType partType, Function<T, ITransformf> provider) {
+        private Builder<T> add(ISkinPartType partType, Function<T, ITransform3f> provider) {
             poses.put(partType, provider);
             return this;
         }

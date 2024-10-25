@@ -1,12 +1,13 @@
 package moe.plushie.armourers_workshop.builder.data;
 
-import moe.plushie.armourers_workshop.api.painting.IPaintColor;
-import moe.plushie.armourers_workshop.api.skin.ISkinPartType;
-import moe.plushie.armourers_workshop.core.data.color.PaintColor;
-import moe.plushie.armourers_workshop.core.texture.PlayerTextureModel;
-import moe.plushie.armourers_workshop.utils.math.Rectangle3i;
-import moe.plushie.armourers_workshop.utils.math.TexturePos;
-import moe.plushie.armourers_workshop.utils.math.Vector3i;
+import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintColor;
+import moe.plushie.armourers_workshop.api.skin.part.ISkinPartType;
+import moe.plushie.armourers_workshop.core.math.Rectangle3i;
+import moe.plushie.armourers_workshop.core.math.TexturePos;
+import moe.plushie.armourers_workshop.core.math.Vector3i;
+import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
+import moe.plushie.armourers_workshop.core.skin.paint.texture.PlayerTextureModel;
+import moe.plushie.armourers_workshop.core.utils.OpenDirection;
 import net.minecraft.core.Direction;
 
 import java.util.Objects;
@@ -24,19 +25,19 @@ public class BoundingBox extends Rectangle3i {
         this.partType = partType;
     }
 
-    public static void setColor(ISkinPartType partType, Vector3i offset, Direction dir, IPaintColor color, BiConsumer<TexturePos, IPaintColor> applier) {
+    public static void setColor(ISkinPartType partType, Vector3i offset, Direction dir, ISkinPaintColor color, BiConsumer<TexturePos, ISkinPaintColor> applier) {
         var texturePos = getTexturePos(partType, offset, dir);
         if (texturePos != null) {
             applier.accept(texturePos, color);
         }
     }
 
-    public static IPaintColor getColor(ISkinPartType partType, Vector3i offset, Direction dir, Function<TexturePos, IPaintColor> supplier) {
+    public static ISkinPaintColor getColor(ISkinPartType partType, Vector3i offset, Direction dir, Function<TexturePos, ISkinPaintColor> supplier) {
         var texturePos = getTexturePos(partType, offset, dir);
         if (texturePos != null) {
             return supplier.apply(texturePos);
         }
-        return PaintColor.CLEAR;
+        return SkinPaintColor.CLEAR;
     }
 
     public static TexturePos getTexturePos(ISkinPartType partType, Vector3i offset, Direction dir) {
@@ -45,7 +46,8 @@ public class BoundingBox extends Rectangle3i {
             return null;
         }
         var rect = box.getBounds();
-        return box.get(rect.getX() + offset.getX(), rect.getY() + offset.getY(), rect.getZ() + offset.getZ(), dir);
+        var fixedDir = OpenDirection.of(dir);
+        return box.get(rect.getX() + offset.getX(), rect.getY() + offset.getY(), rect.getZ() + offset.getZ(), fixedDir);
     }
 
     public void forEach(IPixelConsumer consumer) {

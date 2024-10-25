@@ -3,12 +3,12 @@ package moe.plushie.armourers_workshop.init;
 import moe.plushie.armourers_workshop.api.config.IConfigBuilder;
 import moe.plushie.armourers_workshop.api.config.IConfigSpec;
 import moe.plushie.armourers_workshop.core.data.slot.SkinSlotType;
+import moe.plushie.armourers_workshop.core.math.OpenMath;
 import moe.plushie.armourers_workshop.init.environment.EnvironmentExecutor;
 import moe.plushie.armourers_workshop.init.environment.EnvironmentType;
 import moe.plushie.armourers_workshop.init.network.UpdateContextPacket;
 import moe.plushie.armourers_workshop.init.platform.EnvironmentManager;
 import moe.plushie.armourers_workshop.init.platform.NetworkManager;
-import moe.plushie.armourers_workshop.utils.MathUtils;
 
 import java.util.ArrayList;
 
@@ -73,8 +73,8 @@ public class ModConfigSpec {
 
         private int getBakingCores() {
             int cores = Runtime.getRuntime().availableProcessors();
-            int bakingCores = MathUtils.ceil(cores / 2F);
-            return MathUtils.clamp(bakingCores, 1, 16);
+            int bakingCores = OpenMath.ceili(cores / 2F);
+            return OpenMath.clamp(bakingCores, 1, 16);
         }
     }
 

@@ -1,13 +1,12 @@
 package moe.plushie.armourers_workshop.core.skin.document;
 
+import moe.plushie.armourers_workshop.core.math.OpenMath;
+import moe.plushie.armourers_workshop.core.math.OpenPoseStack;
+import moe.plushie.armourers_workshop.core.math.OpenTransformedBoundingBox;
+import moe.plushie.armourers_workshop.core.math.Rectangle3i;
+import moe.plushie.armourers_workshop.core.math.Vector3i;
 import moe.plushie.armourers_workshop.core.skin.SkinLoader;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPart;
-import moe.plushie.armourers_workshop.utils.MathUtils;
-import moe.plushie.armourers_workshop.utils.math.OpenBoundingBox;
-import moe.plushie.armourers_workshop.utils.math.OpenPoseStack;
-import moe.plushie.armourers_workshop.utils.math.OpenTransformedBoundingBox;
-import moe.plushie.armourers_workshop.utils.math.Rectangle3i;
-import moe.plushie.armourers_workshop.utils.math.Vector3i;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,20 +20,20 @@ public class SkinDocumentCollider {
         for (var it : boxes) {
             var box = it.getTransformedBoundingBox();
 
-            var minX = MathUtils.floor(box.getMinX() + 8);
-            var minY = MathUtils.floor(box.getMinY() + 8);
-            var minZ = MathUtils.floor(box.getMinZ() + 8);
-            var maxX = MathUtils.ceil(box.getMaxX() + 8);
-            var maxY = MathUtils.ceil(box.getMaxY() + 8);
-            var maxZ = MathUtils.ceil(box.getMaxZ() + 8);
+            var minX = OpenMath.floori(box.getMinX() + 8);
+            var minY = OpenMath.floori(box.getMinY() + 8);
+            var minZ = OpenMath.floori(box.getMinZ() + 8);
+            var maxX = OpenMath.ceili(box.getMaxX() + 8);
+            var maxY = OpenMath.ceili(box.getMaxY() + 8);
+            var maxZ = OpenMath.ceili(box.getMaxZ() + 8);
             var tt = new Rectangle3i(minX, minY, minZ, maxX - minX, maxY - minY, maxZ - minZ);
 
-            var blockMinX = MathUtils.floor(minX / 16f);
-            var blockMinY = MathUtils.floor(minY / 16f);
-            var blockMinZ = MathUtils.floor(minZ / 16f);
-            var blockMaxX = MathUtils.ceil(maxX / 16f);
-            var blockMaxY = MathUtils.ceil(maxY / 16f);
-            var blockMaxZ = MathUtils.ceil(maxZ / 16f);
+            var blockMinX = OpenMath.floori(minX / 16f);
+            var blockMinY = OpenMath.floori(minY / 16f);
+            var blockMinZ = OpenMath.floori(minZ / 16f);
+            var blockMaxX = OpenMath.ceili(maxX / 16f);
+            var blockMaxY = OpenMath.ceili(maxY / 16f);
+            var blockMaxZ = OpenMath.ceili(maxZ / 16f);
             for (int z = blockMinZ; z <= blockMaxZ; ++z) {
                 for (var y = blockMinY; y <= blockMaxY; ++y) {
                     for (var x = blockMinX; x <= blockMaxX; ++x) {
@@ -80,15 +79,15 @@ public class SkinDocumentCollider {
         var result = new ArrayList<OpenTransformedBoundingBox>();
         poseStack.pushPose();
         part.getTransform().apply(poseStack);
-        part.getCubeData().forEach(cube -> {
+        part.getGeometries().forEach(geometry -> {
             poseStack.pushPose();
-            cube.getTransform().apply(poseStack);
-            var aabb = new OpenBoundingBox(cube.getShape());
+            geometry.getTransform().apply(poseStack);
+            var aabb = geometry.getShape().aabb();
             var tbb = new OpenTransformedBoundingBox(poseStack.last().pose().copy(), aabb);
             result.add(tbb);
             poseStack.popPose();
         });
-        part.getParts().forEach(child -> {
+        part.getChildren().forEach(child -> {
             result.addAll(generateCollisionBox(child, poseStack));
         });
         poseStack.popPose();

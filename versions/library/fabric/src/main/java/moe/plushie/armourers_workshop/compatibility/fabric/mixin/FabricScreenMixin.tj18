@@ -4,8 +4,8 @@ import com.apple.library.coregraphics.CGGraphicsContext;
 import com.mojang.blaze3d.vertex.PoseStack;
 import moe.plushie.armourers_workshop.api.annotation.Available;
 import moe.plushie.armourers_workshop.compatibility.client.gui.AbstractGraphicsRenderer;
+import moe.plushie.armourers_workshop.core.utils.Objects;
 import moe.plushie.armourers_workshop.init.platform.fabric.event.RenderTooltipEvents;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
@@ -42,7 +42,7 @@ public class FabricScreenMixin {
         if (tooltips.isEmpty()) {
             return;
         }
-        Screen screen = ObjectUtils.unsafeCast(this);
+        Screen screen = Objects.unsafeCast(this);
         int screenWidth = screen.width;
         int screenHeight = screen.height;
         int i = 0;

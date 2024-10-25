@@ -1,17 +1,17 @@
 package moe.plushie.armourers_workshop.core.skin.part;
 
-import moe.plushie.armourers_workshop.api.skin.ISkinPart;
-import moe.plushie.armourers_workshop.api.skin.ISkinPartType;
-import moe.plushie.armourers_workshop.api.skin.ISkinTransform;
-import moe.plushie.armourers_workshop.core.data.transform.SkinTransform;
+import moe.plushie.armourers_workshop.api.core.math.ITransform;
+import moe.plushie.armourers_workshop.api.skin.part.ISkinPart;
+import moe.plushie.armourers_workshop.api.skin.part.ISkinPartType;
+import moe.plushie.armourers_workshop.core.math.OpenMath;
+import moe.plushie.armourers_workshop.core.math.OpenTransform3f;
+import moe.plushie.armourers_workshop.core.math.Rectangle3f;
+import moe.plushie.armourers_workshop.core.math.Vector3i;
 import moe.plushie.armourers_workshop.core.skin.SkinMarker;
-import moe.plushie.armourers_workshop.core.skin.cube.SkinCubes;
-import moe.plushie.armourers_workshop.core.skin.cube.impl.SkinCubesV0;
+import moe.plushie.armourers_workshop.core.skin.geometry.SkinGeometrySet;
+import moe.plushie.armourers_workshop.core.skin.geometry.collection.SkinGeometrySetV0;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperties;
-import moe.plushie.armourers_workshop.utils.MathUtils;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
-import moe.plushie.armourers_workshop.utils.math.Rectangle3i;
-import net.minecraft.core.BlockPos;
+import moe.plushie.armourers_workshop.core.utils.Objects;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -21,26 +21,31 @@ import java.util.Map;
 
 public class SkinPart implements ISkinPart {
 
-    protected String name;
-    protected ISkinPartType type;
+    protected final String name;
 
-    protected ISkinTransform transform = SkinTransform.IDENTITY;
+    protected final ISkinPartType type;
+    protected final ITransform transform;
+
+    protected final SkinGeometrySet<?> geometries;
+
+    protected final List<SkinPart> children = new ArrayList<>();
+    protected final List<SkinMarker> markerBlocks = new ArrayList<>();
+
+    protected final Object blobs;
+
     protected SkinProperties properties = SkinProperties.EMPTY;
 
-    private SkinCubes cubeData;
+    private HashMap<Vector3i, Rectangle3f> blockBounds;
 
-    private HashMap<BlockPos, Rectangle3i> blockBounds;
 
-    private final List<SkinPart> children = new ArrayList<>();
-    private final List<SkinMarker> markerBlocks = new ArrayList<>();
+    protected SkinPart(String name, ISkinPartType type, ITransform transform, SkinGeometrySet<?> geometries, List<SkinMarker> markers, Object blobs) {
+        this.name = name;
 
-    private final Object blobs;
-
-    protected SkinPart(ISkinPartType type, List<SkinMarker> markers, SkinCubes cubes, Object blobs) {
         this.type = type;
+        this.transform = transform;
 
-        this.cubeData = cubes;
-        this.cubeData.getUsedCounter().addMarkers(markers.size());
+        this.geometries = geometries;
+        this.geometries.getUsedCounter().addMarkers(markers.size());
 
         this.markerBlocks.addAll(markers);
 
@@ -67,30 +72,25 @@ public class SkinPart implements ISkinPart {
         return 0;
     }
 
-    public Map<BlockPos, Rectangle3i> getBlockBounds() {
+    public Map<Vector3i, Rectangle3f> getBlockBounds() {
         if (blockBounds != null) {
             return blockBounds;
         }
-        var blockGrid = new HashMap<Long, Rectangle3i>();
+        var blockGrid = new HashMap<Vector3i, Rectangle3f>();
         blockBounds = new HashMap<>();
-        cubeData.forEach(cube -> {
-            var pos = cube.getPosition();
-            var x = pos.getX();
-            var y = pos.getY();
-            var z = pos.getZ();
-            var tx = MathUtils.floor((x + 8) / 16f);
-            var ty = MathUtils.floor((y + 8) / 16f);
-            var tz = MathUtils.floor((z + 8) / 16f);
-            var key = BlockPos.asLong(-tx, -ty, tz);
-            var rec = new Rectangle3i(-(x - tx * 16) - 1, -(y - ty * 16) - 1, z - tz * 16, 1, 1, 1);
-            blockGrid.computeIfAbsent(key, k -> rec).union(rec);
+        geometries.forEach(geometry -> {
+            var boundingBox = geometry.getShape().bounds();
+            var x = boundingBox.getX();
+            var y = boundingBox.getY();
+            var z = boundingBox.getZ();
+            var tx = OpenMath.floori((x + 8) / 16f);
+            var ty = OpenMath.floori((y + 8) / 16f);
+            var tz = OpenMath.floori((z + 8) / 16f);
+            var rec = new Rectangle3f(-(x - tx * 16) - 1, -(y - ty * 16) - 1, z - tz * 16, 1, 1, 1);
+            blockGrid.computeIfAbsent(new Vector3i(-tx, -ty, tz), k -> rec).union(rec);
         });
-        blockGrid.forEach((key, value) -> blockBounds.put(BlockPos.of(key), value));
+        blockGrid.forEach((key, value) -> blockBounds.put(key, value));
         return blockBounds;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     @Nullable
@@ -98,33 +98,23 @@ public class SkinPart implements ISkinPart {
         return name;
     }
 
-    public void setType(ISkinPartType type) {
-        this.type = type;
-    }
-
     @Override
     public ISkinPartType getType() {
         return this.type;
     }
 
-    public void setTransform(ISkinTransform transform) {
-        this.transform = transform;
-    }
-
-    public ISkinTransform getTransform() {
+    @Override
+    public ITransform getTransform() {
         return transform;
     }
 
-    public void setCubeData(SkinCubes cubeData) {
-        this.cubeData = cubeData;
-    }
-
-    public SkinCubes getCubeData() {
-        return cubeData;
+    @Override
+    public SkinGeometrySet<?> getGeometries() {
+        return geometries;
     }
 
     @Override
-    public List<SkinPart> getParts() {
+    public List<SkinPart> getChildren() {
         return children;
     }
 
@@ -139,7 +129,7 @@ public class SkinPart implements ISkinPart {
 
     @Override
     public String toString() {
-        return ObjectUtils.makeDescription(this, "name", name, "type", type, "transform", transform, "markers", markerBlocks, "cubes", cubeData);
+        return Objects.toString(this, "name", name, "type", type, "transform", transform, "markers", markerBlocks, "cubes", geometries);
     }
 
     public static class Builder {
@@ -147,8 +137,8 @@ public class SkinPart implements ISkinPart {
         private final ISkinPartType type;
 
         private String name;
-        private SkinCubes cubes = SkinCubesV0.EMPTY;
-        private ISkinTransform transform = SkinTransform.IDENTITY;
+        private SkinGeometrySet<?> geometries = SkinGeometrySetV0.EMPTY;
+        private ITransform transform = OpenTransform3f.IDENTITY;
         private ArrayList<SkinMarker> markers = new ArrayList<>();
         private ArrayList<SkinPart> children = new ArrayList<>();
         private SkinProperties properties;
@@ -163,15 +153,15 @@ public class SkinPart implements ISkinPart {
             return this;
         }
 
-        public Builder transform(ISkinTransform transform) {
+        public Builder transform(ITransform transform) {
             if (transform != null) {
                 this.transform = transform;
             }
             return this;
         }
 
-        public Builder cubes(SkinCubes cubes) {
-            this.cubes = cubes;
+        public Builder geometries(SkinGeometrySet<?> geometries) {
+            this.geometries = geometries;
             return this;
         }
 
@@ -200,9 +190,7 @@ public class SkinPart implements ISkinPart {
         }
 
         public SkinPart build() {
-            var skinPart = new SkinPart(type, markers, cubes, blobs);
-            skinPart.setName(name);
-            skinPart.setTransform(transform);
+            var skinPart = new SkinPart(name, type, transform, geometries, markers, blobs);
             children.forEach(skinPart::addPart);
             return skinPart;
         }

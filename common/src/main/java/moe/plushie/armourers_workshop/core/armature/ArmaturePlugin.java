@@ -1,6 +1,6 @@
 package moe.plushie.armourers_workshop.core.armature;
 
-import moe.plushie.armourers_workshop.api.math.IPoseStack;
+import moe.plushie.armourers_workshop.api.core.math.IPoseStack;
 import moe.plushie.armourers_workshop.core.client.other.EntityRenderData;
 import net.minecraft.world.entity.Entity;
 

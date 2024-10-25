@@ -2,11 +2,11 @@ package moe.plushie.armourers_workshop.core.armature;
 
 import moe.plushie.armourers_workshop.api.armature.IJointTransform;
 import moe.plushie.armourers_workshop.api.core.IResourceLocation;
-import moe.plushie.armourers_workshop.api.data.IDataPackObject;
-import moe.plushie.armourers_workshop.api.skin.ISkinPartType;
 import moe.plushie.armourers_workshop.api.skin.ISkinType;
+import moe.plushie.armourers_workshop.api.skin.part.ISkinPartType;
 import moe.plushie.armourers_workshop.core.skin.SkinTypes;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPartTypes;
+import moe.plushie.armourers_workshop.core.skin.serializer.io.IODataObject;
 import moe.plushie.armourers_workshop.init.ModConstants;
 import moe.plushie.armourers_workshop.init.ModLog;
 import moe.plushie.armourers_workshop.utils.StreamUtils;
@@ -68,7 +68,7 @@ public class Armatures {
             return loader.build(name);
         }
 
-        private void load(IDataPackObject object) {
+        private void load(IODataObject object) {
             object.get("joint").entrySet().forEach(it -> {
                 var value = it.getValue();
                 var joint = new Joint(it.getKey());
@@ -88,7 +88,7 @@ public class Armatures {
             loadType(object.get("type"), SkinTypes::byName, skinTypes::add);
         }
 
-        private <T> void loadType(IDataPackObject object, Function<String, T> transformer, Consumer<T> consumer) {
+        private <T> void loadType(IODataObject object, Function<String, T> transformer, Consumer<T> consumer) {
             switch (object.type()) {
                 case ARRAY: {
                     object.allValues().forEach(it -> loadType(it, transformer, consumer));

@@ -2,8 +2,8 @@ package moe.plushie.armourers_workshop.compatibility.client.model;
 
 import moe.plushie.armourers_workshop.api.annotation.Available;
 import moe.plushie.armourers_workshop.api.client.model.IModelPartCollector;
+import moe.plushie.armourers_workshop.core.utils.Objects;
 import moe.plushie.armourers_workshop.utils.ModelHolder;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelPart;
 
@@ -30,7 +30,7 @@ public class AbstractModelHolder {
 
     public static void collect(String name, ModelPart part, Map<String, ModelPart> collector) {
         collector.put(name, part);
-        var provider = ObjectUtils.safeCast(part, IModelPartCollector.class);
+        var provider = Objects.safeCast(part, IModelPartCollector.class);
         if (provider == null) {
             return;
         }

@@ -2,8 +2,8 @@ package com.apple.library.coregraphics;
 
 import com.apple.library.impl.ObjectUtilsImpl;
 import moe.plushie.armourers_workshop.api.client.IBufferSource;
-import moe.plushie.armourers_workshop.api.math.IPoseStack;
-import moe.plushie.armourers_workshop.utils.math.Vector3f;
+import moe.plushie.armourers_workshop.api.core.math.IPoseStack;
+import moe.plushie.armourers_workshop.core.math.Vector3f;
 
 @SuppressWarnings("unused")
 public interface CGGraphicsState {

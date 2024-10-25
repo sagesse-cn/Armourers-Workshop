@@ -1,12 +1,12 @@
 package moe.plushie.armourers_workshop.core.skin.part.head;
 
-import moe.plushie.armourers_workshop.api.math.ITexturePos;
-import moe.plushie.armourers_workshop.api.math.IVector3i;
-import moe.plushie.armourers_workshop.api.skin.ISkinPartTypeTextured;
+import moe.plushie.armourers_workshop.api.core.math.ITexturePos;
+import moe.plushie.armourers_workshop.api.core.math.IVector3i;
+import moe.plushie.armourers_workshop.api.skin.part.ISkinPartTypeTextured;
+import moe.plushie.armourers_workshop.core.math.Rectangle3i;
+import moe.plushie.armourers_workshop.core.math.TexturePos;
+import moe.plushie.armourers_workshop.core.math.Vector3i;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPartType;
-import moe.plushie.armourers_workshop.utils.math.Rectangle3i;
-import moe.plushie.armourers_workshop.utils.math.TexturePos;
-import moe.plushie.armourers_workshop.utils.math.Vector3i;
 
 public class HeadPartType extends SkinPartType implements ISkinPartTypeTextured {
 

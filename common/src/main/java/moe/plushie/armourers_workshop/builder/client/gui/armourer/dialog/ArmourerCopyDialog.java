@@ -6,7 +6,7 @@ import com.apple.library.uikit.UICheckBox;
 import com.apple.library.uikit.UIComboBox;
 import com.apple.library.uikit.UIComboItem;
 import com.apple.library.uikit.UILabel;
-import moe.plushie.armourers_workshop.api.skin.ISkinPartType;
+import moe.plushie.armourers_workshop.api.skin.part.ISkinPartType;
 import moe.plushie.armourers_workshop.core.client.gui.widget.ConfirmDialog;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPartTypes;
 import moe.plushie.armourers_workshop.utils.TranslateUtils;

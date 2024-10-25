@@ -7,7 +7,6 @@ import com.apple.library.impl.InterpolableImpl;
 import com.apple.library.impl.ObjectUtilsImpl;
 import com.apple.library.impl.ViewImpl;
 import com.apple.library.quartzcore.CAAnimation;
-import com.apple.library.quartzcore.CAMediaTimingFunction;
 import com.apple.library.quartzcore.CATransaction;
 
 import java.util.HashMap;
@@ -99,7 +98,7 @@ class UIPresentationDelegate implements ViewImpl {
     }
 
     public <T extends InterpolableImpl<T>> T _valueForKeyPath(String keyPath, Function<UIView, T> getter) {
-        CAAnimation animation = animationForKey(keyPath);
+        var animation = animationForKey(keyPath);
         if (animation != null) {
             double t = animation._currentTime(CATransaction.currentMediaTime());
             double dur = animation.duration();
@@ -110,7 +109,7 @@ class UIPresentationDelegate implements ViewImpl {
             T fromValue = ObjectUtilsImpl.unsafeCast(animation.fromValue());
             T toValue = ObjectUtilsImpl.unsafeCast(animation.toValue());
 
-            CAMediaTimingFunction f = animation.timingFunction();
+            var f = animation.timingFunction();
             return fromValue.interpolating(toValue, f.applying((float) (t / dur)));
         }
         return getter.apply(view);

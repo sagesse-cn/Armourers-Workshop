@@ -1,15 +1,17 @@
 package moe.plushie.armourers_workshop.utils;
 
-import moe.plushie.armourers_workshop.api.action.ICanOverride;
-import moe.plushie.armourers_workshop.api.skin.ISkinPartType;
+import moe.plushie.armourers_workshop.api.skin.part.ISkinPartType;
+import moe.plushie.armourers_workshop.api.skin.part.features.ICanOverride;
 import moe.plushie.armourers_workshop.core.capability.SkinWardrobe;
 import moe.plushie.armourers_workshop.core.data.slot.SkinSlotType;
+import moe.plushie.armourers_workshop.core.math.OpenMatrix4f;
+import moe.plushie.armourers_workshop.core.math.Vector4f;
 import moe.plushie.armourers_workshop.core.skin.Skin;
 import moe.plushie.armourers_workshop.core.skin.SkinDescriptor;
+import moe.plushie.armourers_workshop.core.utils.Collections;
+import moe.plushie.armourers_workshop.core.utils.Objects;
 import moe.plushie.armourers_workshop.init.ModConfig;
 import moe.plushie.armourers_workshop.init.ModDataComponents;
-import moe.plushie.armourers_workshop.utils.math.OpenMatrix4f;
-import moe.plushie.armourers_workshop.utils.math.Vector4f;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
@@ -28,54 +30,9 @@ import net.minecraft.world.level.GameRules;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Objects;
 
 public final class SkinUtils {
-
-    private static final float[][][] FACE_UVS = new float[][][]{
-            {{1, 0}, {1, 1}, {0, 1}, {0, 0}}, // -y <- down
-            {{0, 0}, {0, 1}, {1, 1}, {1, 0}}, // +y <- up
-            {{0, 0}, {0, 1}, {1, 1}, {1, 0}}, // -z <- north
-            {{0, 0}, {0, 1}, {1, 1}, {1, 0}}, // +z <- south
-            {{0, 0}, {0, 1}, {1, 1}, {1, 0}},
-            {{0, 0}, {0, 1}, {1, 1}, {1, 0}},
-//            {{1, 0}, {1, 1}, {0, 1}, {0, 0}}, // -x <- west
-//            {{1, 0}, {1, 1}, {0, 1}, {0, 0}}, // +x <- east
-    };
-
-    private static final float[][][] FACE_UVS_90 = reorder(FACE_UVS, 3, 0, 1, 2);
-    private static final float[][][] FACE_UVS_180 = reorder(FACE_UVS, 2, 3, 0, 1);
-    private static final float[][][] FACE_UVS_270 = reorder(FACE_UVS, 1, 2, 3, 0);
-
-    private static final float[][][] FACE_VERTEXES = new float[][][]{
-            {{1, 1, 1}, {1, 1, 0}, {0, 1, 0}, {0, 1, 1}, {0, 1, 0}},  // -y <- down
-            {{0, 0, 1}, {0, 0, 0}, {1, 0, 0}, {1, 0, 1}, {0, -1, 0}}, // +y <- up
-            {{0, 0, 0}, {0, 1, 0}, {1, 1, 0}, {1, 0, 0}, {0, 0, -1}}, // -z <- north
-            {{1, 0, 1}, {1, 1, 1}, {0, 1, 1}, {0, 0, 1}, {0, 0, 1}},  // +z <- south
-            {{1, 0, 0}, {1, 1, 0}, {1, 1, 1}, {1, 0, 1}, {1, 0, 0}},  // -x <- west
-            {{0, 0, 1}, {0, 1, 1}, {0, 1, 0}, {0, 0, 0}, {-1, 0, 0}}, // +x <- east
-    };
-
-    public static float[][] getRenderUVs(Direction direction, int rot) {
-        return switch (rot) {
-            case 90 -> FACE_UVS_90[direction.get3DDataValue()];
-            case 180 -> FACE_UVS_180[direction.get3DDataValue()];
-            case 270 -> FACE_UVS_270[direction.get3DDataValue()];
-            default -> FACE_UVS[direction.get3DDataValue()];
-        };
-    }
-
-    public static float[][] getRenderUVs(Direction direction) {
-        return FACE_UVS[direction.get3DDataValue()];
-    }
-
-    public static float[][] getRenderVertexes(Direction direction) {
-        return FACE_VERTEXES[direction.get3DDataValue()];
-    }
 
 //    public static Skin getSkinDetectSide(ItemStack stack, boolean serverSoftLoad, boolean clientRequestSkin) {
 //        SkinDescriptor skinPointer = SkinNBTHelper.getSkinDescriptorFromStack(stack);
@@ -194,7 +151,7 @@ public final class SkinUtils {
 //    }
 
     public static Collection<String> getItemOverrides(ISkinPartType partType) {
-        ICanOverride override = ObjectUtils.safeCast(partType, ICanOverride.class);
+        ICanOverride override = Objects.safeCast(partType, ICanOverride.class);
         if (override != null) {
             return override.getItemOverrides();
         }
@@ -262,7 +219,7 @@ public final class SkinUtils {
     }
 
     public static void copySkinFromOwner(Entity entity) {
-        Projectile projectile = ObjectUtils.safeCast(entity, Projectile.class);
+        Projectile projectile = Objects.safeCast(entity, Projectile.class);
         if (projectile == null) {
             return;
         }
@@ -368,19 +325,19 @@ public final class SkinUtils {
         for (Vector4f point : points) {
             point.transform(matrix);
             if (isReset) {
-                minX = Math.min(minX, point.x());
-                minY = Math.min(minY, point.y());
-                minZ = Math.min(minZ, point.z());
-                maxX = Math.max(maxX, point.x());
-                maxY = Math.max(maxY, point.y());
-                maxZ = Math.max(maxZ, point.z());
+                minX = Math.min(minX, point.getX());
+                minY = Math.min(minY, point.getY());
+                minZ = Math.min(minZ, point.getZ());
+                maxX = Math.max(maxX, point.getX());
+                maxY = Math.max(maxY, point.getY());
+                maxZ = Math.max(maxZ, point.getZ());
             } else {
-                minX = point.x();
-                minY = point.y();
-                minZ = point.z();
-                maxX = point.x();
-                maxY = point.y();
-                maxZ = point.z();
+                minX = point.getX();
+                minY = point.getY();
+                minZ = point.getZ();
+                maxX = point.getX();
+                maxY = point.getY();
+                maxZ = point.getZ();
                 isReset = true;
             }
         }

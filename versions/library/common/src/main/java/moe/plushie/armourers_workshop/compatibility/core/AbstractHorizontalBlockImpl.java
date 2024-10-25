@@ -7,8 +7,8 @@ import moe.plushie.armourers_workshop.api.common.ILootContext;
 import moe.plushie.armourers_workshop.api.common.ILootContextParam;
 import moe.plushie.armourers_workshop.api.common.ITooltipContext;
 import moe.plushie.armourers_workshop.compatibility.core.data.AbstractTooltipContext;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
-import moe.plushie.armourers_workshop.utils.math.Vector3f;
+import moe.plushie.armourers_workshop.core.math.Vector3f;
+import moe.plushie.armourers_workshop.core.utils.Objects;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
@@ -73,7 +73,7 @@ public abstract class AbstractHorizontalBlockImpl extends HorizontalDirectionalB
 //    }
 
     public void appendHoverText(ItemStack itemStack, List<Component> tooltips, ITooltipContext context) {
-        AbstractTooltipContext<Item.TooltipContext> context1 = ObjectUtils.unsafeCast(context);
+        AbstractTooltipContext<Item.TooltipContext> context1 = Objects.unsafeCast(context);
         super.appendHoverText(itemStack, context1.context, tooltips, context1.flag);
     }
 
@@ -105,14 +105,14 @@ public abstract class AbstractHorizontalBlockImpl extends HorizontalDirectionalB
 
         @Override
         public <T> T getParameter(ILootContextParam<T> param) {
-            Object value = builder.getParameter(KEYS.get(param));
+            var value = builder.getParameter(KEYS.get(param));
             return param.getValueClass().cast(convert(value));
         }
 
         @Override
         @Nullable
         public <T> T getOptionalParameter(ILootContextParam<T> param) {
-            Object value = builder.getOptionalParameter(KEYS.get(param));
+            var value = builder.getOptionalParameter(KEYS.get(param));
             if (value != null) {
                 return param.getValueClass().cast(convert(value));
             }
@@ -120,7 +120,7 @@ public abstract class AbstractHorizontalBlockImpl extends HorizontalDirectionalB
         }
 
         private Object convert(Object value) {
-            Vec3 pos = ObjectUtils.safeCast(value, Vec3.class);
+            var pos = Objects.safeCast(value, Vec3.class);
             if (pos != null) {
                 return new Vector3f((float) pos.x, (float) pos.y, (float) pos.z);
             }

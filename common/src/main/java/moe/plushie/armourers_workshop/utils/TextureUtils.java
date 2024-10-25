@@ -2,14 +2,14 @@ package moe.plushie.armourers_workshop.utils;
 
 import com.mojang.blaze3d.platform.NativeImage;
 import moe.plushie.armourers_workshop.api.core.IResourceLocation;
-import moe.plushie.armourers_workshop.api.painting.IPaintColor;
+import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintColor;
+import moe.plushie.armourers_workshop.builder.data.PlayerTexture;
+import moe.plushie.armourers_workshop.builder.data.PlayerTextureDescriptor;
 import moe.plushie.armourers_workshop.core.client.texture.BakedEntityTexture;
 import moe.plushie.armourers_workshop.core.client.texture.PlayerTextureLoader;
-import moe.plushie.armourers_workshop.core.texture.PlayerTexture;
-import moe.plushie.armourers_workshop.core.texture.PlayerTextureDescriptor;
+import moe.plushie.armourers_workshop.core.math.TexturePos;
+import moe.plushie.armourers_workshop.core.utils.OpenResourceLocation;
 import moe.plushie.armourers_workshop.init.ModTextures;
-import moe.plushie.armourers_workshop.utils.ext.OpenResourceLocation;
-import moe.plushie.armourers_workshop.utils.math.TexturePos;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
@@ -29,7 +29,7 @@ public final class TextureUtils {
         return OpenResourceLocation.create(location);
     }
 
-    public static IResourceLocation getTexture(Entity entity) {
+    public static OpenResourceLocation getTexture(Entity entity) {
         if (entity instanceof AbstractClientPlayer player) {
             var location = player.getSkin().texture();
             return OpenResourceLocation.create(location);
@@ -37,7 +37,7 @@ public final class TextureUtils {
         return ModTextures.MANNEQUIN_DEFAULT;
     }
 
-    public static IResourceLocation getPlayerTextureLocation(PlayerTextureDescriptor descriptor) {
+    public static OpenResourceLocation getPlayerTextureLocation(PlayerTextureDescriptor descriptor) {
         PlayerTexture bakedTexture = PlayerTextureLoader.getInstance().loadTexture(descriptor);
         if (bakedTexture != null && bakedTexture.isDownloaded()) {
             return bakedTexture.getLocation();
@@ -51,14 +51,14 @@ public final class TextureUtils {
 
     @Nullable
     public static BakedEntityTexture getPlayerTextureModel(PlayerTextureDescriptor descriptor) {
-        IResourceLocation texture = getPlayerTextureLocation(descriptor);
+        var texture = getPlayerTextureLocation(descriptor);
         if (texture != null) {
             return PlayerTextureLoader.getInstance().getTextureModel(texture);
         }
         return null;
     }
 
-    public static IPaintColor getPlayerTextureModelColor(PlayerTextureDescriptor descriptor, TexturePos texturePos) {
+    public static ISkinPaintColor getPlayerTextureModelColor(PlayerTextureDescriptor descriptor, TexturePos texturePos) {
         BakedEntityTexture textureModel = getPlayerTextureModel(descriptor);
         if (textureModel != null) {
             return textureModel.getColor(texturePos);

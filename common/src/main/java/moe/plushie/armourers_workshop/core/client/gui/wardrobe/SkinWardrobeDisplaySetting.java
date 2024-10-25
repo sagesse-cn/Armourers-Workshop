@@ -5,8 +5,8 @@ import com.apple.library.uikit.UICheckBox;
 import com.apple.library.uikit.UIControl;
 import moe.plushie.armourers_workshop.core.capability.SkinWardrobe;
 import moe.plushie.armourers_workshop.core.network.UpdateWardrobePacket;
+import moe.plushie.armourers_workshop.core.utils.Objects;
 import moe.plushie.armourers_workshop.init.platform.NetworkManager;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
@@ -33,7 +33,7 @@ public class SkinWardrobeDisplaySetting extends SkinWardrobeBaseSetting {
         checkBox.setTitle(getDisplayText(key));
         checkBox.setSelected(property.getOrDefault(wardrobe, true));
         checkBox.addTarget(this, UIControl.Event.VALUE_CHANGED, (self, c) -> {
-            UICheckBox checkBox1 = ObjectUtils.unsafeCast(c);
+            UICheckBox checkBox1 = Objects.unsafeCast(c);
             NetworkManager.sendToServer(property.buildPacket(self.wardrobe, checkBox1.isSelected()));
         });
         addSubview(checkBox);

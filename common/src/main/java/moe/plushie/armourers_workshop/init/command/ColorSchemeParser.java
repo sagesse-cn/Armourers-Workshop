@@ -6,9 +6,9 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
-import moe.plushie.armourers_workshop.api.skin.ISkinPaintType;
-import moe.plushie.armourers_workshop.core.data.color.PaintColor;
-import moe.plushie.armourers_workshop.core.skin.painting.SkinPaintTypes;
+import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintType;
+import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
+import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintTypes;
 import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
 
@@ -37,7 +37,7 @@ public class ColorSchemeParser {
 
     private final StringReader reader;
     private final ColorParser colorParser;
-    private final Map<ISkinPaintType, PaintColor> properties = Maps.newHashMap();
+    private final Map<ISkinPaintType, SkinPaintColor> properties = Maps.newHashMap();
 
     private Function<SuggestionsBuilder, CompletableFuture<Suggestions>> suggestions = SUGGEST_NOTHING;
 
@@ -100,7 +100,7 @@ public class ColorSchemeParser {
         return suggestions.apply(builder.createOffset(reader.getCursor()));
     }
 
-    public Map<ISkinPaintType, PaintColor> getProperties() {
+    public Map<ISkinPaintType, SkinPaintColor> getProperties() {
         return properties;
     }
 

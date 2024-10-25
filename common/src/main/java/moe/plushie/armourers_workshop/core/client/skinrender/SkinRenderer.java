@@ -1,18 +1,18 @@
 package moe.plushie.armourers_workshop.core.client.skinrender;
 
 import com.apple.library.uikit.UIColor;
-import moe.plushie.armourers_workshop.api.math.IPoseStack;
+import moe.plushie.armourers_workshop.api.core.math.IPoseStack;
 import moe.plushie.armourers_workshop.core.client.bake.BakedArmature;
 import moe.plushie.armourers_workshop.core.client.bake.BakedSkin;
 import moe.plushie.armourers_workshop.core.client.bake.BakedSkinPart;
 import moe.plushie.armourers_workshop.core.client.other.ConcurrentBufferBuilder;
 import moe.plushie.armourers_workshop.core.client.other.ConcurrentRenderingContext;
-import moe.plushie.armourers_workshop.core.data.color.ColorScheme;
+import moe.plushie.armourers_workshop.core.math.OpenVoxelShape;
+import moe.plushie.armourers_workshop.core.math.Vector3f;
+import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintScheme;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPartTypes;
 import moe.plushie.armourers_workshop.init.ModDebugger;
 import moe.plushie.armourers_workshop.utils.ColorUtils;
-import moe.plushie.armourers_workshop.utils.math.OpenVoxelShape;
-import moe.plushie.armourers_workshop.utils.math.Vector3f;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.world.entity.Entity;
@@ -20,7 +20,7 @@ import net.minecraft.world.entity.Entity;
 @Environment(EnvType.CLIENT)
 public class SkinRenderer {
 
-    public static void render(Entity entity, BakedArmature armature, BakedSkin bakedSkin, ColorScheme scheme, ConcurrentRenderingContext context) {
+    public static void render(Entity entity, BakedArmature armature, BakedSkin bakedSkin, SkinPaintScheme scheme, ConcurrentRenderingContext context) {
         var poseStack = context.getPoseStack();
         var bufferBuilder = context.getBuffer(bakedSkin);
         for (var bakedPart : bakedSkin.getParts()) {
@@ -47,7 +47,7 @@ public class SkinRenderer {
         }
     }
 
-    private static void renderChild(Entity entity, BakedSkinPart parentPart, BakedSkin skin, ColorScheme scheme, boolean isVisible, ConcurrentBufferBuilder bufferBuilder, ConcurrentRenderingContext context) {
+    private static void renderChild(Entity entity, BakedSkinPart parentPart, BakedSkin skin, SkinPaintScheme scheme, boolean isVisible, ConcurrentBufferBuilder bufferBuilder, ConcurrentRenderingContext context) {
         var poseStack = context.getPoseStack();
         for (var part : parentPart.getChildren()) {
             poseStack.pushPose();
@@ -59,7 +59,7 @@ public class SkinRenderer {
         }
     }
 
-    private static void renderDebugger(Entity entity, BakedSkinPart bakedPart, BakedSkin bakedSkin, ColorScheme scheme, boolean isVisible, ConcurrentBufferBuilder builder, ConcurrentRenderingContext context) {
+    private static void renderDebugger(Entity entity, BakedSkinPart bakedPart, BakedSkin bakedSkin, SkinPaintScheme scheme, boolean isVisible, ConcurrentBufferBuilder builder, ConcurrentRenderingContext context) {
         if (!isVisible) {
             return;
         }
@@ -75,7 +75,7 @@ public class SkinRenderer {
     }
 
     public static OpenVoxelShape getShape(Entity entity, BakedArmature armature, BakedSkin bakedSkin, IPoseStack poseStack) {
-        var voxelShape = OpenVoxelShape.empty();
+        var voxelShape = new OpenVoxelShape();
         for (var part : bakedSkin.getParts()) {
             if (!part.isVisible()) {
                 continue; // ignore invisible part.

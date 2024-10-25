@@ -2,8 +2,8 @@ package moe.plushie.armourers_workshop.core.client.bake;
 
 import moe.plushie.armourers_workshop.compatibility.api.AbstractItemTransformType;
 import moe.plushie.armourers_workshop.core.data.transform.SkinItemTransforms;
-import moe.plushie.armourers_workshop.core.data.transform.SkinTransform;
-import moe.plushie.armourers_workshop.utils.math.Vector3f;
+import moe.plushie.armourers_workshop.core.math.OpenTransform3f;
+import moe.plushie.armourers_workshop.core.math.Vector3f;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
@@ -96,7 +96,7 @@ public class BakedItemModel extends BuiltInModel {
         }
 
         private void put(AbstractItemTransformType key, Vector3f translate, Vector3f rotation, Vector3f scale) {
-            put(key, SkinTransform.create(translate, rotation, scale));
+            put(key, OpenTransform3f.create(translate, rotation, scale));
         }
 
         private static Vector3f translate(float x, float y, float z) {

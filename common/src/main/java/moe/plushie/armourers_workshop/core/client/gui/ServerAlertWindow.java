@@ -8,7 +8,6 @@ import moe.plushie.armourers_workshop.core.client.gui.widget.MenuWindow;
 import moe.plushie.armourers_workshop.core.client.gui.widget.NotificationDialog;
 import moe.plushie.armourers_workshop.core.menu.AbstractContainerMenu;
 import moe.plushie.armourers_workshop.core.network.ExecuteAlertPacket;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
@@ -51,12 +50,10 @@ public class ServerAlertWindow extends MenuWindow<AbstractContainerMenu> {
 
     public void dismiss() {
         var minecraft = Minecraft.getInstance();
-        var screen = ObjectUtils.safeCast(minecraft.screen, WrappedScreen.class);
-        if (screen == null) {
-            return;
+        if (minecraft.screen instanceof WrappedScreen screen) {
+            // we need to switch back to the original screen again.
+            minecraft.setScreen(screen.getTarget());
         }
-        // we need to switch back to the original screen again.
-        minecraft.setScreen(screen.getTarget());
     }
 
     public static class WrappedScreen extends ClientMenuScreen {

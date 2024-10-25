@@ -17,7 +17,7 @@ public class AbstractEntityDataSerializer<T> implements IEntitySerializer<T> {
         this.codec = serializer.codec();
     }
 
-    public static <T>  Proxy<T> create(IEntitySerializer<T> serializer) {
+    public static <T> Proxy<T> create(IEntitySerializer<T> serializer) {
         return new Proxy<>(serializer);
     }
 

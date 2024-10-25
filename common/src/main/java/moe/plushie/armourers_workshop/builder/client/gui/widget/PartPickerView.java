@@ -11,10 +11,9 @@ import com.apple.library.uikit.UILabel;
 import com.apple.library.uikit.UIMenuPopoverView;
 import com.apple.library.uikit.UIScrollView;
 import com.apple.library.uikit.UIView;
-import com.google.common.collect.Lists;
 import moe.plushie.armourers_workshop.core.skin.SkinDescriptor;
+import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.init.platform.EnvironmentManager;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -132,10 +131,10 @@ public class PartPickerView extends UIControl {
     }
 
     private void setupData() {
-        List<List<PartItem>> items = new ArrayList<>();
-        items.add(Lists.newArrayList(PartItem.IMPORT, PartItem.CLEAR));
-        items.add(ObjectUtils.filter(getInventorySkins(), this::isValid));
-        items.add(ObjectUtils.filter(getImportedSkins(), this::isValid));
+        var items = new ArrayList<List<PartItem>>();
+        items.add(Collections.newList(PartItem.IMPORT, PartItem.CLEAR));
+        items.add(Collections.filter(getInventorySkins(), this::isValid));
+        items.add(Collections.filter(getImportedSkins(), this::isValid));
         buildSections(items);
     }
 
@@ -145,9 +144,9 @@ public class PartPickerView extends UIControl {
         float width = bounds().getWidth() - 8;
         float height = bounds().getHeight() - 8;
         for (int i = 0; i < sections.size(); ++i) {
-            List<PartItem> items = sections.get(i);
+            var items = sections.get(i);
             UIView contentView;
-            UILabel titleView = new UILabel(new CGRect(x, y, width, 10));
+            var titleView = new UILabel(new CGRect(x, y, width, 10));
             titleView.setTextColor(UIColor.WHITE);
             titleView.setText(NSString.localizedString("advanced-skin-builder.picker.section" + (i + 1)));
             if (items.isEmpty()) {

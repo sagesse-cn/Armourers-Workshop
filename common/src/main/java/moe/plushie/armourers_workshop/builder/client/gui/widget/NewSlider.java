@@ -17,8 +17,8 @@ import com.apple.library.uikit.UITextFieldDelegate;
 import com.apple.library.uikit.UIView;
 import com.apple.library.uikit.UIWindow;
 import com.google.common.base.Objects;
+import moe.plushie.armourers_workshop.core.math.OpenMath;
 import moe.plushie.armourers_workshop.init.ModTextures;
-import moe.plushie.armourers_workshop.utils.MathUtils;
 
 import java.util.Optional;
 
@@ -336,7 +336,7 @@ public class NewSlider extends UIControl implements UITextFieldDelegate {
         if (Math.abs(newValue) < 0.000001) {
             newValue = 0;
         }
-        value = MathUtils.clamp(newValue, minValue, maxValue);
+        value = OpenMath.clamp(newValue, minValue, maxValue);
         valueView.setText(new NSString(formatter.display(value)));
         valueInputView.setText(formatter.input(value));
     }

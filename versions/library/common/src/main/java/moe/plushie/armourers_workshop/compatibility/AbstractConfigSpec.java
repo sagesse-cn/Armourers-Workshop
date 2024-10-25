@@ -3,14 +3,13 @@ package moe.plushie.armourers_workshop.compatibility;
 import moe.plushie.armourers_workshop.api.config.IConfigBuilder;
 import moe.plushie.armourers_workshop.api.config.IConfigSpec;
 import moe.plushie.armourers_workshop.api.config.IConfigValue;
+import moe.plushie.armourers_workshop.core.utils.Objects;
 import moe.plushie.armourers_workshop.init.ModLog;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -42,7 +41,7 @@ public class AbstractConfigSpec implements IConfigSpec {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(spec);
+        return spec.hashCode();
     }
 
     @Override
@@ -205,7 +204,7 @@ public class AbstractConfigSpec implements IConfigSpec {
         }
 
         public <T> IConfigValue<T> defineValue(String path, Value<T> value) {
-            values.put(root + path, ObjectUtils.unsafeCast(value));
+            values.put(root + path, Objects.unsafeCast(value));
             return value;
         }
 

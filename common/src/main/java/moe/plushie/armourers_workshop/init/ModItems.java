@@ -1,8 +1,8 @@
 package moe.plushie.armourers_workshop.init;
 
 import moe.plushie.armourers_workshop.api.common.IItemGroup;
+import moe.plushie.armourers_workshop.api.core.IRegistryHolder;
 import moe.plushie.armourers_workshop.api.registry.IItemBuilder;
-import moe.plushie.armourers_workshop.api.registry.IRegistryHolder;
 import moe.plushie.armourers_workshop.builder.client.render.SkinCubeItemRenderer;
 import moe.plushie.armourers_workshop.builder.item.BlendingToolItem;
 import moe.plushie.armourers_workshop.builder.item.BlockMarkerItem;
@@ -29,8 +29,8 @@ import moe.plushie.armourers_workshop.core.item.MannequinToolItem;
 import moe.plushie.armourers_workshop.core.item.SkinItem;
 import moe.plushie.armourers_workshop.core.item.SkinUnlockItem;
 import moe.plushie.armourers_workshop.core.item.WandOfStyleItem;
+import moe.plushie.armourers_workshop.core.utils.Objects;
 import moe.plushie.armourers_workshop.init.platform.BuilderManager;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
@@ -128,7 +128,7 @@ public class ModItems {
         }
 
         private IItemBuilder<Item> _create(Function<Item.Properties, Item> factory) {
-            return ObjectUtils.unsafeCast(BuilderManager.getInstance().createItemBuilder(factory));
+            return Objects.unsafeCast(BuilderManager.getInstance().createItemBuilder(factory));
         }
 
         private <T> IItemBuilder<Item> _create(BiFunction<T, Item.Properties, Item> factory, Supplier<T> supplier) {

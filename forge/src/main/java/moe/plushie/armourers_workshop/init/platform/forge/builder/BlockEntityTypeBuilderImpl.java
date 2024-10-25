@@ -1,9 +1,9 @@
 package moe.plushie.armourers_workshop.init.platform.forge.builder;
 
 import moe.plushie.armourers_workshop.api.common.IBlockEntityType;
+import moe.plushie.armourers_workshop.api.core.IRegistryHolder;
 import moe.plushie.armourers_workshop.api.registry.IBlockEntityTypeBuilder;
 import moe.plushie.armourers_workshop.api.registry.IRegistryBinder;
-import moe.plushie.armourers_workshop.api.registry.IRegistryHolder;
 import moe.plushie.armourers_workshop.compatibility.client.AbstractBlockEntityRendererProvider;
 import moe.plushie.armourers_workshop.compatibility.forge.AbstractForgeBlockEntity;
 import moe.plushie.armourers_workshop.compatibility.forge.AbstractForgeRegistries;

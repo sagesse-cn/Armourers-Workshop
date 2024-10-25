@@ -21,19 +21,19 @@ import moe.plushie.armourers_workshop.core.client.render.ExtendedItemRenderer;
 import moe.plushie.armourers_workshop.core.client.skinrender.SkinRenderer;
 import moe.plushie.armourers_workshop.core.client.skinrender.patch.FallbackEntityRenderPatch;
 import moe.plushie.armourers_workshop.core.client.skinrender.patch.LivingEntityRenderPatch;
-import moe.plushie.armourers_workshop.core.data.color.ColorScheme;
 import moe.plushie.armourers_workshop.core.data.ticket.Tickets;
 import moe.plushie.armourers_workshop.core.entity.MannequinEntity;
+import moe.plushie.armourers_workshop.core.math.Vector3f;
 import moe.plushie.armourers_workshop.core.skin.SkinDescriptor;
 import moe.plushie.armourers_workshop.core.skin.SkinLocatorType;
 import moe.plushie.armourers_workshop.core.skin.SkinTypes;
+import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintScheme;
 import moe.plushie.armourers_workshop.init.ModConfig;
 import moe.plushie.armourers_workshop.init.ModDebugger;
 import moe.plushie.armourers_workshop.init.ModItems;
 import moe.plushie.armourers_workshop.utils.EmbeddedSkinStack;
 import moe.plushie.armourers_workshop.utils.RenderSystem;
 import moe.plushie.armourers_workshop.utils.TickUtils;
-import moe.plushie.armourers_workshop.utils.math.Vector3f;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -303,7 +303,7 @@ public class ClientWardrobeHandler {
         itemSource.setRotation(rotation);
         itemSource.setTransformType(transformType);
 
-        ColorScheme scheme = descriptor.getColorScheme();
+        SkinPaintScheme scheme = descriptor.getColorScheme();
         count = ExtendedItemRenderer.renderSkinInBox(bakedSkin, scheme, scale, 0, packedLight, outlineColor, itemSource, poseStack, buffers);
 
         poseStack.popPose();

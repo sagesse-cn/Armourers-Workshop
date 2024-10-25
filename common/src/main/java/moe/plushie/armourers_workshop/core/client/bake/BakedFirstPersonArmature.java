@@ -3,7 +3,7 @@ package moe.plushie.armourers_workshop.core.client.bake;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Sets;
 import moe.plushie.armourers_workshop.api.armature.IJoint;
-import moe.plushie.armourers_workshop.api.skin.ISkinPartType;
+import moe.plushie.armourers_workshop.api.skin.part.ISkinPartType;
 import moe.plushie.armourers_workshop.compatibility.api.AbstractItemTransformType;
 import moe.plushie.armourers_workshop.core.armature.Armatures;
 

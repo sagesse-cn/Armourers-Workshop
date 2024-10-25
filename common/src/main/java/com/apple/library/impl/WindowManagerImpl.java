@@ -55,9 +55,8 @@ public class WindowManagerImpl {
 
     public void removeWindow(UIWindow window) {
         dispatchers.removeIf(dispatcher -> {
-            var dispatcher1 = ObjectUtilsImpl.safeCast(dispatcher, UIWindow.Dispatcher.class);
-            if (dispatcher1 != null && dispatcher1.window == window) {
-                dispatcher1.deinit();
+            if (dispatcher instanceof UIWindow.Dispatcher windowDispatcher && windowDispatcher.window == window) {
+                windowDispatcher.deinit();
                 return true;
             }
             return false;

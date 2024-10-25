@@ -7,9 +7,9 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
-import moe.plushie.armourers_workshop.api.skin.ISkinPaintType;
-import moe.plushie.armourers_workshop.core.data.color.PaintColor;
-import moe.plushie.armourers_workshop.core.skin.painting.SkinPaintTypes;
+import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintType;
+import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
+import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintTypes;
 import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
 
@@ -40,7 +40,7 @@ public class ColorParser {
     private Function<SuggestionsBuilder, CompletableFuture<Suggestions>> suggestions = SUGGEST_NOTHING;
 
     private final StringReader reader;
-    private PaintColor paintColor;
+    private SkinPaintColor paintColor;
 
     public ColorParser(StringReader stringReader) {
         this.reader = stringReader;
@@ -56,12 +56,12 @@ public class ColorParser {
             throw ERROR_INVALID_COLOR_FORMAT.createWithContext(reader, reader.getString());
         }
         int color = readPaintColor();
-        paintColor = PaintColor.of(color, paintType);
+        paintColor = SkinPaintColor.of(color, paintType);
         suggestions = SUGGEST_NOTHING;
         return this;
     }
 
-    public PaintColor getPaintColor() {
+    public SkinPaintColor getPaintColor() {
         return paintColor;
     }
 

@@ -2,7 +2,7 @@ package moe.plushie.armourers_workshop.core.skin.animation;
 
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IInputStream;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IOutputStream;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
+import moe.plushie.armourers_workshop.core.utils.Objects;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -76,6 +76,6 @@ public class SkinAnimationValue {
 
     @Override
     public String toString() {
-        return ObjectUtils.makeDescription(this, "key", key, "time", time, "function", function);
+        return Objects.toString(this, "key", key, "time", time, "function", function);
     }
 }

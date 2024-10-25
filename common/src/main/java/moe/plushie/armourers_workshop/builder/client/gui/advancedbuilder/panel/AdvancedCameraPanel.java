@@ -5,22 +5,19 @@ import com.apple.library.coregraphics.CGRect;
 import com.apple.library.impl.InputManagerImpl;
 import com.apple.library.uikit.UIEvent;
 import com.apple.library.uikit.UIView;
-import moe.plushie.armourers_workshop.api.math.IRectangle3f;
 import moe.plushie.armourers_workshop.builder.blockentity.AdvancedBuilderBlockEntity;
 import moe.plushie.armourers_workshop.builder.client.gui.advancedbuilder.document.DocumentEditor;
 import moe.plushie.armourers_workshop.builder.entity.CameraEntity;
 import moe.plushie.armourers_workshop.core.client.bake.BakedSkinPart;
-import moe.plushie.armourers_workshop.utils.math.ClamppedVector3f;
-import moe.plushie.armourers_workshop.utils.math.OpenBoundingBox;
-import moe.plushie.armourers_workshop.utils.math.OpenMatrix4f;
-import moe.plushie.armourers_workshop.utils.math.OpenNearPlane;
-import moe.plushie.armourers_workshop.utils.math.OpenRay;
-import moe.plushie.armourers_workshop.utils.math.Vector3f;
+import moe.plushie.armourers_workshop.core.math.ClamppedVector3f;
+import moe.plushie.armourers_workshop.core.math.OpenBoundingBox;
+import moe.plushie.armourers_workshop.core.math.OpenMatrix4f;
+import moe.plushie.armourers_workshop.core.math.OpenNearPlane;
+import moe.plushie.armourers_workshop.core.math.Vector3f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
 
 import java.util.Collection;
-import java.util.function.Consumer;
 
 public class AdvancedCameraPanel extends UIView {
 

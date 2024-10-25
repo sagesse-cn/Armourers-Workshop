@@ -3,7 +3,7 @@ package moe.plushie.armourers_workshop.core.client.model;
 import moe.plushie.armourers_workshop.compatibility.client.AbstractEntityRendererProvider;
 import moe.plushie.armourers_workshop.compatibility.client.model.AbstractMannequinArmorModel;
 import moe.plushie.armourers_workshop.core.entity.MannequinEntity;
-import moe.plushie.armourers_workshop.utils.MathUtils;
+import moe.plushie.armourers_workshop.core.math.OpenMath;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
@@ -32,21 +32,21 @@ public class MannequinArmorModel<T extends MannequinEntity> extends AbstractMann
 
     @Override
     public void setupAnim(T entity, float p_225597_2_, float p_225597_3_, float p_225597_4_, float p_225597_5_, float p_225597_6_) {
-        this.head.xRot = MathUtils.toRadians(entity.getHeadPose().getX());
-        this.head.yRot = MathUtils.toRadians(entity.getHeadPose().getY());
-        this.head.zRot = MathUtils.toRadians(entity.getHeadPose().getZ());
-        this.leftArm.xRot = MathUtils.toRadians(entity.getLeftArmPose().getX());
-        this.leftArm.yRot = MathUtils.toRadians(entity.getLeftArmPose().getY());
-        this.leftArm.zRot = MathUtils.toRadians(entity.getLeftArmPose().getZ());
-        this.rightArm.xRot = MathUtils.toRadians(entity.getRightArmPose().getX());
-        this.rightArm.yRot = MathUtils.toRadians(entity.getRightArmPose().getY());
-        this.rightArm.zRot = MathUtils.toRadians(entity.getRightArmPose().getZ());
-        this.leftLeg.xRot = MathUtils.toRadians(entity.getLeftLegPose().getX());
-        this.leftLeg.yRot = MathUtils.toRadians(entity.getLeftLegPose().getY());
-        this.leftLeg.zRot = MathUtils.toRadians(entity.getLeftLegPose().getZ());
-        this.rightLeg.xRot = MathUtils.toRadians(entity.getRightLegPose().getX());
-        this.rightLeg.yRot = MathUtils.toRadians(entity.getRightLegPose().getY());
-        this.rightLeg.zRot = MathUtils.toRadians(entity.getRightLegPose().getZ());
+        this.head.xRot = OpenMath.toRadians(entity.getHeadPose().getX());
+        this.head.yRot = OpenMath.toRadians(entity.getHeadPose().getY());
+        this.head.zRot = OpenMath.toRadians(entity.getHeadPose().getZ());
+        this.leftArm.xRot = OpenMath.toRadians(entity.getLeftArmPose().getX());
+        this.leftArm.yRot = OpenMath.toRadians(entity.getLeftArmPose().getY());
+        this.leftArm.zRot = OpenMath.toRadians(entity.getLeftArmPose().getZ());
+        this.rightArm.xRot = OpenMath.toRadians(entity.getRightArmPose().getX());
+        this.rightArm.yRot = OpenMath.toRadians(entity.getRightArmPose().getY());
+        this.rightArm.zRot = OpenMath.toRadians(entity.getRightArmPose().getZ());
+        this.leftLeg.xRot = OpenMath.toRadians(entity.getLeftLegPose().getX());
+        this.leftLeg.yRot = OpenMath.toRadians(entity.getLeftLegPose().getY());
+        this.leftLeg.zRot = OpenMath.toRadians(entity.getLeftLegPose().getZ());
+        this.rightLeg.xRot = OpenMath.toRadians(entity.getRightLegPose().getX());
+        this.rightLeg.yRot = OpenMath.toRadians(entity.getRightLegPose().getY());
+        this.rightLeg.zRot = OpenMath.toRadians(entity.getRightLegPose().getZ());
         this.hat.copyFrom(this.head);
     }
 

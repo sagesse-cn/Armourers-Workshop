@@ -6,7 +6,7 @@ import moe.plushie.armourers_workshop.api.common.IMenuProvider;
 import moe.plushie.armourers_workshop.api.common.IMenuSerializer;
 import moe.plushie.armourers_workshop.compatibility.core.AbstractMenuType;
 import moe.plushie.armourers_workshop.compatibility.core.data.AbstractFriendlyByteBuf;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
+import moe.plushie.armourers_workshop.core.utils.Objects;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -28,8 +28,8 @@ public class AbstractFabricMenuType<C extends AbstractContainerMenu> extends Abs
 
     public <T> AbstractFabricMenuType(IMenuProvider<C, T> factory, IMenuSerializer<T> serializer, StreamCodec<RegistryFriendlyByteBuf, RegistryFriendlyByteBuf> codec) {
         this.type = new ExtendedScreenHandlerType<>(this::createMenu, codec);
-        this.factory = ObjectUtils.unsafeCast(factory);
-        this.serializer = ObjectUtils.unsafeCast(serializer);
+        this.factory = Objects.unsafeCast(factory);
+        this.serializer = Objects.unsafeCast(serializer);
     }
 
     public static <C extends AbstractContainerMenu, T> AbstractFabricMenuType<C> create(IMenuProvider<C, T> factory, IMenuSerializer<T> serializer) {

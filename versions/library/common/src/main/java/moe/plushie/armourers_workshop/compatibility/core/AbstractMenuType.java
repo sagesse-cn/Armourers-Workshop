@@ -4,7 +4,6 @@ import moe.plushie.armourers_workshop.api.common.IGlobalPos;
 import moe.plushie.armourers_workshop.api.common.IMenuType;
 import moe.plushie.armourers_workshop.api.core.IResourceLocation;
 import moe.plushie.armourers_workshop.init.ModPermissions;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
 import moe.plushie.armourers_workshop.utils.TranslateUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -26,11 +25,10 @@ public abstract class AbstractMenuType<C extends AbstractContainerMenu> implemen
             return InteractionResult.FAIL;
         }
         // only handle server side, in the client side it always succeeds.
-        ServerPlayer serverPlayer = ObjectUtils.safeCast(player, ServerPlayer.class);
-        if (serverPlayer == null) {
+        if (!(player instanceof ServerPlayer serverPlayer)) {
             return InteractionResult.CONSUME;
         }
-        IGlobalPos globalPos = getGlobalPos(value);
+        var globalPos = getGlobalPos(value);
         if (globalPos != null) {
             return openMenu(serverPlayer, globalPos, null).orElse(InteractionResult.FAIL);
         }
@@ -65,12 +63,12 @@ public abstract class AbstractMenuType<C extends AbstractContainerMenu> implemen
         return TranslateUtils.title("inventory.armourers_workshop." + getRegistryName().getPath());
     }
 
-    public void setRegistryName(IResourceLocation registryName) {
-        this.registryName = registryName;
-    }
-
     @Override
     public IResourceLocation getRegistryName() {
         return registryName;
+    }
+
+    public void setRegistryName(IResourceLocation registryName) {
+        this.registryName = registryName;
     }
 }

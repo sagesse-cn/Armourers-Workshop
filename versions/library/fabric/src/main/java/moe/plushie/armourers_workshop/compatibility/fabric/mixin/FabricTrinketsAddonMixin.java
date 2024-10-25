@@ -4,8 +4,8 @@ import dev.emi.trinkets.api.SlotReference;
 import dev.emi.trinkets.api.TrinketComponent;
 import dev.emi.trinkets.api.TrinketsApi;
 import moe.plushie.armourers_workshop.api.annotation.Available;
+import moe.plushie.armourers_workshop.core.utils.Objects;
 import moe.plushie.armourers_workshop.init.platform.fabric.addon.TrinketsAddon;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
@@ -39,10 +39,10 @@ public class FabricTrinketsAddonMixin {
             }
         };
         BiFunction<LivingEntity, Predicate<ItemStack>, List<Tuple<SlotReference, ItemStack>>> provider = (entity, filter) -> {
-            Optional<Object> component = ObjectUtils.unsafeCast(TrinketsApi.getTrinketComponent(entity));
+            Optional<Object> component = Objects.unsafeCast(TrinketsApi.getTrinketComponent(entity));
             Object value = component.map(it -> getEquipped.apply(it, filter)).orElse(null);
             if (value != null) {
-                return ObjectUtils.unsafeCast(value);
+                return Objects.unsafeCast(value);
             }
             return null;
         };

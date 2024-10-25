@@ -5,9 +5,9 @@ import moe.plushie.armourers_workshop.api.common.IResultHandler;
 import moe.plushie.armourers_workshop.api.network.IClientPacketHandler;
 import moe.plushie.armourers_workshop.api.network.IFriendlyByteBuf;
 import moe.plushie.armourers_workshop.api.network.IServerPacketHandler;
+import moe.plushie.armourers_workshop.core.utils.Objects;
 import moe.plushie.armourers_workshop.init.platform.NetworkManager;
 import moe.plushie.armourers_workshop.utils.DataSerializers;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
 import moe.plushie.armourers_workshop.utils.ThreadUtils;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -156,7 +156,7 @@ public class CustomReplyPacket<R> extends CustomPacket {
         private Request<R> popPendingRequest() {
             var req = REQUESTS.remove(id);
             if (req != null) {
-                return ObjectUtils.unsafeCast(req);
+                return Objects.unsafeCast(req);
             }
             return null;
         }

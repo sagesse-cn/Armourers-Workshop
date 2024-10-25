@@ -1,6 +1,6 @@
 package moe.plushie.armourers_workshop.utils.ext;
 
-import moe.plushie.armourers_workshop.core.texture.PlayerTexture;
+import moe.plushie.armourers_workshop.builder.data.PlayerTexture;
 import net.minecraft.core.Direction;
 
 import java.util.ArrayList;

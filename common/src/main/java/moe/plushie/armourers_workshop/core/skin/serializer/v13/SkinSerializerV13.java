@@ -4,6 +4,8 @@ import moe.plushie.armourers_workshop.api.skin.ISkinType;
 import moe.plushie.armourers_workshop.core.skin.Skin;
 import moe.plushie.armourers_workshop.core.skin.SkinTypes;
 import moe.plushie.armourers_workshop.core.skin.exception.InvalidCubeTypeException;
+import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintData;
+import moe.plushie.armourers_workshop.core.skin.paint.texture.PlayerTextureModel;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPart;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperties;
 import moe.plushie.armourers_workshop.core.skin.serializer.SkinFileHeader;
@@ -11,8 +13,6 @@ import moe.plushie.armourers_workshop.core.skin.serializer.SkinFileOptions;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IInputStream;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IOutputStream;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.ISkinSerializer;
-import moe.plushie.armourers_workshop.core.texture.PlayerTextureModel;
-import moe.plushie.armourers_workshop.core.texture.SkinPaintData;
 import moe.plushie.armourers_workshop.init.ModLog;
 
 import java.io.IOException;

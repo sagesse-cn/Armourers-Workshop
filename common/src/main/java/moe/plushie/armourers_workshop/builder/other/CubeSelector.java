@@ -3,10 +3,9 @@ package moe.plushie.armourers_workshop.builder.other;
 import com.google.common.collect.Lists;
 import moe.plushie.armourers_workshop.api.network.IFriendlyByteBuf;
 import moe.plushie.armourers_workshop.builder.item.impl.IPaintToolSelector;
+import moe.plushie.armourers_workshop.core.math.Rectangle3i;
 import moe.plushie.armourers_workshop.init.ModBlocks;
 import moe.plushie.armourers_workshop.utils.BlockUtils;
-import moe.plushie.armourers_workshop.utils.math.Rectangle3i;
-import moe.plushie.armourers_workshop.utils.math.Vector3i;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.UseOnContext;
@@ -109,6 +108,7 @@ public class CubeSelector implements IPaintToolSelector {
         }
     }
 
+    @Override
     public void forEach(UseOnContext context, BiConsumer<BlockPos, Direction> consumer) {
         var level = context.getLevel();
         var clickedFace = context.getClickedFace();
@@ -124,8 +124,8 @@ public class CubeSelector implements IPaintToolSelector {
         switch (this.mode) {
             case ALL: {
                 for (var rect : rects) {
-                    for (Vector3i pos : rect.enumerateZYX()) {
-                        consumer.accept(pos.asBlockPos());
+                    for (var pos : rect.enumerateZYX()) {
+                        consumer.accept(new BlockPos(pos.getX(), pos.getY(), pos.getZ()));
                     }
                 }
                 break;

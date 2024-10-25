@@ -156,7 +156,7 @@ public class HomeLibraryPanel extends AbstractLibraryPanel implements GlobalSkin
     }
 
     private void buildTitle(ServerItemList list, String titleKey) {
-        UILabel label = new UILabel(new CGRect(1, -16, list.frame().width - 2, 16));
+        var label = new UILabel(new CGRect(1, -16, list.frame().width - 2, 16));
         label.setText(getDisplayText(titleKey));
         label.setTextColor(UIColor.WHITE);
         label.setAutoresizingMask(AutoresizingMask.flexibleWidth);
@@ -164,7 +164,7 @@ public class HomeLibraryPanel extends AbstractLibraryPanel implements GlobalSkin
     }
 
     private ServerItemList buildFileList(float x, float y, float width, float height) {
-        ServerItemList fileList = new ServerItemList(new CGRect(x, y, width ,height));
+        var fileList = new ServerItemList(new CGRect(x, y, width, height));
         fileList.setItemSize(new CGSize(50, 50));
         fileList.setBackgroundColor(0);
         fileList.setShowsName(false);

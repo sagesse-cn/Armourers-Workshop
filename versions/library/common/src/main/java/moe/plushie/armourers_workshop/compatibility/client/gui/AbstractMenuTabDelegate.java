@@ -26,12 +26,12 @@ public class AbstractMenuTabDelegate implements GuiEventListener, NarratableEntr
     }
 
     @Override
-    public void setFocused(boolean bl) {
+    public boolean isFocused() {
+        return false;
     }
 
     @Override
-    public boolean isFocused() {
-        return false;
+    public void setFocused(boolean bl) {
     }
 
     @Override

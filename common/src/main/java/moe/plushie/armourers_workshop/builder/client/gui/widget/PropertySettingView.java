@@ -11,7 +11,7 @@ import com.apple.library.uikit.UIView;
 import moe.plushie.armourers_workshop.api.skin.property.ISkinProperty;
 import moe.plushie.armourers_workshop.core.client.gui.widget.InventoryBox;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperty;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
+import moe.plushie.armourers_workshop.core.utils.Objects;
 
 import java.util.Collection;
 
@@ -32,7 +32,7 @@ public abstract class PropertySettingView extends UIView {
         super(rect);
         for (var property : properties) {
             if (property.getDefaultValue() instanceof Boolean) {
-                addCheckBox(ObjectUtils.unsafeCast(property));
+                addCheckBox(Objects.unsafeCast(property));
             }
             if (property == SkinProperty.BLOCK_INVENTORY_WIDTH) {
                 addInventoryBox();
@@ -60,7 +60,7 @@ public abstract class PropertySettingView extends UIView {
         checkBox.setTitleColor(UIColor.GRAY, UIControl.State.DISABLED);
         checkBox.setSelected(getValue(property));
         checkBox.addTarget(this, UIControl.Event.VALUE_CHANGED, (self, c) -> {
-            UICheckBox checkBox1 = ObjectUtils.unsafeCast(c);
+            UICheckBox checkBox1 = Objects.unsafeCast(c);
             self.beginEditing();
             self.putValue(property, checkBox1.isSelected());
             self.resolveConflicts();

@@ -1,12 +1,12 @@
 package moe.plushie.armourers_workshop.core.client.other;
 
-import moe.plushie.armourers_workshop.api.action.ICanUse;
+import moe.plushie.armourers_workshop.api.skin.part.features.ICanUse;
 import moe.plushie.armourers_workshop.compatibility.api.AbstractItemTransformType;
 import moe.plushie.armourers_workshop.core.client.bake.BakedArmature;
 import moe.plushie.armourers_workshop.core.client.bake.BakedSkin;
 import moe.plushie.armourers_workshop.core.client.bake.BakedSkinPart;
+import moe.plushie.armourers_workshop.core.math.OpenMath;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPartTypes;
-import moe.plushie.armourers_workshop.utils.MathUtils;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -80,7 +80,7 @@ public class SkinRenderHelper {
             var useTick = getUseTick(livingEntity, itemSource.getItem());
             var useRange = canUse.getUseRange();
             var tickRange = bakedSkin.getUseTickRange();
-            return useRange.contains(MathUtils.clamp(useTick, tickRange.lowerEndpoint(), tickRange.upperEndpoint()));
+            return useRange.contains(OpenMath.clamp(useTick, tickRange.lowerEndpoint(), tickRange.upperEndpoint()));
         }
         return true;
     }

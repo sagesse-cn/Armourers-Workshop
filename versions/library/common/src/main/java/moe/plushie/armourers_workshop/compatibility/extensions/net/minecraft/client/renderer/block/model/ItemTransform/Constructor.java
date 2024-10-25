@@ -1,7 +1,7 @@
 package moe.plushie.armourers_workshop.compatibility.extensions.net.minecraft.client.renderer.block.model.ItemTransform;
 
 import moe.plushie.armourers_workshop.api.annotation.Available;
-import moe.plushie.armourers_workshop.api.math.ITransformf;
+import moe.plushie.armourers_workshop.api.core.math.ITransform3f;
 import net.minecraft.client.renderer.block.model.ItemTransform;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
@@ -13,7 +13,7 @@ import manifold.ext.rt.api.ThisClass;
 @Available("[1.20, )")
 public class Constructor {
 
-    public static ItemTransform from(@ThisClass Class<?> clazz, @Nullable ITransformf transform) {
+    public static ItemTransform from(@ThisClass Class<?> clazz, @Nullable ITransform3f transform) {
         // ignore when transform is identity.
         if (transform == null || transform.isIdentity()) {
             return ItemTransform.NO_TRANSFORM;

@@ -1,6 +1,13 @@
 package moe.plushie.armourers_workshop.core.data;
 
 import moe.plushie.armourers_workshop.core.blockentity.SkinnableBlockEntity;
+import moe.plushie.armourers_workshop.core.math.OpenMatrix4f;
+import moe.plushie.armourers_workshop.core.math.OpenQuaternion3f;
+import moe.plushie.armourers_workshop.core.math.Rectangle3f;
+import moe.plushie.armourers_workshop.core.math.Rectangle3i;
+import moe.plushie.armourers_workshop.core.math.Vector3f;
+import moe.plushie.armourers_workshop.core.math.Vector3i;
+import moe.plushie.armourers_workshop.core.math.Vector4f;
 import moe.plushie.armourers_workshop.core.skin.Skin;
 import moe.plushie.armourers_workshop.core.skin.SkinDescriptor;
 import moe.plushie.armourers_workshop.core.skin.SkinLoader;
@@ -10,12 +17,6 @@ import moe.plushie.armourers_workshop.core.skin.property.SkinProperties;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperty;
 import moe.plushie.armourers_workshop.init.ModBlocks;
 import moe.plushie.armourers_workshop.utils.Constants;
-import moe.plushie.armourers_workshop.utils.math.OpenMatrix4f;
-import moe.plushie.armourers_workshop.utils.math.OpenQuaternionf;
-import moe.plushie.armourers_workshop.utils.math.Rectangle3f;
-import moe.plushie.armourers_workshop.utils.math.Rectangle3i;
-import moe.plushie.armourers_workshop.utils.math.Vector3f;
-import moe.plushie.armourers_workshop.utils.math.Vector4f;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
@@ -73,10 +74,11 @@ public class SkinBlockPlaceContext extends BlockPlaceContext {
         var parts = new ArrayList<Part>();
         var blockPosList = new ArrayList<BlockPos>();
         skin.getBlockBounds().forEach((pos, shape) -> {
-            if (pos.equals(BlockPos.ZERO)) {
-                parts.add(new ParentPart(pos, shape, blockPosList, descriptor, skin));
+            var rect = new Rectangle3i(shape);
+            if (pos.equals(Vector3i.ZERO)) {
+                parts.add(new ParentPart(BlockPos.ZERO, rect, blockPosList, descriptor, skin));
             } else {
-                parts.add(new Part(pos, shape));
+                parts.add(new Part(new BlockPos(pos.getX(), pos.getY(), pos.getZ()), rect));
             }
         });
         this.skin = descriptor;
@@ -150,11 +152,11 @@ public class SkinBlockPlaceContext extends BlockPlaceContext {
         }
 
         public void transform(Vector3f r) {
-            OpenQuaternionf q = new OpenQuaternionf(r.getX(), r.getY(), r.getZ(), true);
+            OpenQuaternion3f q = new OpenQuaternion3f(r.getX(), r.getY(), r.getZ(), true);
 
             Vector4f f = new Vector4f(offset.getX(), offset.getY(), offset.getZ(), 1.0f);
             f.transform(q);
-            offset = new BlockPos(Math.round(f.x()), Math.round(f.y()), Math.round(f.z()));
+            offset = new BlockPos(Math.round(f.getX()), Math.round(f.getY()), Math.round(f.getZ()));
 
             Rectangle3f of = new Rectangle3f(shape);
             of.mul(q);
@@ -209,15 +211,15 @@ public class SkinBlockPlaceContext extends BlockPlaceContext {
         public void transform(Vector3f r) {
             super.transform(r);
 
-            var q = new OpenQuaternionf(r.getX(), r.getY(), r.getZ(), true);
+            var q = new OpenQuaternion3f(r.getX(), r.getY(), r.getZ(), true);
             var newMarkerList = new ArrayList<SkinMarker>();
             for (var marker : markerList) {
                 var f = new Vector4f(marker.x, marker.y, marker.z, 1.0f);
                 f.transform(OpenMatrix4f.createScaleMatrix(-1, -1, 1));
                 f.transform(q);
-                int x = Math.round(f.x());
-                int y = Math.round(f.y());
-                int z = Math.round(f.z());
+                int x = Math.round(f.getX());
+                int y = Math.round(f.getY());
+                int z = Math.round(f.getZ());
                 marker = new SkinMarker((byte) x, (byte) y, (byte) z, marker.meta);
                 newMarkerList.add(marker);
             }

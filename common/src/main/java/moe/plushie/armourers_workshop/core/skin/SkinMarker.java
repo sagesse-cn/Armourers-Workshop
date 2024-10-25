@@ -1,12 +1,11 @@
 package moe.plushie.armourers_workshop.core.skin;
 
 import moe.plushie.armourers_workshop.api.skin.ISkinMarker;
-import moe.plushie.armourers_workshop.core.data.OptionalDirection;
+import moe.plushie.armourers_workshop.core.math.Vector3i;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IInputStream;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IOutputStream;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
-import moe.plushie.armourers_workshop.utils.math.Vector3i;
-import net.minecraft.core.Direction;
+import moe.plushie.armourers_workshop.core.utils.Objects;
+import moe.plushie.armourers_workshop.core.utils.OpenDirection;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
@@ -58,13 +57,16 @@ public class SkinMarker implements ISkinMarker {
 
     @Nullable
     @Override
-    public Direction getDirection() {
-        return OptionalDirection.values()[meta].getDirection();
+    public OpenDirection getDirection() {
+        if (meta != 0) {
+            return OpenDirection.from3DDataValue(meta - 1);
+        }
+        return null;
     }
 
     @Override
     public String toString() {
-        return ObjectUtils.makeDescription(this, "pos", getPosition(), "direction", getDirection());
+        return Objects.toString(this, "pos", getPosition(), "direction", getDirection());
     }
 
 }

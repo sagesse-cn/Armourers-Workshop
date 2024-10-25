@@ -1,7 +1,7 @@
 package moe.plushie.armourers_workshop.core.permission;
 
 import moe.plushie.armourers_workshop.api.common.IMenuType;
-import moe.plushie.armourers_workshop.api.registry.IRegistryHolder;
+import moe.plushie.armourers_workshop.api.core.IRegistryHolder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;

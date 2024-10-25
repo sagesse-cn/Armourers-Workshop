@@ -18,7 +18,6 @@ import moe.plushie.armourers_workshop.builder.client.gui.advancedbuilder.documen
 import moe.plushie.armourers_workshop.builder.client.gui.widget.NewSlider;
 import moe.plushie.armourers_workshop.builder.data.properties.VectorProperty;
 import moe.plushie.armourers_workshop.core.skin.document.SkinDocument;
-import moe.plushie.armourers_workshop.core.skin.document.SkinDocumentNode;
 import moe.plushie.armourers_workshop.init.ModTextures;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Nullable;
@@ -106,10 +105,10 @@ public abstract class AdvancedPanel extends UIView {
         @Override
         public float layout(float x0, float x1, float x2, float x3, float spacing) {
             float top = titleView.frame().getMaxY() + 4f + spacing;
-            for (Pair<UIView, UIView> it : lines) {
-                UIView rightView = it.getRight();
-                CGRect rightFrame = rightView.frame().copy();
-                UIView leftView = it.getLeft();
+            for (var it : lines) {
+                var rightView = it.getValue();
+                var rightFrame = rightView.frame().copy();
+                var leftView = it.getLeft();
                 float height = rightFrame.getHeight();
                 if (leftView != null) {
                     CGRect leftFrame = leftView.frame().copy();

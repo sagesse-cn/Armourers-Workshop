@@ -2,7 +2,7 @@ package moe.plushie.armourers_workshop.compatibility.extensions.net.minecraft.cl
 
 import moe.plushie.armourers_workshop.api.annotation.Available;
 import moe.plushie.armourers_workshop.api.client.model.IModelBabyPose;
-import moe.plushie.armourers_workshop.utils.math.Vector3f;
+import moe.plushie.armourers_workshop.core.math.Vector3f;
 import net.minecraft.client.model.AgeableListModel;
 import net.minecraft.client.model.Model;
 

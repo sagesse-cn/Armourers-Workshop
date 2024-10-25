@@ -1,8 +1,8 @@
 package moe.plushie.armourers_workshop.builder.other;
 
-import moe.plushie.armourers_workshop.api.painting.IPaintColor;
-import moe.plushie.armourers_workshop.api.painting.IPaintable;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
+import moe.plushie.armourers_workshop.api.common.IPaintable;
+import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintColor;
+import moe.plushie.armourers_workshop.core.utils.Objects;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -72,7 +72,7 @@ public class CubeWrapper implements IPaintable {
         this.lastChanges().setCompoundTag(nbt);
     }
 
-    public void setBlockStateAndColors(BlockState state, Map<Direction, IPaintColor> colors) {
+    public void setBlockStateAndColors(BlockState state, Map<Direction, ISkinPaintColor> colors) {
         this.lastChanges().setBlockState(state);
         this.lastChanges().setColors(colors);
     }
@@ -100,7 +100,7 @@ public class CubeWrapper implements IPaintable {
     }
 
     @Override
-    public IPaintColor getColor(Direction direction) {
+    public ISkinPaintColor getColor(Direction direction) {
         var target = getTarget();
         if (target != null) {
             return target.getColor(direction);
@@ -109,12 +109,12 @@ public class CubeWrapper implements IPaintable {
     }
 
     @Override
-    public void setColor(Direction direction, IPaintColor color) {
+    public void setColor(Direction direction, ISkinPaintColor color) {
         lastChanges().setColor(direction, color);
     }
 
     @Override
-    public void setColors(Map<Direction, IPaintColor> colors) {
+    public void setColors(Map<Direction, ISkinPaintColor> colors) {
         lastChanges().setColors(colors);
     }
 
@@ -142,7 +142,7 @@ public class CubeWrapper implements IPaintable {
         if (this.target != null) {
             return this.target.get();
         }
-        var target = ObjectUtils.safeCast(getBlockEntity(), IPaintable.class);
+        var target = Objects.safeCast(getBlockEntity(), IPaintable.class);
         if (target != null) {
             this.target = () -> target;
             return target;

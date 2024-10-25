@@ -1,7 +1,7 @@
 package moe.plushie.armourers_workshop.compatibility.extensions.net.minecraft.client.resources.model.BakedModel;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import moe.plushie.armourers_workshop.api.math.IPoseStack;
+import moe.plushie.armourers_workshop.api.core.math.IPoseStack;
 import moe.plushie.armourers_workshop.compatibility.api.AbstractItemTransformType;
 import moe.plushie.armourers_workshop.compatibility.client.AbstractPoseStack;
 import moe.plushie.armourers_workshop.init.platform.TransformationProvider;

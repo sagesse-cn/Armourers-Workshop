@@ -1,29 +1,28 @@
 package moe.plushie.armourers_workshop.core.skin;
 
-import com.google.common.collect.Lists;
 import moe.plushie.armourers_workshop.api.common.IResultHandler;
 import moe.plushie.armourers_workshop.api.skin.ISkinFileProvider;
 import moe.plushie.armourers_workshop.core.data.DataDomain;
 import moe.plushie.armourers_workshop.core.data.DataManager;
-import moe.plushie.armourers_workshop.core.data.color.ColorScheme;
 import moe.plushie.armourers_workshop.core.network.RequestSkinPacket;
+import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintScheme;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPart;
 import moe.plushie.armourers_workshop.core.skin.serializer.SkinFileOptions;
 import moe.plushie.armourers_workshop.core.skin.serializer.SkinServerType;
+import moe.plushie.armourers_workshop.core.utils.Collections;
+import moe.plushie.armourers_workshop.core.utils.OpenResourceLocation;
 import moe.plushie.armourers_workshop.init.ModConfig;
 import moe.plushie.armourers_workshop.init.ModContext;
 import moe.plushie.armourers_workshop.init.ModLog;
 import moe.plushie.armourers_workshop.init.platform.EnvironmentManager;
 import moe.plushie.armourers_workshop.init.platform.NetworkManager;
 import moe.plushie.armourers_workshop.utils.Constants;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
 import moe.plushie.armourers_workshop.utils.SkinCipher;
 import moe.plushie.armourers_workshop.utils.SkinFileStreamUtils;
 import moe.plushie.armourers_workshop.utils.SkinFileUtils;
 import moe.plushie.armourers_workshop.utils.StreamUtils;
 import moe.plushie.armourers_workshop.utils.ThreadUtils;
 import moe.plushie.armourers_workshop.utils.WorkQueue;
-import moe.plushie.armourers_workshop.utils.ext.OpenResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
@@ -39,7 +38,6 @@ import java.io.InputStream;
 import java.lang.ref.SoftReference;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.EnumMap;
 import java.util.HashMap;
@@ -143,7 +141,7 @@ public class SkinLoader {
         resumeRequest(entry, Method.ASYNC);
     }
 
-    public SkinDescriptor loadSkinFromDB(String identifier, ColorScheme scheme, boolean needCopy) {
+    public SkinDescriptor loadSkinFromDB(String identifier, SkinPaintScheme scheme, boolean needCopy) {
         var skin = loadSkin(identifier);
         if (skin != null) {
             if (needCopy) {
@@ -154,7 +152,7 @@ public class SkinLoader {
         return SkinDescriptor.EMPTY;
     }
 
-    public void loadSkinFromDB(String identifier, ColorScheme scheme, IResultHandler<SkinDescriptor> handler) {
+    public void loadSkinFromDB(String identifier, SkinPaintScheme scheme, IResultHandler<SkinDescriptor> handler) {
         // merge all request into one.
         getOrCreateGlobalEntry(identifier).resume((descriptor, exception) -> {
             if (descriptor != null) {
@@ -178,14 +176,10 @@ public class SkinLoader {
 
     public InputStream loadSkinData(String identifier) throws Exception {
         var session = taskManager.get(DataDomain.byName(identifier));
-        if (session == null) {
-            throw new NoSuchElementException("can't found session");
+        if (session instanceof LoadingSession loadingSession) {
+            return loadingSession.loadData(identifier);
         }
-        var loadingSection = ObjectUtils.safeCast(session, LoadingSession.class);
-        if (loadingSection == null) {
-            throw new RuntimeException("can't support method in session");
-        }
-        return loadingSection.loadData(identifier);
+        throw new RuntimeException("can't support method in session");
     }
 
     public String saveSkin(String identifier, Skin skin) {
@@ -393,7 +387,7 @@ public class SkinLoader {
             }
             var newIdentifier = LOADER.saveSkin(identifier, skin);
             ModLog.debug("'{}' => did load global skin into database, target: '{}'", newIdentifier);
-            descriptor = new SkinDescriptor(newIdentifier, skin.getType(), ColorScheme.EMPTY);
+            descriptor = new SkinDescriptor(newIdentifier, skin.getType(), SkinPaintScheme.EMPTY);
             sendNotify();
         }
 
@@ -931,7 +925,7 @@ public class SkinLoader {
             var builder = new Skin.Builder(SkinTypes.ADVANCED);
             builder.paintData(skin.getPaintData());
             builder.version(skin.getVersion());
-            builder.parts(Lists.newArrayList(skinPart));
+            builder.parts(Collections.newList(skinPart));
             builder.settings(skin.getSettings().copy());
             builder.properties(skin.getProperties().copy());
             return builder.build();
@@ -944,7 +938,7 @@ public class SkinLoader {
                 if (part == null) {
                     return null;
                 }
-                parts = part.getParts();
+                parts = part.getChildren();
             }
             return part;
         }
@@ -969,7 +963,7 @@ public class SkinLoader {
             if (name != null && names.contains(name)) {
                 return true;
             }
-            for (var child : part.getParts()) {
+            for (var child : part.getChildren()) {
                 if (containsPart(names, child)) {
                     return true;
                 }

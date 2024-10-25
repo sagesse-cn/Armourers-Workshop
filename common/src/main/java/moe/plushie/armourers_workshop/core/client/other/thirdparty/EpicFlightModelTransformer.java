@@ -4,7 +4,7 @@ import moe.plushie.armourers_workshop.api.client.model.IModel;
 import moe.plushie.armourers_workshop.api.client.model.IModelPart;
 import moe.plushie.armourers_workshop.api.client.model.IModelPartPose;
 import moe.plushie.armourers_workshop.core.client.model.CachedModel;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
+import moe.plushie.armourers_workshop.core.utils.Objects;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -65,7 +65,7 @@ public class EpicFlightModelTransformer<T, P, M extends IModel> {
         while (clazz != Object.class) {
             EpicFlightModelTransformer<?, ?, ?> entry = ENTRIES.get(clazz);
             if (entry != null) {
-                EpicFlightModelTransformer<T, P, M> entry1 = ObjectUtils.unsafeCast(entry);
+                EpicFlightModelTransformer<T, P, M> entry1 = Objects.unsafeCast(entry);
                 builders.add(entry1.builder);
                 if (factory == null) {
                     factory = entry1.factory;
@@ -78,7 +78,7 @@ public class EpicFlightModelTransformer<T, P, M extends IModel> {
         }
         if (factory == null) {
             Function<CachedModel.Container<P>, CachedModel<P>> factory1 = CachedModel::new;
-            factory = ObjectUtils.unsafeCast(factory1);
+            factory = Objects.unsafeCast(factory1);
         }
         CachedModel.Container<P> container = new CachedModel.Container<>(model.getClass(), transformer);
         builders.forEach(builder -> builder.accept(model, container));

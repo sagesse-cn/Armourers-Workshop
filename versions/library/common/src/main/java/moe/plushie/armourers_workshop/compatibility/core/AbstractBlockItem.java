@@ -3,7 +3,7 @@ package moe.plushie.armourers_workshop.compatibility.core;
 import moe.plushie.armourers_workshop.api.annotation.Available;
 import moe.plushie.armourers_workshop.api.common.ITooltipContext;
 import moe.plushie.armourers_workshop.compatibility.core.data.AbstractTooltipContext;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
+import moe.plushie.armourers_workshop.core.utils.Objects;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.network.chat.Component;
@@ -23,7 +23,7 @@ public abstract class AbstractBlockItem extends BlockItem {
 
     @Environment(EnvType.CLIENT)
     public void appendHoverText(ItemStack itemStack, List<Component> tooltips, ITooltipContext context) {
-        AbstractTooltipContext<TooltipContext> context1 = ObjectUtils.unsafeCast(context);
+        AbstractTooltipContext<TooltipContext> context1 = Objects.unsafeCast(context);
         super.appendHoverText(itemStack, context1.context, tooltips, context1.flag);
     }
 

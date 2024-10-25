@@ -2,7 +2,6 @@ package moe.plushie.armourers_workshop.compatibility.mixin;
 
 import moe.plushie.armourers_workshop.api.annotation.Available;
 import moe.plushie.armourers_workshop.builder.entity.CameraEntity;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
 import net.minecraft.client.Camera;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -14,9 +13,8 @@ public class CameraMixin {
 
     @ModifyVariable(method = "getMaxZoom", at = @At("HEAD"), argsOnly = true)
     private float aw2$getMaxZoom(float zoom) {
-        Camera camera = ObjectUtils.unsafeCast(this);
-        CameraEntity cameraEntity = ObjectUtils.safeCast(camera.getEntity(), CameraEntity.class);
-        if (cameraEntity != null) {
+        var camera = Camera.class.cast(this);
+        if (camera.getEntity() instanceof CameraEntity cameraEntity) {
             return cameraEntity.getMaxZoom(zoom);
         }
         return zoom;

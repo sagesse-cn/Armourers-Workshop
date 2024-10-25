@@ -2,16 +2,16 @@ package moe.plushie.armourers_workshop.core.skin.serializer.io;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import moe.plushie.armourers_workshop.api.registry.IRegistryEntry;
-import moe.plushie.armourers_workshop.core.data.transform.SkinTransform;
+import moe.plushie.armourers_workshop.api.core.IRegistryEntry;
+import moe.plushie.armourers_workshop.core.math.OpenTransform3f;
+import moe.plushie.armourers_workshop.core.math.Rectangle3f;
+import moe.plushie.armourers_workshop.core.math.Rectangle3i;
+import moe.plushie.armourers_workshop.core.math.Vector3f;
+import moe.plushie.armourers_workshop.core.math.Vector3i;
+import moe.plushie.armourers_workshop.core.skin.paint.texture.TextureAnimation;
+import moe.plushie.armourers_workshop.core.skin.paint.texture.TextureProperties;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperties;
-import moe.plushie.armourers_workshop.core.texture.TextureAnimation;
-import moe.plushie.armourers_workshop.core.texture.TextureProperties;
 import moe.plushie.armourers_workshop.utils.SkinFileUtils;
-import moe.plushie.armourers_workshop.utils.math.Rectangle3f;
-import moe.plushie.armourers_workshop.utils.math.Rectangle3i;
-import moe.plushie.armourers_workshop.utils.math.Vector3f;
-import moe.plushie.armourers_workshop.utils.math.Vector3i;
 import net.minecraft.nbt.CompoundTag;
 
 import java.io.DataInputStream;
@@ -172,13 +172,13 @@ public interface IInputStream {
         return new Rectangle3f(x, y, z, width, height, depth);
     }
 
-    default SkinTransform readTransformf() throws IOException {
-        var transform = new SkinTransform();
+    default OpenTransform3f readTransformf() throws IOException {
+        var transform = new OpenTransform3f();
         transform.readFromStream(this);
-        if (!transform.equals(SkinTransform.IDENTITY)) {
+        if (!transform.equals(OpenTransform3f.IDENTITY)) {
             return transform;
         }
-        return SkinTransform.IDENTITY;
+        return OpenTransform3f.IDENTITY;
     }
 
     default <T extends IRegistryEntry> T readType(Function<String, T> transform) throws IOException {

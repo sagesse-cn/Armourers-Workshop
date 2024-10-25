@@ -1,10 +1,10 @@
 package moe.plushie.armourers_workshop.core.client.bake;
 
 import moe.plushie.armourers_workshop.core.client.other.SkinRenderContext;
+import moe.plushie.armourers_workshop.core.math.OpenPoseStack;
+import moe.plushie.armourers_workshop.core.math.Vector3f;
 import moe.plushie.armourers_workshop.core.skin.SkinLocatorType;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPartTypes;
-import moe.plushie.armourers_workshop.utils.math.OpenPoseStack;
-import moe.plushie.armourers_workshop.utils.math.Vector3f;
 import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.Nullable;
 

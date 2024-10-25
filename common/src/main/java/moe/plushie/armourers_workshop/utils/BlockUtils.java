@@ -1,8 +1,8 @@
 package moe.plushie.armourers_workshop.utils;
 
 import com.google.common.collect.ImmutableSet;
-import moe.plushie.armourers_workshop.api.painting.IPaintable;
-import moe.plushie.armourers_workshop.api.registry.IRegistryHolder;
+import moe.plushie.armourers_workshop.api.common.IPaintable;
+import moe.plushie.armourers_workshop.api.core.IRegistryHolder;
 import moe.plushie.armourers_workshop.builder.data.undo.UndoManager;
 import moe.plushie.armourers_workshop.builder.data.undo.action.NamedUserAction;
 import moe.plushie.armourers_workshop.builder.data.undo.action.SetBlockAction;

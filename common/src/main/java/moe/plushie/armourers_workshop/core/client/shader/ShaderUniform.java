@@ -1,10 +1,10 @@
 package moe.plushie.armourers_workshop.core.client.shader;
 
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
+import moe.plushie.armourers_workshop.core.math.OpenMatrix3f;
+import moe.plushie.armourers_workshop.core.math.OpenMatrix4f;
+import moe.plushie.armourers_workshop.core.math.Vector4f;
+import moe.plushie.armourers_workshop.core.utils.MatrixBuffers;
 import moe.plushie.armourers_workshop.utils.RenderSystem;
-import moe.plushie.armourers_workshop.utils.math.OpenMatrix3f;
-import moe.plushie.armourers_workshop.utils.math.OpenMatrix4f;
-import moe.plushie.armourers_workshop.utils.math.Vector4f;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import org.lwjgl.opengl.GL20;
@@ -102,14 +102,14 @@ public abstract class ShaderUniform {
             var newValue = value.get();
             if (!newValue.equals(cachedValue)) {
                 cachedValue = newValue;
-                GL20.glUniform4f(location, newValue.x(), newValue.y(), newValue.z(), newValue.w());
+                GL20.glUniform4f(location, newValue.getX(), newValue.getY(), newValue.getZ(), newValue.getW());
             }
         }
     }
 
     public static class Matrix4f extends ShaderUniform {
 
-        private final FloatBuffer buffer = ObjectUtils.createFloatBuffer(16);
+        private final FloatBuffer buffer = MatrixBuffers.createFloatBuffer(16);
         private final Supplier<OpenMatrix4f> value;
         private final OpenMatrix4f cachedValue = OpenMatrix4f.createScaleMatrix(0, 0, 0);
 
@@ -132,7 +132,7 @@ public abstract class ShaderUniform {
 
     public static class Matrix3f extends ShaderUniform {
 
-        private final FloatBuffer buffer = ObjectUtils.createFloatBuffer(9);
+        private final FloatBuffer buffer = MatrixBuffers.createFloatBuffer(9);
         private final Supplier<OpenMatrix3f> value;
         private final OpenMatrix3f cachedValue = OpenMatrix3f.createScaleMatrix(0, 0, 0);
 

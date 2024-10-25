@@ -18,7 +18,7 @@ public class ColorLogicProvider extends RenderType {
     public static class CompositeState {
 
         @Extension
-        public static class CompositeStateBuilder  {
+        public static class CompositeStateBuilder {
 
             public static RenderType.CompositeState.CompositeStateBuilder setColorLogicState(@This RenderType.CompositeState.CompositeStateBuilder builder, IRenderTypeBuilder.ColorLogic state) {
                 switch (state) {

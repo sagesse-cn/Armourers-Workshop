@@ -10,12 +10,13 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import moe.plushie.armourers_workshop.api.common.ILootFunction;
 import moe.plushie.armourers_workshop.api.common.IResultHandler;
 import moe.plushie.armourers_workshop.core.capability.SkinWardrobe;
-import moe.plushie.armourers_workshop.core.data.color.ColorScheme;
 import moe.plushie.armourers_workshop.core.data.slot.SkinSlotType;
 import moe.plushie.armourers_workshop.core.skin.SkinDescriptor;
 import moe.plushie.armourers_workshop.core.skin.SkinLoader;
+import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintScheme;
+import moe.plushie.armourers_workshop.core.utils.Collections;
+import moe.plushie.armourers_workshop.core.utils.Objects;
 import moe.plushie.armourers_workshop.init.ModDataComponents;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
@@ -33,27 +34,27 @@ import java.util.function.Function;
 /**
  * <code>
  * {
- *   "pools": [{
- *     "conditions": [{
- *       "condition": "killed_by_player"
- *     }],
- *     "rolls": 1,
- *     "entries": [{
- *       "type": "item",
- *       "name": "armourers_workshop:skin",
- *       "weight": 1,
- *       "functions": [{
- *         "function": "armourers_workshop:skin_randomly",
- *         "skins": [
- *           "ks:10830", // direct access global skin library
- *           "ws:/path/to/file.armour", // direct access server skin-library
- *           {"type": "any"}, // any type, any slot
- *           {"type": "outfit"}, // in outfit, any slot
- *           {"type": "sword", "slot": 1} // in sword, first slot
- *         ]
- *       }]
- *     }]
- *   }]
+ * "pools": [{
+ * "conditions": [{
+ * "condition": "killed_by_player"
+ * }],
+ * "rolls": 1,
+ * "entries": [{
+ * "type": "item",
+ * "name": "armourers_workshop:skin",
+ * "weight": 1,
+ * "functions": [{
+ * "function": "armourers_workshop:skin_randomly",
+ * "skins": [
+ * "ks:10830", // direct access global skin library
+ * "ws:/path/to/file.armour", // direct access server skin-library
+ * {"type": "any"}, // any type, any slot
+ * {"type": "outfit"}, // in outfit, any slot
+ * {"type": "sword", "slot": 1} // in sword, first slot
+ * ]
+ * }]
+ * }]
+ * }]
  * }
  * </code>
  */
@@ -96,7 +97,7 @@ public class SkinRandomlyFunction implements ILootFunction {
 
     @Override
     public Set<LootContextParam<?>> getReferencedContextParams() {
-        return new HashSet<>(ObjectUtils.compactMap(sources, SkinSource::getParam));
+        return new HashSet<>(Collections.compactMap(sources, SkinSource::getParam));
     }
 
     public static class SkinSource implements IResultHandler<SkinDescriptor> {
@@ -134,7 +135,7 @@ public class SkinRandomlyFunction implements ILootFunction {
             if (!identifier.isEmpty()) {
                 // direct load will take a long time, so we need to preload.
                 // during the loading, the current source is disabled.
-                SkinLoader.getInstance().submit(() -> SkinLoader.getInstance().loadSkinFromDB(identifier, ColorScheme.EMPTY, this));
+                SkinLoader.getInstance().submit(() -> SkinLoader.getInstance().loadSkinFromDB(identifier, SkinPaintScheme.EMPTY, this));
             }
         }
 
@@ -163,7 +164,7 @@ public class SkinRandomlyFunction implements ILootFunction {
 
         public SkinDescriptor search(LootContext lootContext, @Nullable SkinSlotType slotType, int index) {
             Object value = lootContext.getParamOrNull(param);
-            SkinWardrobe wardrobe = SkinWardrobe.of(ObjectUtils.safeCast(value, Entity.class));
+            SkinWardrobe wardrobe = SkinWardrobe.of(Objects.safeCast(value, Entity.class));
             if (wardrobe == null) {
                 return SkinDescriptor.EMPTY;
             }

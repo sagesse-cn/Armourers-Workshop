@@ -2,7 +2,7 @@ package moe.plushie.armourers_workshop.core.client.skinrender.plugin;
 
 import moe.plushie.armourers_workshop.core.armature.ArmaturePlugin;
 import moe.plushie.armourers_workshop.core.armature.ArmatureTransformerContext;
-import moe.plushie.armourers_workshop.utils.math.Vector3f;
+import moe.plushie.armourers_workshop.core.math.Vector3f;
 import net.minecraft.world.entity.Entity;
 
 public class ArrowModelArmaturePlugin extends ArmaturePlugin {

@@ -2,22 +2,22 @@ package moe.plushie.armourers_workshop.core.skin.document;
 
 import com.mojang.authlib.GameProfile;
 import moe.plushie.armourers_workshop.core.data.transform.SkinItemTransforms;
+import moe.plushie.armourers_workshop.core.math.OpenMath;
+import moe.plushie.armourers_workshop.core.math.Rectangle3f;
+import moe.plushie.armourers_workshop.core.math.Vector3i;
 import moe.plushie.armourers_workshop.core.skin.Skin;
 import moe.plushie.armourers_workshop.core.skin.SkinDescriptor;
 import moe.plushie.armourers_workshop.core.skin.SkinLoader;
 import moe.plushie.armourers_workshop.core.skin.SkinMarker;
-import moe.plushie.armourers_workshop.core.skin.SkinSettings;
 import moe.plushie.armourers_workshop.core.skin.SkinTypes;
 import moe.plushie.armourers_workshop.core.skin.animation.SkinAnimation;
 import moe.plushie.armourers_workshop.core.skin.exception.SkinSaveException;
 import moe.plushie.armourers_workshop.core.skin.exception.TranslatableException;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPart;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperty;
+import moe.plushie.armourers_workshop.core.skin.property.SkinSettings;
 import moe.plushie.armourers_workshop.core.skin.serializer.SkinSerializer;
-import moe.plushie.armourers_workshop.utils.MathUtils;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
-import moe.plushie.armourers_workshop.utils.math.Rectangle3f;
-import moe.plushie.armourers_workshop.utils.math.Vector3i;
+import moe.plushie.armourers_workshop.core.utils.Collections;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.Nullable;
 
@@ -60,7 +60,7 @@ public class SkinDocumentExporter {
 
         if (skinType == SkinTypes.BLOCK) {
             var boxes = SkinDocumentCollider.generateCollisionBox(document.getRoot());
-            settings.setCollisionBox(ObjectUtils.map(boxes.values(), Rectangle3f::new));
+            settings.setCollisionBox(Collections.compactMap(boxes.values(), Rectangle3f::new));
 
             // check if the skin is not a seat and a bed.
             if (properties.get(SkinProperty.BLOCK_BED) && properties.get(SkinProperty.BLOCK_SEAT)) {
@@ -128,10 +128,10 @@ public class SkinDocumentExporter {
                     builder.name(node.getName());
                 }
                 builder.transform(part.getTransform());
-                builder.cubes(part.getCubeData());
+                builder.geometries(part.getGeometries());
                 builder.markers(loadSkinMarkers(node));
                 var newPart = builder.build();
-                part.getParts().forEach(newPart::addPart);
+                part.getChildren().forEach(newPart::addPart);
                 allParts.add(newPart);
                 continue;
             }
@@ -224,9 +224,9 @@ public class SkinDocumentExporter {
         var markers = new ArrayList<SkinMarker>();
         for (var child : node.children()) {
             if (child.isLocator()) {
-                int x = -MathUtils.floor(child.getLocation().getX());
-                int y = -MathUtils.floor(child.getLocation().getY());
-                int z = MathUtils.floor(child.getLocation().getZ());
+                int x = -OpenMath.floori(child.getLocation().getX());
+                int y = -OpenMath.floori(child.getLocation().getY());
+                int z = OpenMath.floori(child.getLocation().getZ());
                 var marker = new SkinMarker((byte) x, (byte) y, (byte) z, (byte) 0);
                 markers.add(marker);
             }

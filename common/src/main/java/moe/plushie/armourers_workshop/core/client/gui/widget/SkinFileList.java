@@ -23,15 +23,15 @@ import moe.plushie.armourers_workshop.api.skin.ISkinFileHeader;
 import moe.plushie.armourers_workshop.compatibility.client.AbstractBufferSource;
 import moe.plushie.armourers_workshop.core.client.bake.SkinBakery;
 import moe.plushie.armourers_workshop.core.client.render.ExtendedItemRenderer;
-import moe.plushie.armourers_workshop.core.data.color.ColorScheme;
 import moe.plushie.armourers_workshop.core.data.ticket.Ticket;
+import moe.plushie.armourers_workshop.core.math.OpenMath;
 import moe.plushie.armourers_workshop.core.skin.SkinDescriptor;
+import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintScheme;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperty;
+import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.init.ModConfig;
 import moe.plushie.armourers_workshop.init.ModTextures;
 import moe.plushie.armourers_workshop.init.platform.ItemTooltipManager;
-import moe.plushie.armourers_workshop.utils.MathUtils;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
@@ -205,7 +205,7 @@ public class SkinFileList extends UIControl implements UITableViewDataSource, UI
             this.title = new NSString(entry.getName());
             this.entry = entry;
             if (!entry.isDirectory() && entry.getSkinIdentifier() != null) {
-                this.descriptor = new SkinDescriptor(entry.getSkinIdentifier(), entry.getSkinType(), ColorScheme.EMPTY);
+                this.descriptor = new SkinDescriptor(entry.getSkinIdentifier(), entry.getSkinType(), SkinPaintScheme.EMPTY);
                 this.securityData = getSecurityData(entry.getSkinHeader());
             }
             this.iconView.setFrame(new CGRect(0, 0, 16, 14));
@@ -285,10 +285,10 @@ public class SkinFileList extends UIControl implements UITableViewDataSource, UI
             var point = convertPointToView(CGPoint.ZERO, null);
             float size = 144;
             float dx = point.x - size - 5;
-            float dy = MathUtils.clamp(context.state().mousePos().getY() - size / 2f, 0, bounds.height - size);
+            float dy = OpenMath.clamp(context.state().mousePos().getY() - size / 2f, 0, bounds.height - size);
             context.drawTilableImage(ModTextures.GUI_PREVIEW, dx, dy, size, size, 0, 0, 62, 62, 4, 4, 4, 4);
 
-            var tooltips = ObjectUtils.map(ItemTooltipManager.createSkinInfo(bakedSkin), NSString::new);
+            var tooltips = Collections.compactMap(ItemTooltipManager.createSkinInfo(bakedSkin), NSString::new);
             context.drawMultilineText(tooltips, dx + 4, dy + 4, size - 8, 0xffffffff, true, font, 0);
 
             var poseStack = context.state().ctm();

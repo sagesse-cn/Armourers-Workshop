@@ -1,6 +1,6 @@
 package moe.plushie.armourers_workshop.library.data.impl;
 
-import moe.plushie.armourers_workshop.api.data.IDataPackObject;
+import moe.plushie.armourers_workshop.core.skin.serializer.io.IODataObject;
 
 public class ServerToken {
 
@@ -16,7 +16,7 @@ public class ServerToken {
     private final long receivedTime;
     private final long expiryTime;
 
-    public ServerToken(IDataPackObject object) {
+    public ServerToken(IODataObject object) {
         this.serverId = object.get("server_id").stringValue();
 //        this.mc_id = object.get("mc_id").stringValue();
 //        this.mc_name = object.get("mc_name").stringValue();

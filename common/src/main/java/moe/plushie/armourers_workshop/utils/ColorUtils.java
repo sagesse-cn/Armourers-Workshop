@@ -1,11 +1,12 @@
 package moe.plushie.armourers_workshop.utils;
 
 import com.apple.library.uikit.UIColor;
-import moe.plushie.armourers_workshop.api.painting.IPaintColor;
-import moe.plushie.armourers_workshop.api.skin.ISkinPaintType;
+import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintColor;
+import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintType;
 import moe.plushie.armourers_workshop.core.data.ItemStackStorage;
 import moe.plushie.armourers_workshop.core.data.color.BlockPaintColor;
-import moe.plushie.armourers_workshop.core.skin.painting.SkinPaintTypes;
+import moe.plushie.armourers_workshop.core.math.OpenMath;
+import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintTypes;
 import moe.plushie.armourers_workshop.init.ModDataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -97,9 +98,9 @@ public class ColorUtils {
         int g = getGreen(rgb) + amount;
         int b = getBlue(rgb) + amount;
 
-        r = MathUtils.clamp(r, 0, 255);
-        g = MathUtils.clamp(g, 0, 255);
-        b = MathUtils.clamp(b, 0, 255);
+        r = OpenMath.clamp(r, 0, 255);
+        g = OpenMath.clamp(g, 0, 255);
+        b = OpenMath.clamp(b, 0, 255);
 
         return getRGB(r, g, b);
     }
@@ -109,9 +110,9 @@ public class ColorUtils {
 //        int g = getGreen(rgb) - amount;
 //        int b = getBlue(rgb) - amount;
 //
-//        r = MathUtils.clamp(r, 0, 255);
-//        g = MathUtils.clamp(g, 0, 255);
-//        b = MathUtils.clamp(b, 0, 255);
+//        r = OpenMath.clamp(r, 0, 255);
+//        g = OpenMath.clamp(g, 0, 255);
+//        b = OpenMath.clamp(b, 0, 255);
 //
 //        return getRGB(r, g, b);
 //    }
@@ -121,9 +122,9 @@ public class ColorUtils {
         int g = getGreen(rgb) - amount + random.nextInt((amount * 2));
         int b = getBlue(rgb) - amount + random.nextInt((amount * 2));
 
-        r = MathUtils.clamp(r, 0, 255);
-        g = MathUtils.clamp(g, 0, 255);
-        b = MathUtils.clamp(b, 0, 255);
+        r = OpenMath.clamp(r, 0, 255);
+        g = OpenMath.clamp(g, 0, 255);
+        b = OpenMath.clamp(b, 0, 255);
 
         return getRGB(r, g, b);
     }
@@ -135,9 +136,9 @@ public class ColorUtils {
         int g = getGreen(rgb) - amount + shadeAmount;
         int b = getBlue(rgb) - amount + shadeAmount;
 
-        r = MathUtils.clamp(r, 0, 255);
-        g = MathUtils.clamp(g, 0, 255);
-        b = MathUtils.clamp(b, 0, 255);
+        r = OpenMath.clamp(r, 0, 255);
+        g = OpenMath.clamp(g, 0, 255);
+        b = OpenMath.clamp(b, 0, 255);
 
         return getRGB(r, g, b);
     }
@@ -194,7 +195,7 @@ public class ColorUtils {
         if (f > 255) {
             f = 255F - (f - 255);
         }
-        f = MathUtils.clamp(f, 0, 255);
+        f = OpenMath.clamp(f, 0, 255);
         float[] hsb = UIColor.RGBtoHSB(getRed(color), getGreen(color), getBlue(color), null);
         return UIColor.HSBtoRGB(hsb[0], hsb[1], f / 255F);
     }
@@ -205,12 +206,12 @@ public class ColorUtils {
         if (f > 255) {
             f = 255F - (f - 255);
         }
-        f = MathUtils.clamp(f, 0, 255);
+        f = OpenMath.clamp(f, 0, 255);
         float[] hsb = UIColor.RGBtoHSB(getRed(color), getGreen(color), getBlue(color), null);
         return UIColor.HSBtoRGB(hsb[0], hsb[1], f / 255F);
     }
 
-    public static int getDisplayRGB(IPaintColor paintColor) {
+    public static int getDisplayRGB(ISkinPaintColor paintColor) {
         ISkinPaintType paintType = paintColor.getPaintType();
         if (paintType == SkinPaintTypes.RAINBOW) {
             return getRainbowRGB();
@@ -225,7 +226,7 @@ public class ColorUtils {
     }
 
     public static int getDisplayRGB(ItemStack itemStack) {
-        IPaintColor paintColor = getColor(itemStack);
+        ISkinPaintColor paintColor = getColor(itemStack);
         if (paintColor != null) {
             return ColorUtils.getDisplayRGB(paintColor) | 0xff000000;
         }
@@ -236,24 +237,24 @@ public class ColorUtils {
         return itemStack.has(ModDataComponents.TOOL_COLOR.get());
     }
 
-    public static void setColor(ItemStack itemStack, IPaintColor color) {
+    public static void setColor(ItemStack itemStack, ISkinPaintColor color) {
         itemStack.set(ModDataComponents.TOOL_COLOR.get(), color);
     }
 
     @Nullable
-    public static IPaintColor getColor(ItemStack itemStack) {
+    public static ISkinPaintColor getColor(ItemStack itemStack) {
         ItemStackStorage storage = ItemStackStorage.of(itemStack);
         if (storage.paintColor != null) {
             return storage.paintColor.orElse(null);
         }
-        IPaintColor paintColor = itemStack.get(ModDataComponents.TOOL_COLOR.get());
+        ISkinPaintColor paintColor = itemStack.get(ModDataComponents.TOOL_COLOR.get());
 //        IPaintColor paintColor = getColor(itemStack, null);
         storage.paintColor = Optional.ofNullable(paintColor);
         return paintColor;
     }
 
-    public static IPaintColor getColorOrDefault(ItemStack itemStack, IPaintColor defaultColor) {
-        IPaintColor paintColor = getColor(itemStack);
+    public static ISkinPaintColor getColorOrDefault(ItemStack itemStack, ISkinPaintColor defaultColor) {
+        ISkinPaintColor paintColor = getColor(itemStack);
         if (paintColor != null) {
             return paintColor;
         }
@@ -310,7 +311,7 @@ public class ColorUtils {
         return color;
     }
 
-    public static ArrayList<Component> getColorTooltips(IPaintColor color, boolean useDisplayColor) {
+    public static ArrayList<Component> getColorTooltips(ISkinPaintColor color, boolean useDisplayColor) {
         ArrayList<Component> tooltips = new ArrayList<>();
         int rgb = color.getRGB();
         if (useDisplayColor) {
@@ -359,7 +360,7 @@ public class ColorUtils {
         return UIColor.HSBtoRGB(hsb[0], hsb[1], hsb[2]);
     }
 
-    public static float[] RGBtoHSB(IPaintColor paintColor) {
+    public static float[] RGBtoHSB(ISkinPaintColor paintColor) {
         int rgb = paintColor.getRGB();
         return UIColor.RGBtoHSB(getRed(rgb), getGreen(rgb), getBlue(rgb), null);
     }

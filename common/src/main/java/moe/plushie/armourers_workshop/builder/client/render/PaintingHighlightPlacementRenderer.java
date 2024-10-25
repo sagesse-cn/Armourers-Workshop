@@ -2,13 +2,12 @@ package moe.plushie.armourers_workshop.builder.client.render;
 
 import com.apple.library.uikit.UIColor;
 import moe.plushie.armourers_workshop.api.client.IBufferSource;
-import moe.plushie.armourers_workshop.api.math.IPoseStack;
-import moe.plushie.armourers_workshop.api.painting.IPaintable;
+import moe.plushie.armourers_workshop.api.common.IPaintable;
+import moe.plushie.armourers_workshop.api.core.math.IPoseStack;
 import moe.plushie.armourers_workshop.builder.item.option.PaintingToolOptions;
 import moe.plushie.armourers_workshop.core.client.other.SkinRenderType;
 import moe.plushie.armourers_workshop.utils.BlockUtils;
 import moe.plushie.armourers_workshop.utils.ShapeTesselator;
-import moe.plushie.armourers_workshop.utils.math.Vector3f;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Camera;
@@ -39,10 +38,10 @@ public class PaintingHighlightPlacementRenderer {
 
         poseStack.pushPose();
 
-        var origin = new Vector3f(renderInfo.getPosition());
+        var origin = renderInfo.getPosition();
         var builder = bufferSource.getBuffer(SkinRenderType.HIGHLIGHTED_LINES);
 
-        poseStack.translate(-origin.getX(), -origin.getY(), -origin.getZ());
+        poseStack.translate((float) -origin.x(), (float) -origin.y(), (float) -origin.z());
         poseStack.translate(0.5f, 0.5f, 0.5f);
 
         for (var pos1 : blockSamples) {

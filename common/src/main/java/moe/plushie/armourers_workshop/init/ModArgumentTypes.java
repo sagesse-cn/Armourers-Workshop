@@ -1,8 +1,8 @@
 package moe.plushie.armourers_workshop.init;
 
 import moe.plushie.armourers_workshop.api.common.IArgumentType;
+import moe.plushie.armourers_workshop.api.core.IRegistryHolder;
 import moe.plushie.armourers_workshop.api.registry.IArgumentTypeBuilder;
-import moe.plushie.armourers_workshop.api.registry.IRegistryHolder;
 import moe.plushie.armourers_workshop.init.command.ColorArgumentType;
 import moe.plushie.armourers_workshop.init.command.ColorSchemeArgumentType;
 import moe.plushie.armourers_workshop.init.command.FileArgumentType;

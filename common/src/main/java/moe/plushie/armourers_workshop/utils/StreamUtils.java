@@ -6,7 +6,7 @@ import com.google.gson.JsonParseException;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import moe.plushie.armourers_workshop.api.core.IResource;
-import moe.plushie.armourers_workshop.api.data.IDataPackObject;
+import moe.plushie.armourers_workshop.core.skin.serializer.io.IODataObject;
 import org.apache.commons.io.IOUtils;
 import org.jetbrains.annotations.Nullable;
 
@@ -101,7 +101,7 @@ public final class StreamUtils {
     }
 
     @Nullable
-    public static IDataPackObject fromPackObject(IResource resource) {
+    public static IODataObject fromPackObject(IResource resource) {
         try {
             return fromPackObject(resource.getInputStream());
         } catch (IOException e) {
@@ -110,23 +110,23 @@ public final class StreamUtils {
     }
 
     @Nullable
-    public static IDataPackObject fromPackObject(InputStream inputStream) {
+    public static IODataObject fromPackObject(InputStream inputStream) {
         JsonObject object = fromJson(inputStream, JsonObject.class);
         if (object != null) {
-            return IDataPackObject.of(object);
+            return IODataObject.of(object);
         }
         return null;
     }
 
     @Nullable
-    public static IDataPackObject fromPackObject(String jsonString) {
+    public static IODataObject fromPackObject(String jsonString) {
         if (jsonString == null || jsonString.isEmpty()) {
             return null;
         }
         return fromPackObject(new ByteArrayInputStream(jsonString.getBytes()));
     }
 
-    public static void writePackObject(IDataPackObject object, OutputStream outputStream) throws IOException {
+    public static void writePackObject(IODataObject object, OutputStream outputStream) throws IOException {
         JsonWriter writer = new JsonWriter(new OutputStreamWriter(outputStream, StandardCharsets.UTF_8));
         GSON.getAdapter(JsonObject.class).write(writer, (JsonObject) object.jsonValue());
         writer.close();

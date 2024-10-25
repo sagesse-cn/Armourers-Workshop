@@ -1,25 +1,25 @@
 package moe.plushie.armourers_workshop.core.client.animation;
 
-import moe.plushie.armourers_workshop.api.math.IPoseStack;
-import moe.plushie.armourers_workshop.api.skin.ISkinTransform;
-import moe.plushie.armourers_workshop.core.data.transform.SkinTransform;
-import moe.plushie.armourers_workshop.utils.math.OpenQuaternionf;
-import moe.plushie.armourers_workshop.utils.math.Vector3f;
+import moe.plushie.armourers_workshop.api.core.math.IPoseStack;
+import moe.plushie.armourers_workshop.api.core.math.ITransform;
+import moe.plushie.armourers_workshop.core.math.OpenQuaternion3f;
+import moe.plushie.armourers_workshop.core.math.OpenTransform3f;
+import moe.plushie.armourers_workshop.core.math.Vector3f;
 
 import java.util.ArrayList;
 
-public class AnimatedTransform implements ISkinTransform {
+public class AnimatedTransform implements ITransform {
 
     protected final Vector3f pivot;
     protected final Vector3f afterTranslate;
 
-    protected final SkinTransform parent;
+    protected final OpenTransform3f parent;
     protected final ArrayList<AnimatedPoint> points = new ArrayList<>();
 
     protected AnimatedPoint snapshot;
     protected int dirty = 0;
 
-    public AnimatedTransform(SkinTransform parent) {
+    public AnimatedTransform(OpenTransform3f parent) {
         this.parent = parent;
         this.pivot = parent.getPivot();
         this.afterTranslate = parent.getAfterTranslate();
@@ -48,7 +48,7 @@ public class AnimatedTransform implements ISkinTransform {
             if (pivot != Vector3f.ZERO) {
                 poseStack.translate(pivot.getX(), pivot.getY(), pivot.getZ());
             }
-            poseStack.rotate(OpenQuaternionf.fromZYX(rotation, true));
+            poseStack.rotate(OpenQuaternion3f.fromZYX(rotation, true));
             if (pivot != Vector3f.ZERO) {
                 poseStack.translate(-pivot.getX(), -pivot.getY(), -pivot.getZ());
             }
@@ -128,7 +128,7 @@ public class AnimatedTransform implements ISkinTransform {
         dirty |= flags;
     }
 
-    public SkinTransform getParent() {
+    public OpenTransform3f getParent() {
         return parent;
     }
 }

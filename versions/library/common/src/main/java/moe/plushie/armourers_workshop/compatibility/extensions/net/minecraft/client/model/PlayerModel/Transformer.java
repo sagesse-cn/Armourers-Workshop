@@ -1,7 +1,7 @@
 package moe.plushie.armourers_workshop.compatibility.extensions.net.minecraft.client.model.PlayerModel;
 
 import moe.plushie.armourers_workshop.api.annotation.Available;
-import moe.plushie.armourers_workshop.utils.MathUtils;
+import moe.plushie.armourers_workshop.core.math.OpenMath;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.world.entity.LivingEntity;
@@ -18,13 +18,13 @@ public class Transformer {
         model.attackTime = entity.getAttackAnim(g);
         model.riding = entity.isPassenger();
         model.young = entity.isBaby();
-        float h = MathUtils.rotLerp(g, entity.yBodyRotO, entity.yBodyRot);
-        float j = MathUtils.rotLerp(g, entity.yHeadRotO, entity.yHeadRot);
+        float h = OpenMath.rotLerp(g, entity.yBodyRotO, entity.yBodyRot);
+        float j = OpenMath.rotLerp(g, entity.yHeadRotO, entity.yHeadRot);
         float k = j - h;
         if (entity.isPassenger() && entity.getVehicle() instanceof LivingEntity livingEntity) {
-            h = MathUtils.rotLerp(g, livingEntity.yBodyRotO, livingEntity.yBodyRot);
+            h = OpenMath.rotLerp(g, livingEntity.yBodyRotO, livingEntity.yBodyRot);
             k = j - h;
-            float l = MathUtils.wrapDegrees(k);
+            float l = OpenMath.wrapDegrees(k);
             if (l < -85.0f) {
                 l = -85.0f;
             }
@@ -37,7 +37,7 @@ public class Transformer {
             }
             k = j - h;
         }
-        float m = MathUtils.lerp(g, entity.xRotO, entity.getXRot());
+        float m = OpenMath.lerp(g, entity.xRotO, entity.getXRot());
         if (LivingEntityRenderer.isEntityUpsideDown(entity)) {
             m *= -1.0f;
             k *= -1.0f;

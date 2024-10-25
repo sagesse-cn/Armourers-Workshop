@@ -1,7 +1,7 @@
 package moe.plushie.armourers_workshop.core.data.slot;
 
 import com.mojang.datafixers.util.Pair;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
+import moe.plushie.armourers_workshop.core.utils.Collections;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.inventory.InventoryMenu;
@@ -18,7 +18,7 @@ public class SkinSlot extends Slot {
 
     public SkinSlot(Container inventory, int index, int x, int y, SkinSlotType... slotTypes) {
         super(inventory, index, x, y);
-        this.slotTypes = ObjectUtils.map(slotTypes);
+        this.slotTypes = Collections.newList(slotTypes);
     }
 
     @Override

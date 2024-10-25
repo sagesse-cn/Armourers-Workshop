@@ -4,13 +4,14 @@ import com.google.common.collect.ImmutableMap;
 import moe.plushie.armourers_workshop.api.common.IBlockEntityHandler;
 import moe.plushie.armourers_workshop.api.common.IWorldUpdateTask;
 import moe.plushie.armourers_workshop.api.data.IDataSerializer;
-import moe.plushie.armourers_workshop.api.painting.IPaintColor;
-import moe.plushie.armourers_workshop.api.skin.ISkinPartType;
 import moe.plushie.armourers_workshop.api.skin.ISkinToolType;
 import moe.plushie.armourers_workshop.api.skin.ISkinType;
+import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintColor;
+import moe.plushie.armourers_workshop.api.skin.part.ISkinPartType;
 import moe.plushie.armourers_workshop.api.skin.property.ISkinProperty;
 import moe.plushie.armourers_workshop.builder.block.ArmourerBlock;
 import moe.plushie.armourers_workshop.builder.data.BoundingBox;
+import moe.plushie.armourers_workshop.builder.data.PlayerTextureDescriptor;
 import moe.plushie.armourers_workshop.builder.item.impl.IPaintToolSelector;
 import moe.plushie.armourers_workshop.builder.other.CubeChangesCollector;
 import moe.plushie.armourers_workshop.builder.other.CubeReplacingEvent;
@@ -20,21 +21,19 @@ import moe.plushie.armourers_workshop.builder.other.WorldBlockUpdateTask;
 import moe.plushie.armourers_workshop.builder.other.WorldUpdater;
 import moe.plushie.armourers_workshop.builder.other.WorldUtils;
 import moe.plushie.armourers_workshop.core.blockentity.UpdatableBlockEntity;
-import moe.plushie.armourers_workshop.core.data.color.PaintColor;
+import moe.plushie.armourers_workshop.core.math.Rectangle3i;
+import moe.plushie.armourers_workshop.core.math.TexturePos;
+import moe.plushie.armourers_workshop.core.math.Vector3i;
 import moe.plushie.armourers_workshop.core.skin.SkinTypes;
+import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
+import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintData;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPartTypes;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperties;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperty;
-import moe.plushie.armourers_workshop.core.texture.PlayerTextureDescriptor;
-import moe.plushie.armourers_workshop.core.texture.SkinPaintData;
-import moe.plushie.armourers_workshop.core.texture.SkyBox;
 import moe.plushie.armourers_workshop.init.ModBlocks;
 import moe.plushie.armourers_workshop.utils.BlockUtils;
 import moe.plushie.armourers_workshop.utils.DataSerializerKey;
 import moe.plushie.armourers_workshop.utils.DataTypeCodecs;
-import moe.plushie.armourers_workshop.utils.math.Rectangle3i;
-import moe.plushie.armourers_workshop.utils.math.TexturePos;
-import moe.plushie.armourers_workshop.utils.math.Vector3i;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
@@ -191,14 +190,14 @@ public class ArmourerBlockEntity extends UpdatableBlockEntity implements IBlockE
         BlockUtils.combine(this, this::sendBlockUpdates);
     }
 
-    public IPaintColor getPaintColor(TexturePos pos) {
+    public ISkinPaintColor getPaintColor(TexturePos pos) {
         if (paintData != null) {
-            return PaintColor.of(paintData.getColor(pos));
+            return SkinPaintColor.of(paintData.getColor(pos));
         }
         return null;
     }
 
-    public void setPaintColor(TexturePos pos, IPaintColor paintColor) {
+    public void setPaintColor(TexturePos pos, ISkinPaintColor paintColor) {
         if (this.paintData == null) {
             this.paintData = SkinPaintData.v2();
         }
@@ -304,7 +303,7 @@ public class ArmourerBlockEntity extends UpdatableBlockEntity implements IBlockE
         }
         // we just need to clear the paint data for the current part type.
         var textureModel = BoundingBox.MODEL;
-        SkyBox srcBox = textureModel.get(partType);
+        var srcBox = textureModel.get(partType);
         if (srcBox != null) {
             WorldUtils.clearPaintData(paintData, srcBox);
             BlockUtils.combine(this, this::sendBlockUpdates);

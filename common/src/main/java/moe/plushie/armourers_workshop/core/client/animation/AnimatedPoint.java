@@ -1,6 +1,6 @@
 package moe.plushie.armourers_workshop.core.client.animation;
 
-import moe.plushie.armourers_workshop.utils.math.Vector3f;
+import moe.plushie.armourers_workshop.core.math.Vector3f;
 
 public class AnimatedPoint {
 

@@ -6,15 +6,15 @@ import moe.plushie.armourers_workshop.core.client.bake.BakedSkin;
 import moe.plushie.armourers_workshop.core.client.bake.SkinBakery;
 import moe.plushie.armourers_workshop.core.client.render.ExtendedItemRenderer;
 import moe.plushie.armourers_workshop.core.data.ticket.Tickets;
+import moe.plushie.armourers_workshop.core.math.OpenMath;
 import moe.plushie.armourers_workshop.core.skin.SkinDescriptor;
-import moe.plushie.armourers_workshop.core.skin.cube.SkinCubeTypes;
+import moe.plushie.armourers_workshop.core.skin.geometry.SkinGeometryTypes;
 import moe.plushie.armourers_workshop.init.ModConfig;
 import moe.plushie.armourers_workshop.init.ModDebugger;
 import moe.plushie.armourers_workshop.init.ModItems;
 import moe.plushie.armourers_workshop.init.ModKeyBindings;
 import moe.plushie.armourers_workshop.init.ModTextures;
 import moe.plushie.armourers_workshop.init.platform.event.client.ItemTooltipEvent;
-import moe.plushie.armourers_workshop.utils.MathUtils;
 import moe.plushie.armourers_workshop.utils.TranslateUtils;
 import moe.plushie.armourers_workshop.utils.TypedRegistry;
 import net.fabricmc.api.EnvType;
@@ -98,10 +98,10 @@ public class ItemTooltipManager {
         if (ModDebugger.tooltip && Screen.hasShiftDown()) {
 
             String totals = String.format("%d/%d/%d/%d",
-                    counter.getCubeTotal(SkinCubeTypes.SOLID),
-                    counter.getCubeTotal(SkinCubeTypes.GLOWING),
-                    counter.getCubeTotal(SkinCubeTypes.GLASS),
-                    counter.getCubeTotal(SkinCubeTypes.GLASS_GLOWING));
+                    counter.getCubeTotal(SkinGeometryTypes.BLOCK_SOLID),
+                    counter.getCubeTotal(SkinGeometryTypes.BLOCK_GLOWING),
+                    counter.getCubeTotal(SkinGeometryTypes.BLOCK_GLASS),
+                    counter.getCubeTotal(SkinGeometryTypes.BLOCK_GLASS_GLOWING));
 
             tooltip.add(TranslateUtils.subtitle("item.armourers_workshop.rollover.skinIdentifier", descriptor.getIdentifier()));
             tooltip.add(TranslateUtils.subtitle("item.armourers_workshop.rollover.skinTotalCubes", totals));
@@ -201,10 +201,10 @@ public class ItemTooltipManager {
             if (frame.getX() < context.state().mousePos().getX()) {
                 dx = frame.getX() + frame.getWidth() + 28;
             }
-            dy = MathUtils.clamp(dy, 0, screenHeight - size);
+            dy = OpenMath.clamp(dy, 0, screenHeight - size);
         } else {
-            dx = MathUtils.ceil((screenWidth - size) * ModConfig.Client.skinPreLocHorizontal);
-            dy = MathUtils.ceil((screenHeight - size) * ModConfig.Client.skinPreLocVertical);
+            dx = OpenMath.ceili((screenWidth - size) * ModConfig.Client.skinPreLocHorizontal);
+            dy = OpenMath.ceili((screenHeight - size) * ModConfig.Client.skinPreLocVertical);
         }
         if (ModConfig.Client.skinPreDrawBackground) {
             context.drawTilableImage(ModTextures.GUI_PREVIEW, dx, dy, size, size, 0, 0, 62, 62, 4, 4, 4, 4, 400);

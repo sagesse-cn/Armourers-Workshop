@@ -5,12 +5,12 @@ import moe.plushie.armourers_workshop.core.client.bake.BakedArmature;
 import moe.plushie.armourers_workshop.core.client.bake.BakedSkin;
 import moe.plushie.armourers_workshop.core.client.bake.BakedSkinPart;
 import moe.plushie.armourers_workshop.core.client.shader.ShaderVertexObject;
-import moe.plushie.armourers_workshop.core.data.color.ColorScheme;
+import moe.plushie.armourers_workshop.core.math.OpenVoxelShape;
+import moe.plushie.armourers_workshop.core.math.Vector3f;
+import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintScheme;
 import moe.plushie.armourers_workshop.init.ModDebugger;
 import moe.plushie.armourers_workshop.utils.ColorUtils;
 import moe.plushie.armourers_workshop.utils.ShapeTesselator;
-import moe.plushie.armourers_workshop.utils.math.OpenVoxelShape;
-import moe.plushie.armourers_workshop.utils.math.Vector3f;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
@@ -28,7 +28,7 @@ public class SkinRenderObjectBuilder implements ConcurrentBufferBuilder {
     }
 
     @Override
-    public void addPart(BakedSkinPart part, BakedSkin skin, ColorScheme scheme, ConcurrentRenderingContext context) {
+    public void addPart(BakedSkinPart part, BakedSkin skin, SkinPaintScheme scheme, ConcurrentRenderingContext context) {
         // debug the vbo render.
         if (ModDebugger.vbo) {
             drawWithoutVBO(part, skin, scheme, context);
@@ -78,7 +78,7 @@ public class SkinRenderObjectBuilder implements ConcurrentBufferBuilder {
         pipeline.commit(consumer);
     }
 
-    private void draw(BakedSkinPart part, BakedSkin skin, ColorScheme scheme, boolean isOutline, ConcurrentRenderingContext context) {
+    private void draw(BakedSkinPart part, BakedSkin skin, SkinPaintScheme scheme, boolean isOutline, ConcurrentRenderingContext context) {
         // we need compile the skin part, but not render when part invisible.
         var group = compiler.compile(part, skin, scheme, isOutline);
         if (group != null && !group.isEmpty() && part.isVisible()) {
@@ -86,7 +86,7 @@ public class SkinRenderObjectBuilder implements ConcurrentBufferBuilder {
         }
     }
 
-    private void drawWithoutVBO(BakedSkinPart part, BakedSkin skin, ColorScheme scheme, ConcurrentRenderingContext context) {
+    private void drawWithoutVBO(BakedSkinPart part, BakedSkin skin, SkinPaintScheme scheme, ConcurrentRenderingContext context) {
         var poseStack = context.getPoseStack();
         var bufferSource = context.getBufferSource();
         part.getQuads().forEach((renderType, quads) -> {

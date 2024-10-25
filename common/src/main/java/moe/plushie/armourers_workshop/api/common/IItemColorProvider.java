@@ -1,16 +1,16 @@
 package moe.plushie.armourers_workshop.api.common;
 
-import moe.plushie.armourers_workshop.api.painting.IPaintColor;
+import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintColor;
 import net.minecraft.world.item.ItemStack;
 
 public interface IItemColorProvider {
 
-    void setItemColor(ItemStack itemStack, IPaintColor paintColor);
+    void setItemColor(ItemStack itemStack, ISkinPaintColor paintColor);
 
-    IPaintColor getItemColor(ItemStack itemStack);
+    ISkinPaintColor getItemColor(ItemStack itemStack);
 
-    default IPaintColor getItemColor(ItemStack itemStack, IPaintColor defaultValue) {
-        IPaintColor paintColor = getItemColor(itemStack);
+    default ISkinPaintColor getItemColor(ItemStack itemStack, ISkinPaintColor defaultValue) {
+        ISkinPaintColor paintColor = getItemColor(itemStack);
         if (paintColor != null) {
             return paintColor;
         }

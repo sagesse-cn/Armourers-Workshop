@@ -12,7 +12,6 @@ import moe.plushie.armourers_workshop.init.platform.fabric.EnvironmentManagerImp
 import moe.plushie.armourers_workshop.init.platform.fabric.config.FabricConfig;
 import moe.plushie.armourers_workshop.init.platform.fabric.config.FabricConfigTracker;
 import moe.plushie.armourers_workshop.init.platform.fabric.event.EntityLifecycleEvents;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.entity.event.v1.EntitySleepEvents;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
@@ -24,7 +23,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -65,9 +63,8 @@ public class CommonProxyImpl implements ModInitializer {
         if (player.isSpectator()) {
             return InteractionResult.PASS;
         }
-        ItemStack itemStack = player.getItemInHand(hand);
-        IItemHandler handler = ObjectUtils.safeCast(itemStack.getItem(), IItemHandler.class);
-        if (handler != null) {
+        var itemStack = player.getItemInHand(hand);
+        if (itemStack.getItem() instanceof IItemHandler handler) {
             return handler.useOnFirst(itemStack, new UseOnContext(player, hand, hitResult));
         }
         return InteractionResult.PASS;
@@ -77,26 +74,26 @@ public class CommonProxyImpl implements ModInitializer {
         if (entity.isSpectator()) {
             return InteractionResult.PASS;
         }
-        IBlockHandler handler = ObjectUtils.safeCast(blockState.getBlock(), IBlockHandler.class);
-        if (handler != null && handler.isCustomLadder(entity.getLevel(), blockPos, blockState, entity)) {
+        var block = blockState.getBlock();
+        if (block instanceof IBlockHandler handler && handler.isCustomLadder(entity.getLevel(), blockPos, blockState, entity)) {
             return InteractionResult.SUCCESS;
         }
         return InteractionResult.PASS;
     }
 
-    public InteractionResult onAllowBed(LivingEntity entity, BlockPos sleepingPos, BlockState state, boolean vanillaResult) {
-        IBlockHandler handler = ObjectUtils.safeCast(state.getBlock(), IBlockHandler.class);
-        if (handler != null && handler.isCustomBed(entity.getLevel(), sleepingPos, state, entity)) {
+    public InteractionResult onAllowBed(LivingEntity entity, BlockPos sleepingPos, BlockState blockState, boolean vanillaResult) {
+        var block = blockState.getBlock();
+        if (block instanceof IBlockHandler handler && handler.isCustomBed(entity.getLevel(), sleepingPos, blockState, entity)) {
             return InteractionResult.SUCCESS;
         }
         return InteractionResult.PASS;
     }
 
     public void onStopSleep(LivingEntity entity, BlockPos sleepingPos) {
-        Level level = entity.getLevel();
-        BlockState state = level.getBlockState(sleepingPos);
-        IBlockHandler handler = ObjectUtils.safeCast(state.getBlock(), IBlockHandler.class);
-        if (handler != null && handler.isCustomBed(level, sleepingPos, state, entity)) {
+        var level = entity.getLevel();
+        var blockState = level.getBlockState(sleepingPos);
+        var block = blockState.getBlock();
+        if (block instanceof IBlockHandler handler && handler.isCustomBed(level, sleepingPos, blockState, entity)) {
             entity.stopSleeping(sleepingPos);
         }
     }
@@ -105,10 +102,10 @@ public class CommonProxyImpl implements ModInitializer {
         if (player.isSpectator()) {
             return InteractionResult.PASS;
         }
-        BlockState state = level.getBlockState(pos);
-        IBlockHandler handler = ObjectUtils.safeCast(state.getBlock(), IBlockHandler.class);
-        if (handler != null) {
-            InteractionResult result = handler.attackBlock(level, pos, state, direction, player, hand);
+        var blockState = level.getBlockState(pos);
+        var block = blockState.getBlock();
+        if (block instanceof IBlockHandler handler) {
+            InteractionResult result = handler.attackBlock(level, pos, blockState, direction, player, hand);
             if (result == InteractionResult.CONSUME) {
                 return InteractionResult.FAIL;
             }

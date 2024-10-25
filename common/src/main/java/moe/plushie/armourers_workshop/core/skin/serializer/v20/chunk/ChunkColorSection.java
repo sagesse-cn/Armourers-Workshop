@@ -1,23 +1,21 @@
 package moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk;
 
-import moe.plushie.armourers_workshop.api.common.ITextureProvider;
-import moe.plushie.armourers_workshop.api.painting.IPaintColor;
-import moe.plushie.armourers_workshop.api.skin.ISkinPaintType;
-import moe.plushie.armourers_workshop.core.data.color.PaintColor;
+import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintType;
+import moe.plushie.armourers_workshop.api.skin.paint.texture.ITextureProvider;
+import moe.plushie.armourers_workshop.core.math.Rectangle2f;
+import moe.plushie.armourers_workshop.core.math.Vector2f;
+import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
+import moe.plushie.armourers_workshop.core.skin.paint.texture.TextureAnimation;
+import moe.plushie.armourers_workshop.core.skin.paint.texture.TextureData;
+import moe.plushie.armourers_workshop.core.skin.paint.texture.TextureOptions;
+import moe.plushie.armourers_workshop.core.skin.paint.texture.TextureProperties;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IInputStream;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IOutputStream;
-import moe.plushie.armourers_workshop.core.texture.TextureAnimation;
-import moe.plushie.armourers_workshop.core.texture.TextureData;
-import moe.plushie.armourers_workshop.core.texture.TextureOptions;
-import moe.plushie.armourers_workshop.core.texture.TextureProperties;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
-import moe.plushie.armourers_workshop.utils.math.Rectangle2f;
-import moe.plushie.armourers_workshop.utils.math.Vector2f;
+import moe.plushie.armourers_workshop.core.utils.Collections;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.Objects;
 import java.util.function.Function;
 
 public abstract class ChunkColorSection {
@@ -51,7 +49,7 @@ public abstract class ChunkColorSection {
         this.textureIndexBytes = textureUsedIndex;
     }
 
-    public abstract IPaintColor getColor(int index);
+    public abstract SkinPaintColor getColor(int index);
 
     public TextureRef getTexture(Vector2f pos) {
         var list = getTextureList(pos);
@@ -173,12 +171,12 @@ public abstract class ChunkColorSection {
         }
 
         @Override
-        public IPaintColor getColor(int offset) {
+        public SkinPaintColor getColor(int offset) {
             int value = 0;
             for (int i = 0; i < usedBytes; ++i) {
                 value = (value << 8) | (buffers[offset * usedBytes + i]) & 0xff;
             }
-            return PaintColor.of(value, getPaintType());
+            return SkinPaintColor.of(value, getPaintType());
         }
 
         @Override
@@ -229,9 +227,9 @@ public abstract class ChunkColorSection {
         }
 
         @Override
-        public IPaintColor getColor(int offset) {
+        public SkinPaintColor getColor(int offset) {
             int value = colorLists.get(offset);
-            return PaintColor.of(value, getPaintType());
+            return SkinPaintColor.of(value, getPaintType());
         }
 
         public ColorRef putColor(int value) {
@@ -249,7 +247,7 @@ public abstract class ChunkColorSection {
         public TextureRef putTexture(Vector2f uv, ITextureProvider provider) {
             // we're also adding all variant textures.
             var textureList = getOrCreateTextureList(provider);
-            ObjectUtils.eachTree(provider.getVariants(), ITextureProvider::getVariants, this::getOrCreateTextureList);
+            Collections.eachTree(provider.getVariants(), ITextureProvider::getVariants, this::getOrCreateTextureList);
             return textureList.add(uv, this);
         }
 
@@ -416,7 +414,7 @@ public abstract class ChunkColorSection {
             this.rect = new Rectangle2f(x, y, rect.getWidth(), rect.getHeight());
             this.isResolved = true;
             // bind the child -> parent
-            this.provider.getVariants().stream().map(childProvider).filter(Objects::nonNull).forEach(it -> it.parentId = this.id);
+            Collections.compactMap(provider.getVariants(), childProvider).forEach(it -> it.parentId = this.id);
         }
 
         public boolean contains(Vector2f uv) {

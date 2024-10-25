@@ -1,10 +1,10 @@
 package moe.plushie.armourers_workshop.core.capability;
 
 import com.google.common.collect.ImmutableMap;
-import moe.plushie.armourers_workshop.core.data.color.ColorScheme;
 import moe.plushie.armourers_workshop.core.data.slot.SkinSlotType;
 import moe.plushie.armourers_workshop.core.skin.SkinDescriptor;
 import moe.plushie.armourers_workshop.core.skin.SkinLoader;
+import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintScheme;
 import moe.plushie.armourers_workshop.init.ModDataComponents;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
@@ -51,13 +51,13 @@ public class SkinWardrobeJS {
     public SkinDescriptorJS loadSkin(String identifier) {
         var skin = SkinLoader.getInstance().loadSkin(identifier);
         if (skin != null) {
-            return new SkinDescriptorJS(new SkinDescriptor(identifier, skin.getType(), ColorScheme.EMPTY));
+            return new SkinDescriptorJS(new SkinDescriptor(identifier, skin.getType(), SkinPaintScheme.EMPTY));
         }
         return null;
     }
 
     public SkinDescriptorJS loadSkinFromDB(String identifier) {
-        var descriptor = SkinLoader.getInstance().loadSkinFromDB(identifier, ColorScheme.EMPTY, true);
+        var descriptor = SkinLoader.getInstance().loadSkinFromDB(identifier, SkinPaintScheme.EMPTY, true);
         if (!descriptor.isEmpty()) {
             return new SkinDescriptorJS(descriptor);
         }

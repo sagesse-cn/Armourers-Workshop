@@ -1,14 +1,13 @@
 package moe.plushie.armourers_workshop.core.item;
 
 import moe.plushie.armourers_workshop.api.common.ITooltipContext;
+import moe.plushie.armourers_workshop.builder.data.PlayerTextureDescriptor;
 import moe.plushie.armourers_workshop.core.data.MannequinHitResult;
-import moe.plushie.armourers_workshop.core.texture.PlayerTextureDescriptor;
 import moe.plushie.armourers_workshop.init.ModDataComponents;
 import moe.plushie.armourers_workshop.init.ModEntityTypes;
 import moe.plushie.armourers_workshop.init.ModItems;
 import moe.plushie.armourers_workshop.utils.Constants;
 import moe.plushie.armourers_workshop.utils.TranslateUtils;
-import moe.plushie.armourers_workshop.utils.math.Vector3f;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.nbt.CompoundTag;
@@ -22,6 +21,7 @@ import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -76,7 +76,7 @@ public class MannequinItem extends FlavouredItem {
             return InteractionResult.FAIL;
         }
         var level = context.getLevel();
-        var origin = new Vector3f((float) player.getX(), (float) player.getY(), (float) player.getZ());
+        var origin = new Vec3(player.getX(), player.getY(), player.getZ());
         var rayTraceResult = MannequinHitResult.test(player, origin, context.getClickLocation(), context.getClickedPos());
         var itemStack = context.getItemInHand();
         if (level instanceof ServerLevel serverLevel) {

@@ -3,14 +3,14 @@ package moe.plushie.armourers_workshop.core.armature.core;
 import moe.plushie.armourers_workshop.api.armature.IJoint;
 import moe.plushie.armourers_workshop.api.armature.IJointTransform;
 import moe.plushie.armourers_workshop.api.client.model.IModel;
-import moe.plushie.armourers_workshop.api.math.ITransformf;
+import moe.plushie.armourers_workshop.api.core.math.ITransform3f;
 import moe.plushie.armourers_workshop.core.armature.JointModifier;
 
 public class AfterTransformModifier extends JointModifier {
 
-    private final ITransformf value;
+    private final ITransform3f value;
 
-    public AfterTransformModifier(ITransformf transform) {
+    public AfterTransformModifier(ITransform3f transform) {
         this.value = transform;
     }
 

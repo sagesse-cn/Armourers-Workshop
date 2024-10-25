@@ -1,7 +1,8 @@
 package moe.plushie.armourers_workshop.core.data.color;
 
-import moe.plushie.armourers_workshop.api.painting.IBlockPaintColor;
-import moe.plushie.armourers_workshop.api.painting.IPaintColor;
+import moe.plushie.armourers_workshop.api.common.IBlockPaintColor;
+import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintColor;
+import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 
@@ -12,17 +13,17 @@ import java.util.Objects;
 
 public class BlockPaintColor implements IBlockPaintColor {
 
-    public static final BlockPaintColor WHITE = new BlockPaintColor(PaintColor.WHITE);
+    public static final BlockPaintColor WHITE = new BlockPaintColor(SkinPaintColor.WHITE);
 
     public static final BlockPaintColor EMPTY = new BlockPaintColor();
 
-    protected IPaintColor paintColor;
-    protected EnumMap<Side, IPaintColor> paintColors;
+    protected ISkinPaintColor paintColor;
+    protected EnumMap<Side, ISkinPaintColor> paintColors;
 
     public BlockPaintColor() {
     }
 
-    public BlockPaintColor(IPaintColor paintColor) {
+    public BlockPaintColor(ISkinPaintColor paintColor) {
         this.paintColor = paintColor;
     }
 
@@ -52,13 +53,13 @@ public class BlockPaintColor implements IBlockPaintColor {
         return tag;
     }
 
-    public void putAll(IPaintColor paintColor) {
+    public void putAll(ISkinPaintColor paintColor) {
         this.paintColor = paintColor;
         this.paintColors = null;
     }
 
     @Override
-    public void put(Direction dir, IPaintColor paintColor) {
+    public void put(Direction dir, ISkinPaintColor paintColor) {
         if (this.paintColors == null) {
             if (Objects.equals(this.paintColor, paintColor)) {
                 return; // not any changes.
@@ -77,12 +78,12 @@ public class BlockPaintColor implements IBlockPaintColor {
 
 
     @Override
-    public IPaintColor get(Direction dir) {
+    public ISkinPaintColor get(Direction dir) {
         return getOrDefault(dir, null);
     }
 
     @Override
-    public IPaintColor getOrDefault(Direction dir, IPaintColor defaultValue) {
+    public ISkinPaintColor getOrDefault(Direction dir, ISkinPaintColor defaultValue) {
         if (paintColor != null) {
             return paintColor;
         }
@@ -92,7 +93,7 @@ public class BlockPaintColor implements IBlockPaintColor {
         return defaultValue;
     }
 
-    public Collection<IPaintColor> values() {
+    public Collection<ISkinPaintColor> values() {
         if (paintColor != null) {
             return Collections.singleton(paintColor);
         }
@@ -132,7 +133,7 @@ public class BlockPaintColor implements IBlockPaintColor {
             return;
         }
         int total = 0;
-        IPaintColor lastColor = null;
+        ISkinPaintColor lastColor = null;
         for (var paintColor : this.paintColors.values()) {
             if (lastColor != null && !lastColor.equals(paintColor)) {
                 return;
@@ -146,8 +147,8 @@ public class BlockPaintColor implements IBlockPaintColor {
         }
     }
 
-    private EnumMap<Side, IPaintColor> getPaintColors(IPaintColor paintColor) {
-        var paintColors = new EnumMap<Side, IPaintColor>(Side.class);
+    private EnumMap<Side, ISkinPaintColor> getPaintColors(ISkinPaintColor paintColor) {
+        var paintColors = new EnumMap<Side, ISkinPaintColor>(Side.class);
         if (paintColor != null) {
             for (var side : Side.values()) {
                 paintColors.put(side, paintColor);
@@ -174,7 +175,12 @@ public class BlockPaintColor implements IBlockPaintColor {
         }
 
         public static Side of(Direction direction) {
-            return values()[direction.ordinal()];
+            for (var value : values()) {
+                if (value.direction == direction) {
+                    return value;
+                }
+            }
+            return Side.DOWN;
         }
 
         public static String fullyName() {

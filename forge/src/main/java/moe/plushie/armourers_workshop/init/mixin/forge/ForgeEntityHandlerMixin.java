@@ -2,7 +2,7 @@ package moe.plushie.armourers_workshop.init.mixin.forge;
 
 import moe.plushie.armourers_workshop.api.common.IEntityHandler;
 import moe.plushie.armourers_workshop.compatibility.forge.AbstractForgeEntity;
-import moe.plushie.armourers_workshop.utils.ObjectUtils;
+import moe.plushie.armourers_workshop.core.utils.Objects;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.HitResult;
 import org.spongepowered.asm.mixin.Mixin;
@@ -12,7 +12,7 @@ public interface ForgeEntityHandlerMixin extends AbstractForgeEntity {
 
     @Override
     default ItemStack getPickedResult(HitResult target) {
-        IEntityHandler handler = ObjectUtils.unsafeCast(this);
+        IEntityHandler handler = Objects.unsafeCast(this);
         return handler.getCustomPickResult(target);
     }
 }

@@ -9,8 +9,8 @@ import com.apple.library.uikit.UIControl;
 import com.apple.library.uikit.UIEvent;
 import com.apple.library.uikit.UIImage;
 import com.apple.library.uikit.UIScreen;
+import moe.plushie.armourers_workshop.core.math.OpenMath;
 import moe.plushie.armourers_workshop.init.ModTextures;
-import moe.plushie.armourers_workshop.utils.MathUtils;
 import moe.plushie.armourers_workshop.utils.RenderSystem;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -101,7 +101,7 @@ public class HSBSliderBox extends UIControl {
         var point = event.locationInView(this);
         var rect = bounds().insetBy(1, 1, 1, 1);
         double value = ((double) point.x - rect.x) / rect.width;
-        values[type.ordinal()] = MathUtils.clamp((float) value, 0f, 1f);
+        values[type.ordinal()] = OpenMath.clamp((float) value, 0f, 1f);
         valueDidChange();
     }
 
