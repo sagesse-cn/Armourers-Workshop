@@ -1,24 +1,48 @@
 package moe.plushie.armourers_workshop.core.skin.paint.texture;
 
 import moe.plushie.armourers_workshop.api.skin.paint.texture.ITextureProperties;
+import moe.plushie.armourers_workshop.core.skin.property.SkinProperties;
+import moe.plushie.armourers_workshop.core.skin.property.SkinProperty;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IInputStream;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IOutputStream;
+import moe.plushie.armourers_workshop.core.utils.Objects;
 
 import java.io.IOException;
-import java.util.StringJoiner;
 
 public class TextureProperties implements ITextureProperties {
 
     public static final TextureProperties EMPTY = new TextureProperties();
 
+    public static final SkinProperty<String> NAME_KEY = SkinProperty.normal("name", "");
+
     private int flags = 0;
+    private final SkinProperties storage = new SkinProperties();
+
+    public TextureProperties() {
+        super();
+    }
 
     public void readFromStream(IInputStream stream) throws IOException {
-        this.flags = stream.readInt();
+        flags = stream.readInt();
+        if (getFlag(31)) {
+            storage.readFromStream(stream);
+        }
     }
 
     public void writeToStream(IOutputStream stream) throws IOException {
+        setFlag(31, !storage.isEmpty());
         stream.writeInt(flags);
+        if (getFlag(31)) {
+            storage.writeToStream(stream);
+        }
+    }
+
+    public void setName(String name) {
+        storage.put(NAME_KEY, name);
+    }
+
+    public String getName() {
+        return storage.get(NAME_KEY);
     }
 
     public void setEmissive(boolean isEmissive) {
@@ -59,32 +83,32 @@ public class TextureProperties implements ITextureProperties {
 
     @Override
     public String toString() {
-        var joiner = new StringJoiner(", ", "[", "]");
+        var properties = storage.copy();
         if (isEmissive()) {
-            joiner.add("Emissive");
+            properties.put("isEmissive", true);
         }
         if (isParticle()) {
-            joiner.add("Particle");
+            properties.put("isParticle", true);
         }
         if (isNormal()) {
-            joiner.add("Normal");
+            properties.put("isNormal", true);
         }
         if (isSpecular()) {
-            joiner.add("Specular");
+            properties.put("isSpecular", true);
         }
-        return joiner.toString();
+        return properties.toString();
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof TextureProperties that)) return false;
-        return flags == that.flags;
+        return flags == that.flags && storage.equals(that.storage);
     }
 
     @Override
     public int hashCode() {
-        return flags;
+        return Objects.hash(flags, storage);
     }
 
     private void setFlag(int bit, boolean value) {

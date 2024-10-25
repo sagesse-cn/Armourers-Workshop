@@ -3,6 +3,7 @@ package moe.plushie.armourers_workshop.core.skin.paint.texture;
 import moe.plushie.armourers_workshop.api.skin.paint.texture.ITextureOptions;
 import moe.plushie.armourers_workshop.api.skin.paint.texture.ITexturePos;
 import moe.plushie.armourers_workshop.api.skin.paint.texture.ITextureProvider;
+import moe.plushie.armourers_workshop.core.math.Vector2i;
 import moe.plushie.armourers_workshop.core.utils.Objects;
 import org.jetbrains.annotations.Nullable;
 
@@ -93,5 +94,10 @@ public class TexturePos implements ITexturePos {
     @Override
     public int hashCode() {
         return Objects.hash(u, v, width, height, totalWidth, totalHeight, options);
+    }
+
+    @Override
+    public String toString() {
+        return Objects.toString(this, "uv", new Vector2i(u, v), "size", new Vector2i(width, height), "total", new Vector2i(totalWidth, totalHeight), "options", options);
     }
 }
