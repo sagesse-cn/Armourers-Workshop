@@ -60,14 +60,14 @@ public class HolidayTracker extends AbstractSavedData {
     @Override
     public void serialize(IDataSerializer serializer) {
         var prefix = calendar.get(Calendar.YEAR) + ":";
-        var logs = new ArrayList<String>();
+        var filteredLogs = new ArrayList<String>();
         for (var log : logs) {
             // ignore more than 1 year ago the logs
             if (log.startsWith(prefix)) {
-                logs.add(log);
+                filteredLogs.add(log);
             }
         }
-        serializer.write(LOG_KEY, logs);
+        serializer.write(LOG_KEY, filteredLogs);
     }
 
     private String getKey(Player player, Holiday holiday) {
