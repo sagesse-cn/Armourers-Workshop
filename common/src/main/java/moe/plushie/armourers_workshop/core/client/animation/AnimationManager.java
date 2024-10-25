@@ -167,7 +167,7 @@ public class AnimationManager {
         }
     }
 
-    public class Entry extends AnimationContext {
+    protected class Entry extends AnimationContext {
 
         protected final List<AnimationController> animationControllers;
         protected final List<TriggerableController> triggerableControllers = new ArrayList<>();
@@ -276,7 +276,7 @@ public class AnimationManager {
             playing = newValue;
 
             // TODO: @SAGESSE Add transition duration support.
-            var duration = 0.25f;
+            var duration = newValue.getTransitionDuration();
             applyTransiting(fromAnimationController, toAnimationController, time, speed, duration);
         }
 
@@ -362,7 +362,7 @@ public class AnimationManager {
         }
     }
 
-    public static class TriggerableController {
+    protected static class TriggerableController {
 
         private final String name;
         private final EntityActionTarget target;
@@ -393,6 +393,10 @@ public class AnimationManager {
 
         public double getPriority() {
             return target.getPriority();
+        }
+
+        public float getTransitionDuration() {
+            return target.getTransitionDuration();
         }
 
         public int getPlayCount() {
