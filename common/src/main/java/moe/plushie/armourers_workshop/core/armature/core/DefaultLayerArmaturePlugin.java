@@ -20,12 +20,14 @@ import java.util.function.Supplier;
 
 public abstract class DefaultLayerArmaturePlugin extends ArmaturePlugin {
 
-    private ArmatureTransformerContext context;
+    private IModel entityModel;
+    private EntityRenderer<?> entityRenderer;
 
     protected final ArrayList<Applier<?, ?>> applying = new ArrayList<>();
 
     public DefaultLayerArmaturePlugin(ArmatureTransformerContext context) {
-        this.context = context;
+        context.addEntityModelListener(entityModel -> this.entityModel = entityModel);
+        context.addEntityRendererListener(entityRenderer -> this.entityRenderer = entityRenderer);
     }
 
     public static DefaultLayerArmaturePlugin any(ArmatureTransformerContext context) {
@@ -84,17 +86,18 @@ public abstract class DefaultLayerArmaturePlugin extends ArmaturePlugin {
     @Override
     public boolean freeze() {
         // when requires to freeze, we need to attach the layer to the renderer.
-        if (context != null) {
-            apply(context.getEntityModel(), context.getEntityRenderer());
-            context = null;
+        if (entityModel != null && entityRenderer != null) {
+            buildRules(entityModel, entityRenderer);
+            entityModel = null;
+            entityRenderer = null;
         }
         return !applying.isEmpty();
     }
 
-    private void apply(IModel entityModel, EntityRenderer<?> entityRenderer) {
+    private void buildRules(IModel entityModel, EntityRenderer<?> entityRenderer) {
         // bind layer to renderer.
         if (entityRenderer instanceof LivingEntityRenderer<?, ?> livingEntityRenderer) {
-            apply(livingEntityRenderer);
+            buildRules(livingEntityRenderer);
         }
         // bind the entity model to tester.
         if (entityModel != null) {
@@ -103,7 +106,7 @@ public abstract class DefaultLayerArmaturePlugin extends ArmaturePlugin {
         }
     }
 
-    private <T extends LivingEntity, M extends EntityModel<T>> void apply(LivingEntityRenderer<T, M> entityRenderer) {
+    private <T extends LivingEntity, M extends EntityModel<T>> void buildRules(LivingEntityRenderer<T, M> entityRenderer) {
         for (var layer : entityRenderer.layers) {
             var entry = search(layer);
             if (entry == null) {

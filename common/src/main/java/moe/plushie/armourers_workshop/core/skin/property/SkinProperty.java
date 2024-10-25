@@ -129,6 +129,11 @@ public class SkinProperty<T> implements ISkinProperty<T> {
         return key.hashCode();
     }
 
+    @Override
+    public String toString() {
+        return key;
+    }
+
     public enum MovementType {
         EASE,
         LINEAR
