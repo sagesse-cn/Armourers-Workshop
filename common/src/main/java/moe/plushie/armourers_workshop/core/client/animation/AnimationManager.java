@@ -176,6 +176,7 @@ public class AnimationManager {
 
         protected TriggerableController playing;
         protected boolean isLocking;
+        protected boolean isFirstTransitionAnimation = true;
 
         public Entry(BakedSkin skin) {
             super(skin.getAnimationContext());
@@ -298,6 +299,11 @@ public class AnimationManager {
         }
 
         private void applyTransiting(AnimationController fromAnimationController, AnimationController toAnimationController, float time, float speed, float duration) {
+            // we need to ignore the first transition animation, because have some very strange effects.
+            if (isFirstTransitionAnimation) {
+                isFirstTransitionAnimation = false;
+                return;
+            }
             // delay the animation start time.
             var playState = playStates.get(toAnimationController);
             if (playState != null) {
