@@ -1,6 +1,6 @@
 package moe.plushie.armourers_workshop.core.capability;
 
-import moe.plushie.armourers_workshop.core.data.slot.SkinSlotType;
+import moe.plushie.armourers_workshop.core.menu.SkinSlotType;
 import moe.plushie.armourers_workshop.core.skin.SkinDescriptor;
 import moe.plushie.armourers_workshop.core.skin.SkinLoader;
 import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintScheme;

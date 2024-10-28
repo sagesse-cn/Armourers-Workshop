@@ -16,7 +16,7 @@ public class SkinPaintColor implements ISkinPaintColor {
             .maximumSize(2048)
             .build();
 
-    public static final IDataCodec<SkinPaintColor> CODEC = IDataCodec.INT.either(IDataCodec.STRING, SkinPaintColor::parseColor).xmap(SkinPaintColor::of, ISkinPaintColor::getRawValue);
+    public static final IDataCodec<SkinPaintColor> CODEC = IDataCodec.INT.alternative(IDataCodec.STRING, SkinPaintColor::parseColor).xmap(SkinPaintColor::of, ISkinPaintColor::getRawValue);
 
     protected final int value;
     protected final int rgb;

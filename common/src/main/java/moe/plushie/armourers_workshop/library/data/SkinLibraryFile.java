@@ -1,16 +1,15 @@
 package moe.plushie.armourers_workshop.library.data;
 
 import moe.plushie.armourers_workshop.api.library.ISkinLibrary;
-import moe.plushie.armourers_workshop.api.skin.serializer.ISkinFileHeader;
 import moe.plushie.armourers_workshop.api.skin.ISkinType;
 import moe.plushie.armourers_workshop.api.skin.property.ISkinProperties;
 import moe.plushie.armourers_workshop.core.data.DataDomain;
 import moe.plushie.armourers_workshop.core.skin.SkinTypes;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperty;
+import moe.plushie.armourers_workshop.core.skin.serializer.SkinFileHeader;
 import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.core.utils.Constants;
 import moe.plushie.armourers_workshop.core.utils.FileUtils;
-import org.apache.logging.log4j.util.Strings;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -20,7 +19,7 @@ public class SkinLibraryFile implements Comparable<SkinLibraryFile>, ISkinLibrar
     protected final String name;
     protected final String path;
     protected final DataDomain domain;
-    protected final ISkinFileHeader header;
+    protected final SkinFileHeader header;
     protected final boolean isDirectory;
     protected final boolean isPrivateDirectory;
 
@@ -35,7 +34,7 @@ public class SkinLibraryFile implements Comparable<SkinLibraryFile>, ISkinLibrar
         this.isPrivateDirectory = domain.equals(DataDomain.DEDICATED_SERVER) && path.startsWith(Constants.PRIVATE);
     }
 
-    public SkinLibraryFile(DataDomain domain, String name, String path, ISkinFileHeader header) {
+    public SkinLibraryFile(DataDomain domain, String name, String path, SkinFileHeader header) {
         this.name = name;
         this.path = FileUtils.normalize(path, true);
         this.domain = domain;
@@ -114,7 +113,7 @@ public class SkinLibraryFile implements Comparable<SkinLibraryFile>, ISkinLibrar
     }
 
     @Override
-    public ISkinFileHeader getSkinHeader() {
+    public SkinFileHeader getSkinHeader() {
         return header;
     }
 
@@ -185,7 +184,7 @@ public class SkinLibraryFile implements Comparable<SkinLibraryFile>, ISkinLibrar
             values.add(properties.get(SkinProperty.ALL_FLAVOUR_TEXT));
         }
         searchableContentList = Collections.compactMap(values, s -> {
-            if (Strings.isNotBlank(s)) {
+            if (!s.isEmpty()) {
                 return s.toLowerCase();
             }
             return null;

@@ -1,9 +1,13 @@
 package moe.plushie.armourers_workshop.core.entity;
 
+import moe.plushie.armourers_workshop.api.core.IDataCodec;
+import moe.plushie.armourers_workshop.api.core.IDataSerializable;
+import moe.plushie.armourers_workshop.api.core.IDataSerializer;
+import moe.plushie.armourers_workshop.api.core.IDataSerializerKey;
 import moe.plushie.armourers_workshop.compatibility.core.AbstractLivingEntity;
 import moe.plushie.armourers_workshop.core.blockentity.SkinnableBlockEntity;
+import moe.plushie.armourers_workshop.core.utils.TagSerializer;
 import moe.plushie.armourers_workshop.init.ModConfig;
-import moe.plushie.armourers_workshop.core.utils.Constants;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
@@ -18,7 +22,7 @@ import net.minecraft.world.phys.Vec3;
 
 import java.util.Collections;
 
-public class SeatEntity extends AbstractLivingEntity {
+public class SeatEntity extends AbstractLivingEntity implements IDataSerializable.Mutable {
 
     private int holdingTick;
     private BlockPos blockPos = BlockPos.ZERO;
@@ -33,13 +37,23 @@ public class SeatEntity extends AbstractLivingEntity {
     @Override
     public void readAdditionalSaveData(CompoundTag tag) {
         super.readAdditionalSaveData(tag);
-        this.blockPos = tag.getOptionalBlockPos(Constants.Key.BLOCK_ENTITY_REFER, BlockPos.ZERO);
+        this.deserialize(new TagSerializer(tag));
     }
 
     @Override
     public void addAdditionalSaveData(CompoundTag tag) {
         super.addAdditionalSaveData(tag);
-        tag.putOptionalBlockPos(Constants.Key.BLOCK_ENTITY_REFER, blockPos, BlockPos.ZERO);
+        this.serialize(new TagSerializer(tag));
+    }
+
+    @Override
+    public void serialize(IDataSerializer serializer) {
+        serializer.write(CodingKeys.REFER, blockPos);
+    }
+
+    @Override
+    public void deserialize(IDataSerializer serializer) {
+        blockPos = serializer.read(CodingKeys.REFER);
     }
 
     @Override
@@ -51,9 +65,9 @@ public class SeatEntity extends AbstractLivingEntity {
     }
 
     @Override
-    public void travel(Vec3 p_213352_1_) {
+    public void travel(Vec3 local) {
         if (isAlive() && !getPassengers().isEmpty()) {
-            Entity passenger = getPassengers().get(0);
+            var passenger = getPassengers().get(0);
             this.setYBodyRot(passenger.getYRot());
         }
     }
@@ -157,5 +171,11 @@ public class SeatEntity extends AbstractLivingEntity {
 
     public void setBlockPos(BlockPos blockPos) {
         this.blockPos = blockPos;
+    }
+
+
+    private static class CodingKeys {
+
+        public static final IDataSerializerKey<BlockPos> REFER = IDataSerializerKey.create("Refer", IDataCodec.BLOCK_POS, BlockPos.ZERO);
     }
 }

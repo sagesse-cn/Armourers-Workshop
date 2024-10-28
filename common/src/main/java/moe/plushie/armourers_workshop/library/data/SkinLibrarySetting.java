@@ -1,11 +1,16 @@
 package moe.plushie.armourers_workshop.library.data;
 
-import net.minecraft.nbt.CompoundTag;
+import moe.plushie.armourers_workshop.api.core.IDataCodec;
+import moe.plushie.armourers_workshop.api.core.IDataSerializable;
+import moe.plushie.armourers_workshop.api.core.IDataSerializer;
+import moe.plushie.armourers_workshop.api.core.IDataSerializerKey;
 import net.minecraft.world.entity.player.Player;
 
-public class SkinLibrarySetting {
+public class SkinLibrarySetting implements IDataSerializable.Immutable {
 
     public static final SkinLibrarySetting DEFAULT = new SkinLibrarySetting();
+
+    public static final IDataCodec<SkinLibrarySetting> CODEC = IDataCodec.COMPOUND_TAG.serializer(SkinLibrarySetting::new);
 
     private final int flags;
     private final String publicKey;
@@ -31,9 +36,15 @@ public class SkinLibrarySetting {
         this.publicKey = manager.getPublicKey();
     }
 
-    public SkinLibrarySetting(CompoundTag tag) {
-        this.flags = tag.getOptionalInt("Flags", 0);
-        this.publicKey = tag.getOptionalString("PublicKey", null);
+    public SkinLibrarySetting(IDataSerializer serializer) {
+        this.flags = serializer.read(CodingKeys.FLAGS);
+        this.publicKey = serializer.read(CodingKeys.PUBLIC_KEY);
+    }
+
+    @Override
+    public void serialize(IDataSerializer serializer) {
+        serializer.write(CodingKeys.FLAGS, flags);
+        serializer.write(CodingKeys.PUBLIC_KEY, publicKey);
     }
 
     public boolean allowsUpload() {
@@ -52,10 +63,9 @@ public class SkinLibrarySetting {
         return publicKey;
     }
 
-    public CompoundTag serializeNBT() {
-        var tag = new CompoundTag();
-        tag.putOptionalInt("Flags", flags, 0);
-        tag.putOptionalString("PublicKey", publicKey, null);
-        return tag;
+    private static class CodingKeys {
+
+        public static final IDataSerializerKey<Integer> FLAGS = IDataSerializerKey.create("Flags", IDataCodec.INT, 0);
+        public static final IDataSerializerKey<String> PUBLIC_KEY = IDataSerializerKey.create("PublicKey", IDataCodec.STRING, null);
     }
 }

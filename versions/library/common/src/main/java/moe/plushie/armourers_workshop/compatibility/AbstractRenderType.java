@@ -266,7 +266,8 @@ public class AbstractRenderType extends RenderType {
 
         @Override
         public RenderType build(String name) {
-            var renderType = RenderType.create(name, format, mode, 256, affectsCrumbling, sortOnUpload, stateBuilder.createCompositeState(isOutline));
+            // NOTE: don't use var !!!!
+            RenderType renderType = RenderType.create(name, format, mode, 256, affectsCrumbling, sortOnUpload, stateBuilder.createCompositeState(isOutline));
             updater.forEach(it -> it.accept(renderType));
             return renderType;
         }

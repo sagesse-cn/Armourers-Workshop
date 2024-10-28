@@ -243,12 +243,6 @@ public class DataSerializers {
         return AbstractEntityDataSerializer.wrap(serializer);
     }
 
-    public static void mirrorRotations(CompoundTag source, String sourceKey, Rotations sourceDefaultValue, CompoundTag target, String targetKey, Rotations targetDefaultValue) {
-        Rotations rot = source.getOptionalRotations(sourceKey, sourceDefaultValue);
-        rot = new Rotations(rot.getX(), -rot.getY(), -rot.getZ());
-        target.putOptionalRotations(targetKey, rot, targetDefaultValue);
-    }
-
     public static GameProfile readGameProfile(CompoundTag tag) {
         String name = null;
         UUID id = null;

@@ -1,4 +1,4 @@
-package moe.plushie.armourers_workshop.core.data.slot;
+package moe.plushie.armourers_workshop.core.menu;
 
 import com.mojang.datafixers.util.Pair;
 import moe.plushie.armourers_workshop.core.utils.Collections;

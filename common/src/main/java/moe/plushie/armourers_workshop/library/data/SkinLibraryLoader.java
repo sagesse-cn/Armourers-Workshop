@@ -1,7 +1,6 @@
 package moe.plushie.armourers_workshop.library.data;
 
 import moe.plushie.armourers_workshop.api.library.ISkinLibraryListener;
-import moe.plushie.armourers_workshop.api.skin.serializer.ISkinFileHeader;
 import moe.plushie.armourers_workshop.core.skin.serializer.SkinFileHeader;
 import moe.plushie.armourers_workshop.core.skin.serializer.SkinSerializer;
 import moe.plushie.armourers_workshop.core.utils.Constants;
@@ -74,7 +73,7 @@ public class SkinLibraryLoader implements Runnable {
         return fileList;
     }
 
-    private ISkinFileHeader getSkinFileHeader(File file) {
+    private SkinFileHeader getSkinFileHeader(File file) {
         var key = file.getAbsolutePath();
         var cache = CACHED_FILE_HEADERS.get(key);
         var modifiedTime = file.lastModified();
@@ -109,9 +108,9 @@ public class SkinLibraryLoader implements Runnable {
     public static class CachedFileHeader {
 
         private final long modifiedTime;
-        private final ISkinFileHeader header;
+        private final SkinFileHeader header;
 
-        public CachedFileHeader(long modifiedTime, ISkinFileHeader header) {
+        public CachedFileHeader(long modifiedTime, SkinFileHeader header) {
             this.modifiedTime = modifiedTime;
             this.header = header;
         }
@@ -120,7 +119,7 @@ public class SkinLibraryLoader implements Runnable {
             return this.modifiedTime == modifiedTime;
         }
 
-        public ISkinFileHeader getHeader() {
+        public SkinFileHeader getHeader() {
             return header;
         }
     }

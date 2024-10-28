@@ -6,10 +6,11 @@ import moe.plushie.armourers_workshop.api.core.IDataCodec;
 import moe.plushie.armourers_workshop.api.core.IDataSerializable;
 import moe.plushie.armourers_workshop.api.core.IDataSerializer;
 import moe.plushie.armourers_workshop.api.core.IDataSerializerKey;
-import moe.plushie.armourers_workshop.core.skin.paint.texture.EntityTextureDescriptor;
 import moe.plushie.armourers_workshop.compatibility.core.AbstractLivingEntity;
 import moe.plushie.armourers_workshop.core.capability.SkinWardrobe;
 import moe.plushie.armourers_workshop.core.item.option.MannequinToolOptions;
+import moe.plushie.armourers_workshop.core.skin.paint.texture.EntityTextureDescriptor;
+import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.core.utils.Constants;
 import moe.plushie.armourers_workshop.core.utils.TagSerializer;
 import moe.plushie.armourers_workshop.init.ModDataComponents;
@@ -18,7 +19,6 @@ import moe.plushie.armourers_workshop.init.ModEntityTypes;
 import moe.plushie.armourers_workshop.init.ModItems;
 import moe.plushie.armourers_workshop.init.ModMenuTypes;
 import moe.plushie.armourers_workshop.init.environment.EnvironmentExecutorIO;
-import moe.plushie.armourers_workshop.utils.DataSerializers;
 import moe.plushie.armourers_workshop.utils.TrigUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -308,23 +308,24 @@ public class MannequinEntity extends AbstractLivingEntity.ArmorStand implements 
     }
 
     public CompoundTag saveCustomPose() {
-        CompoundTag tag = new CompoundTag();
-        tag.putOptionalRotations(Constants.Key.ENTITY_POSE_HEAD, entityData.get(DATA_HEAD_POSE), DEFAULT_HEAD_POSE);
-        tag.putOptionalRotations(Constants.Key.ENTITY_POSE_BODY, entityData.get(DATA_BODY_POSE), DEFAULT_BODY_POSE);
-        tag.putOptionalRotations(Constants.Key.ENTITY_POSE_LEFT_ARM, entityData.get(DATA_LEFT_ARM_POSE), DEFAULT_LEFT_ARM_POSE);
-        tag.putOptionalRotations(Constants.Key.ENTITY_POSE_RIGHT_ARM, entityData.get(DATA_RIGHT_ARM_POSE), DEFAULT_RIGHT_ARM_POSE);
-        tag.putOptionalRotations(Constants.Key.ENTITY_POSE_LEFT_LEG, entityData.get(DATA_LEFT_LEG_POSE), DEFAULT_LEFT_LEG_POSE);
-        tag.putOptionalRotations(Constants.Key.ENTITY_POSE_RIGHT_LEG, entityData.get(DATA_RIGHT_LEG_POSE), DEFAULT_RIGHT_LEG_POSE);
-        return tag;
+        var serializer = new TagSerializer();
+        serializer.write(CodingKeys.POSE_HEAD, entityData.get(DATA_HEAD_POSE));
+        serializer.write(CodingKeys.POSE_BODY, entityData.get(DATA_BODY_POSE));
+        serializer.write(CodingKeys.POSE_LEFT_ARM, entityData.get(DATA_LEFT_ARM_POSE));
+        serializer.write(CodingKeys.POSE_RIGHT_ARM, entityData.get(DATA_RIGHT_ARM_POSE));
+        serializer.write(CodingKeys.POSE_LEFT_LEG, entityData.get(DATA_LEFT_LEG_POSE));
+        serializer.write(CodingKeys.POSE_RIGHT_LEG, entityData.get(DATA_RIGHT_LEG_POSE));
+        return serializer.getTag();
     }
 
     public void readCustomPose(CompoundTag tag) {
-        this.setHeadPose(tag.getOptionalRotations(Constants.Key.ENTITY_POSE_HEAD, DEFAULT_HEAD_POSE));
-        this.setBodyPose(tag.getOptionalRotations(Constants.Key.ENTITY_POSE_BODY, DEFAULT_BODY_POSE));
-        this.setLeftArmPose(tag.getOptionalRotations(Constants.Key.ENTITY_POSE_LEFT_ARM, DEFAULT_LEFT_ARM_POSE));
-        this.setRightArmPose(tag.getOptionalRotations(Constants.Key.ENTITY_POSE_RIGHT_ARM, DEFAULT_RIGHT_ARM_POSE));
-        this.setLeftLegPose(tag.getOptionalRotations(Constants.Key.ENTITY_POSE_LEFT_LEG, DEFAULT_LEFT_LEG_POSE));
-        this.setRightLegPose(tag.getOptionalRotations(Constants.Key.ENTITY_POSE_RIGHT_LEG, DEFAULT_RIGHT_LEG_POSE));
+        var serializer = new TagSerializer(tag);
+        setHeadPose(serializer.read(CodingKeys.POSE_HEAD));
+        setBodyPose(serializer.read(CodingKeys.POSE_BODY));
+        setLeftArmPose(serializer.read(CodingKeys.POSE_LEFT_ARM));
+        setRightArmPose(serializer.read(CodingKeys.POSE_RIGHT_ARM));
+        setLeftLegPose(serializer.read(CodingKeys.POSE_LEFT_LEG));
+        setRightLegPose(serializer.read(CodingKeys.POSE_RIGHT_LEG));
     }
 
     public void saveMannequinToolData(CompoundTag entityTag) {
@@ -335,34 +336,34 @@ public class MannequinEntity extends AbstractLivingEntity.ArmorStand implements 
         CompoundTag newEntityTag = new CompoundTag();
         if (itemStack.get(MannequinToolOptions.CHANGE_OPTION)) {
             newEntityTag.merge(entityTag);
-            newEntityTag.remove(Constants.Key.ENTITY_SCALE);
-            newEntityTag.remove(Constants.Key.ENTITY_POSE);
-            newEntityTag.remove(Constants.Key.ENTITY_TEXTURE);
+            newEntityTag.remove(CodingKeys.SCALE.getName());
+            newEntityTag.remove(CodingKeys.POSE.getName());
+            newEntityTag.remove(CodingKeys.TEXTURE.getName());
         }
         if (itemStack.get(MannequinToolOptions.CHANGE_SCALE)) {
-            var oldValue = entityTag.get(Constants.Key.ENTITY_SCALE);
+            var oldValue = entityTag.get(CodingKeys.SCALE.getName());
             if (oldValue != null) {
-                newEntityTag.put(Constants.Key.ENTITY_SCALE, oldValue);
+                newEntityTag.put(CodingKeys.SCALE.getName(), oldValue);
             }
         }
         if (itemStack.get(MannequinToolOptions.CHANGE_ROTATION)) {
-            var oldValue = entityTag.getCompound(Constants.Key.ENTITY_POSE);
+            var oldValue = entityTag.getCompound(CodingKeys.POSE.getName());
             if (itemStack.get(MannequinToolOptions.MIRROR_MODE) && !oldValue.isEmpty()) {
-                CompoundTag newPoseTag = oldValue.copy();
-                DataSerializers.mirrorRotations(oldValue, Constants.Key.ENTITY_POSE_HEAD, DEFAULT_HEAD_POSE, newPoseTag, Constants.Key.ENTITY_POSE_HEAD, DEFAULT_HEAD_POSE);
-                DataSerializers.mirrorRotations(oldValue, Constants.Key.ENTITY_POSE_BODY, DEFAULT_BODY_POSE, newPoseTag, Constants.Key.ENTITY_POSE_BODY, DEFAULT_BODY_POSE);
-                DataSerializers.mirrorRotations(oldValue, Constants.Key.ENTITY_POSE_RIGHT_ARM, DEFAULT_RIGHT_ARM_POSE, newPoseTag, Constants.Key.ENTITY_POSE_LEFT_ARM, DEFAULT_LEFT_ARM_POSE);
-                DataSerializers.mirrorRotations(oldValue, Constants.Key.ENTITY_POSE_LEFT_ARM, DEFAULT_LEFT_ARM_POSE, newPoseTag, Constants.Key.ENTITY_POSE_RIGHT_ARM, DEFAULT_RIGHT_ARM_POSE);
-                DataSerializers.mirrorRotations(oldValue, Constants.Key.ENTITY_POSE_RIGHT_LEG, DEFAULT_RIGHT_LEG_POSE, newPoseTag, Constants.Key.ENTITY_POSE_LEFT_LEG, DEFAULT_LEFT_LEG_POSE);
-                DataSerializers.mirrorRotations(oldValue, Constants.Key.ENTITY_POSE_LEFT_LEG, DEFAULT_LEFT_LEG_POSE, newPoseTag, Constants.Key.ENTITY_POSE_RIGHT_LEG, DEFAULT_RIGHT_LEG_POSE);
-                oldValue = newPoseTag;
+                var poseSerializer = new TagSerializer(oldValue.copy());
+                poseSerializer.write(CodingKeys.POSE_HEAD, EntityData.mirror(poseSerializer.read(CodingKeys.POSE_HEAD)));
+                poseSerializer.write(CodingKeys.POSE_BODY, EntityData.mirror(poseSerializer.read(CodingKeys.POSE_BODY)));
+                poseSerializer.write(CodingKeys.POSE_LEFT_ARM, EntityData.mirror(poseSerializer.read(CodingKeys.POSE_LEFT_ARM)));
+                poseSerializer.write(CodingKeys.POSE_RIGHT_ARM, EntityData.mirror(poseSerializer.read(CodingKeys.POSE_RIGHT_ARM)));
+                poseSerializer.write(CodingKeys.POSE_LEFT_LEG, EntityData.mirror(poseSerializer.read(CodingKeys.POSE_LEFT_LEG)));
+                poseSerializer.write(CodingKeys.POSE_RIGHT_LEG, EntityData.mirror(poseSerializer.read(CodingKeys.POSE_RIGHT_LEG)));
+                oldValue = poseSerializer.getTag();
             }
-            newEntityTag.put(Constants.Key.ENTITY_POSE, oldValue);
+            newEntityTag.put(CodingKeys.POSE.getName(), oldValue);
         }
         if (itemStack.get(MannequinToolOptions.CHANGE_TEXTURE)) {
-            var oldValue = entityTag.get(Constants.Key.ENTITY_TEXTURE);
+            var oldValue = entityTag.get(CodingKeys.TEXTURE.getName());
             if (oldValue != null) {
-                newEntityTag.put(Constants.Key.ENTITY_TEXTURE, oldValue);
+                newEntityTag.put(CodingKeys.TEXTURE.getName(), oldValue);
             }
         }
         // load into entity
@@ -379,9 +380,18 @@ public class MannequinEntity extends AbstractLivingEntity.ArmorStand implements 
         public static final IDataSerializerKey<Float> SCALE = IDataSerializerKey.create("Scale", IDataCodec.FLOAT, 1.0f);
         public static final IDataSerializerKey<EntityTextureDescriptor> TEXTURE = IDataSerializerKey.create("Texture", EntityTextureDescriptor.CODEC, EntityTextureDescriptor.EMPTY);
         public static final IDataSerializerKey<CompoundTag> POSE = IDataSerializerKey.create("Pose", IDataCodec.COMPOUND_TAG, new CompoundTag());
+
+        public static final IDataSerializerKey<Rotations> POSE_HEAD = IDataSerializerKey.create("Head", EntityData.ROTATIONS_CODEC, DEFAULT_HEAD_POSE);
+        public static final IDataSerializerKey<Rotations> POSE_BODY = IDataSerializerKey.create("Body", EntityData.ROTATIONS_CODEC, DEFAULT_BODY_POSE);
+        public static final IDataSerializerKey<Rotations> POSE_LEFT_ARM = IDataSerializerKey.create("LeftArm", EntityData.ROTATIONS_CODEC, DEFAULT_LEFT_ARM_POSE);
+        public static final IDataSerializerKey<Rotations> POSE_RIGHT_ARM = IDataSerializerKey.create("RightArm", EntityData.ROTATIONS_CODEC, DEFAULT_RIGHT_ARM_POSE);
+        public static final IDataSerializerKey<Rotations> POSE_LEFT_LEG = IDataSerializerKey.create("LeftLeg", EntityData.ROTATIONS_CODEC, DEFAULT_LEFT_LEG_POSE);
+        public static final IDataSerializerKey<Rotations> POSE_RIGHT_LEG = IDataSerializerKey.create("RightLeg", EntityData.ROTATIONS_CODEC, DEFAULT_RIGHT_LEG_POSE);
     }
 
     public static class EntityData {
+
+        private static final IDataCodec<Rotations> ROTATIONS_CODEC = IDataCodec.FLOAT.listOf().xmap(it -> new Rotations(it.get(0), it.get(1), it.get(1)), it -> Collections.newList(it.getX(), it.getY(), it.getZ()));
 
         private final TagSerializer serializer;
 
@@ -391,6 +401,10 @@ public class MannequinEntity extends AbstractLivingEntity.ArmorStand implements 
 
         public EntityData(CompoundTag tag) {
             this.serializer = new TagSerializer(tag);
+        }
+
+        private static Rotations mirror(Rotations rot) {
+            return new Rotations(rot.getX(), -rot.getY(), -rot.getZ());
         }
 
         public void setScale(float scale) {

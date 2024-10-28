@@ -4,8 +4,6 @@ import moe.plushie.armourers_workshop.api.common.IGlobalPos;
 import moe.plushie.armourers_workshop.api.skin.paint.ISkinDyeType;
 import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintType;
 import moe.plushie.armourers_workshop.core.blockentity.DyeTableBlockEntity;
-import moe.plushie.armourers_workshop.core.data.slot.SkinSlot;
-import moe.plushie.armourers_workshop.core.data.slot.SkinSlotType;
 import moe.plushie.armourers_workshop.core.item.BottleItem;
 import moe.plushie.armourers_workshop.core.skin.SkinDescriptor;
 import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;

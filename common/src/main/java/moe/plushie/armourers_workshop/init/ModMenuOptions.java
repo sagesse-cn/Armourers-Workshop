@@ -38,7 +38,10 @@ public class ModMenuOptions {
     }
 
     public String getString(String key, String defaultValue) {
-        return values.getOptionalString(key, defaultValue);
+        if (values.contains(key)) {
+            return values.getString(key);
+        }
+        return defaultValue;
     }
 
     public void putInt(String key, int value) {
@@ -51,7 +54,10 @@ public class ModMenuOptions {
     }
 
     public int getInt(String key, int defaultValue) {
-        return values.getOptionalInt(key, defaultValue);
+        if (values.contains(key)) {
+            return values.getInt(key);
+        }
+        return defaultValue;
     }
 
     public void putBoolean(String key, boolean value) {
@@ -60,7 +66,10 @@ public class ModMenuOptions {
     }
 
     public boolean getBoolean(String key, boolean defaultValue) {
-        return values.getOptionalBoolean(key, defaultValue);
+        if (values.contains(key)) {
+            return values.getBoolean(key);
+        }
+        return defaultValue;
     }
 
     public void putTag(String key, CompoundTag tag) {

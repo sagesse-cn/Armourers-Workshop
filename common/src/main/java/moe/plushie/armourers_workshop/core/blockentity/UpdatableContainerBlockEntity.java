@@ -1,7 +1,7 @@
 package moe.plushie.armourers_workshop.core.blockentity;
 
 import moe.plushie.armourers_workshop.api.common.IHasInventory;
-import moe.plushie.armourers_workshop.utils.NonNullItemList;
+import moe.plushie.armourers_workshop.core.utils.NonNullItemList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
@@ -18,17 +18,17 @@ public abstract class UpdatableContainerBlockEntity extends UpdatableBlockEntity
 
     @Override
     public boolean isEmpty() {
-        return this.getItems().stream().allMatch(ItemStack::isEmpty);
+        return getItems().stream().allMatch(ItemStack::isEmpty);
     }
 
     @Override
     public ItemStack getItem(int i) {
-        return this.getItems().get(i);
+        return getItems().get(i);
     }
 
     @Override
     public ItemStack removeItem(int i, int j) {
-        var itemStack = ContainerHelper.removeItem(this.getItems(), i, j);
+        var itemStack = ContainerHelper.removeItem(getItems(), i, j);
         if (!itemStack.isEmpty()) {
             this.setContainerChanged();
         }
@@ -37,12 +37,12 @@ public abstract class UpdatableContainerBlockEntity extends UpdatableBlockEntity
 
     @Override
     public ItemStack removeItemNoUpdate(int i) {
-        return ContainerHelper.takeItem(this.getItems(), i);
+        return ContainerHelper.takeItem(getItems(), i);
     }
 
     @Override
     public void setItem(int i, ItemStack itemStack) {
-        this.getItems().set(i, itemStack);
+        getItems().set(i, itemStack);
         if (itemStack.getCount() > this.getMaxStackSize()) {
             itemStack.setCount(this.getMaxStackSize());
         }
@@ -64,7 +64,7 @@ public abstract class UpdatableContainerBlockEntity extends UpdatableBlockEntity
 
     @Override
     public void clearContent() {
-        this.getItems().clear();
+        getItems().clear();
     }
 
     protected void setContainerChanged() {

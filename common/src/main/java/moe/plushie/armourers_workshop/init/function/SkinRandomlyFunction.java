@@ -9,7 +9,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import moe.plushie.armourers_workshop.api.common.ILootFunction;
 import moe.plushie.armourers_workshop.api.core.IResultHandler;
 import moe.plushie.armourers_workshop.core.capability.SkinWardrobe;
-import moe.plushie.armourers_workshop.core.data.slot.SkinSlotType;
+import moe.plushie.armourers_workshop.core.menu.SkinSlotType;
 import moe.plushie.armourers_workshop.core.skin.SkinDescriptor;
 import moe.plushie.armourers_workshop.core.skin.SkinLoader;
 import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintScheme;

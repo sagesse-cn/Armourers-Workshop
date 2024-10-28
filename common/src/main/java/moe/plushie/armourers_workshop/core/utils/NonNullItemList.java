@@ -1,7 +1,6 @@
-package moe.plushie.armourers_workshop.utils;
+package moe.plushie.armourers_workshop.core.utils;
 
 import com.mojang.datafixers.util.Pair;
-import com.mojang.serialization.Codec;
 import moe.plushie.armourers_workshop.api.core.IDataCodec;
 import moe.plushie.armourers_workshop.api.core.IDataSerializable;
 import moe.plushie.armourers_workshop.api.core.IDataSerializer;
@@ -53,6 +52,6 @@ public class NonNullItemList extends NonNullList<ItemStack> implements IDataSeri
 
     private static class CodingKeys {
 
-        public static final IDataSerializerKey<List<Pair<Byte, ItemStack>>> SERIALIZER = IDataSerializerKey.create("Items", IDataCodec.wrap(Codec.pair(Codec.BYTE.fieldOf("Slot").codec(), ItemStack.CODEC).listOf()), Collections.emptyList());
+        public static final IDataSerializerKey<List<Pair<Byte, ItemStack>>> SERIALIZER = IDataSerializerKey.create("Items", IDataCodec.pair(IDataCodec.BYTE.fieldOf("Slot").codec(), IDataCodec.ITEM_STACK).listOf(), Collections.emptyList());
     }
 }

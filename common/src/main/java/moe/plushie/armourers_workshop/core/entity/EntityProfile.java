@@ -2,7 +2,7 @@ package moe.plushie.armourers_workshop.core.entity;
 
 import moe.plushie.armourers_workshop.api.common.IEntityTypeProvider;
 import moe.plushie.armourers_workshop.api.core.IResourceLocation;
-import moe.plushie.armourers_workshop.core.data.slot.SkinSlotType;
+import moe.plushie.armourers_workshop.core.menu.SkinSlotType;
 
 import java.util.Collection;
 import java.util.Map;

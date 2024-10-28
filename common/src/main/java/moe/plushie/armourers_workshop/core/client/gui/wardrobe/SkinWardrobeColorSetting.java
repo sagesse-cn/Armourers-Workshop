@@ -16,7 +16,7 @@ import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintType;
 import moe.plushie.armourers_workshop.core.capability.SkinWardrobe;
 import moe.plushie.armourers_workshop.core.client.texture.BakedEntityTexture;
 import moe.plushie.armourers_workshop.core.client.texture.PlayerTextureLoader;
-import moe.plushie.armourers_workshop.core.data.slot.SkinSlotType;
+import moe.plushie.armourers_workshop.core.menu.SkinSlotType;
 import moe.plushie.armourers_workshop.core.network.UpdateWardrobePacket;
 import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
 import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintTypes;

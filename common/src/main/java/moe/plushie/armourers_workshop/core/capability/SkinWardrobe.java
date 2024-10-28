@@ -3,7 +3,7 @@ package moe.plushie.armourers_workshop.core.capability;
 import moe.plushie.armourers_workshop.api.core.IDataSerializer;
 import moe.plushie.armourers_workshop.api.core.IDataSerializable;
 import moe.plushie.armourers_workshop.core.data.EntityDataStorage;
-import moe.plushie.armourers_workshop.core.data.slot.SkinSlotType;
+import moe.plushie.armourers_workshop.core.menu.SkinSlotType;
 import moe.plushie.armourers_workshop.core.entity.EntityProfile;
 import moe.plushie.armourers_workshop.core.network.UpdateWardrobePacket;
 import moe.plushie.armourers_workshop.init.ModConfig;

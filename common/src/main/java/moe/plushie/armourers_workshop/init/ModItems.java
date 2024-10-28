@@ -18,7 +18,7 @@ import moe.plushie.armourers_workshop.builder.item.SkinCubeItem;
 import moe.plushie.armourers_workshop.builder.item.SoapItem;
 import moe.plushie.armourers_workshop.core.client.render.MannequinItemRenderer;
 import moe.plushie.armourers_workshop.core.client.render.SkinItemRenderer;
-import moe.plushie.armourers_workshop.core.data.slot.SkinSlotType;
+import moe.plushie.armourers_workshop.core.menu.SkinSlotType;
 import moe.plushie.armourers_workshop.core.item.ArmourersHammerItem;
 import moe.plushie.armourers_workshop.core.item.BottleItem;
 import moe.plushie.armourers_workshop.core.item.FlavouredItem;

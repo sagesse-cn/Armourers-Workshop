@@ -18,7 +18,7 @@ import moe.plushie.armourers_workshop.core.client.skinrender.SkinRendererManager
 import moe.plushie.armourers_workshop.core.client.texture.TextureManager;
 import moe.plushie.armourers_workshop.core.data.DataPackType;
 import moe.plushie.armourers_workshop.core.data.cache.AutoreleasePool;
-import moe.plushie.armourers_workshop.core.data.slot.SkinSlotType;
+import moe.plushie.armourers_workshop.core.menu.SkinSlotType;
 import moe.plushie.armourers_workshop.core.data.ticket.Tickets;
 import moe.plushie.armourers_workshop.core.skin.SkinLoader;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPartTypes;

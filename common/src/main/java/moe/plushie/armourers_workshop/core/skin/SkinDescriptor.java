@@ -22,7 +22,7 @@ public class SkinDescriptor implements IDataSerializable.Immutable, ISkinDescrip
 
     public static final SkinDescriptor EMPTY = new SkinDescriptor("");
 
-    public static final IDataCodec<SkinDescriptor> CODEC = IDataCodec.COMPOUND_TAG.either(IDataCodec.STRING, TagSerializer::parse).serializer(SkinDescriptor::new);
+    public static final IDataCodec<SkinDescriptor> CODEC = IDataCodec.COMPOUND_TAG.alternative(IDataCodec.STRING, TagSerializer::parse).serializer(SkinDescriptor::new);
 
     private final String identifier;
     private final ISkinType type;

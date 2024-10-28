@@ -1,7 +1,7 @@
 package moe.plushie.armourers_workshop.core.item;
 
 import moe.plushie.armourers_workshop.core.capability.SkinWardrobe;
-import moe.plushie.armourers_workshop.core.data.slot.SkinSlotType;
+import moe.plushie.armourers_workshop.core.menu.SkinSlotType;
 import moe.plushie.armourers_workshop.utils.TranslateUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;

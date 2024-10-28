@@ -9,7 +9,7 @@ import moe.plushie.armourers_workshop.core.client.gui.widget.EntityPreviewView;
 import moe.plushie.armourers_workshop.core.client.gui.widget.MenuWindow;
 import moe.plushie.armourers_workshop.core.client.gui.widget.PlayerInventoryView;
 import moe.plushie.armourers_workshop.core.client.gui.widget.TabView;
-import moe.plushie.armourers_workshop.core.data.slot.SkinSlotType;
+import moe.plushie.armourers_workshop.core.menu.SkinSlotType;
 import moe.plushie.armourers_workshop.core.entity.MannequinEntity;
 import moe.plushie.armourers_workshop.core.menu.SkinWardrobeMenu;
 import moe.plushie.armourers_workshop.core.utils.Objects;

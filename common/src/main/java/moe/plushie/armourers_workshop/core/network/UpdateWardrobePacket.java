@@ -11,7 +11,7 @@ import moe.plushie.armourers_workshop.compatibility.core.data.AbstractEntityData
 import moe.plushie.armourers_workshop.core.capability.SkinWardrobe;
 import moe.plushie.armourers_workshop.core.data.GenericProperties;
 import moe.plushie.armourers_workshop.core.data.GenericProperty;
-import moe.plushie.armourers_workshop.core.data.slot.SkinSlotType;
+import moe.plushie.armourers_workshop.core.menu.SkinSlotType;
 import moe.plushie.armourers_workshop.core.entity.MannequinEntity;
 import moe.plushie.armourers_workshop.core.menu.SkinWardrobeMenu;
 import moe.plushie.armourers_workshop.core.utils.Objects;

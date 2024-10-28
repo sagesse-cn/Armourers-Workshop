@@ -1,8 +1,6 @@
 package moe.plushie.armourers_workshop.core.menu;
 
 import moe.plushie.armourers_workshop.core.capability.SkinWardrobe;
-import moe.plushie.armourers_workshop.core.data.slot.SkinSlot;
-import moe.plushie.armourers_workshop.core.data.slot.SkinSlotType;
 import moe.plushie.armourers_workshop.core.entity.MannequinEntity;
 import moe.plushie.armourers_workshop.init.ModConfig;
 import moe.plushie.armourers_workshop.init.ModItems;

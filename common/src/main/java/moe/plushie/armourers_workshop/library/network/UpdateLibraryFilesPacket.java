@@ -40,10 +40,10 @@ public class UpdateLibraryFilesPacket extends CustomPacket {
     }
 
     public UpdateLibraryFilesPacket(IFriendlyByteBuf buffer) {
-        this.setting = new SkinLibrarySetting(buffer.readNbt());
+        this.setting = buffer.readNbtWithCodec(SkinLibrarySetting.CODEC);
         this.publicFiles = new ArrayList<>();
         this.privateFiles = new ArrayList<>();
-        for (SkinLibraryFile file : readCompressedBuffer(new ByteBufInputStream(buffer.asByteBuf()))) {
+        for (var file : readCompressedBuffer(new ByteBufInputStream(buffer.asByteBuf()))) {
             if (file.getPath().startsWith(Constants.PRIVATE)) {
                 privateFiles.add(file);
             } else {
@@ -55,7 +55,7 @@ public class UpdateLibraryFilesPacket extends CustomPacket {
     @Override
     public void encode(IFriendlyByteBuf buffer) {
         var totalSize = publicFiles.size() + privateFiles.size();
-        buffer.writeNbt(setting.serializeNBT());
+        buffer.writeNbtWithCodec(SkinLibrarySetting.CODEC, setting);
         writeCompressedBuffer(new ByteBufOutputStream(buffer.asByteBuf()), Collections.concat(publicFiles, privateFiles), totalSize);
     }
 

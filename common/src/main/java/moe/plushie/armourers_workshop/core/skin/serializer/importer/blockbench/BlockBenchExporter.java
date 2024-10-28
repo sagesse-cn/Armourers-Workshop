@@ -646,6 +646,7 @@ public class BlockBenchExporter {
             var variants = new ArrayList<ITextureProvider>();
             var parentName = texture.getName().replaceAll(PATTERN, "$1$3");
             var parentAttributes = getTextureAttributes(texture.getName());
+            // single texture model: bedrock_entity/bedrock_entity_old/geckolib_armour/geckolib_entity/geckolib_block/modded_entity/optifine_entity
             // some models only support single texture, so load additional textures by special file names.
             for (var childTexture : inputs) {
                 var childName = childTexture.getName().replaceAll(PATTERN, "$1$3");

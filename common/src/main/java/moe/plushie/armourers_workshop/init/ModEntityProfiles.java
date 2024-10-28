@@ -5,7 +5,7 @@ import moe.plushie.armourers_workshop.api.core.IResourceLocation;
 import moe.plushie.armourers_workshop.api.data.IDataPackBuilder;
 import moe.plushie.armourers_workshop.core.armature.ArmatureTransformerManager;
 import moe.plushie.armourers_workshop.core.data.DataPackType;
-import moe.plushie.armourers_workshop.core.data.slot.SkinSlotType;
+import moe.plushie.armourers_workshop.core.menu.SkinSlotType;
 import moe.plushie.armourers_workshop.core.entity.EntityProfile;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IODataObject;
 import moe.plushie.armourers_workshop.core.utils.FileUtils;

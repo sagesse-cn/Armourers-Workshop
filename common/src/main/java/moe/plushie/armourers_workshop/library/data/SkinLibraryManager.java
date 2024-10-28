@@ -5,6 +5,7 @@ import moe.plushie.armourers_workshop.api.library.ISkinLibraryListener;
 import moe.plushie.armourers_workshop.core.data.DataDomain;
 import moe.plushie.armourers_workshop.core.data.DataEncryptMethod;
 import moe.plushie.armourers_workshop.core.data.DataManager;
+import moe.plushie.armourers_workshop.core.utils.Constants;
 import moe.plushie.armourers_workshop.core.utils.OpenUUID;
 import moe.plushie.armourers_workshop.init.ModConfig;
 import moe.plushie.armourers_workshop.init.ModContext;
@@ -13,7 +14,6 @@ import moe.plushie.armourers_workshop.init.ModPermissions;
 import moe.plushie.armourers_workshop.init.platform.EnvironmentManager;
 import moe.plushie.armourers_workshop.init.platform.NetworkManager;
 import moe.plushie.armourers_workshop.library.network.UpdateLibraryFilesPacket;
-import moe.plushie.armourers_workshop.core.utils.Constants;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 

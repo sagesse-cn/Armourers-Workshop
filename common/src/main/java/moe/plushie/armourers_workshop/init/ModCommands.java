@@ -14,7 +14,7 @@ import moe.plushie.armourers_workshop.core.capability.SkinWardrobe;
 import moe.plushie.armourers_workshop.core.data.DataDomain;
 import moe.plushie.armourers_workshop.core.data.UserNotifications;
 import moe.plushie.armourers_workshop.core.data.slot.ItemOverrideType;
-import moe.plushie.armourers_workshop.core.data.slot.SkinSlotType;
+import moe.plushie.armourers_workshop.core.menu.SkinSlotType;
 import moe.plushie.armourers_workshop.core.math.OpenMath;
 import moe.plushie.armourers_workshop.core.network.UpdateAnimationPacket;
 import moe.plushie.armourers_workshop.core.skin.SkinDescriptor;

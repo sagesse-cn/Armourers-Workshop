@@ -1,7 +1,9 @@
 package moe.plushie.armourers_workshop.api.core;
 
 import com.mojang.datafixers.util.Either;
+import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import moe.plushie.armourers_workshop.compatibility.core.data.AbstractDataSerializer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -10,6 +12,7 @@ import net.minecraft.world.item.ItemStack;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Function;
 
@@ -18,8 +21,20 @@ public interface IDataCodec<A> {
 
     Codec<A> codec();
 
-    static <T> IDataCodec<T> wrap(Codec<T> codec) {
+    static <T> IDataCodec<T> wrap(final Codec<T> codec) {
         return () -> codec;
+    }
+
+    static <T> IDataCodec.Field<T> wrap(final MapCodec<T> codec) {
+        return () -> wrap(codec.codec());
+    }
+
+    static <F, S> IDataCodec<Pair<F, S>> pair(final IDataCodec<F> first, final IDataCodec<S> second) {
+        return wrap(Codec.pair(first.codec(), second.codec()));
+    }
+
+    static <F, S> IDataCodec<Either<F, S>> either(final IDataCodec<F> first, final IDataCodec<S> second) {
+        return wrap(Codec.either(first.codec(), second.codec()));
     }
 
     default IDataCodec<List<A>> listOf() {
@@ -30,8 +45,8 @@ public interface IDataCodec<A> {
         return wrap(codec().xmap(to, from));
     }
 
-    default <T> IDataCodec<A> either(IDataCodec<T> alternative, Function<T, A> converter) {
-        return wrap(Codec.either(codec(), alternative.codec()).xmap(either -> either.map(v -> v, converter), Either::left));
+    default <T> IDataCodec<A> alternative(IDataCodec<T> alternative, Function<T, A> converter) {
+        return either(this, alternative).xmap(either -> either.map(v -> v, converter), Either::left);
     }
 
     default <T extends IDataSerializable.Immutable> IDataCodec<T> serializer(Function<? super IDataSerializer, ? extends T> factory) {
@@ -44,6 +59,18 @@ public interface IDataCodec<A> {
             // noinspection unchecked
             return (A) tag;
         });
+    }
+
+    default IDataCodec.Field<A> fieldOf(final String name) {
+        return wrap(codec().fieldOf(name));
+    }
+
+    default IDataCodec.Field<Optional<A>> optionalFieldOf(final String name) {
+        return wrap(codec().optionalFieldOf(name));
+    }
+
+    default IDataCodec.Field<A> optionalFieldOf(final String name, final A defaultValue) {
+        return wrap(codec().optionalFieldOf(name, defaultValue));
     }
 
 
@@ -83,10 +110,15 @@ public interface IDataCodec<A> {
     });
 
 
-    IDataCodec<BlockPos> BLOCK_POS = wrap(BlockPos.CODEC).either(LONG, BlockPos::of);
+    IDataCodec<BlockPos> BLOCK_POS = wrap(BlockPos.CODEC).alternative(LONG, BlockPos::of);
 
     IDataCodec<CompoundTag> COMPOUND_TAG = wrap(CompoundTag.CODEC);
 
     IDataCodec<ItemStack> ITEM_STACK = wrap(ItemStack.CODEC);
 
+
+    interface Field<A> {
+
+        IDataCodec<A> codec();
+    }
 }

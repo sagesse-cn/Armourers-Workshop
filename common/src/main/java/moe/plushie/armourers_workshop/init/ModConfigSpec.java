@@ -2,7 +2,7 @@ package moe.plushie.armourers_workshop.init;
 
 import moe.plushie.armourers_workshop.api.config.IConfigBuilder;
 import moe.plushie.armourers_workshop.api.config.IConfigSpec;
-import moe.plushie.armourers_workshop.core.data.slot.SkinSlotType;
+import moe.plushie.armourers_workshop.core.menu.SkinSlotType;
 import moe.plushie.armourers_workshop.core.math.OpenMath;
 import moe.plushie.armourers_workshop.init.environment.EnvironmentExecutor;
 import moe.plushie.armourers_workshop.init.environment.EnvironmentType;

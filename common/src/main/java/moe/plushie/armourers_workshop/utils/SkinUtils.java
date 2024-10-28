@@ -4,7 +4,7 @@ import moe.plushie.armourers_workshop.api.skin.part.ISkinPartType;
 import moe.plushie.armourers_workshop.api.skin.part.features.ICanOverride;
 import moe.plushie.armourers_workshop.compatibility.core.data.AbstractDataSerializer;
 import moe.plushie.armourers_workshop.core.capability.SkinWardrobe;
-import moe.plushie.armourers_workshop.core.data.slot.SkinSlotType;
+import moe.plushie.armourers_workshop.core.menu.SkinSlotType;
 import moe.plushie.armourers_workshop.core.math.OpenMatrix4f;
 import moe.plushie.armourers_workshop.core.math.Vector4f;
 import moe.plushie.armourers_workshop.core.skin.Skin;

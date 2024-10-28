@@ -99,8 +99,8 @@ public class SkinLibraryMenu extends AbstractBlockEntityMenu<SkinLibraryBlockEnt
 
     public void crafting(SkinDescriptor descriptor) {
         boolean consume = true;
-        ItemStack itemStack = getInputStack();
-        ItemStack newItemStack = itemStack.copy();
+        var itemStack = getInputStack();
+        var newItemStack = itemStack.copy();
         if (descriptor != null) {
             // only consumes the template
             newItemStack = create(newItemStack, descriptor);
