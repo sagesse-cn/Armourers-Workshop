@@ -1,6 +1,5 @@
 package moe.plushie.armourers_workshop.api.network;
 
-import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBuf;
 import moe.plushie.armourers_workshop.api.core.IDataCodec;
 import moe.plushie.armourers_workshop.api.core.IResourceLocation;

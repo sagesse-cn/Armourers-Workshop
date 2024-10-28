@@ -1,6 +1,5 @@
 package moe.plushie.armourers_workshop.init.platform.forge;
 
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import moe.plushie.armourers_workshop.api.client.key.IKeyBinding;
 import moe.plushie.armourers_workshop.api.common.IArgumentType;

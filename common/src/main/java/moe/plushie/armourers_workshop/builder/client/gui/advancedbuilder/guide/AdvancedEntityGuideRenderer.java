@@ -106,7 +106,7 @@ public abstract class AdvancedEntityGuideRenderer extends AbstractAdvancedGuideR
         float n = texture.getWidth();
         float m = texture.getHeight();
 
-        float[][] uvs = SkinCubeFace.getBaseUVs(dir);
+        float[][] uvs = SkinCubeFace.getBaseUVs(dir, 0);
         float[][] vertexes = SkinCubeFace.getBaseVertices(dir);
         for (int i = 0; i < 4; ++i) {
             builder.vertex(entry, x + w * vertexes[i][0], y + h * vertexes[i][1], z + d * vertexes[i][2])

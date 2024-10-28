@@ -1,9 +1,7 @@
 package moe.plushie.armourers_workshop.core.skin.paint.texture;
 
 import moe.plushie.armourers_workshop.api.skin.paint.texture.ITextureOptions;
-
-import java.util.Objects;
-
+import moe.plushie.armourers_workshop.core.utils.Objects;
 
 public class TextureOptions implements ITextureOptions {
 
@@ -42,7 +40,7 @@ public class TextureOptions implements ITextureOptions {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(value);
+        return Objects.hash(value);
     }
 
     @Override

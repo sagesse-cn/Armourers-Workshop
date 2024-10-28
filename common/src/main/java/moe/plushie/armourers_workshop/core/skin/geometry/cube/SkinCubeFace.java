@@ -17,26 +17,6 @@ import java.util.ArrayList;
 
 public class SkinCubeFace extends SkinGeometryFace {
 
-    private static final float[][][] UVS = new float[][][]{
-            {{1, 0}, {1, 1}, {0, 1}, {0, 0}}, // -y <- down
-            {{0, 0}, {0, 1}, {1, 1}, {1, 0}}, // +y <- up
-            {{0, 0}, {0, 1}, {1, 1}, {1, 0}}, // -z <- north
-            {{0, 0}, {0, 1}, {1, 1}, {1, 0}}, // +z <- south
-            {{0, 0}, {0, 1}, {1, 1}, {1, 0}}, // -x <- west
-            {{0, 0}, {0, 1}, {1, 1}, {1, 0}}, // +x <- east
-//            {{1, 0}, {1, 1}, {0, 1}, {0, 0}},
-//            {{1, 0}, {1, 1}, {0, 1}, {0, 0}},
-    };
-
-    private static final float[][][] VERTICES = new float[][][]{
-            {{1, 1, 1}, {1, 1, 0}, {0, 1, 0}, {0, 1, 1}, {0, 1, 0}},  // -y <- down
-            {{0, 0, 1}, {0, 0, 0}, {1, 0, 0}, {1, 0, 1}, {0, -1, 0}}, // +y <- up
-            {{0, 0, 0}, {0, 1, 0}, {1, 1, 0}, {1, 0, 0}, {0, 0, -1}}, // -z <- north
-            {{1, 0, 1}, {1, 1, 1}, {0, 1, 1}, {0, 0, 1}, {0, 0, 1}},  // +z <- south
-            {{1, 0, 0}, {1, 1, 0}, {1, 1, 1}, {1, 0, 1}, {1, 0, 0}},  // -x <- west
-            {{0, 0, 1}, {0, 1, 1}, {0, 1, 0}, {0, 0, 0}, {-1, 0, 0}}, // +x <- east
-    };
-
     public final int alpha;
 
     private final ISkinGeometryType type;
@@ -56,12 +36,17 @@ public class SkinCubeFace extends SkinGeometryFace {
         this.boundingBox = boundingBox;
     }
 
-    public static float[][] getBaseUVs(OpenDirection direction) {
-        return UVS[direction.get3DDataValue()];
+    public static float[][] getBaseUVs(OpenDirection direction, int rot) {
+        return switch (rot) {
+            case 90 -> Helper.UVS_90[direction.get3DDataValue()];
+            case 180 -> Helper.UVS_180[direction.get3DDataValue()];
+            case 270 -> Helper.UVS_270[direction.get3DDataValue()];
+            default -> Helper.UVS[direction.get3DDataValue()];
+        };
     }
 
     public static float[][] getBaseVertices(OpenDirection direction) {
-        return VERTICES[direction.get3DDataValue()];
+        return Helper.VERTICES[direction.get3DDataValue()];
     }
 
     public Rectangle3f getBoundingBox() {
@@ -111,6 +96,7 @@ public class SkinCubeFace extends SkinGeometryFace {
     public Iterable<? extends SkinGeometryVertex> getVertices() {
         var id = getId();
         var texturePos = getTexturePos();
+        var textureRotation = getTextureRotation(texturePos);
 
         // https://learnopengl.com/Getting-started/Coordinate-Systems
         var x = boundingBox.getX();
@@ -129,7 +115,7 @@ public class SkinCubeFace extends SkinGeometryFace {
         var vertices = new ArrayList<SkinGeometryVertex>();
 
         var vertexes = getBaseVertices(direction);
-        var uvs = getBaseUVs(getTextureDirection(direction, texturePos));
+        var uvs = getBaseUVs(direction, textureRotation);
 
         for (int i = 0; i < 4; ++i) {
             var position = new Vector3f(x + w * vertexes[i][0], y + h * vertexes[i][1], z + d * vertexes[i][2]);
@@ -157,34 +143,59 @@ public class SkinCubeFace extends SkinGeometryFace {
         }
     }
 
-    private OpenDirection getTextureDirection(OpenDirection direction, TexturePos key) {
+    private int getTextureRotation(TexturePos key) {
         var options = key.getOptions();
         if (options != null) {
-            return switch (options.getRotation()) {
-                case 90 -> switch (direction) {
-                    case DOWN -> OpenDirection.SOUTH;
-                    case UP -> OpenDirection.DOWN;
-                    case NORTH -> OpenDirection.UP;
-                    case SOUTH -> OpenDirection.NORTH;
-                    default -> direction;
-                };
-                case 180 -> switch (direction) {
-                    case DOWN -> OpenDirection.NORTH;
-                    case UP -> OpenDirection.SOUTH;
-                    case NORTH -> OpenDirection.DOWN;
-                    case SOUTH -> OpenDirection.UP;
-                    default -> direction;
-                };
-                case 270 -> switch (direction) {
-                    case DOWN -> OpenDirection.UP;
-                    case UP -> OpenDirection.NORTH;
-                    case NORTH -> OpenDirection.SOUTH;
-                    case SOUTH -> OpenDirection.DOWN;
-                    default -> direction;
-                };
-                default -> direction;
-            };
+            return options.getRotation();
         }
-        return direction;
+        return 0;
+    }
+
+    private static class Helper {
+
+        public static final float[][][] VERTICES = new float[][][]{
+                {{0, 1, 1}, {0, 1, 0}, {1, 1, 0}, {1, 1, 1}, {0, 1, 0}},  // -y <- down
+                {{0, 0, 1}, {0, 0, 0}, {1, 0, 0}, {1, 0, 1}, {0, -1, 0}}, // +y <- up
+                {{0, 0, 0}, {0, 1, 0}, {1, 1, 0}, {1, 0, 0}, {0, 0, -1}}, // -z <- north
+                {{1, 0, 1}, {1, 1, 1}, {0, 1, 1}, {0, 0, 1}, {0, 0, 1}},  // +z <- south
+                {{1, 0, 0}, {1, 1, 0}, {1, 1, 1}, {1, 0, 1}, {1, 0, 0}},  // -x <- west
+                {{0, 0, 1}, {0, 1, 1}, {0, 1, 0}, {0, 0, 0}, {-1, 0, 0}}, // +x <- east
+        };
+
+        public static final float[][][] UVS = new float[][][]{
+                {{0, 0}, {0, 1}, {1, 1}, {1, 0}}, // -y <- down
+                {{0, 0}, {0, 1}, {1, 1}, {1, 0}}, // +y <- up
+                {{0, 0}, {0, 1}, {1, 1}, {1, 0}}, // -z <- north
+                {{0, 0}, {0, 1}, {1, 1}, {1, 0}}, // +z <- south
+                {{0, 0}, {0, 1}, {1, 1}, {1, 0}}, // -x <- west
+                {{0, 0}, {0, 1}, {1, 1}, {1, 0}}, // +x <- east
+        };
+
+        public static final float[][][] UVS_90 = new float[][][]{
+                {{1, 0}, {0, 0}, {0, 1}, {1, 1}}, // -y <- down
+                {{0, 1}, {1, 1}, {1, 0}, {0, 0}}, // +y <- up
+                {{0, 1}, {1, 1}, {1, 0}, {0, 0}}, // -z <- north
+                {{0, 1}, {1, 1}, {1, 0}, {0, 0}}, // +z <- south
+                {{0, 1}, {1, 1}, {1, 0}, {0, 0}}, // -x <- west
+                {{0, 1}, {1, 1}, {1, 0}, {0, 0}}, // +x <- east
+        };
+
+        public static final float[][][] UVS_180 = new float[][][]{
+                {{1, 1}, {1, 0}, {0, 0}, {0, 1}}, // -y <- down
+                {{1, 1}, {1, 0}, {0, 0}, {0, 1}}, // +y <- up
+                {{1, 1}, {1, 0}, {0, 0}, {0, 1}}, // -z <- north
+                {{1, 1}, {1, 0}, {0, 0}, {0, 1}}, // +z <- south
+                {{1, 1}, {1, 0}, {0, 0}, {0, 1}}, // -x <- west
+                {{1, 1}, {1, 0}, {0, 0}, {0, 1}}, // +x <- east
+        };
+
+        public static final float[][][] UVS_270 = new float[][][]{
+                {{0, 1}, {1, 1}, {1, 0}, {0, 0}}, // -y <- down
+                {{1, 0}, {0, 0}, {0, 1}, {1, 1}}, // +y <- up
+                {{1, 0}, {0, 0}, {0, 1}, {1, 1}}, // -z <- north
+                {{1, 0}, {0, 0}, {0, 1}, {1, 1}}, // +z <- south
+                {{1, 0}, {0, 0}, {0, 1}, {1, 1}}, // -x <- west
+                {{1, 0}, {0, 0}, {0, 1}, {1, 1}}, // +x <- east
+        };
     }
 }
