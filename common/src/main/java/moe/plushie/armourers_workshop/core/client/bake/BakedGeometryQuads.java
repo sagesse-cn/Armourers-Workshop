@@ -3,7 +3,7 @@ package moe.plushie.armourers_workshop.core.client.bake;
 import moe.plushie.armourers_workshop.api.core.math.ITransform;
 import moe.plushie.armourers_workshop.api.skin.part.ISkinPartType;
 import moe.plushie.armourers_workshop.core.data.color.ColorDescriptor;
-import moe.plushie.armourers_workshop.core.data.transform.SkinPartTransform;
+import moe.plushie.armourers_workshop.core.skin.part.SkinPartTransform;
 import moe.plushie.armourers_workshop.core.math.OpenPoseStack;
 import moe.plushie.armourers_workshop.core.math.OpenTransform3f;
 import moe.plushie.armourers_workshop.core.math.OpenVoxelShape;
@@ -18,7 +18,7 @@ import moe.plushie.armourers_workshop.core.skin.geometry.cube.SkinCubeFaceCuller
 import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
 import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintData;
 import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintTypes;
-import moe.plushie.armourers_workshop.core.skin.paint.texture.PlayerTextureModel;
+import moe.plushie.armourers_workshop.core.skin.paint.texture.EntityTextureModel;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPart;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPartTypes;
 import net.fabricmc.api.EnvType;
@@ -90,7 +90,7 @@ public class BakedGeometryQuads {
         if (paintData == null) {
             return allQuads;
         }
-        for (var entry : PlayerTextureModel.of(paintData.getWidth(), paintData.getHeight(), false).entrySet()) {
+        for (var entry : EntityTextureModel.of(paintData.getWidth(), paintData.getHeight(), false).entrySet()) {
             var box = entry.getValue();
             var faces = new ArrayList<SkinGeometryFace>();
             box.forEach((texture, x, y, z, dir) -> {

@@ -1,6 +1,6 @@
 package moe.plushie.armourers_workshop.compatibility.extensions.net.minecraft.world.item.ItemStack;
 
-import moe.plushie.armourers_workshop.api.common.IDataComponentType;
+import moe.plushie.armourers_workshop.api.core.IDataComponentType;
 import moe.plushie.armourers_workshop.core.utils.Objects;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;

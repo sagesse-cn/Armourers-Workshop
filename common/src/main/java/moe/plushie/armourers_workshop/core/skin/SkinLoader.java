@@ -1,28 +1,27 @@
 package moe.plushie.armourers_workshop.core.skin;
 
-import moe.plushie.armourers_workshop.api.common.IResultHandler;
-import moe.plushie.armourers_workshop.api.skin.ISkinFileProvider;
+import moe.plushie.armourers_workshop.api.core.IResultHandler;
+import moe.plushie.armourers_workshop.api.skin.serializer.ISkinFileProvider;
 import moe.plushie.armourers_workshop.core.data.DataDomain;
 import moe.plushie.armourers_workshop.core.data.DataManager;
 import moe.plushie.armourers_workshop.core.network.RequestSkinPacket;
 import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintScheme;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPart;
 import moe.plushie.armourers_workshop.core.skin.serializer.SkinFileOptions;
+import moe.plushie.armourers_workshop.core.skin.serializer.SkinSerializer;
 import moe.plushie.armourers_workshop.core.skin.serializer.SkinServerType;
 import moe.plushie.armourers_workshop.core.utils.Collections;
+import moe.plushie.armourers_workshop.core.utils.Constants;
+import moe.plushie.armourers_workshop.core.utils.Executors;
+import moe.plushie.armourers_workshop.core.utils.FileUtils;
+import moe.plushie.armourers_workshop.core.utils.OpenCipher;
 import moe.plushie.armourers_workshop.core.utils.OpenResourceLocation;
+import moe.plushie.armourers_workshop.core.utils.StreamUtils;
 import moe.plushie.armourers_workshop.init.ModConfig;
 import moe.plushie.armourers_workshop.init.ModContext;
 import moe.plushie.armourers_workshop.init.ModLog;
 import moe.plushie.armourers_workshop.init.platform.EnvironmentManager;
 import moe.plushie.armourers_workshop.init.platform.NetworkManager;
-import moe.plushie.armourers_workshop.utils.Constants;
-import moe.plushie.armourers_workshop.utils.SkinCipher;
-import moe.plushie.armourers_workshop.utils.SkinFileStreamUtils;
-import moe.plushie.armourers_workshop.utils.SkinFileUtils;
-import moe.plushie.armourers_workshop.utils.StreamUtils;
-import moe.plushie.armourers_workshop.utils.ThreadUtils;
-import moe.plushie.armourers_workshop.utils.WorkQueue;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
@@ -57,7 +56,7 @@ public class SkinLoader {
 
     private final EnumMap<DataDomain, Session> taskManager = new EnumMap<>(DataDomain.class);
 
-    private final WorkQueue workQueue = new WorkQueue();
+    private final TaskQueue workQueue = new TaskQueue();
     private final HashMap<String, IResultHandler<Skin>> waiting = new HashMap<>();
     private final HashMap<String, ISkinFileProvider> loaders = new HashMap<>();
     private final ConcurrentHashMap<String, Entry> entries = new ConcurrentHashMap<>();
@@ -518,7 +517,7 @@ public class SkinLoader {
         }
 
         protected ExecutorService buildThreadPool(String name, int size) {
-            return ThreadUtils.newFixedThreadPool(size, name, Thread.MIN_PRIORITY);
+            return Executors.newFixedThreadPool(size, name, Thread.MIN_PRIORITY);
         }
 
         private void syncRequest(Request request) {
@@ -560,7 +559,7 @@ public class SkinLoader {
         public Skin load(Request request) throws Exception {
             try (var inputStream = loadData(request.identifier)) {
                 var startTime = System.currentTimeMillis();
-                var skin = SkinFileStreamUtils.loadSkinFromStream(inputStream, request.options);
+                var skin = SkinSerializer.readFromStream(request.options, inputStream);
                 var totalTime = System.currentTimeMillis() - startTime;
                 loadDidFinish(request, skin, totalTime);
                 return skin;
@@ -586,7 +585,7 @@ public class SkinLoader {
                 return DataManager.getInstance().loadSkinData(id);
             }
             // fs:<file-path> or ws:<file-path>
-            var path = SkinFileUtils.normalize(DataDomain.getPath(identifier));
+            var path = FileUtils.normalize(DataDomain.getPath(identifier));
             var file = new File(EnvironmentManager.getSkinLibraryDirectory(), path);
             if (file.exists()) {
                 return new FileInputStream(file);
@@ -782,12 +781,12 @@ public class SkinLoader {
                 ModLog.debug("'{}' => add global skin cache", identifier);
                 executor.execute(() -> {
                     try {
-                        SkinFileUtils.forceMkdirParent(cachedFile);
+                        FileUtils.forceMkdirParent(cachedFile);
                         if (cachedFile.exists()) {
-                            SkinFileUtils.deleteQuietly(cachedFile);
+                            FileUtils.deleteQuietly(cachedFile);
                         }
                         try (var outputStream = new FileOutputStream(cachedFile)) {
-                            SkinFileStreamUtils.saveSkinToStream(outputStream, skin);
+                            SkinSerializer.writeToStream(skin, null, outputStream);
                             outputStream.flush();
                         }
                     } catch (Exception e) {
@@ -806,9 +805,9 @@ public class SkinLoader {
                 FileOutputStream fileOutputStream = null;
                 CipherOutputStream cipherOutputStream = null;
                 try {
-                    SkinFileUtils.forceMkdirParent(cachedFile);
+                    FileUtils.forceMkdirParent(cachedFile);
                     if (cachedFile.exists()) {
-                        SkinFileUtils.deleteQuietly(cachedFile);
+                        FileUtils.deleteQuietly(cachedFile);
                     }
                     fileOutputStream = new FileOutputStream(cachedFile);
                     if (x1.length != 0) {
@@ -817,7 +816,7 @@ public class SkinLoader {
                         Cipher aes = Cipher.getInstance("AES/ECB/PKCS5Padding");
                         aes.init(Cipher.ENCRYPT_MODE, key);
                         cipherOutputStream = new CipherOutputStream(fileOutputStream, aes);
-                        SkinFileStreamUtils.saveSkinToStream(cipherOutputStream, skin);
+                        SkinSerializer.writeToStream(skin, null, cipherOutputStream);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -833,7 +832,7 @@ public class SkinLoader {
             }
             ModLog.debug("'{}' => remove skin cache", identifier);
             executor.execute(() -> {
-                SkinFileUtils.deleteQuietly(cachedFile);
+                FileUtils.deleteQuietly(cachedFile);
             });
         }
 
@@ -908,7 +907,7 @@ public class SkinLoader {
 
         @Override
         public Skin load(Request request) throws Exception {
-            var parts = SkinCipher.getInstance().decrypt(DataDomain.getPath(request.identifier));
+            var parts = OpenCipher.getInstance().decrypt(DataDomain.getPath(request.identifier));
             if (parts.length != 2) {
                 throw new RuntimeException("invalid identifier format!");
             }
@@ -969,6 +968,30 @@ public class SkinLoader {
                 }
             }
             return false;
+        }
+    }
+
+    public static class TaskQueue {
+
+        private boolean isPaused = true;
+        private final ArrayList<Runnable> values = new ArrayList<>();
+
+        public void pause() {
+            isPaused = true;
+        }
+
+        public void resume() {
+            isPaused = false;
+            values.forEach(Runnable::run);
+            values.clear();
+        }
+
+        public void submit(Runnable cmd) {
+            if (isPaused) {
+                values.add(cmd);
+            } else {
+                cmd.run();
+            }
         }
     }
 }

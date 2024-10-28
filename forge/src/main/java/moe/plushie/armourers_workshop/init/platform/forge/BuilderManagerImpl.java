@@ -12,6 +12,7 @@ import moe.plushie.armourers_workshop.api.common.IItemTag;
 import moe.plushie.armourers_workshop.api.common.ILootFunction;
 import moe.plushie.armourers_workshop.api.common.IMenuProvider;
 import moe.plushie.armourers_workshop.api.common.IMenuSerializer;
+import moe.plushie.armourers_workshop.api.core.IDataCodec;
 import moe.plushie.armourers_workshop.api.permission.IPermissionNode;
 import moe.plushie.armourers_workshop.api.registry.IArgumentTypeBuilder;
 import moe.plushie.armourers_workshop.api.registry.IBlockBuilder;
@@ -133,7 +134,7 @@ public class BuilderManagerImpl implements BuilderManager.Impl {
     }
 
     @Override
-    public <T> IDataComponentTypeBuilder<T> createDataComponentTypeBuilder(Codec<T> codec) {
+    public <T> IDataComponentTypeBuilder<T> createDataComponentTypeBuilder(IDataCodec<T> codec) {
         return new DataComponentTypeBuilderImpl<>(codec);
     }
 

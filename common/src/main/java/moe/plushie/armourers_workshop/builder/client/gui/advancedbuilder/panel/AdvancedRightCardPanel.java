@@ -15,8 +15,8 @@ import moe.plushie.armourers_workshop.builder.client.gui.widget.DrawerToolbar;
 import moe.plushie.armourers_workshop.core.client.gui.widget.TreeNode;
 import moe.plushie.armourers_workshop.core.client.gui.widget.TreeView;
 import moe.plushie.armourers_workshop.core.client.gui.widget.TreeViewDelegate;
-import moe.plushie.armourers_workshop.core.skin.document.SkinDocumentNode;
-import moe.plushie.armourers_workshop.core.skin.document.SkinDocumentType;
+import moe.plushie.armourers_workshop.core.skin.serializer.document.SkinDocumentNode;
+import moe.plushie.armourers_workshop.core.skin.serializer.document.SkinDocumentType;
 import moe.plushie.armourers_workshop.init.ModTextures;
 import net.minecraft.nbt.CompoundTag;
 

@@ -1,13 +1,13 @@
 package moe.plushie.armourers_workshop.core.client.bake;
 
-import moe.plushie.armourers_workshop.api.common.IResultHandler;
+import moe.plushie.armourers_workshop.api.core.IResultHandler;
 import moe.plushie.armourers_workshop.api.library.ISkinLibrary;
 import moe.plushie.armourers_workshop.api.library.ISkinLibraryListener;
 import moe.plushie.armourers_workshop.core.client.other.SkinVertexBufferBuilder;
 import moe.plushie.armourers_workshop.core.data.DataTransformer;
 import moe.plushie.armourers_workshop.core.data.color.ColorDescriptor;
 import moe.plushie.armourers_workshop.core.data.ticket.Ticket;
-import moe.plushie.armourers_workshop.core.data.transform.SkinPartTransform;
+import moe.plushie.armourers_workshop.core.skin.part.SkinPartTransform;
 import moe.plushie.armourers_workshop.core.skin.Skin;
 import moe.plushie.armourers_workshop.core.skin.SkinDescriptor;
 import moe.plushie.armourers_workshop.core.skin.SkinLoader;

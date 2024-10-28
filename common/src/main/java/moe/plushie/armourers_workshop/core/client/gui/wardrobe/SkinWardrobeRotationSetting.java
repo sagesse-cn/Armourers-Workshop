@@ -11,11 +11,11 @@ import moe.plushie.armourers_workshop.core.capability.SkinWardrobe;
 import moe.plushie.armourers_workshop.core.client.gui.widget.EntityPartView;
 import moe.plushie.armourers_workshop.core.entity.MannequinEntity;
 import moe.plushie.armourers_workshop.core.network.UpdateWardrobePacket;
+import moe.plushie.armourers_workshop.core.utils.JsonSerializer;
 import moe.plushie.armourers_workshop.init.ModConstants;
 import moe.plushie.armourers_workshop.init.ModTextures;
 import moe.plushie.armourers_workshop.init.platform.EnvironmentManager;
 import moe.plushie.armourers_workshop.init.platform.NetworkManager;
-import moe.plushie.armourers_workshop.utils.StreamUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.Rotations;
@@ -180,7 +180,7 @@ public class SkinWardrobeRotationSetting extends SkinWardrobeBaseSetting {
     private void loadRandomlyRotations() {
         var resourceManager = EnvironmentManager.getResourceManager();
         resourceManager.readResources(ModConstants.key("models/entity/mannequin"), s -> s.endsWith(".json"), (location, resource) -> {
-            var object = StreamUtils.fromPackObject(resource);
+            var object = JsonSerializer.readFromResource(resource);
             if (object == null) {
                 return;
             }

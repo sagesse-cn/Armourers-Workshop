@@ -1,8 +1,6 @@
 package moe.plushie.armourers_workshop.builder.client.render;
 
 import com.apple.library.uikit.UIColor;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 import com.mojang.blaze3d.vertex.PoseStack;
 import moe.plushie.armourers_workshop.api.armature.IJointTransform;
 import moe.plushie.armourers_workshop.api.client.IBufferSource;
@@ -25,13 +23,14 @@ import moe.plushie.armourers_workshop.core.client.other.PlaceholderManager;
 import moe.plushie.armourers_workshop.core.client.other.SkinModelManager;
 import moe.plushie.armourers_workshop.core.client.other.SkinRenderTesselator;
 import moe.plushie.armourers_workshop.core.data.ticket.Tickets;
-import moe.plushie.armourers_workshop.core.data.transform.SkinItemTransforms;
+import moe.plushie.armourers_workshop.core.math.OpenItemTransforms;
 import moe.plushie.armourers_workshop.core.math.Vector3f;
-import moe.plushie.armourers_workshop.core.skin.document.SkinDocument;
-import moe.plushie.armourers_workshop.core.skin.document.SkinDocumentNode;
-import moe.plushie.armourers_workshop.core.skin.document.SkinDocumentType;
-import moe.plushie.armourers_workshop.core.skin.document.SkinDocumentTypes;
+import moe.plushie.armourers_workshop.core.skin.serializer.document.SkinDocument;
+import moe.plushie.armourers_workshop.core.skin.serializer.document.SkinDocumentNode;
+import moe.plushie.armourers_workshop.core.skin.serializer.document.SkinDocumentType;
+import moe.plushie.armourers_workshop.core.skin.serializer.document.SkinDocumentTypes;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPartTypes;
+import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.init.ModDebugger;
 import moe.plushie.armourers_workshop.utils.RenderSystem;
 import moe.plushie.armourers_workshop.utils.ShapeTesselator;
@@ -43,56 +42,56 @@ import net.minecraft.world.item.ItemStack;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 @Environment(EnvType.CLIENT)
 public class AdvancedBuilderBlockRenderer<T extends AdvancedBuilderBlockEntity> extends AbstractBlockEntityRenderer<T> {
 
     public static final float SCALE = 0.0625f; // 1 / 16f;
 
-    private static final ImmutableMap<SkinDocumentType, AbstractAdvancedGuideRenderer> GUIDES = ImmutableMap.<SkinDocumentType, AbstractAdvancedGuideRenderer>builder()
+    private static final Map<SkinDocumentType, AbstractAdvancedGuideRenderer> GUIDES = Collections.immutableMap(builder -> {
+        builder.put(SkinDocumentTypes.GENERAL_ARMOR_HEAD, new AdvancedHumanGuideRenderer());
+        builder.put(SkinDocumentTypes.GENERAL_ARMOR_CHEST, new AdvancedHumanGuideRenderer());
+        builder.put(SkinDocumentTypes.GENERAL_ARMOR_FEET, new AdvancedHumanGuideRenderer());
+        builder.put(SkinDocumentTypes.GENERAL_ARMOR_LEGS, new AdvancedHumanGuideRenderer());
+        builder.put(SkinDocumentTypes.GENERAL_ARMOR_WINGS, new AdvancedHumanGuideRenderer());
+        builder.put(SkinDocumentTypes.GENERAL_ARMOR_OUTFIT, new AdvancedHumanGuideRenderer());
 
-            .put(SkinDocumentTypes.GENERAL_ARMOR_HEAD, new AdvancedHumanGuideRenderer())
-            .put(SkinDocumentTypes.GENERAL_ARMOR_CHEST, new AdvancedHumanGuideRenderer())
-            .put(SkinDocumentTypes.GENERAL_ARMOR_FEET, new AdvancedHumanGuideRenderer())
-            .put(SkinDocumentTypes.GENERAL_ARMOR_LEGS, new AdvancedHumanGuideRenderer())
-            .put(SkinDocumentTypes.GENERAL_ARMOR_WINGS, new AdvancedHumanGuideRenderer())
-            .put(SkinDocumentTypes.GENERAL_ARMOR_OUTFIT, new AdvancedHumanGuideRenderer())
+        builder.put(SkinDocumentTypes.ITEM, new AdvancedItemGuideRenderer());
+        builder.put(SkinDocumentTypes.ITEM_AXE, new AdvancedItemGuideRenderer());
+        builder.put(SkinDocumentTypes.ITEM_HOE, new AdvancedItemGuideRenderer());
+        builder.put(SkinDocumentTypes.ITEM_SHOVEL, new AdvancedItemGuideRenderer());
+        builder.put(SkinDocumentTypes.ITEM_PICKAXE, new AdvancedItemGuideRenderer());
 
-            .put(SkinDocumentTypes.ITEM, new AdvancedItemGuideRenderer())
-            .put(SkinDocumentTypes.ITEM_AXE, new AdvancedItemGuideRenderer())
-            .put(SkinDocumentTypes.ITEM_HOE, new AdvancedItemGuideRenderer())
-            .put(SkinDocumentTypes.ITEM_SHOVEL, new AdvancedItemGuideRenderer())
-            .put(SkinDocumentTypes.ITEM_PICKAXE, new AdvancedItemGuideRenderer())
+        builder.put(SkinDocumentTypes.ITEM_SWORD, new AdvancedItemGuideRenderer());
+        builder.put(SkinDocumentTypes.ITEM_SHIELD, new AdvancedItemGuideRenderer());
+        builder.put(SkinDocumentTypes.ITEM_BOW, new AdvancedItemGuideRenderer());
+        builder.put(SkinDocumentTypes.ITEM_TRIDENT, new AdvancedItemGuideRenderer());
 
-            .put(SkinDocumentTypes.ITEM_SWORD, new AdvancedItemGuideRenderer())
-            .put(SkinDocumentTypes.ITEM_SHIELD, new AdvancedItemGuideRenderer())
-            .put(SkinDocumentTypes.ITEM_BOW, new AdvancedItemGuideRenderer())
-            .put(SkinDocumentTypes.ITEM_TRIDENT, new AdvancedItemGuideRenderer())
+        builder.put(SkinDocumentTypes.ENTITY_BOAT, new AdvancedBoatGuideRenderer());
+        builder.put(SkinDocumentTypes.ENTITY_MINECART, new AdvancedMinecartGuideRenderer());
 
-            .put(SkinDocumentTypes.ENTITY_BOAT, new AdvancedBoatGuideRenderer())
-            .put(SkinDocumentTypes.ENTITY_MINECART, new AdvancedMinecartGuideRenderer())
+        builder.put(SkinDocumentTypes.ENTITY_HORSE, new AdvancedHorseGuideRenderer());
 
-            .put(SkinDocumentTypes.ENTITY_HORSE, new AdvancedHorseGuideRenderer())
-
-            .put(SkinDocumentTypes.BLOCK, new AdvancedBlockGuideRenderer())
-
-            .build();
+        builder.put(SkinDocumentTypes.BLOCK, new AdvancedBlockGuideRenderer());
+    });
 
 
-    ImmutableSet<ISkinPartType> USE_ITEM_TRANSFORMERS = ImmutableSet.<ISkinPartType>builder()
-            .add(SkinPartTypes.ITEM)
-            .add(SkinPartTypes.ITEM_AXE)
-            .add(SkinPartTypes.ITEM_HOE)
-            .add(SkinPartTypes.ITEM_SHOVEL)
-            .add(SkinPartTypes.ITEM_PICKAXE)
-            .add(SkinPartTypes.ITEM_SWORD)
-            .add(SkinPartTypes.ITEM_SHIELD)
-            .add(SkinPartTypes.ITEM_BOW0)
-            .add(SkinPartTypes.ITEM_BOW1)
-            .add(SkinPartTypes.ITEM_BOW2)
-            .add(SkinPartTypes.ITEM_BOW3)
-            .add(SkinPartTypes.ITEM_TRIDENT)
-            .build();
+    private static final Set<ISkinPartType> USE_ITEM_TRANSFORMERS = Collections.immutableSet(builder -> {
+        builder.add(SkinPartTypes.ITEM);
+        builder.add(SkinPartTypes.ITEM_AXE);
+        builder.add(SkinPartTypes.ITEM_HOE);
+        builder.add(SkinPartTypes.ITEM_SHOVEL);
+        builder.add(SkinPartTypes.ITEM_PICKAXE);
+        builder.add(SkinPartTypes.ITEM_SWORD);
+        builder.add(SkinPartTypes.ITEM_SHIELD);
+        builder.add(SkinPartTypes.ITEM_BOW0);
+        builder.add(SkinPartTypes.ITEM_BOW1);
+        builder.add(SkinPartTypes.ITEM_BOW2);
+        builder.add(SkinPartTypes.ITEM_BOW3);
+        builder.add(SkinPartTypes.ITEM_TRIDENT);
+    });
 
     public static ArrayList<Vector3f> OUTPUTS = new ArrayList<>();
     public static HashSet<BakedSkinPart> RESULTS = new HashSet<>();
@@ -239,7 +238,7 @@ public class AdvancedBuilderBlockRenderer<T extends AdvancedBuilderBlockEntity> 
         poseStack.popPose();
     }
 
-    protected void applyTransform(IPoseStack poseStack, SkinDocumentNode node, SkinItemTransforms itemTransforms) {
+    protected void applyTransform(IPoseStack poseStack, SkinDocumentNode node, OpenItemTransforms itemTransforms) {
         if (itemTransforms != null) {
             var itemTransform = itemTransforms.get(AbstractItemTransformType.THIRD_PERSON_RIGHT_HAND);
             if (itemTransform != null) {

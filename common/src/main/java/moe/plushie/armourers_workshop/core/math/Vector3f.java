@@ -1,10 +1,11 @@
 package moe.plushie.armourers_workshop.core.math;
 
-import com.google.common.collect.Lists;
+import moe.plushie.armourers_workshop.api.core.IDataCodec;
 import moe.plushie.armourers_workshop.api.core.math.IMatrix3f;
 import moe.plushie.armourers_workshop.api.core.math.IMatrix4f;
 import moe.plushie.armourers_workshop.api.core.math.IVector3f;
 import moe.plushie.armourers_workshop.api.core.math.IVector3i;
+import moe.plushie.armourers_workshop.core.utils.Collections;
 
 import java.util.List;
 import java.util.Objects;
@@ -23,6 +24,8 @@ public class Vector3f implements Comparable<Vector3f>, IVector3f {
     public static Vector3f YP = new Vector3f(0.0F, 1.0F, 0.0F);
     public static Vector3f ZN = new Vector3f(0.0F, 0.0F, -1.0F);
     public static Vector3f ZP = new Vector3f(0.0F, 0.0F, 1.0F);
+
+    public static final IDataCodec<Vector3f> CODEC = IDataCodec.FLOAT.listOf().xmap(Vector3f::new, Vector3f::toList);
 
     private float x;
     private float y;
@@ -317,7 +320,7 @@ public class Vector3f implements Comparable<Vector3f>, IVector3f {
     }
 
     public List<Float> toList() {
-        return Lists.newArrayList(x, y, z);
+        return Collections.newList(x, y, z);
     }
 
     @Override

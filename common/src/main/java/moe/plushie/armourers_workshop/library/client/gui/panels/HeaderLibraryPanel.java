@@ -8,7 +8,7 @@ import com.apple.library.uikit.UIButton;
 import com.apple.library.uikit.UIControl;
 import com.apple.library.uikit.UIFont;
 import com.mojang.authlib.GameProfile;
-import moe.plushie.armourers_workshop.builder.data.PlayerTextureDescriptor;
+import moe.plushie.armourers_workshop.core.skin.paint.texture.EntityTextureDescriptor;
 import moe.plushie.armourers_workshop.core.client.texture.PlayerTextureLoader;
 import moe.plushie.armourers_workshop.init.ModTextures;
 import moe.plushie.armourers_workshop.library.client.gui.GlobalSkinLibraryWindow;
@@ -36,7 +36,7 @@ public class HeaderLibraryPanel extends AbstractLibraryPanel {
 
     private final GlobalSkinLibrary library = GlobalSkinLibrary.getInstance();
 
-    private PlayerTextureDescriptor playerTexture;
+    private EntityTextureDescriptor playerTexture;
 
     public HeaderLibraryPanel() {
         super("skin-library-global.header", p -> true);
@@ -97,7 +97,7 @@ public class HeaderLibraryPanel extends AbstractLibraryPanel {
 
     private void renderPlayerProfile(CGGraphicsContext context, GameProfile gameProfile) {
         if (playerTexture == null) {
-            playerTexture = PlayerTextureDescriptor.fromProfile(gameProfile);
+            playerTexture = EntityTextureDescriptor.fromProfile(gameProfile);
         }
         var tx = 5.0f;
         var ty = 5.0f;

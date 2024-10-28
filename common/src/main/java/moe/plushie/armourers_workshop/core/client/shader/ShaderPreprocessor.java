@@ -1,6 +1,6 @@
 package moe.plushie.armourers_workshop.core.client.shader;
 
-import com.google.common.collect.ImmutableList;
+import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.init.ModConfig;
 import moe.plushie.armourers_workshop.init.ModLog;
 import net.fabricmc.api.EnvType;
@@ -8,17 +8,18 @@ import net.fabricmc.api.Environment;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 @Environment(EnvType.CLIENT)
 public class ShaderPreprocessor {
 
-    public static final ImmutableList<String> PATCHED_VANILLA_SHADERS = new ImmutableList.Builder<String>()
-            .add("rendertype_entity_solid")
-            .add("rendertype_entity_shadow")
-            .add("rendertype_entity_cutout")
-            .add("rendertype_energy_swirl")
-            .add("rendertype_outline")
-            .build();
+    public static final List<String> PATCHED_VANILLA_SHADERS = Collections.immutableList(builder -> {
+        builder.add("rendertype_entity_solid");
+        builder.add("rendertype_entity_shadow");
+        builder.add("rendertype_entity_cutout");
+        builder.add("rendertype_energy_swirl");
+        builder.add("rendertype_outline");
+    });
 
     private final String prefix;
 

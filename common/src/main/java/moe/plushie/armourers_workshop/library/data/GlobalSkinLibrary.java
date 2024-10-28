@@ -2,11 +2,13 @@ package moe.plushie.armourers_workshop.library.data;
 
 import com.mojang.authlib.GameProfile;
 import io.netty.buffer.Unpooled;
-import moe.plushie.armourers_workshop.api.common.IResultHandler;
+import moe.plushie.armourers_workshop.api.core.IResultHandler;
 import moe.plushie.armourers_workshop.api.skin.ISkinType;
 import moe.plushie.armourers_workshop.core.skin.Skin;
 import moe.plushie.armourers_workshop.core.skin.SkinTypes;
 import moe.plushie.armourers_workshop.core.skin.serializer.SkinSerializer;
+import moe.plushie.armourers_workshop.core.utils.FileUtils;
+import moe.plushie.armourers_workshop.core.utils.StreamUtils;
 import moe.plushie.armourers_workshop.init.ModConfig;
 import moe.plushie.armourers_workshop.init.ModLog;
 import moe.plushie.armourers_workshop.library.data.impl.MinecraftAuth;
@@ -23,12 +25,11 @@ import moe.plushie.armourers_workshop.library.data.impl.ServerSkin;
 import moe.plushie.armourers_workshop.library.data.impl.ServerStatus;
 import moe.plushie.armourers_workshop.library.data.impl.ServerToken;
 import moe.plushie.armourers_workshop.library.data.impl.ServerUser;
-import moe.plushie.armourers_workshop.utils.SkinFileStreamUtils;
-import moe.plushie.armourers_workshop.utils.SkinFileUtils;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -163,7 +164,7 @@ public class GlobalSkinLibrary extends ServerSession {
         parameters.put("description", desc);
         parameters.put("fileToUpload", new ServerRequest.MultipartFormFile(name, () -> {
             try (var outputStream = new ByteArrayOutputStream()) {
-                SkinFileStreamUtils.saveSkinToStream(outputStream, skin);
+                SkinSerializer.writeToStream(skin, null, outputStream);
                 return Unpooled.wrappedBuffer(outputStream.toByteArray());
             }
         }));
@@ -187,8 +188,9 @@ public class GlobalSkinLibrary extends ServerSession {
     public void downloadSkin(String skinId, File target, IResultHandler<File> handlerIn) {
         submit(handlerIn, handlerOut -> {
             try {
-                InputStream inputStream = downloadSkin(skinId);
-                SkinFileUtils.copyInputStreamToFile(inputStream, target);
+                var inputStream = downloadSkin(skinId);
+                FileUtils.forceMkdirParent(target);
+                StreamUtils.transferTo(inputStream, new FileOutputStream(target));
                 handlerOut.accept(target);
             } catch (Exception exception) {
                 handlerOut.throwing(exception);

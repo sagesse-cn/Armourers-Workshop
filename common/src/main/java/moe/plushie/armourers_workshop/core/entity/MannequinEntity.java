@@ -2,17 +2,22 @@ package moe.plushie.armourers_workshop.core.entity;
 
 import moe.plushie.armourers_workshop.api.common.IEntityDataBuilder;
 import moe.plushie.armourers_workshop.api.common.IEntityHandler;
-import moe.plushie.armourers_workshop.builder.data.PlayerTextureDescriptor;
+import moe.plushie.armourers_workshop.api.core.IDataCodec;
+import moe.plushie.armourers_workshop.api.core.IDataSerializable;
+import moe.plushie.armourers_workshop.api.core.IDataSerializer;
+import moe.plushie.armourers_workshop.api.core.IDataSerializerKey;
+import moe.plushie.armourers_workshop.core.skin.paint.texture.EntityTextureDescriptor;
 import moe.plushie.armourers_workshop.compatibility.core.AbstractLivingEntity;
 import moe.plushie.armourers_workshop.core.capability.SkinWardrobe;
 import moe.plushie.armourers_workshop.core.item.option.MannequinToolOptions;
+import moe.plushie.armourers_workshop.core.utils.Constants;
+import moe.plushie.armourers_workshop.core.utils.TagSerializer;
 import moe.plushie.armourers_workshop.init.ModDataComponents;
 import moe.plushie.armourers_workshop.init.ModEntitySerializers;
 import moe.plushie.armourers_workshop.init.ModEntityTypes;
 import moe.plushie.armourers_workshop.init.ModItems;
 import moe.plushie.armourers_workshop.init.ModMenuTypes;
 import moe.plushie.armourers_workshop.init.environment.EnvironmentExecutorIO;
-import moe.plushie.armourers_workshop.utils.Constants;
 import moe.plushie.armourers_workshop.utils.DataSerializers;
 import moe.plushie.armourers_workshop.utils.TrigUtils;
 import net.fabricmc.api.EnvType;
@@ -41,7 +46,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
 @SuppressWarnings("unused")
-public class MannequinEntity extends AbstractLivingEntity.ArmorStand implements IEntityHandler {
+public class MannequinEntity extends AbstractLivingEntity.ArmorStand implements IEntityHandler, IDataSerializable.Mutable {
 
     public static final Rotations DEFAULT_HEAD_POSE = new Rotations(0.0f, 0.0f, 0.0f);
     public static final Rotations DEFAULT_BODY_POSE = new Rotations(0.0f, 0.0f, 0.0f);
@@ -60,7 +65,7 @@ public class MannequinEntity extends AbstractLivingEntity.ArmorStand implements 
     public static final EntityDataAccessor<Boolean> DATA_IS_VISIBLE = SynchedEntityData.defineId(MannequinEntity.class, ModEntitySerializers.BOOLEAN);
     public static final EntityDataAccessor<Float> DATA_SCALE = SynchedEntityData.defineId(MannequinEntity.class, ModEntitySerializers.FLOAT);
     public static final EntityDataAccessor<Boolean> DATA_EXTRA_RENDERER = SynchedEntityData.defineId(MannequinEntity.class, ModEntitySerializers.BOOLEAN);
-    public static final EntityDataAccessor<PlayerTextureDescriptor> DATA_TEXTURE = SynchedEntityData.defineId(MannequinEntity.class, ModEntitySerializers.PLAYER_TEXTURE);
+    public static final EntityDataAccessor<EntityTextureDescriptor> DATA_TEXTURE = SynchedEntityData.defineId(MannequinEntity.class, ModEntitySerializers.PLAYER_TEXTURE);
 
     private boolean isDropEquipment = false;
     private AABB boundingBoxForCulling;
@@ -78,45 +83,47 @@ public class MannequinEntity extends AbstractLivingEntity.ArmorStand implements 
         builder.define(DATA_IS_VISIBLE, true);
         builder.define(DATA_EXTRA_RENDERER, true);
         builder.define(DATA_SCALE, 1.0f);
-        builder.define(DATA_TEXTURE, PlayerTextureDescriptor.EMPTY);
+        builder.define(DATA_TEXTURE, EntityTextureDescriptor.EMPTY);
     }
 
     @Override
     public void readAdditionalSaveData(CompoundTag tag) {
         super.readAdditionalSaveData(tag);
-        this.readExtendedData(tag);
+        this.deserialize(new TagSerializer(tag));
     }
 
     @Override
     public void addAdditionalSaveData(CompoundTag tag) {
         super.addAdditionalSaveData(tag);
-        this.addExtendedData(tag);
+        this.serialize(new TagSerializer(tag));
     }
 
-    public void readExtendedData(CompoundTag tag) {
-        entityData.set(DATA_IS_CHILD, tag.getOptionalBoolean(Constants.Key.ENTITY_IS_SMALL, false));
-        entityData.set(DATA_IS_FLYING, tag.getOptionalBoolean(Constants.Key.ENTITY_IS_FLYING, false));
-        entityData.set(DATA_IS_GHOST, tag.getOptionalBoolean(Constants.Key.ENTITY_IS_GHOST, false));
-        entityData.set(DATA_IS_VISIBLE, tag.getOptionalBoolean(Constants.Key.ENTITY_IS_VISIBLE, true));
-        entityData.set(DATA_EXTRA_RENDERER, tag.getOptionalBoolean(Constants.Key.ENTITY_EXTRA_RENDER, true));
+    @Override
+    public void serialize(IDataSerializer serializer) {
+        serializer.write(CodingKeys.IS_SMALL, entityData.get(DATA_IS_CHILD));
+        serializer.write(CodingKeys.IS_FLYING, entityData.get(DATA_IS_FLYING));
+        serializer.write(CodingKeys.IS_GHOST, entityData.get(DATA_IS_GHOST));
+        serializer.write(CodingKeys.IS_VISIBLE, entityData.get(DATA_IS_VISIBLE));
+        serializer.write(CodingKeys.EXTRA_RENDER, entityData.get(DATA_EXTRA_RENDERER));
 
-        entityData.set(DATA_SCALE, tag.getOptionalFloat(Constants.Key.ENTITY_SCALE, 1.0f));
-        entityData.set(DATA_TEXTURE, tag.getOptionalTextureDescriptor(Constants.Key.ENTITY_TEXTURE, PlayerTextureDescriptor.EMPTY));
+        serializer.write(CodingKeys.SCALE, getScale());
+        serializer.write(CodingKeys.TEXTURE, getTextureDescriptor());
 
-        readCustomPose(tag.getCompound(Constants.Key.ENTITY_POSE));
+        serializer.write(CodingKeys.POSE, saveCustomPose());
     }
 
-    public void addExtendedData(CompoundTag tag) {
-        tag.putOptionalBoolean(Constants.Key.ENTITY_IS_SMALL, entityData.get(DATA_IS_CHILD), false);
-        tag.putOptionalBoolean(Constants.Key.ENTITY_IS_FLYING, entityData.get(DATA_IS_FLYING), false);
-        tag.putOptionalBoolean(Constants.Key.ENTITY_IS_GHOST, entityData.get(DATA_IS_GHOST), false);
-        tag.putOptionalBoolean(Constants.Key.ENTITY_IS_VISIBLE, entityData.get(DATA_IS_VISIBLE), true);
-        tag.putOptionalBoolean(Constants.Key.ENTITY_EXTRA_RENDER, entityData.get(DATA_EXTRA_RENDERER), true);
+    @Override
+    public void deserialize(IDataSerializer serializer) {
+        entityData.set(DATA_IS_CHILD, serializer.read(CodingKeys.IS_SMALL));
+        entityData.set(DATA_IS_FLYING, serializer.read(CodingKeys.IS_FLYING));
+        entityData.set(DATA_IS_GHOST, serializer.read(CodingKeys.IS_GHOST));
+        entityData.set(DATA_IS_VISIBLE, serializer.read(CodingKeys.IS_VISIBLE));
+        entityData.set(DATA_EXTRA_RENDERER, serializer.read(CodingKeys.EXTRA_RENDER));
 
-        tag.putOptionalFloat(Constants.Key.ENTITY_SCALE, getScale(), 1.0f);
-        tag.putOptionalTextureDescriptor(Constants.Key.ENTITY_TEXTURE, getTextureDescriptor(), PlayerTextureDescriptor.EMPTY);
+        entityData.set(DATA_SCALE, serializer.read(CodingKeys.SCALE));
+        entityData.set(DATA_TEXTURE, serializer.read(CodingKeys.TEXTURE));
 
-        tag.put(Constants.Key.ENTITY_POSE, saveCustomPose());
+        readCustomPose(serializer.read(CodingKeys.POSE));
     }
 
     @Override
@@ -242,12 +249,12 @@ public class MannequinEntity extends AbstractLivingEntity.ArmorStand implements 
 
     @Override
     public void brokenByPlayer(ServerLevel serverLevel, DamageSource source) {
-        Player player = null;
-        if (source.getEntity() instanceof Player) {
-            player = (Player) source.getEntity();
-        }
-        if (player != null && !player.getAbilities().instabuild) {
-            Block.popResource(this.getLevel(), this.blockPosition(), createMannequinStack());
+        // drop a mannequin item stack?
+        if (source.getEntity() instanceof Player player && !player.getAbilities().instabuild) {
+            var entityData = new EntityData();
+            entityData.setScale(getScale());
+            entityData.setTexture(getTextureDescriptor());
+            Block.popResource(getLevel(), blockPosition(), entityData.getItemStack());
         }
         this.brokenByAnything(serverLevel, source);
     }
@@ -263,16 +270,6 @@ public class MannequinEntity extends AbstractLivingEntity.ArmorStand implements 
         }
     }
 
-    protected ItemStack createMannequinStack() {
-        var itemStack = new ItemStack(ModItems.MANNEQUIN.get());
-        var entityTag = new CompoundTag();
-        entityTag.putString(Constants.Key.ID, ModEntityTypes.MANNEQUIN.getRegistryName().toString());
-        entityTag.putOptionalFloat(Constants.Key.ENTITY_SCALE, getScale(), 1.0f);
-        entityTag.putOptionalTextureDescriptor(Constants.Key.ENTITY_TEXTURE, getTextureDescriptor(), PlayerTextureDescriptor.EMPTY);
-        itemStack.set(ModDataComponents.ENTITY_DATA.get(), entityTag);
-        return itemStack;
-    }
-
     @Override
     @Environment(EnvType.CLIENT)
     public AABB getBoundingBoxForCulling() {
@@ -284,11 +281,11 @@ public class MannequinEntity extends AbstractLivingEntity.ArmorStand implements 
         return boundingBoxForCulling;
     }
 
-    public PlayerTextureDescriptor getTextureDescriptor() {
+    public EntityTextureDescriptor getTextureDescriptor() {
         return this.entityData.get(DATA_TEXTURE);
     }
 
-    public void setTextureDescriptor(PlayerTextureDescriptor descriptor) {
+    public void setTextureDescriptor(EntityTextureDescriptor descriptor) {
         this.entityData.set(DATA_TEXTURE, descriptor);
     }
 
@@ -331,7 +328,7 @@ public class MannequinEntity extends AbstractLivingEntity.ArmorStand implements 
     }
 
     public void saveMannequinToolData(CompoundTag entityTag) {
-        addExtendedData(entityTag);
+        serialize(new TagSerializer(entityTag));
     }
 
     public void readMannequinToolData(CompoundTag entityTag, ItemStack itemStack) {
@@ -369,6 +366,69 @@ public class MannequinEntity extends AbstractLivingEntity.ArmorStand implements 
             }
         }
         // load into entity
-        readExtendedData(newEntityTag);
+        deserialize(new TagSerializer(newEntityTag));
+    }
+
+    private static class CodingKeys {
+
+        public static final IDataSerializerKey<Boolean> IS_SMALL = IDataSerializerKey.create("Small", IDataCodec.BOOL, false);
+        public static final IDataSerializerKey<Boolean> IS_FLYING = IDataSerializerKey.create("Flying", IDataCodec.BOOL, false);
+        public static final IDataSerializerKey<Boolean> IS_GHOST = IDataSerializerKey.create("Ghost", IDataCodec.BOOL, false);
+        public static final IDataSerializerKey<Boolean> IS_VISIBLE = IDataSerializerKey.create("ModelVisible", IDataCodec.BOOL, true);
+        public static final IDataSerializerKey<Boolean> EXTRA_RENDER = IDataSerializerKey.create("ExtraRender", IDataCodec.BOOL, true);
+        public static final IDataSerializerKey<Float> SCALE = IDataSerializerKey.create("Scale", IDataCodec.FLOAT, 1.0f);
+        public static final IDataSerializerKey<EntityTextureDescriptor> TEXTURE = IDataSerializerKey.create("Texture", EntityTextureDescriptor.CODEC, EntityTextureDescriptor.EMPTY);
+        public static final IDataSerializerKey<CompoundTag> POSE = IDataSerializerKey.create("Pose", IDataCodec.COMPOUND_TAG, new CompoundTag());
+    }
+
+    public static class EntityData {
+
+        private final TagSerializer serializer;
+
+        public EntityData() {
+            this.serializer = new TagSerializer();
+        }
+
+        public EntityData(CompoundTag tag) {
+            this.serializer = new TagSerializer(tag);
+        }
+
+        public void setScale(float scale) {
+            serializer.write(CodingKeys.SCALE, scale);
+        }
+
+        public float getScale() {
+            return serializer.read(CodingKeys.SCALE);
+        }
+
+        public void setTexture(EntityTextureDescriptor texture) {
+            serializer.write(CodingKeys.TEXTURE, texture);
+        }
+
+        public EntityTextureDescriptor getTexture() {
+            return serializer.read(CodingKeys.TEXTURE);
+        }
+
+        public boolean isSmall() {
+            return serializer.read(CodingKeys.IS_SMALL);
+        }
+
+        public CompoundTag getEntityTag() {
+            var entityTag = serializer.getTag().copy();
+            if (!entityTag.isEmpty()) {
+                entityTag.putString(Constants.Key.ID, ModEntityTypes.MANNEQUIN.getRegistryName().toString());
+                //itemStack.set(ModDataComponents.ENTITY_DATA.get(), entityTag);
+            }
+            return entityTag;
+        }
+
+        public ItemStack getItemStack() {
+            var itemStack = new ItemStack(ModItems.MANNEQUIN.get());
+            var entityTag = getEntityTag();
+            if (!entityTag.isEmpty()) {
+                itemStack.set(ModDataComponents.ENTITY_DATA.get(), entityTag);
+            }
+            return itemStack;
+        }
     }
 }

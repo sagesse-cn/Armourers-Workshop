@@ -11,7 +11,7 @@ import moe.plushie.armourers_workshop.core.math.Vector3i;
 import moe.plushie.armourers_workshop.core.skin.paint.texture.TextureAnimation;
 import moe.plushie.armourers_workshop.core.skin.paint.texture.TextureProperties;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperties;
-import moe.plushie.armourers_workshop.utils.SkinFileUtils;
+import moe.plushie.armourers_workshop.core.utils.TagSerializer;
 import net.minecraft.nbt.CompoundTag;
 
 import java.io.DataInputStream;
@@ -221,6 +221,6 @@ public interface IInputStream {
     }
 
     default CompoundTag readCompoundTag() throws IOException {
-        return SkinFileUtils.readNBT(getInputStream());
+        return TagSerializer.readFromStream(getInputStream());
     }
 }

@@ -1,6 +1,5 @@
 package moe.plushie.armourers_workshop.core.client.other;
 
-import com.google.common.collect.Iterators;
 import moe.plushie.armourers_workshop.api.client.IBufferSource;
 import moe.plushie.armourers_workshop.api.core.math.IPoseStack;
 import moe.plushie.armourers_workshop.compatibility.api.AbstractItemTransformType;
@@ -23,7 +22,7 @@ import java.util.function.Function;
 public class SkinRenderContext implements ConcurrentRenderingContext {
 
     public static final SkinRenderContext EMPTY = new SkinRenderContext();
-    private static final Iterator<SkinRenderContext> POOL = Iterators.cycle(Collections.newList(100, i -> new SkinRenderContext()));
+    private static final Iterator<SkinRenderContext> POOL = Collections.cycle(Collections.newList(100, i -> new SkinRenderContext()));
 
     protected int lightmap = 0xf000f0;
     protected int overlay = OverlayTexture.NO_OVERLAY;

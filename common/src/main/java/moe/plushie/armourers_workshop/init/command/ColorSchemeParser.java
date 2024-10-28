@@ -1,6 +1,5 @@
 package moe.plushie.armourers_workshop.init.command;
 
-import com.google.common.collect.Maps;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
@@ -37,7 +36,7 @@ public class ColorSchemeParser {
 
     private final StringReader reader;
     private final ColorParser colorParser;
-    private final Map<ISkinPaintType, SkinPaintColor> properties = Maps.newHashMap();
+    private final Map<ISkinPaintType, SkinPaintColor> properties = new HashMap<>();
 
     private Function<SuggestionsBuilder, CompletableFuture<Suggestions>> suggestions = SUGGEST_NOTHING;
 

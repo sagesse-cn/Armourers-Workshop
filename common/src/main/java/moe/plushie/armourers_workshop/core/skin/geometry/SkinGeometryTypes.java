@@ -7,14 +7,13 @@ import moe.plushie.armourers_workshop.init.ModBlocks;
 import moe.plushie.armourers_workshop.init.ModLog;
 import net.minecraft.world.level.block.Block;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.LinkedHashMap;
 
 @SuppressWarnings("unused")
 public final class SkinGeometryTypes {
 
     private static final SkinGeometryType[] ALL_GEOMETRY_TYPE_MAPPING = new SkinGeometryType[256];
-    private static final Map<String, SkinGeometryType> ALL_GEOMETRY_TYPES = new HashMap<>();
+    private static final LinkedHashMap<String, SkinGeometryType> ALL_GEOMETRY_TYPES = new LinkedHashMap<>();
 
     public static final ISkinGeometryType BLOCK_SOLID = register("solid", 0, ModBlocks.SKIN_CUBE);
     public static final ISkinGeometryType BLOCK_GLOWING = register("glowing", 1, ModBlocks.SKIN_CUBE_GLOWING);

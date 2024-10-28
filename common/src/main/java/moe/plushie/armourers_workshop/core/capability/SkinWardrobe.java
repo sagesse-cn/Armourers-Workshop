@@ -1,7 +1,7 @@
 package moe.plushie.armourers_workshop.core.capability;
 
-import moe.plushie.armourers_workshop.api.data.IDataSerializer;
-import moe.plushie.armourers_workshop.api.data.IDataSerializerProvider;
+import moe.plushie.armourers_workshop.api.core.IDataSerializer;
+import moe.plushie.armourers_workshop.api.core.IDataSerializable;
 import moe.plushie.armourers_workshop.core.data.EntityDataStorage;
 import moe.plushie.armourers_workshop.core.data.slot.SkinSlotType;
 import moe.plushie.armourers_workshop.core.entity.EntityProfile;
@@ -27,7 +27,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 @SuppressWarnings("unused")
-public class SkinWardrobe implements IDataSerializerProvider {
+public class SkinWardrobe implements IDataSerializable.Mutable {
 
     private final BitSet flags = new BitSet(6);
 

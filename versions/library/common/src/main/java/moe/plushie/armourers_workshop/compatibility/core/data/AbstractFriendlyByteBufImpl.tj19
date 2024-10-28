@@ -1,9 +1,14 @@
 package moe.plushie.armourers_workshop.compatibility.core.data;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.handler.codec.DecoderException;
+import io.netty.handler.codec.EncoderException;
 import moe.plushie.armourers_workshop.api.annotation.Available;
+import moe.plushie.armourers_workshop.api.core.IDataCodec;
 import moe.plushie.armourers_workshop.api.network.IFriendlyByteBuf;
 import net.minecraft.core.GlobalPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -52,5 +57,21 @@ public abstract class AbstractFriendlyByteBufImpl implements IFriendlyByteBuf {
     @Override
     public void writeComponent(Component component) {
         source.writeComponent(component);
+    }
+
+    @Override
+    public <T> T readNbtWithCodec(IDataCodec<T> codec) {
+        var dataResult = codec.codec().parse(NbtOps.INSTANCE, readNbt());
+        return dataResult.getOrThrow(false, string -> {
+            throw new DecoderException("Failed to decode nbt: " + string);
+        });
+    }
+
+    @Override
+    public <T> void writeNbtWithCodec(IDataCodec<T> codec, T value) {
+        var dataResult = codec.codec().encodeStart(NbtOps.INSTANCE, value);
+        writeNbt((CompoundTag) dataResult.getOrThrow(false, string -> {
+            throw new EncoderException("Failed to encode: " + string + " " + value);
+        }));
     }
 }

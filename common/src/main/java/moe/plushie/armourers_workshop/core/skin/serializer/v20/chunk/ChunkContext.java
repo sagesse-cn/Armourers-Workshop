@@ -1,11 +1,11 @@
 package moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk;
 
-import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.ByteBufOutputStream;
 import moe.plushie.armourers_workshop.core.skin.serializer.SkinFileOptions;
 import moe.plushie.armourers_workshop.core.skin.serializer.v20.ChunkSerializer;
+import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.core.utils.Objects;
 
 import javax.crypto.Cipher;
@@ -21,9 +21,9 @@ import java.util.zip.GZIPOutputStream;
 
 public class ChunkContext {
 
-    private static final ImmutableList<ChunkType> SIMPLE_ENCRYPT = new ImmutableList.Builder<ChunkType>()
-            .add(ChunkType.SKIN_PART)
-            .build();
+    private static final List<ChunkType> SIMPLE_ENCRYPT = Collections.immutableList(builder -> {
+        builder.add(ChunkType.SKIN_PART);
+    });
 
     private boolean enablePartData = true;
     private boolean enablePreviewData = false;

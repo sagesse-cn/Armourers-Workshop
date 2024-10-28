@@ -1,6 +1,6 @@
 package moe.plushie.armourers_workshop.core.item.option;
 
-import moe.plushie.armourers_workshop.utils.Constants;
+import moe.plushie.armourers_workshop.core.utils.Constants;
 import net.minecraft.nbt.CompoundTag;
 
 import java.util.Objects;

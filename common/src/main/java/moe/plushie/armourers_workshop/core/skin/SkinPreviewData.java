@@ -2,7 +2,7 @@ package moe.plushie.armourers_workshop.core.skin;
 
 import moe.plushie.armourers_workshop.api.core.math.ITransform;
 import moe.plushie.armourers_workshop.api.core.utils.IPair;
-import moe.plushie.armourers_workshop.core.data.transform.SkinPartTransform;
+import moe.plushie.armourers_workshop.core.skin.part.SkinPartTransform;
 import moe.plushie.armourers_workshop.core.math.OpenTransform3f;
 import moe.plushie.armourers_workshop.core.skin.geometry.SkinGeometrySet;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPart;

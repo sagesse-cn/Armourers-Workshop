@@ -6,9 +6,9 @@ import moe.plushie.armourers_workshop.api.network.IClientPacketHandler;
 import moe.plushie.armourers_workshop.api.network.IFriendlyByteBuf;
 import moe.plushie.armourers_workshop.core.skin.Skin;
 import moe.plushie.armourers_workshop.core.skin.SkinLoader;
+import moe.plushie.armourers_workshop.core.skin.serializer.SkinSerializer;
 import moe.plushie.armourers_workshop.init.ModConfig;
-import moe.plushie.armourers_workshop.utils.SkinFileStreamUtils;
-import moe.plushie.armourers_workshop.utils.StreamUtils;
+import moe.plushie.armourers_workshop.core.utils.StreamUtils;
 import net.minecraft.world.entity.player.Player;
 
 import java.io.InputStream;
@@ -95,7 +95,7 @@ public class ResponseSkinPacket extends CustomPacket {
             return null;
         }
         try (var inputStream = createInputStream(buffer)) {
-            return SkinFileStreamUtils.loadSkinFromStream(inputStream);
+            return SkinSerializer.readFromStream(null, inputStream);
         } catch (Exception exception) {
             exception.printStackTrace();
             return null;
@@ -107,7 +107,7 @@ public class ResponseSkinPacket extends CustomPacket {
             return;
         }
         try (var outputStream = createOutputStream(buffer)) {
-            SkinFileStreamUtils.saveSkinToStream(outputStream, skin);
+            SkinSerializer.writeToStream(skin, null, outputStream);
         } catch (Exception exception) {
             exception.printStackTrace();
         }

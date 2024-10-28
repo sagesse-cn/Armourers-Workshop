@@ -108,7 +108,7 @@ public class CubeReplacingEvent {
         // we just need to replace the matching block colors.
         var newColors = new HashMap<Direction, ISkinPaintColor>();
         for (var dir : Direction.values()) {
-            var targetColor = cube.getColor(dir);
+            var targetColor = (SkinPaintColor) cube.getColor(dir);
             if (sourceBlockColor != null) {
                 var sourceColor = sourceBlockColor.getOrDefault(dir, SkinPaintColor.WHITE);
                 if (!Objects.equals(sourceColor, targetColor)) {
@@ -175,7 +175,7 @@ public class CubeReplacingEvent {
         if (item instanceof IItemColorProvider provider) {
             var paintColor = provider.getItemColor(itemStack);
             if (paintColor != null) {
-                return new BlockPaintColor(paintColor);
+                return new BlockPaintColor((SkinPaintColor) paintColor);
             }
         }
         return null;

@@ -6,7 +6,7 @@ import moe.plushie.armourers_workshop.core.math.Rectangle3i;
 import moe.plushie.armourers_workshop.core.math.Vector2i;
 import moe.plushie.armourers_workshop.core.math.Vector3i;
 import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
-import moe.plushie.armourers_workshop.core.skin.paint.texture.PlayerTextureModel;
+import moe.plushie.armourers_workshop.core.skin.paint.texture.EntityTextureModel;
 import moe.plushie.armourers_workshop.core.utils.OpenDirection;
 import net.minecraft.core.Direction;
 
@@ -16,7 +16,7 @@ import java.util.function.Function;
 
 public class BoundingBox extends Rectangle3i {
 
-    public static final PlayerTextureModel MODEL = PlayerTextureModel.STAVE_V2;
+    public static final EntityTextureModel MODEL = EntityTextureModel.STAVE_V2;
 
     private final ISkinPartType partType;
 

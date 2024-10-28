@@ -1,6 +1,5 @@
 package moe.plushie.armourers_workshop.core.skin.animation.molang.impl;
 
-import com.google.common.collect.ImmutableMap;
 import moe.plushie.armourers_workshop.core.skin.animation.molang.core.Binary;
 import moe.plushie.armourers_workshop.core.skin.animation.molang.core.Compound;
 import moe.plushie.armourers_workshop.core.skin.animation.molang.core.Constant;
@@ -65,15 +64,15 @@ public class Compiler {
     protected final Map<KeyPath, Function.Factory<?>> functions = new ConcurrentHashMap<>();
 
     private final Map<String, KeyPath> mapping = new ConcurrentHashMap<>();
-    private final Map<String, String> aliases = ImmutableMap.<String, String>builder()
-            .put("c", "context")
-            .put("q", "query")
-            .put("t", "temp")
-            .put("v", "variable")
-            .build();
+    private final Map<String, String> aliases = new ConcurrentHashMap<>();
 
     public Compiler() {
         optimizer = new Optimizer(this);
+
+        registerAlias("context", "c");
+        registerAlias("query", "q");
+        registerAlias("temp", "t");
+        registerAlias("variable", "v");
 
         // Some default values
         registerVariable("PI", new Variable("PI", Math.PI));
@@ -143,6 +142,13 @@ public class Compiler {
     public void registerVariable(String name, Variable variable) {
         var key = parseName(name.toLowerCase());
         variables.put(key, variable);
+    }
+
+    /**
+     * Register a alias name to for variable.
+     */
+    public void registerAlias(String name, String aliasedName) {
+        aliases.put(aliasedName, name);
     }
 
     /**

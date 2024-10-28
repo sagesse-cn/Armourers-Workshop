@@ -35,7 +35,6 @@ import moe.plushie.armourers_workshop.init.platform.event.common.RegisterCommand
 import moe.plushie.armourers_workshop.library.data.SkinLibraryManager;
 import moe.plushie.armourers_workshop.utils.TranslateUtils;
 import moe.plushie.armourers_workshop.utils.TypedRegistry;
-import net.minecraft.Util;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.CompoundTagArgument;
@@ -48,20 +47,18 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
 public class ModCommands {
 
-    private static final HashMap<String, ISkinPaintType> DYE_TYPES = Util.make(() -> {
-        HashMap<String, ISkinPaintType> map = new HashMap<>();
+    private static final Map<String, ISkinPaintType> DYE_TYPES = Collections.immutableMap(builder -> {
         for (int i = 0; i < 8; ++i) {
-            ISkinPaintType paintType = SkinPaintTypes.byId(i + 1);
-            String name = paintType.getRegistryName().getPath();
-            map.put(name.replaceAll("_", ""), paintType);
+            var paintType = SkinPaintTypes.byId(i + 1);
+            var name = paintType.getRegistryName().getPath();
+            builder.put(name.replaceAll("_", ""), paintType);
         }
-        return map;
     });
 
     private static final DynamicCommandExceptionType ERROR_NOT_ENOUGH_SLOT = new DynamicCommandExceptionType(ob -> Component.translatable("commands.armourers_workshop.armourers.error.notEnoughSlot", ob));

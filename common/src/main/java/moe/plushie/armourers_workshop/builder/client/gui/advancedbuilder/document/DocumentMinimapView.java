@@ -4,12 +4,12 @@ import com.apple.library.coregraphics.CGRect;
 import com.apple.library.uikit.UIEdgeInsets;
 import com.apple.library.uikit.UIMenuController;
 import com.apple.library.uikit.UIView;
-import com.google.common.collect.Lists;
 import moe.plushie.armourers_workshop.core.client.gui.widget.TreeIndexPath;
 import moe.plushie.armourers_workshop.core.client.gui.widget.TreeNode;
 import moe.plushie.armourers_workshop.core.client.gui.widget.TreeView;
 import moe.plushie.armourers_workshop.core.client.gui.widget.TreeViewDelegate;
-import moe.plushie.armourers_workshop.core.skin.document.SkinDocumentNode;
+import moe.plushie.armourers_workshop.core.skin.serializer.document.SkinDocumentNode;
+import moe.plushie.armourers_workshop.core.utils.Collections;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -96,7 +96,7 @@ public class DocumentMinimapView extends UIView {
     private TreeNode _findNode(TreeIndexPath indexPath) {
         List<Integer> indexes = indexPath.getIndexes();
         if (indexes.isEmpty()) {
-            indexes = Lists.newArrayList(0);
+            indexes = Collections.newList(0);
         }
         TreeNode node = treeView.rootNode();
         for (int index : indexes) {

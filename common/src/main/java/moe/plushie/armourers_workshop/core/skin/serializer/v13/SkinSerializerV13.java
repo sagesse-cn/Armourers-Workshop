@@ -3,23 +3,23 @@ package moe.plushie.armourers_workshop.core.skin.serializer.v13;
 import moe.plushie.armourers_workshop.api.skin.ISkinType;
 import moe.plushie.armourers_workshop.core.skin.Skin;
 import moe.plushie.armourers_workshop.core.skin.SkinTypes;
-import moe.plushie.armourers_workshop.core.skin.exception.InvalidCubeTypeException;
+import moe.plushie.armourers_workshop.core.skin.serializer.exception.InvalidCubeTypeException;
 import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintData;
-import moe.plushie.armourers_workshop.core.skin.paint.texture.PlayerTextureModel;
+import moe.plushie.armourers_workshop.core.skin.paint.texture.EntityTextureModel;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPart;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperties;
 import moe.plushie.armourers_workshop.core.skin.serializer.SkinFileHeader;
 import moe.plushie.armourers_workshop.core.skin.serializer.SkinFileOptions;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IInputStream;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IOutputStream;
-import moe.plushie.armourers_workshop.core.skin.serializer.io.ISkinSerializer;
+import moe.plushie.armourers_workshop.core.skin.serializer.io.IOSerializer;
 import moe.plushie.armourers_workshop.init.ModLog;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
-public final class SkinSerializerV13 implements ISkinSerializer {
+public final class SkinSerializerV13 implements IOSerializer {
 
     public static final int FILE_VERSION = 13;
 
@@ -63,7 +63,7 @@ public final class SkinSerializerV13 implements ISkinSerializer {
         if (skin.getPaintData() != null) {
             stream.writeBoolean(true);
             int[] colors = skin.getPaintData().getData();
-            for (int i = 0; i < PlayerTextureModel.TEXTURE_OLD_SIZE; i++) {
+            for (int i = 0; i < EntityTextureModel.TEXTURE_OLD_SIZE; i++) {
                 stream.writeInt(colors[i]);
             }
         } else {
@@ -83,7 +83,7 @@ public final class SkinSerializerV13 implements ISkinSerializer {
 
 
     @Override
-    public Skin readFromStream(IInputStream stream, SkinFileOptions options) throws IOException, InvalidCubeTypeException {
+    public Skin readFromStream(IInputStream stream, SkinFileOptions options) throws IOException {
         if (!stream.readString().equals(TAG_SKIN_HEADER)) {
             ModLog.error("Error loading skin header.");
         }
@@ -151,7 +151,7 @@ public final class SkinSerializerV13 implements ISkinSerializer {
         if (hasPaintData) {
             paintData = SkinPaintData.v1();
             int[] colors = paintData.getData();
-            for (int i = 0; i < PlayerTextureModel.TEXTURE_OLD_SIZE; i++) {
+            for (int i = 0; i < EntityTextureModel.TEXTURE_OLD_SIZE; i++) {
                 colors[i] = stream.readInt();
             }
         }

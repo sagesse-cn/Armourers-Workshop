@@ -17,7 +17,7 @@ import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintScheme;
 import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.init.ModConfig;
 import moe.plushie.armourers_workshop.utils.RenderSystem;
-import moe.plushie.armourers_workshop.utils.ThreadUtils;
+import moe.plushie.armourers_workshop.core.utils.Executors;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import org.jetbrains.annotations.Nullable;
@@ -32,7 +32,7 @@ import java.util.concurrent.ExecutorService;
 
 public class ConcurrentBufferCompiler {
 
-    private static final ExecutorService QUEUE = ThreadUtils.newFixedThreadPool(ModConfig.Client.vertexCompileThreadCount, "AW-SKIN-VB");
+    private static final ExecutorService QUEUE = Executors.newFixedThreadPool(ModConfig.Client.vertexCompileThreadCount, "AW-SKIN-VB");
     private static final CacheQueue<Object, Group> CACHING = new CacheQueue<>(Duration.ofSeconds(30), it -> RenderSystem.recordRenderCall(it::release));
     private static final VertexIndexObject INDEXER = new VertexIndexObject(4, 6, (builder, index) -> {
         builder.accept(index);

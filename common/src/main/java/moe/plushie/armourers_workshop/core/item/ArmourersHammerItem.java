@@ -1,7 +1,7 @@
 package moe.plushie.armourers_workshop.core.item;
 
 import moe.plushie.armourers_workshop.api.common.IItemHandler;
-import moe.plushie.armourers_workshop.utils.Constants;
+import moe.plushie.armourers_workshop.core.utils.Constants;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;

@@ -13,7 +13,7 @@ import moe.plushie.armourers_workshop.init.ModPermissions;
 import moe.plushie.armourers_workshop.init.platform.EnvironmentManager;
 import moe.plushie.armourers_workshop.init.platform.NetworkManager;
 import moe.plushie.armourers_workshop.library.network.UpdateLibraryFilesPacket;
-import moe.plushie.armourers_workshop.utils.Constants;
+import moe.plushie.armourers_workshop.core.utils.Constants;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 

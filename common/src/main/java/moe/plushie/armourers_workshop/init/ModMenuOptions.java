@@ -1,9 +1,9 @@
 package moe.plushie.armourers_workshop.init;
 
+import moe.plushie.armourers_workshop.core.utils.Constants;
+import moe.plushie.armourers_workshop.core.utils.TagSerializer;
 import moe.plushie.armourers_workshop.init.environment.EnvironmentExecutor;
 import moe.plushie.armourers_workshop.init.platform.EnvironmentManager;
-import moe.plushie.armourers_workshop.utils.Constants;
-import moe.plushie.armourers_workshop.utils.SkinFileUtils;
 import net.minecraft.nbt.CompoundTag;
 
 import java.io.File;
@@ -77,7 +77,7 @@ public class ModMenuOptions {
 
     private void load() {
         try (var inputStream = new FileInputStream(contentPath)) {
-            var tag = SkinFileUtils.readNBT(inputStream);
+            var tag = TagSerializer.readFromStream(inputStream);
             values.merge(tag);
         } catch (Exception e) {
             e.printStackTrace();
@@ -86,7 +86,7 @@ public class ModMenuOptions {
 
     private void save() {
         try (var outputStream = new FileOutputStream(contentPath)) {
-            SkinFileUtils.writeNBT(values, outputStream);
+            TagSerializer.writeToStream(values, outputStream);
         } catch (Exception e) {
             e.printStackTrace();
         }

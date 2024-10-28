@@ -1,22 +1,23 @@
 package moe.plushie.armourers_workshop.init.platform;
 
-import com.google.common.collect.ImmutableMap;
 import moe.plushie.armourers_workshop.api.core.IResourceLocation;
 import moe.plushie.armourers_workshop.api.data.IDataPackBuilder;
 import moe.plushie.armourers_workshop.core.data.DataPackLoader;
 import moe.plushie.armourers_workshop.core.data.DataPackType;
+import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.init.platform.event.common.DataPackEvent;
 import net.minecraft.server.packs.resources.ResourceManager;
 
+import java.util.Map;
 import java.util.function.Function;
 
 public class DataPackManager {
 
-    private static final ImmutableMap<DataPackType, DataPackLoader> INSTANCES = ImmutableMap.<DataPackType, DataPackLoader>builder()
-            .put(DataPackType.SERVER_DATA, new Data())
-            .put(DataPackType.CLIENT_RESOURCES, new Resources())
-            .put(DataPackType.BUNDLED_DATA, new Bundle())
-            .build();
+    private static final Map<DataPackType, DataPackLoader> INSTANCES = Collections.immutableMap(builder -> {
+        builder.put(DataPackType.SERVER_DATA, new Data());
+        builder.put(DataPackType.CLIENT_RESOURCES, new Resources());
+        builder.put(DataPackType.BUNDLED_DATA, new Bundle());
+    });
 
     public static DataPackLoader byType(DataPackType packType) {
         return INSTANCES.get(packType);

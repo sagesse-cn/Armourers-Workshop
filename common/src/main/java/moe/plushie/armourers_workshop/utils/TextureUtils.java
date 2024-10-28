@@ -2,8 +2,8 @@ package moe.plushie.armourers_workshop.utils;
 
 import com.mojang.blaze3d.platform.NativeImage;
 import moe.plushie.armourers_workshop.api.core.IResourceLocation;
-import moe.plushie.armourers_workshop.builder.data.PlayerTexture;
-import moe.plushie.armourers_workshop.builder.data.PlayerTextureDescriptor;
+import moe.plushie.armourers_workshop.core.data.PlayerTexture;
+import moe.plushie.armourers_workshop.core.skin.paint.texture.EntityTextureDescriptor;
 import moe.plushie.armourers_workshop.core.client.texture.BakedEntityTexture;
 import moe.plushie.armourers_workshop.core.client.texture.PlayerTextureLoader;
 import moe.plushie.armourers_workshop.core.math.Vector2i;
@@ -37,7 +37,7 @@ public final class TextureUtils {
         return ModTextures.MANNEQUIN_DEFAULT;
     }
 
-    public static OpenResourceLocation getPlayerTextureLocation(PlayerTextureDescriptor descriptor) {
+    public static OpenResourceLocation getPlayerTextureLocation(EntityTextureDescriptor descriptor) {
         PlayerTexture bakedTexture = PlayerTextureLoader.getInstance().loadTexture(descriptor);
         if (bakedTexture != null && bakedTexture.isDownloaded()) {
             return bakedTexture.getLocation();
@@ -50,7 +50,7 @@ public final class TextureUtils {
     }
 
     @Nullable
-    public static BakedEntityTexture getPlayerTextureModel(PlayerTextureDescriptor descriptor) {
+    public static BakedEntityTexture getPlayerTextureModel(EntityTextureDescriptor descriptor) {
         var texture = getPlayerTextureLocation(descriptor);
         if (texture != null) {
             return PlayerTextureLoader.getInstance().getTextureModel(texture);
@@ -58,7 +58,7 @@ public final class TextureUtils {
         return null;
     }
 
-    public static SkinPaintColor getPlayerTextureModelColor(PlayerTextureDescriptor descriptor, Vector2i texturePos) {
+    public static SkinPaintColor getPlayerTextureModelColor(EntityTextureDescriptor descriptor, Vector2i texturePos) {
         var textureModel = getPlayerTextureModel(descriptor);
         if (textureModel != null) {
             return textureModel.getColor(texturePos);

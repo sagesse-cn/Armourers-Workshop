@@ -2,6 +2,7 @@ package moe.plushie.armourers_workshop.core.skin.paint;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import moe.plushie.armourers_workshop.api.core.IDataCodec;
 import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintColor;
 import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintType;
 
@@ -14,6 +15,8 @@ public class SkinPaintColor implements ISkinPaintColor {
     private final static Cache<Integer, SkinPaintColor> POOL = CacheBuilder.newBuilder()
             .maximumSize(2048)
             .build();
+
+    public static final IDataCodec<SkinPaintColor> CODEC = IDataCodec.INT.either(IDataCodec.STRING, SkinPaintColor::parseColor).xmap(SkinPaintColor::of, ISkinPaintColor::getRawValue);
 
     protected final int value;
     protected final int rgb;
@@ -67,6 +70,18 @@ public class SkinPaintColor implements ISkinPaintColor {
 
     public static SkinPaintType getPaintType(int value) {
         return SkinPaintTypes.byId(value >> 24 & 0xff);
+    }
+
+    public static int parseColor(String colorString) {
+        try {
+            int value = Integer.decode(colorString);
+            if ((value & 0xff000000) == 0) {
+                value |= 0xff000000;
+            }
+            return value;
+        } catch (NumberFormatException e) {
+            return 0;
+        }
     }
 
     public static boolean isOpaque(int color) {

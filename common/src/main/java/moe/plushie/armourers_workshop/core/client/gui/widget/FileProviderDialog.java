@@ -11,11 +11,11 @@ import com.apple.library.uikit.UIImageView;
 import com.apple.library.uikit.UILabel;
 import com.apple.library.uikit.UIView;
 import moe.plushie.armourers_workshop.api.library.ISkinLibrary;
-import moe.plushie.armourers_workshop.api.skin.ISkinFileHeader;
+import moe.plushie.armourers_workshop.api.skin.serializer.ISkinFileHeader;
 import moe.plushie.armourers_workshop.api.skin.ISkinType;
+import moe.plushie.armourers_workshop.core.utils.FileUtils;
 import moe.plushie.armourers_workshop.init.ModLog;
 import moe.plushie.armourers_workshop.init.ModTextures;
-import moe.plushie.armourers_workshop.utils.SkinFileUtils;
 import net.minecraft.Util;
 
 import java.io.File;
@@ -107,7 +107,7 @@ public class FileProviderDialog extends ConfirmDialog {
         selectedPath = newSelectedPath;
         var targetPath = new File(rootPath, selectedPath);
         var items = getSkinFiles(targetPath, false);
-        var path = SkinFileUtils.getRelativePath(targetPath, rootPath, true);
+        var path = FileUtils.getRelativePath(targetPath, rootPath, true);
         if (path != null && !path.equals("/")) {
             items.add(0, new FileItem("..", newSelectedPath + "/..", true));
         }
@@ -143,14 +143,14 @@ public class FileProviderDialog extends ConfirmDialog {
         }
 
         for (var file : templateFiles) {
-            var path = SkinFileUtils.getRelativePath(file, rootPath, true);
+            var path = FileUtils.getRelativePath(file, rootPath, true);
             var filename = file.getName();
             if (file.isDirectory()) {
                 fileList.add(new FileItem(filename, path, true));
                 continue;
             }
             if (filename.toLowerCase().endsWith(extension)) {
-                String name = SkinFileUtils.getBaseName(filename);
+                String name = FileUtils.getBaseName(filename);
                 fileList.add(new FileItem(name, path, false));
             }
         }

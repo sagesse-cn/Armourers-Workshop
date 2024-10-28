@@ -1,12 +1,12 @@
 package moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk;
 
-import com.google.common.collect.Iterators;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufOutputStream;
 import io.netty.buffer.Unpooled;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IOConsumer;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IOExecutor;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IOutputStream;
+import moe.plushie.armourers_workshop.core.utils.Collections;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -59,7 +59,7 @@ public class ChunkOutputStream implements IOutputStream {
             node = node.next;
         }
         // freeze all pending variable node.
-        var iterator = Iterators.cycle(pending);
+        var iterator = Collections.cycle(pending);
         while (iterator.hasNext()) {
             if (iterator.next().freeze()) {
                 iterator.remove();

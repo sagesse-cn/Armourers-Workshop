@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import moe.plushie.armourers_workshop.api.network.IFriendlyByteBuf;
 import moe.plushie.armourers_workshop.core.network.CustomPacket;
+import moe.plushie.armourers_workshop.core.utils.Executors;
 import moe.plushie.armourers_workshop.init.ModLog;
 
 import java.util.ArrayList;
@@ -20,7 +21,7 @@ public class PacketSplitter {
     private final int SPLIT_END_FLAG = -3;
 
     private final HashMap<UUID, ArrayList<ByteBuf>> receivedBuffers = new HashMap<>();
-    private final ExecutorService workThread = ThreadUtils.newFixedThreadPool(2, "AW-NET/N-ED");
+    private final ExecutorService workThread = Executors.newFixedThreadPool(2, "AW-NET/N-ED");
 
     public PacketSplitter() {
     }

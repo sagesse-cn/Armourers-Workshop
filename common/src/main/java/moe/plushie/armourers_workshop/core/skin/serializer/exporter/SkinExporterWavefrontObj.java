@@ -3,7 +3,7 @@ package moe.plushie.armourers_workshop.core.skin.serializer.exporter;
 import moe.plushie.armourers_workshop.api.skin.ISkin;
 import moe.plushie.armourers_workshop.api.skin.ISkinExporter;
 import moe.plushie.armourers_workshop.api.skin.geometry.ISkinGeometryType;
-import moe.plushie.armourers_workshop.core.data.transform.SkinPartTransform;
+import moe.plushie.armourers_workshop.core.skin.part.SkinPartTransform;
 import moe.plushie.armourers_workshop.core.math.OpenPoseStack;
 import moe.plushie.armourers_workshop.core.math.OpenTransform3f;
 import moe.plushie.armourers_workshop.core.math.Rectangle3i;

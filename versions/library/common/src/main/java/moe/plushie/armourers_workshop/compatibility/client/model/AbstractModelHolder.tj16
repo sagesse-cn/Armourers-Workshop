@@ -1,8 +1,8 @@
 package moe.plushie.armourers_workshop.compatibility.client.model;
 
-import com.google.common.collect.ImmutableMap;
 import moe.plushie.armourers_workshop.api.annotation.Available;
 import moe.plushie.armourers_workshop.api.client.model.IModelPartCollector;
+import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.utils.ModelHolder;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelPart;
@@ -13,48 +13,43 @@ import java.util.Map;
 @Available("[1.16, 1.18)")
 public class AbstractModelHolder {
 
-    private static final ImmutableMap<Class<?>, Map<String, String>> FIXER = ImmutableMap.<Class<?>, Map<String, String>>builder()
-            .put(AbstractSkinnableModel.ILLAGER, ImmutableMap.<String, String>builder()
-                    .put("root.head", "parts[0]")
-                    .put("root.body", "parts[1]")
-                    .put("root.left_leg", "parts[2]")
-                    .put("root.right_leg", "parts[3]")
-                    .put("root.arms", "parts[4]")
-                    .put("root.right_arm", "parts[5]")
-                    .put("root.left_arm", "parts[6]")
-                    .put("root.head.hat", "parts[0].children[0]")
-                    .build()
-            )
-            .put(AbstractSkinnableModel.VILLAGER, ImmutableMap.<String, String>builder()
-                    .put("root.head.hat", "parts[0].children[0]")
-                    .put("root.head.hat.hat_rim", "parts[0].children[0].children[0]")
-                    .put("root.head", "parts[0]")
-                    .put("root.head.nose", "parts[0].children[1]")
-                    .put("root.body", "parts[1]")
-                    .put("root.right_leg", "parts[2]")
-                    .put("root.left_leg", "parts[3]")
-                    .put("root.arms", "parts[4]")
-                    .put("root.body.jacket", "parts[1].children[0]")
-                    .build()
-            )
-            .put(AbstractSkinnableModel.IRON_GOLEM, ImmutableMap.<String, String>builder()
-                    .put("root.head", "parts[0]")
-                    .put("root.body", "parts[1]")
-                    .put("root.right_leg", "parts[2]")
-                    .put("root.left_leg", "parts[3]")
-                    .put("root.right_arm", "parts[4]")
-                    .put("root.left_arm", "parts[5]")
-                    .build()
-            )
-            .put(AbstractSkinnableModel.CREEPER, ImmutableMap.<String, String>builder()
-                    .put("root.head", "parts[0]")
-                    .build()
-            )
-            .put(AbstractSkinnableModel.HORSE, ImmutableMap.<String, String>builder()
-                    .put("bodyParts[0].tail", "bodyParts[0].children[0]")
-                    .build()
-            )
-            .build();
+    private static final Map<Class<?>, Map<String, String>> FIXER = Collections.immutableMap(builder -> {
+        builder.put(AbstractSkinnableModel.ILLAGER, Collections.immutableMap(builder2 -> {
+            builder2.put("root.head", "parts[0]");
+            builder2.put("root.body", "parts[1]");
+            builder2.put("root.left_leg", "parts[2]");
+            builder2.put("root.right_leg", "parts[3]");
+            builder2.put("root.arms", "parts[4]");
+            builder2.put("root.right_arm", "parts[5]");
+            builder2.put("root.left_arm", "parts[6]");
+            builder2.put("root.head.hat", "parts[0].children[0]");
+        }));
+        builder.put(AbstractSkinnableModel.VILLAGER, Collections.immutableMap(builder2 -> {
+            builder2.put("root.head.hat", "parts[0].children[0]");
+            builder2.put("root.head.hat.hat_rim", "parts[0].children[0].children[0]");
+            builder2.put("root.head", "parts[0]");
+            builder2.put("root.head.nose", "parts[0].children[1]");
+            builder2.put("root.body", "parts[1]");
+            builder2.put("root.right_leg", "parts[2]");
+            builder2.put("root.left_leg", "parts[3]");
+            builder2.put("root.arms", "parts[4]");
+            builder2.put("root.body.jacket", "parts[1].children[0]");
+        }));
+        builder.put(AbstractSkinnableModel.IRON_GOLEM, Collections.immutableMap(builder2 -> {
+            builder2.put("root.head", "parts[0]");
+            builder2.put("root.body", "parts[1]");
+            builder2.put("root.right_leg", "parts[2]");
+            builder2.put("root.left_leg", "parts[3]");
+            builder2.put("root.right_arm", "parts[4]");
+            builder2.put("root.left_arm", "parts[5]");
+        }));
+        builder.put(AbstractSkinnableModel.CREEPER, Collections.immutableMap(builder2 -> {
+            builder2.put("root.head", "parts[0]");
+        }));
+        builder.put(AbstractSkinnableModel.HORSE, Collections.immutableMap(builder2 -> {
+            builder2.put("bodyParts[0].tail", "bodyParts[0].children[0]");
+        }));
+    });
 
     public static void collect(String root, Iterable<ModelPart> parts, Map<String, ModelPart> collector) {
         int i = 0;

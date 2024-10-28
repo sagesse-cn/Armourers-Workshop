@@ -6,10 +6,10 @@ import moe.plushie.armourers_workshop.builder.blockentity.AdvancedBuilderBlockEn
 import moe.plushie.armourers_workshop.core.client.gui.widget.ConfirmDialog;
 import moe.plushie.armourers_workshop.core.client.gui.widget.TreeView;
 import moe.plushie.armourers_workshop.core.skin.SkinDescriptor;
-import moe.plushie.armourers_workshop.core.skin.document.SkinDocument;
-import moe.plushie.armourers_workshop.core.skin.document.SkinDocumentNode;
-import moe.plushie.armourers_workshop.core.skin.document.SkinDocumentSynchronizer;
-import moe.plushie.armourers_workshop.core.skin.document.SkinDocumentType;
+import moe.plushie.armourers_workshop.core.skin.serializer.document.SkinDocument;
+import moe.plushie.armourers_workshop.core.skin.serializer.document.SkinDocumentNode;
+import moe.plushie.armourers_workshop.core.skin.serializer.document.SkinDocumentSynchronizer;
+import moe.plushie.armourers_workshop.core.skin.serializer.document.SkinDocumentType;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPartTypes;
 
 import java.util.Collection;
@@ -31,7 +31,7 @@ public class DocumentEditor {
         this.document = blockEntity.getDocument();
         this.blockEntity = blockEntity;
         this.connector = new DocumentConnector(document, this);
-        this.synchronizer = new SkinDocumentSynchronizer(blockEntity);
+        this.synchronizer = new SkinDocumentSynchronizer(blockEntity, true);
     }
 
     public void connect() {

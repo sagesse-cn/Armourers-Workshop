@@ -2,8 +2,7 @@ package moe.plushie.armourers_workshop.core.skin.serializer.v20;
 
 import moe.plushie.armourers_workshop.api.core.utils.IPair;
 import moe.plushie.armourers_workshop.api.skin.ISkinType;
-import moe.plushie.armourers_workshop.api.skin.property.ISkinProperties;
-import moe.plushie.armourers_workshop.core.data.transform.SkinItemTransforms;
+import moe.plushie.armourers_workshop.core.math.OpenItemTransforms;
 import moe.plushie.armourers_workshop.core.math.OpenTransform3f;
 import moe.plushie.armourers_workshop.core.math.Rectangle3f;
 import moe.plushie.armourers_workshop.core.skin.Skin;
@@ -112,10 +111,10 @@ public class ChunkSerializers {
         }
     });
 
-    public static final ChunkSerializer<IPair<ISkinType, ISkinProperties>, Void> SKIN_INFO = register(new ChunkSerializer<>(ChunkType.SKIN) {
+    public static final ChunkSerializer<IPair<ISkinType, SkinProperties>, Void> SKIN_INFO = register(new ChunkSerializer<>(ChunkType.SKIN) {
 
         @Override
-        public IPair<ISkinType, ISkinProperties> read(ChunkInputStream stream, Void obj) throws IOException {
+        public IPair<ISkinType, SkinProperties> read(ChunkInputStream stream, Void obj) throws IOException {
             var skinType = stream.readType(SkinTypes::byName);
             return stream.readChunk(it -> {
                 var properties = it.read(SKIN_PROPERTIES);
@@ -129,7 +128,7 @@ public class ChunkSerializers {
         }
 
         @Override
-        public void write(IPair<ISkinType, ISkinProperties> info, Void obj, ChunkOutputStream stream) throws IOException {
+        public void write(IPair<ISkinType, SkinProperties> info, Void obj, ChunkOutputStream stream) throws IOException {
             // we never call write method!!!
         }
     });
@@ -282,10 +281,10 @@ public class ChunkSerializers {
         public void config() {
             // DEPRECATED: "3.0.0-beta.1"
             encoders.put("SET2", (stream, obj) -> {
-                SkinItemTransforms itemTransforms = null;
+                OpenItemTransforms itemTransforms = null;
                 int size1 = stream.readVarInt();
                 if (size1 != 0) {
-                    itemTransforms = new SkinItemTransforms();
+                    itemTransforms = new OpenItemTransforms();
                     for (int i = 1; i < size1; ++i) {
                         var name = stream.readString();
                         var translate = stream.readVector3f();
@@ -302,11 +301,11 @@ public class ChunkSerializers {
             });
             // DEPRECATED: "3.0.0-beta.14"
             encoders.put("SET3", (stream, obj) -> {
-                SkinItemTransforms itemTransforms = null;
+                OpenItemTransforms itemTransforms = null;
                 int dataVersion = stream.readVarInt();
                 int size1 = stream.readVarInt();
                 if (size1 != 0) {
-                    itemTransforms = new SkinItemTransforms();
+                    itemTransforms = new OpenItemTransforms();
                     for (int i = 1; i < size1; ++i) {
                         var name = stream.readString();
                         var translate = stream.readVector3f();
@@ -362,7 +361,7 @@ public class ChunkSerializers {
         return SKIN.read(stream1, null);
     }
 
-    public static IPair<ISkinType, ISkinProperties> readInfoFromStream(IInputStream stream, ChunkContext context) throws IOException {
+    public static IPair<ISkinType, SkinProperties> readInfoFromStream(IInputStream stream, ChunkContext context) throws IOException {
         var allows = Collections.newList(ChunkType.PROPERTIES.getName(), ChunkType.SKIN_SETTINGS.getName());
         var stream1 = new ChunkInputStream(stream.getInputStream(), context, allows::contains);
         return SKIN_INFO.read(stream1, null);

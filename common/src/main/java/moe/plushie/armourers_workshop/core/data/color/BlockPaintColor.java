@@ -1,55 +1,59 @@
 package moe.plushie.armourers_workshop.core.data.color;
 
-import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintColor;
+import moe.plushie.armourers_workshop.api.core.IDataCodec;
+import moe.plushie.armourers_workshop.api.core.IDataSerializable;
+import moe.plushie.armourers_workshop.api.core.IDataSerializer;
+import moe.plushie.armourers_workshop.api.core.IDataSerializerKey;
 import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
+import moe.plushie.armourers_workshop.core.utils.Collections;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.EnumMap;
+import java.util.Map;
 import java.util.Objects;
 
-public class BlockPaintColor {
+public class BlockPaintColor implements IDataSerializable.Immutable {
 
     public static final BlockPaintColor WHITE = new BlockPaintColor(SkinPaintColor.WHITE);
 
-    public static final BlockPaintColor EMPTY = new BlockPaintColor();
+    public static final IDataCodec<BlockPaintColor> CODEC = IDataCodec.COMPOUND_TAG.serializer(BlockPaintColor::new);
 
-    protected ISkinPaintColor paintColor;
-    protected EnumMap<Side, ISkinPaintColor> paintColors;
+    protected SkinPaintColor paintColor;
+    protected EnumMap<Side, SkinPaintColor> paintColors;
 
-    public BlockPaintColor() {
-    }
-
-    public BlockPaintColor(ISkinPaintColor paintColor) {
+    public BlockPaintColor(SkinPaintColor paintColor) {
         this.paintColor = paintColor;
     }
 
-    public void deserializeNBT(CompoundTag tag) {
-        this.paintColor = tag.getOptionalPaintColor(Side.fullyName(), null);
+    public BlockPaintColor(IDataSerializer serializer) {
+        this.paintColor = serializer.read(CodingKeys.ALL);
         this.paintColors = null;
-        for (var side : Side.values()) {
-            var paintColor = tag.getOptionalPaintColor(side.name, null);
+        for (var entry : CodingKeys.SIDES.entrySet()) {
+            var paintColor = serializer.read(entry.getValue());
             if (paintColor != null) {
-                if (this.paintColors == null) {
-                    this.paintColors = new EnumMap<>(Side.class);
+                if (paintColors == null) {
+                    paintColors = new EnumMap<>(Side.class);
                 }
-                this.paintColors.put(side, paintColor);
+                paintColors.put(entry.getKey(), paintColor);
             }
         }
         this.mergePaintColorIfNeeded();
     }
 
-    public CompoundTag serializeNBT() {
-        var tag = new CompoundTag();
-        if (paintColor != null) {
-            tag.putOptionalPaintColor(Side.fullyName(), paintColor, null);
+
+    @Override
+    public void serialize(IDataSerializer serializer) {
+        serializer.write(CodingKeys.ALL, paintColor);
+        if (paintColors == null) {
+            return;
         }
-        if (paintColors != null) {
-            paintColors.forEach((side, paintColor) -> tag.putOptionalPaintColor(side.name, paintColor, null));
+        for (var entry : CodingKeys.SIDES.entrySet()) {
+            var paintColor = paintColors.get(entry.getKey());
+            if (paintColor != null) {
+                serializer.write(entry.getValue(), paintColor);
+            }
         }
-        return tag;
     }
 
     public void putAll(SkinPaintColor paintColor) {
@@ -57,7 +61,7 @@ public class BlockPaintColor {
         this.paintColors = null;
     }
 
-    public void put(Direction dir, ISkinPaintColor paintColor) {
+    public void put(Direction dir, SkinPaintColor paintColor) {
         if (this.paintColors == null) {
             if (Objects.equals(this.paintColor, paintColor)) {
                 return; // not any changes.
@@ -75,11 +79,11 @@ public class BlockPaintColor {
     }
 
 
-    public ISkinPaintColor get(Direction dir) {
+    public SkinPaintColor get(Direction dir) {
         return getOrDefault(dir, null);
     }
 
-    public ISkinPaintColor getOrDefault(Direction dir, ISkinPaintColor defaultValue) {
+    public SkinPaintColor getOrDefault(Direction dir, SkinPaintColor defaultValue) {
         if (paintColor != null) {
             return paintColor;
         }
@@ -89,7 +93,7 @@ public class BlockPaintColor {
         return defaultValue;
     }
 
-    public Collection<ISkinPaintColor> values() {
+    public Collection<SkinPaintColor> values() {
         if (paintColor != null) {
             return Collections.singleton(paintColor);
         }
@@ -127,7 +131,7 @@ public class BlockPaintColor {
             return;
         }
         int total = 0;
-        ISkinPaintColor lastColor = null;
+        SkinPaintColor lastColor = null;
         for (var paintColor : this.paintColors.values()) {
             if (lastColor != null && !lastColor.equals(paintColor)) {
                 return;
@@ -141,14 +145,27 @@ public class BlockPaintColor {
         }
     }
 
-    private EnumMap<Side, ISkinPaintColor> getPaintColors(ISkinPaintColor paintColor) {
-        var paintColors = new EnumMap<Side, ISkinPaintColor>(Side.class);
+    private EnumMap<Side, SkinPaintColor> getPaintColors(SkinPaintColor paintColor) {
+        var paintColors = new EnumMap<Side, SkinPaintColor>(Side.class);
         if (paintColor != null) {
             for (var side : Side.values()) {
                 paintColors.put(side, paintColor);
             }
         }
         return paintColors;
+    }
+
+    private static class CodingKeys {
+
+        public static final IDataSerializerKey<SkinPaintColor> ALL = IDataSerializerKey.create("All", SkinPaintColor.CODEC, null);
+
+        public static final Map<Side, IDataSerializerKey<SkinPaintColor>> SIDES = Collections.immutableMap(builder -> {
+            for (var side : Side.values()) {
+                var name = side.name;
+                var key = IDataSerializerKey.create(name, SkinPaintColor.CODEC, null);
+                builder.put(side, key);
+            }
+        });
     }
 
     // Assume the mapping for facing to the north.
@@ -175,10 +192,6 @@ public class BlockPaintColor {
                 }
             }
             return Side.DOWN;
-        }
-
-        public static String fullyName() {
-            return "All";
         }
 
         public String getName() {

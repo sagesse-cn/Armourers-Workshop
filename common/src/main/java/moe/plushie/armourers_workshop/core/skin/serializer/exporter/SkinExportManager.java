@@ -2,9 +2,9 @@ package moe.plushie.armourers_workshop.core.skin.serializer.exporter;
 
 import moe.plushie.armourers_workshop.api.skin.ISkinExporter;
 import moe.plushie.armourers_workshop.core.skin.Skin;
+import moe.plushie.armourers_workshop.core.utils.FileUtils;
 import moe.plushie.armourers_workshop.init.ModLog;
 import moe.plushie.armourers_workshop.init.platform.EnvironmentManager;
-import moe.plushie.armourers_workshop.utils.SkinFileUtils;
 
 import java.io.File;
 import java.text.DecimalFormat;
@@ -50,7 +50,7 @@ public final class SkinExportManager {
 
     public static void exportSkin(Skin skin, ISkinExporter skinExporter, String filename, float scale) throws Exception {
         var filePath = new File(EnvironmentManager.getRootDirectory(), "model-exports");
-        SkinFileUtils.forceMkdir(filePath);
+        FileUtils.forceMkdir(filePath);
         skinExporter.exportSkin(skin, filePath, filename, scale);
     }
 

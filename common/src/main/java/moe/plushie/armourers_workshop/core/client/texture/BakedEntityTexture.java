@@ -9,7 +9,7 @@ import moe.plushie.armourers_workshop.core.math.Rectangle3i;
 import moe.plushie.armourers_workshop.core.math.Vector2i;
 import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
 import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintTypes;
-import moe.plushie.armourers_workshop.core.skin.paint.texture.PlayerTextureModel;
+import moe.plushie.armourers_workshop.core.skin.paint.texture.EntityTextureModel;
 import moe.plushie.armourers_workshop.core.utils.OpenDirection;
 import moe.plushie.armourers_workshop.init.platform.EnvironmentManager;
 import net.fabricmc.api.EnvType;
@@ -62,7 +62,7 @@ public class BakedEntityTexture {
     }
 
     private void loadColors(int width, int height, boolean slim, IColorAccessor accessor) {
-        for (var entry : PlayerTextureModel.of(width, height, slim).entrySet()) {
+        for (var entry : EntityTextureModel.of(width, height, slim).entrySet()) {
             var box = entry.getValue();
             var part = allParts.computeIfAbsent(entry.getKey(), k -> new HashMap<>());
             allBounds.put(entry.getKey(), box.getBounds());

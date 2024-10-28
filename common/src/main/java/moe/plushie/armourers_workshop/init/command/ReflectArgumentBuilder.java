@@ -1,6 +1,5 @@
 package moe.plushie.armourers_workshop.init.command;
 
-import com.google.common.collect.ImmutableMap;
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
@@ -11,6 +10,7 @@ import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.tree.CommandNode;
+import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.core.utils.Objects;
 import moe.plushie.armourers_workshop.init.network.ExecuteCommandPacket;
 import moe.plushie.armourers_workshop.init.platform.NetworkManager;
@@ -22,19 +22,19 @@ import org.apache.commons.lang3.tuple.Pair;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
 public class ReflectArgumentBuilder<S> extends LiteralArgumentBuilder<S> {
 
-    private static final ImmutableMap<Class<?>, Function<Pair<Object, Field>, ArgumentBuilder<CommandSourceStack, ?>>> FIELD_BUILDERS =
-            new ImmutableMap.Builder<Class<?>, Function<Pair<Object, Field>, ArgumentBuilder<CommandSourceStack, ?>>>()
-                    .put(boolean.class, pair -> argument(pair, BoolArgumentType.bool(), BoolArgumentType::getBool))
-                    .put(int.class, pair -> argument(pair, IntegerArgumentType.integer(), IntegerArgumentType::getInteger))
-                    .put(double.class, pair -> argument(pair, DoubleArgumentType.doubleArg(), DoubleArgumentType::getDouble))
-                    .put(float.class, pair -> argument(pair, FloatArgumentType.floatArg(), FloatArgumentType::getFloat))
-                    .put(String.class, pair -> argument(pair, StringArgumentType.string(), StringArgumentType::getString))
-                    .build();
+    private static final Map<Class<?>, Function<Pair<Object, Field>, ArgumentBuilder<CommandSourceStack, ?>>> FIELD_BUILDERS = Collections.immutableMap(builder -> {
+        builder.put(boolean.class, pair -> argument(pair, BoolArgumentType.bool(), BoolArgumentType::getBool));
+        builder.put(int.class, pair -> argument(pair, IntegerArgumentType.integer(), IntegerArgumentType::getInteger));
+        builder.put(double.class, pair -> argument(pair, DoubleArgumentType.doubleArg(), DoubleArgumentType::getDouble));
+        builder.put(float.class, pair -> argument(pair, FloatArgumentType.floatArg(), FloatArgumentType::getFloat));
+        builder.put(String.class, pair -> argument(pair, StringArgumentType.string(), StringArgumentType::getString));
+    });
 
     private final Class<?> object;
 

@@ -25,15 +25,14 @@ public class Objects {
         return null;
     }
 
-    @Nullable
-    public static <S, T> T flatMap(@Nullable S src, Function<S, T> consumer) {
+    public static <S, T> T flatMap(S src, Function<S, T> consumer) {
         if (src != null) {
             return consumer.apply(src);
         }
         return null;
     }
 
-    public static <S, V> V flatMap(@Nullable S obj, Function<S, V> getter, V defaultValue) {
+    public static <S, V> V flatMap(S obj, Function<S, V> getter, V defaultValue) {
         if (obj != null) {
             V value = getter.apply(obj);
             if (value != null) {

@@ -8,8 +8,8 @@ import moe.plushie.armourers_workshop.core.data.DataPackType;
 import moe.plushie.armourers_workshop.core.data.slot.SkinSlotType;
 import moe.plushie.armourers_workshop.core.entity.EntityProfile;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IODataObject;
+import moe.plushie.armourers_workshop.core.utils.FileUtils;
 import moe.plushie.armourers_workshop.init.platform.DataPackManager;
-import moe.plushie.armourers_workshop.utils.SkinFileUtils;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import org.jetbrains.annotations.Nullable;
@@ -77,7 +77,7 @@ public class ModEntityProfiles {
         private final LinkedHashMap<SkinSlotType, Function<SkinSlotType, Integer>> supports = new LinkedHashMap<>();
 
         public SimpleLoader(IResourceLocation registryName) {
-            this.registryName = ModConstants.key(SkinFileUtils.getBaseName(registryName.getPath()));
+            this.registryName = ModConstants.key(FileUtils.getBaseName(registryName.getPath()));
         }
 
         @Override

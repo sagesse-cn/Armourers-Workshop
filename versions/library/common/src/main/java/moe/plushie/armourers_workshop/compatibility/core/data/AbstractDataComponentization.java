@@ -9,7 +9,7 @@ import com.mojang.datafixers.Typed;
 import com.mojang.datafixers.schemas.Schema;
 import com.mojang.serialization.Dynamic;
 import moe.plushie.armourers_workshop.api.annotation.Available;
-import moe.plushie.armourers_workshop.utils.Constants;
+import moe.plushie.armourers_workshop.core.utils.Constants;
 import net.minecraft.util.datafix.DataFixers;
 import net.minecraft.util.datafix.fixes.NamedEntityFix;
 import net.minecraft.util.datafix.fixes.References;

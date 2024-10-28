@@ -11,7 +11,6 @@ import com.apple.library.uikit.UIImageView;
 import com.apple.library.uikit.UILabel;
 import com.apple.library.uikit.UITextField;
 import com.apple.library.uikit.UITextFieldDelegate;
-import com.google.common.collect.ImmutableList;
 import moe.plushie.armourers_workshop.api.skin.ISkinType;
 import moe.plushie.armourers_workshop.builder.blockentity.ArmourerBlockEntity;
 import moe.plushie.armourers_workshop.builder.menu.ArmourerMenu;
@@ -19,6 +18,7 @@ import moe.plushie.armourers_workshop.builder.network.UpdateArmourerPacket;
 import moe.plushie.armourers_workshop.core.client.gui.widget.SkinComboBox;
 import moe.plushie.armourers_workshop.core.skin.SkinTypes;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperty;
+import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.init.ModTextures;
 import moe.plushie.armourers_workshop.init.platform.EnvironmentManager;
 import moe.plushie.armourers_workshop.init.platform.NetworkManager;
@@ -34,24 +34,24 @@ import java.util.Objects;
 @Environment(EnvType.CLIENT)
 public class ArmourerMainSetting extends ArmourerBaseSetting implements UITextFieldDelegate {
 
-    private static final List<ISkinType> SUPPORTED_SKIN_TYPES = new ImmutableList.Builder<ISkinType>()
-            .add(SkinTypes.ARMOR_HEAD)
-            .add(SkinTypes.ARMOR_CHEST)
-            .add(SkinTypes.ARMOR_LEGS)
-            .add(SkinTypes.ARMOR_FEET)
-            .add(SkinTypes.ARMOR_WINGS)
-            .add(SkinTypes.ITEM_SWORD)
-            .add(SkinTypes.ITEM_SHIELD)
-            .add(SkinTypes.ITEM_BOW)
-            .add(SkinTypes.ITEM_TRIDENT)
-            .add(SkinTypes.ITEM_PICKAXE)
-            .add(SkinTypes.ITEM_AXE)
-            .add(SkinTypes.ITEM_SHOVEL)
-            .add(SkinTypes.ITEM_HOE)
-            .add(SkinTypes.ITEM)
-            .add(SkinTypes.BLOCK)
-            .add(SkinTypes.ADVANCED)
-            .build();
+    private static final List<ISkinType> SUPPORTED_SKIN_TYPES = Collections.immutableList(builder -> {
+        builder.add(SkinTypes.ARMOR_HEAD);
+        builder.add(SkinTypes.ARMOR_CHEST);
+        builder.add(SkinTypes.ARMOR_LEGS);
+        builder.add(SkinTypes.ARMOR_FEET);
+        builder.add(SkinTypes.ARMOR_WINGS);
+        builder.add(SkinTypes.ITEM_SWORD);
+        builder.add(SkinTypes.ITEM_SHIELD);
+        builder.add(SkinTypes.ITEM_BOW);
+        builder.add(SkinTypes.ITEM_TRIDENT);
+        builder.add(SkinTypes.ITEM_PICKAXE);
+        builder.add(SkinTypes.ITEM_AXE);
+        builder.add(SkinTypes.ITEM_SHOVEL);
+        builder.add(SkinTypes.ITEM_HOE);
+        builder.add(SkinTypes.ITEM);
+        builder.add(SkinTypes.BLOCK);
+        builder.add(SkinTypes.ADVANCED);
+    });
 
     private final UITextField nameTextField = new UITextField(new CGRect(8, 58, 158, 16));
     private final UITextField flavorTextField = new UITextField(new CGRect(8, 90, 158, 16));

@@ -1,6 +1,5 @@
 package moe.plushie.armourers_workshop.library.network;
 
-import com.google.common.collect.Iterables;
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.ByteBufOutputStream;
 import moe.plushie.armourers_workshop.api.network.IClientPacketHandler;
@@ -12,12 +11,13 @@ import moe.plushie.armourers_workshop.core.skin.property.SkinProperties;
 import moe.plushie.armourers_workshop.core.skin.serializer.SkinFileHeader;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IInputStream;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IOutputStream;
+import moe.plushie.armourers_workshop.core.utils.Collections;
+import moe.plushie.armourers_workshop.core.utils.Constants;
+import moe.plushie.armourers_workshop.core.utils.FileUtils;
 import moe.plushie.armourers_workshop.core.utils.Objects;
 import moe.plushie.armourers_workshop.library.data.SkinLibraryFile;
 import moe.plushie.armourers_workshop.library.data.SkinLibraryManager;
 import moe.plushie.armourers_workshop.library.data.SkinLibrarySetting;
-import moe.plushie.armourers_workshop.utils.Constants;
-import moe.plushie.armourers_workshop.utils.SkinFileUtils;
 import net.minecraft.world.entity.player.Player;
 
 import java.io.DataInputStream;
@@ -56,7 +56,7 @@ public class UpdateLibraryFilesPacket extends CustomPacket {
     public void encode(IFriendlyByteBuf buffer) {
         var totalSize = publicFiles.size() + privateFiles.size();
         buffer.writeNbt(setting.serializeNBT());
-        writeCompressedBuffer(new ByteBufOutputStream(buffer.asByteBuf()), Iterables.concat(publicFiles, privateFiles), totalSize);
+        writeCompressedBuffer(new ByteBufOutputStream(buffer.asByteBuf()), Collections.concat(publicFiles, privateFiles), totalSize);
     }
 
     @Override
@@ -97,7 +97,7 @@ public class UpdateLibraryFilesPacket extends CustomPacket {
             var inputStream = IInputStream.of(dataStream);
             for (int index = 0; index < totalSize; ++index) {
                 var path = inputStream.readString();
-                var basename = SkinFileUtils.getBaseName(path);
+                var basename = FileUtils.getBaseName(path);
                 if (inputStream.readBoolean()) { // is directory
                     files.add(new SkinLibraryFile(DataDomain.DEDICATED_SERVER, basename, path));
                     continue;

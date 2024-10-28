@@ -1,12 +1,14 @@
 package moe.plushie.armourers_workshop.compatibility.extensions.net.minecraft.world.level.block.state.BlockBehaviour;
 
-import com.google.common.collect.ImmutableMap;
 import moe.plushie.armourers_workshop.api.annotation.Available;
 import moe.plushie.armourers_workshop.compatibility.api.AbstractBlockMaterial;
 import moe.plushie.armourers_workshop.compatibility.api.AbstractBlockMaterialColor;
+import moe.plushie.armourers_workshop.core.utils.Collections;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.MaterialColor;
+
+import java.util.Map;
 
 import manifold.ext.rt.api.Extension;
 import manifold.ext.rt.api.ThisClass;
@@ -15,14 +17,14 @@ import manifold.ext.rt.api.ThisClass;
 @Available("[1.16, 1.20)")
 public class Constructor {
 
-    private static final ImmutableMap<AbstractBlockMaterial, Material> MATERIALS = ImmutableMap.<AbstractBlockMaterial, Material>builder()
-            .put(AbstractBlockMaterial.STONE, Material.STONE)
-            .put(AbstractBlockMaterial.GLASS, Material.GLASS)
-            .build();
+    private static final Map<AbstractBlockMaterial, Material> MATERIALS = Collections.immutableMap(builder -> {
+        builder.put(AbstractBlockMaterial.STONE, Material.STONE);
+        builder.put(AbstractBlockMaterial.GLASS, Material.GLASS);
+    });
 
-    private static final ImmutableMap<AbstractBlockMaterialColor, MaterialColor> MATERIAL_COLORS = ImmutableMap.<AbstractBlockMaterialColor, MaterialColor>builder()
-            .put(AbstractBlockMaterialColor.NONE, MaterialColor.NONE)
-            .build();
+    private static final Map<AbstractBlockMaterialColor, MaterialColor> MATERIAL_COLORS = Collections.immutableMap(builder -> {
+        builder.put(AbstractBlockMaterialColor.NONE, MaterialColor.NONE);
+    });
 
     @Extension
     public static class Properties {

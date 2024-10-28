@@ -3,7 +3,7 @@ package moe.plushie.armourers_workshop.builder.client.gui.advancedbuilder.docume
 import com.apple.library.foundation.NSString;
 import com.apple.library.uikit.UIMenuItem;
 import moe.plushie.armourers_workshop.core.client.gui.widget.TreeView;
-import moe.plushie.armourers_workshop.core.skin.document.SkinDocumentNode;
+import moe.plushie.armourers_workshop.core.skin.serializer.document.SkinDocumentNode;
 
 import java.util.ArrayList;
 import java.util.List;

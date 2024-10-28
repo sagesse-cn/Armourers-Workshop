@@ -1,6 +1,5 @@
 package moe.plushie.armourers_workshop.builder.data.undo.action;
 
-import com.google.common.collect.ImmutableMap;
 import moe.plushie.armourers_workshop.api.action.IUserAction;
 import moe.plushie.armourers_workshop.api.common.IPaintable;
 import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintColor;
@@ -15,11 +14,11 @@ import java.util.Map;
 
 public class SetBlockColorAction extends BlockUserAction {
 
-    private final ImmutableMap<Direction, ISkinPaintColor> newValue;
+    private final Map<Direction, ISkinPaintColor> newValue;
 
     public SetBlockColorAction(Level level, BlockPos pos, Map<Direction, ISkinPaintColor> newValue) {
         super(level, pos);
-        this.newValue = ImmutableMap.copyOf(newValue);
+        this.newValue = new HashMap<>(newValue);
     }
 
     @Override

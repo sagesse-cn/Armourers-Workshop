@@ -1,6 +1,5 @@
 package moe.plushie.armourers_workshop.init.command;
 
-import com.google.common.collect.Lists;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -10,6 +9,7 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintType;
 import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
 import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintTypes;
+import moe.plushie.armourers_workshop.core.utils.Collections;
 import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
 
@@ -25,7 +25,7 @@ public class ColorParser {
 
     private static final IntegerArgumentType INTEGER_ARGUMENT = IntegerArgumentType.integer(0, 255);
 
-    private static final List<String> DEFAULT_COLORS = Lists.newArrayList("#ffffff", "0xffffff", "255,255,255");
+    private static final List<String> DEFAULT_COLORS = Collections.newList("#ffffff", "0xffffff", "255,255,255");
 
     private static final HashMap<String, ISkinPaintType> PAINT_TYPES = Util.make(() -> {
         var map = new HashMap<String, ISkinPaintType>();

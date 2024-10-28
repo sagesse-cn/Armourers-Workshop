@@ -4,15 +4,15 @@ import com.google.common.hash.Hashing;
 import com.mojang.authlib.GameProfile;
 import com.mojang.blaze3d.platform.NativeImage;
 import moe.plushie.armourers_workshop.api.core.IResourceLocation;
-import moe.plushie.armourers_workshop.builder.data.PlayerTexture;
-import moe.plushie.armourers_workshop.builder.data.PlayerTextureDescriptor;
+import moe.plushie.armourers_workshop.core.data.PlayerTexture;
+import moe.plushie.armourers_workshop.core.skin.paint.texture.EntityTextureDescriptor;
 import moe.plushie.armourers_workshop.core.entity.MannequinEntity;
 import moe.plushie.armourers_workshop.core.utils.OpenResourceLocation;
 import moe.plushie.armourers_workshop.init.ModLog;
 import moe.plushie.armourers_workshop.init.ModTextures;
 import moe.plushie.armourers_workshop.init.platform.EnvironmentManager;
 import moe.plushie.armourers_workshop.utils.TextureUtils;
-import moe.plushie.armourers_workshop.utils.ThreadUtils;
+import moe.plushie.armourers_workshop.core.utils.Executors;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
@@ -40,20 +40,20 @@ public class PlayerTextureLoader {
     private static final PlayerTextureLoader LOADER = new PlayerTextureLoader();
 
     private final HashMap<String, Optional<GameProfile>> profiles = new HashMap<>();
-    private final HashMap<PlayerTextureDescriptor, Optional<PlayerTexture>> resolvedTextures = new HashMap<>();
-    private final HashSet<PlayerTextureDescriptor> loadingTextures = new HashSet<>();
+    private final HashMap<EntityTextureDescriptor, Optional<PlayerTexture>> resolvedTextures = new HashMap<>();
+    private final HashSet<EntityTextureDescriptor> loadingTextures = new HashSet<>();
 
     private final HashMap<String, BakedEntityTexture> downloadedTextures = new HashMap<>();
     private final HashMap<IResourceLocation, Optional<PlayerTexture>> bakedTextures = new HashMap<>();
 
-    private final Executor workThread = ThreadUtils.newFixedThreadPool(1, "AW-SKIN/T-LD");
+    private final Executor workThread = Executors.newFixedThreadPool(1, "AW-SKIN/T-LD");
 
     public static PlayerTextureLoader getInstance() {
         return LOADER;
     }
 
 
-    public GameProfile getGameProfile(PlayerTextureDescriptor descriptor) {
+    public GameProfile getGameProfile(EntityTextureDescriptor descriptor) {
         var profile = descriptor.getProfile();
         if (profile != null) {
             return profile;
@@ -93,7 +93,7 @@ public class PlayerTextureLoader {
         return TextureUtils.getTexture(entity);
     }
 
-    public IResourceLocation loadTextureLocation(PlayerTextureDescriptor descriptor) {
+    public IResourceLocation loadTextureLocation(EntityTextureDescriptor descriptor) {
         if (!descriptor.isEmpty()) {
             var texture1 = loadTexture(descriptor);
             if (texture1 != null) {
@@ -104,7 +104,7 @@ public class PlayerTextureLoader {
     }
 
     @Nullable
-    public PlayerTexture loadTexture(PlayerTextureDescriptor descriptor) {
+    public PlayerTexture loadTexture(EntityTextureDescriptor descriptor) {
         if (descriptor.isEmpty()) {
             return null;
         }
@@ -117,7 +117,7 @@ public class PlayerTextureLoader {
         return null;
     }
 
-    public void loadTextureDescriptor(PlayerTextureDescriptor descriptor, Consumer<Optional<PlayerTextureDescriptor>> complete) {
+    public void loadTextureDescriptor(EntityTextureDescriptor descriptor, Consumer<Optional<EntityTextureDescriptor>> complete) {
         var texture = resolvedTextures.get(descriptor);
         if (texture != null || descriptor.isEmpty() || !loadingTextures.add(descriptor)) {
             complete.accept(Optional.of(descriptor));
@@ -171,7 +171,7 @@ public class PlayerTextureLoader {
             return;
         }
         profiles.put(key, Optional.empty());
-        workThread.execute(() -> SkullBlockEntity.loadCustomProfile(new GameProfile(PlayerTextureDescriptor.NIL_UUID, name), resolvedProfile -> {
+        workThread.execute(() -> SkullBlockEntity.loadCustomProfile(new GameProfile(EntityTextureDescriptor.NIL_UUID, name), resolvedProfile -> {
             // when an exception occurs, we need to remove and later retry.
             if (resolvedProfile.isPresent()) {
                 profiles.put(name, resolvedProfile);
@@ -197,7 +197,7 @@ public class PlayerTextureLoader {
         });
     }
 
-    private void loadCustomTextureWithName(String name, Consumer<Optional<PlayerTextureDescriptor>> complete) {
+    private void loadCustomTextureWithName(String name, Consumer<Optional<EntityTextureDescriptor>> complete) {
         loadGameProfileWithName(name, resolvedProfile -> {
             if (resolvedProfile.isPresent()) {
                 loadCustomTextureWithProfile(resolvedProfile.get(), complete);
@@ -207,8 +207,8 @@ public class PlayerTextureLoader {
         });
     }
 
-    private void loadCustomTextureWithProfile(GameProfile profile, Consumer<Optional<PlayerTextureDescriptor>> complete) {
-        var descriptor = PlayerTextureDescriptor.fromProfile(profile);
+    private void loadCustomTextureWithProfile(GameProfile profile, Consumer<Optional<EntityTextureDescriptor>> complete) {
+        var descriptor = EntityTextureDescriptor.fromProfile(profile);
         var texture = resolvedTextures.get(descriptor);
         if (texture != null) {
             complete.accept(Optional.of(descriptor));
@@ -226,8 +226,8 @@ public class PlayerTextureLoader {
     }
 
     @SuppressWarnings("UnstableApiUsage")
-    private void loadCustomTextureWithURL(String url, Consumer<Optional<PlayerTextureDescriptor>> complete) {
-        var descriptor = PlayerTextureDescriptor.fromURL(url);
+    private void loadCustomTextureWithURL(String url, Consumer<Optional<EntityTextureDescriptor>> complete) {
+        var descriptor = EntityTextureDescriptor.fromURL(url);
         var texture = resolvedTextures.get(descriptor);
         if (texture != null) {
             complete.accept(Optional.of(descriptor));
@@ -271,7 +271,7 @@ public class PlayerTextureLoader {
         });
     }
 
-    private synchronized void receivePlayerTexture(PlayerTextureDescriptor descriptor, OpenResourceLocation location, String url, String model) {
+    private synchronized void receivePlayerTexture(EntityTextureDescriptor descriptor, OpenResourceLocation location, String url, String model) {
         var resolvedTexture = new PlayerTexture(url, location, model);
         var bakedTexture = getDownloadedTexture(url);
         bakedTexture.setResourceLocation(location);

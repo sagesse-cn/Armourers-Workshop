@@ -1,9 +1,9 @@
 package moe.plushie.armourers_workshop.builder.other;
 
-import com.google.common.collect.Lists;
 import moe.plushie.armourers_workshop.api.network.IFriendlyByteBuf;
 import moe.plushie.armourers_workshop.builder.item.impl.IPaintToolSelector;
 import moe.plushie.armourers_workshop.core.math.Rectangle3i;
+import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.init.ModBlocks;
 import moe.plushie.armourers_workshop.utils.BlockUtils;
 import net.minecraft.core.BlockPos;
@@ -41,7 +41,7 @@ public class CubeSelector implements IPaintToolSelector {
         this.radius = 0;
         this.isApplyAllFaces = true;
         this.isPlaneOnly = false;
-        this.rects = Lists.newArrayList(rects);
+        this.rects = Collections.newList(rects);
     }
 
     protected CubeSelector(IFriendlyByteBuf buffer) {

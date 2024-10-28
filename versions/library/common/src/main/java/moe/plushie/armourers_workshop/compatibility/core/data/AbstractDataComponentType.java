@@ -2,7 +2,8 @@ package moe.plushie.armourers_workshop.compatibility.core.data;
 
 import com.mojang.serialization.Codec;
 import moe.plushie.armourers_workshop.api.annotation.Available;
-import moe.plushie.armourers_workshop.api.common.IDataComponentType;
+import moe.plushie.armourers_workshop.api.core.IDataCodec;
+import moe.plushie.armourers_workshop.api.core.IDataComponentType;
 import moe.plushie.armourers_workshop.core.utils.Objects;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
@@ -19,17 +20,17 @@ public class AbstractDataComponentType<T> implements DataComponentType<T>, IData
 
     protected final DataComponentType<T> key;
     protected final String tag;
-    protected final Codec<T> codec;
+    protected final IDataCodec<T> codec;
     protected final StreamCodec<? super RegistryFriendlyByteBuf, T> streamCodec;
 
-    public AbstractDataComponentType(String tag, Codec<T> codec) {
+    public AbstractDataComponentType(String tag, IDataCodec<T> codec) {
         this.tag = tag;
         this.codec = codec;
-        this.streamCodec = ByteBufCodecs.fromCodecWithRegistries(codec);
+        this.streamCodec = ByteBufCodecs.fromCodecWithRegistries(codec.codec());
         this.key = this;
     }
 
-    public static <T> AbstractDataComponentType<T> create(String tag, Codec<T> codec) {
+    public static <T> AbstractDataComponentType<T> create(String tag, IDataCodec<T> codec) {
         // forward to vanilla.
         if (tag.equals("EntityTag")) {
             return new Proxy<>(DataComponents.ENTITY_DATA, tag, codec);
@@ -74,7 +75,7 @@ public class AbstractDataComponentType<T> implements DataComponentType<T>, IData
     @Nullable
     @Override
     public Codec<T> codec() {
-        return codec;
+        return codec.codec();
     }
 
     @Override
@@ -86,7 +87,7 @@ public class AbstractDataComponentType<T> implements DataComponentType<T>, IData
 
         protected final DataComponentType<CustomData> target;
 
-        public Proxy(DataComponentType<CustomData> target, String tag, Codec<T> codec) {
+        public Proxy(DataComponentType<CustomData> target, String tag, IDataCodec<T> codec) {
             super(tag, codec);
             this.target = target;
         }

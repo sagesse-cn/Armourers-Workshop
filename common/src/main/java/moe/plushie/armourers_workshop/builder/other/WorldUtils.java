@@ -15,13 +15,13 @@ import moe.plushie.armourers_workshop.core.math.Vector3i;
 import moe.plushie.armourers_workshop.core.skin.Skin;
 import moe.plushie.armourers_workshop.core.skin.SkinMarker;
 import moe.plushie.armourers_workshop.core.skin.SkinTypes;
-import moe.plushie.armourers_workshop.core.skin.exception.SkinSaveException;
+import moe.plushie.armourers_workshop.core.skin.serializer.exception.SkinSaveException;
 import moe.plushie.armourers_workshop.core.skin.geometry.SkinGeometryTypes;
 import moe.plushie.armourers_workshop.core.skin.geometry.collection.SkinGeometrySetV1;
 import moe.plushie.armourers_workshop.core.skin.geometry.cube.SkinCube;
 import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
 import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintData;
-import moe.plushie.armourers_workshop.core.skin.paint.texture.PlayerTextureModel;
+import moe.plushie.armourers_workshop.core.skin.paint.texture.EntityTextureModel;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPart;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPartTypes;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperties;
@@ -271,7 +271,7 @@ public final class WorldUtils {
         targetCube.setBlockStateAndColors(targetState, colors);
     }
 
-    public static void copyPaintData(SkinPaintData paintData, PlayerTextureModel.Box srcBox, PlayerTextureModel.Box destBox, boolean isMirrorX) {
+    public static void copyPaintData(SkinPaintData paintData, EntityTextureModel.Box srcBox, EntityTextureModel.Box destBox, boolean isMirrorX) {
         var srcX = srcBox.getBounds().getX();
         var srcY = srcBox.getBounds().getY();
         var srcZ = srcBox.getBounds().getZ();
@@ -302,7 +302,7 @@ public final class WorldUtils {
         colors.forEach(paintData::setColor);
     }
 
-    public static void clearPaintData(SkinPaintData paintData, PlayerTextureModel.Box srcBox) {
+    public static void clearPaintData(SkinPaintData paintData, EntityTextureModel.Box srcBox) {
         srcBox.forEach((texturePos, x, y, z, dir) -> paintData.setColor(texturePos, 0));
     }
 

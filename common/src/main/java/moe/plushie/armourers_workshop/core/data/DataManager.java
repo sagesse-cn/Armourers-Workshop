@@ -1,9 +1,9 @@
 package moe.plushie.armourers_workshop.core.data;
 
-import moe.plushie.armourers_workshop.core.data.source.SkinFileDataSource;
+import moe.plushie.armourers_workshop.core.skin.serializer.source.FileDataSource;
 import moe.plushie.armourers_workshop.core.skin.Skin;
+import moe.plushie.armourers_workshop.core.skin.serializer.SkinSerializer;
 import moe.plushie.armourers_workshop.init.ModConfig;
-import moe.plushie.armourers_workshop.utils.SkinFileStreamUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -17,7 +17,7 @@ public class DataManager {
 
     private static final DataManager INSTANCE = new DataManager();
 
-    private SkinFileDataSource fileDataSource;
+    private FileDataSource fileDataSource;
 
     private final HashMap<String, Connection> reusableConnections = new HashMap<>();
 
@@ -29,7 +29,7 @@ public class DataManager {
         try {
             reusableConnections.clear();
             // connect to file data source.
-            fileDataSource = createFileDataSource(new SkinFileDataSource.Local(rootPath));
+            fileDataSource = createFileDataSource(new FileDataSource.Local(rootPath));
             if (fileDataSource != null) {
                 fileDataSource.connect();
                 fileDataSource.setReconnectHandler(() -> {
@@ -57,14 +57,14 @@ public class DataManager {
 
     public String saveSkin(Skin skin) throws Exception {
         try (var outputStream = new ByteArrayOutputStream(5 * 1024)) {
-            SkinFileStreamUtils.saveSkinToStream(outputStream, skin);
+            SkinSerializer.writeToStream(skin, null, outputStream);
             return saveSkinData(new ByteArrayInputStream(outputStream.toByteArray()));
         }
     }
 
     public Skin loadSkin(String id) throws Exception {
         try (var inputStream = loadSkinData(id)) {
-            return SkinFileStreamUtils.loadSkinFromStream(inputStream);
+            return SkinSerializer.readFromStream(null, inputStream);
         }
     }
 
@@ -87,14 +87,14 @@ public class DataManager {
     }
 
 
-    private SkinFileDataSource createFileDataSource(SkinFileDataSource fallback) throws Exception {
+    private FileDataSource createFileDataSource(FileDataSource fallback) throws Exception {
         var uri = ModConfig.Common.skinDatabaseURL;
         if (uri.startsWith("jdbc:")) {
             var name = uri.replaceAll("jdbc:([^:]+):(.+)", "$1");
-            var source = new SkinFileDataSource.SQL(name, createConnection(uri));
+            var source = new FileDataSource.SQL(name, createConnection(uri));
             return switch (ModConfig.Common.skinDatabaseFallback) {
-                case 0 -> new SkinFileDataSource.Fallback(source, fallback, false);
-                case 2 -> new SkinFileDataSource.Fallback(source, fallback, true);
+                case 0 -> new FileDataSource.Fallback(source, fallback, false);
+                case 2 -> new FileDataSource.Fallback(source, fallback, true);
                 default -> source; // only use database source.
             };
         }

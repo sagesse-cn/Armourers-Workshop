@@ -110,7 +110,7 @@ public class PaintbrushItem extends AbstractColoredToolItem implements IItemTint
 
     @Override
     public void setItemColor(ItemStack itemStack, ISkinPaintColor paintColor) {
-        itemStack.set(ModDataComponents.TOOL_COLOR.get(), paintColor);
+        itemStack.set(ModDataComponents.TOOL_COLOR.get(), (SkinPaintColor) paintColor);
     }
 
     @Override

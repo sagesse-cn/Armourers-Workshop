@@ -1,6 +1,6 @@
 package moe.plushie.armourers_workshop.library.blockentity;
 
-import moe.plushie.armourers_workshop.api.data.IDataSerializer;
+import moe.plushie.armourers_workshop.api.core.IDataSerializer;
 import moe.plushie.armourers_workshop.core.blockentity.UpdatableContainerBlockEntity;
 import moe.plushie.armourers_workshop.utils.NonNullItemList;
 import net.minecraft.core.BlockPos;

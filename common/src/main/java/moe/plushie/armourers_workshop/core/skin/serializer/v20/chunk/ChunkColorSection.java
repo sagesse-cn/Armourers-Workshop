@@ -106,7 +106,7 @@ public abstract class ChunkColorSection {
                 }
                 // restore the parent -> child.
                 for (var parent : textureLists) {
-                    var variants = new ArrayList<>(parent.provider.getVariants());
+                    var variants = new ArrayList<ITextureProvider>(parent.provider.getVariants());
                     for (var child : textureLists) {
                         if (parent.id == child.parentId) {
                             variants.add(child.provider);

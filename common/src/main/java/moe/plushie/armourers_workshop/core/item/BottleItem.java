@@ -9,6 +9,7 @@ import moe.plushie.armourers_workshop.api.core.IResourceLocation;
 import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintColor;
 import moe.plushie.armourers_workshop.core.item.impl.IPaintProvider;
 import moe.plushie.armourers_workshop.core.item.impl.IPaintToolPicker;
+import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
 import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintTypes;
 import moe.plushie.armourers_workshop.init.ModConstants;
 import moe.plushie.armourers_workshop.init.ModDataComponents;
@@ -60,7 +61,7 @@ public class BottleItem extends FlavouredItem implements IItemTintColorProvider,
 
     @Override
     public void setItemColor(ItemStack itemStack, ISkinPaintColor paintColor) {
-        itemStack.set(ModDataComponents.TOOL_COLOR.get(), paintColor);
+        itemStack.set(ModDataComponents.TOOL_COLOR.get(), (SkinPaintColor) paintColor);
     }
 
     @Override

@@ -13,7 +13,7 @@ import com.apple.library.uikit.UIFont;
 import com.apple.library.uikit.UIScreen;
 import com.apple.library.uikit.UIView;
 import moe.plushie.armourers_workshop.api.core.IResourceLocation;
-import moe.plushie.armourers_workshop.builder.data.PlayerTextureDescriptor;
+import moe.plushie.armourers_workshop.core.skin.paint.texture.EntityTextureDescriptor;
 import moe.plushie.armourers_workshop.compatibility.client.AbstractBufferSource;
 import moe.plushie.armourers_workshop.core.client.bake.BakedSkin;
 import moe.plushie.armourers_workshop.core.client.bake.SkinBakery;
@@ -36,7 +36,6 @@ import moe.plushie.armourers_workshop.library.data.impl.ServerPermission;
 import moe.plushie.armourers_workshop.library.data.impl.ServerSkin;
 import moe.plushie.armourers_workshop.library.data.impl.ServerUser;
 import moe.plushie.armourers_workshop.utils.RenderSystem;
-import moe.plushie.armourers_workshop.utils.SkinFileStreamUtils;
 import moe.plushie.armourers_workshop.utils.TranslateUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -68,7 +67,7 @@ public class SkinDetailLibraryPanel extends AbstractLibraryPanel {
     private NSString message;
     private ServerSkin entry;
     private GlobalSkinLibraryWindow.Page returnPage;
-    private PlayerTextureDescriptor playerTexture = PlayerTextureDescriptor.EMPTY;
+    private EntityTextureDescriptor playerTexture = EntityTextureDescriptor.EMPTY;
 
     private final Ticket loadTicket = Ticket.wardrobe();
     private final GlobalSkinLibrary library = GlobalSkinLibrary.getInstance();
@@ -149,7 +148,7 @@ public class SkinDetailLibraryPanel extends AbstractLibraryPanel {
         this.loadTicket.invalidate();
         this.entry = entry;
         this.message = getMessage();
-        this.playerTexture = PlayerTextureDescriptor.EMPTY;
+        this.playerTexture = EntityTextureDescriptor.EMPTY;
         this.updateLikeButtons();
     }
 
@@ -166,7 +165,7 @@ public class SkinDetailLibraryPanel extends AbstractLibraryPanel {
         if (playerTexture.isEmpty()) {
             ServerUser user = entry.getUser();
             if (!user.getName().isEmpty()) {
-                playerTexture = PlayerTextureDescriptor.fromName(user.getName());
+                playerTexture = EntityTextureDescriptor.fromName(user.getName());
             }
         }
         if (Strings.isNotBlank(playerTexture.getName())) {
@@ -259,7 +258,7 @@ public class SkinDetailLibraryPanel extends AbstractLibraryPanel {
         String idString = leftZeroPadding(skinId, 5);
         String skinName = entry.getName();
         File path = new File(EnvironmentManager.getSkinLibraryDirectory(), "downloads");
-        File target = new File(path, SkinFileStreamUtils.makeFileNameValid(idString + " - " + skinName + ".armour"));
+        File target = new File(path, makeFileNameValid(idString + " - " + skinName + ".armour"));
         SkinDescriptor skinDescriptor = entry.getDescriptor();
         buttonDownload.setEnabled(false);
         // yep, we directly download and save in the local.
@@ -290,6 +289,11 @@ public class SkinDetailLibraryPanel extends AbstractLibraryPanel {
                 reloadUI(entry);
             }
         });
+    }
+
+    public String makeFileNameValid(String fileName) {
+        fileName = fileName.replaceAll("[<>:\"/\\\\|?*]", "_");
+        return fileName;
     }
 
     private String leftZeroPadding(String inputString, int length) {

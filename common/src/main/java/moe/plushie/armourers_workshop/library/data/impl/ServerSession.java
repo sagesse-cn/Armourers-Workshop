@@ -1,12 +1,14 @@
 package moe.plushie.armourers_workshop.library.data.impl;
 
-import moe.plushie.armourers_workshop.api.common.IResultHandler;
+import moe.plushie.armourers_workshop.api.core.IResultHandler;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IODataObject;
-import moe.plushie.armourers_workshop.utils.StreamUtils;
-import moe.plushie.armourers_workshop.utils.ThreadUtils;
+import moe.plushie.armourers_workshop.core.utils.Executors;
+import moe.plushie.armourers_workshop.core.utils.JsonSerializer;
+import moe.plushie.armourers_workshop.core.utils.StreamUtils;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,7 +21,7 @@ import java.util.function.Function;
 
 public abstract class ServerSession {
 
-    private static final ExecutorService workThread = ThreadUtils.newFixedThreadPool(1, "AW-SKIN-NT");
+    private static final ExecutorService workThread = Executors.newFixedThreadPool(1, "AW-SKIN-NT");
 
     private static final ArrayList<String> DEFAULT_URLs = new ArrayList<>();
     private static final Map<String, ServerRequest> REQUESTS = new HashMap<>();
@@ -40,13 +42,10 @@ public abstract class ServerSession {
 
     protected <T> T request(String path, @Nullable Map<String, ?> parameters, Function<IODataObject, T> deserializer) throws Exception {
         try {
-            Callable<InputStream> task = buildTask(path, parameters);
-            byte[] bytes = StreamUtils.toByteArray(task.call());
-            IODataObject responseData = StreamUtils.fromPackObject(new ByteArrayInputStream(bytes));
-            if (responseData == null) {
-                throw new RuntimeException("can't parse the object from json");
-            }
-            ServerResponse response = new ServerResponse(responseData);
+            var task = buildTask(path, parameters);
+            var bytes = StreamUtils.readStreamToByteArray(task.call());
+            var responseData = JsonSerializer.readFromStream(new ByteArrayInputStream(bytes));
+            var response = new ServerResponse(responseData);
             if (!response.isValid()) {
                 throw new RuntimeException("a invalid response of the " + path);
             }
@@ -93,7 +92,11 @@ public abstract class ServerSession {
     protected ArrayList<String> getBaseURLs() {
         // must load once.
         if (DEFAULT_URLs.isEmpty()) {
-            loadAPIs();
+            try {
+                loadAPIs();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
         return DEFAULT_URLs;
     }
@@ -118,22 +121,19 @@ public abstract class ServerSession {
         throw new RuntimeException("missing request from " + path);
     }
 
-    private Map<String, ServerRequest> loadAPIs() {
+    private Map<String, ServerRequest> loadAPIs() throws IOException {
         if (!REQUESTS.isEmpty()) {
             return REQUESTS;
         }
-        InputStream inputStream = getClass().getResourceAsStream("/data/armourers_workshop/skin/library/gsl.json");
-        IODataObject root = StreamUtils.fromPackObject(inputStream);
-        if (root == null) {
-            throw new RuntimeException("missing gsl.json in data pack!");
-        }
-        IODataObject server = root.get("server");
+        var inputStream = getClass().getResourceAsStream("/data/armourers_workshop/skin/library/gsl.json");
+        var root = JsonSerializer.readFromStream(inputStream);
+        var server = root.get("server");
         server.entrySet().forEach(it -> {
             if (it.getKey().equals("/host")) {
                 it.getValue().allValues().forEach(url -> DEFAULT_URLs.add(url.stringValue()));
                 return;
             }
-            ServerRequest req = ServerRequest.fromJSON(it.getValue());
+            var req = ServerRequest.fromJSON(it.getValue());
             if (req != null) {
                 req.setPermission(ServerPermission.byId(it.getKey()));
                 REQUESTS.put(it.getKey(), req);

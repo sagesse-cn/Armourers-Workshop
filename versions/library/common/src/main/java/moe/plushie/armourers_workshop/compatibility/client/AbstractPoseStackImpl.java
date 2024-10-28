@@ -6,7 +6,7 @@ import moe.plushie.armourers_workshop.api.core.math.IMatrix4f;
 import moe.plushie.armourers_workshop.api.core.math.IQuaternion3f;
 import moe.plushie.armourers_workshop.core.data.cache.ObjectPool;
 import moe.plushie.armourers_workshop.core.math.OpenPoseStack;
-import moe.plushie.armourers_workshop.core.utils.MatrixBuffers;
+import moe.plushie.armourers_workshop.core.utils.MatrixUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import org.joml.Matrix3f;
@@ -28,8 +28,8 @@ public abstract class AbstractPoseStackImpl {
 
     private static final Quaternionf CONVERTER_QUAT = new Quaternionf();
 
-    private static final FloatBuffer BUFFER3x3 = MatrixBuffers.createFloatBuffer(9);
-    private static final FloatBuffer BUFFER4x4 = MatrixBuffers.createFloatBuffer(16);
+    private static final FloatBuffer BUFFER3x3 = MatrixUtils.createFloatBuffer(9);
+    private static final FloatBuffer BUFFER4x4 = MatrixUtils.createFloatBuffer(16);
 
     public static OpenPoseStack create(Matrix4f matrixStack) {
         var poseStack = REUSABLE_QUEUE.get();

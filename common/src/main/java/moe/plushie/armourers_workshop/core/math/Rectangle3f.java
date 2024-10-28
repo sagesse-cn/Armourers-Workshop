@@ -1,6 +1,6 @@
 package moe.plushie.armourers_workshop.core.math;
 
-import com.google.common.collect.Lists;
+import moe.plushie.armourers_workshop.api.core.IDataCodec;
 import moe.plushie.armourers_workshop.api.core.math.IRectangle3f;
 import moe.plushie.armourers_workshop.api.core.math.IRectangle3i;
 import moe.plushie.armourers_workshop.api.core.math.IVector3f;
@@ -15,6 +15,8 @@ public class Rectangle3f implements IRectangle3f {
     public static final int BYTES = Float.BYTES * 6;
 
     public final static Rectangle3f ZERO = new Rectangle3f(0, 0, 0, 0, 0, 0);
+
+    public static final IDataCodec<Rectangle3f> CODEC = IDataCodec.FLOAT.listOf().xmap(Rectangle3f::new, Rectangle3f::toList);
 
     private float x;
     private float y;
@@ -235,7 +237,7 @@ public class Rectangle3f implements IRectangle3f {
     }
 
     public List<Float> toList() {
-        return Lists.newArrayList(x, y, z, width, height, depth);
+        return Collections.newList(x, y, z, width, height, depth);
     }
 
     @Override

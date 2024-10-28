@@ -19,7 +19,7 @@ import com.apple.library.uikit.UITableViewDataSource;
 import com.apple.library.uikit.UITableViewDelegate;
 import com.apple.library.uikit.UIView;
 import moe.plushie.armourers_workshop.api.library.ISkinLibrary;
-import moe.plushie.armourers_workshop.api.skin.ISkinFileHeader;
+import moe.plushie.armourers_workshop.api.skin.serializer.ISkinFileHeader;
 import moe.plushie.armourers_workshop.compatibility.client.AbstractBufferSource;
 import moe.plushie.armourers_workshop.core.client.bake.SkinBakery;
 import moe.plushie.armourers_workshop.core.client.render.ExtendedItemRenderer;

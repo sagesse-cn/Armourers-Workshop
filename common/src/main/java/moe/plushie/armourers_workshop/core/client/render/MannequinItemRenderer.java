@@ -2,7 +2,7 @@ package moe.plushie.armourers_workshop.core.client.render;
 
 import moe.plushie.armourers_workshop.api.client.IBufferSource;
 import moe.plushie.armourers_workshop.api.core.math.IPoseStack;
-import moe.plushie.armourers_workshop.builder.data.PlayerTextureDescriptor;
+import moe.plushie.armourers_workshop.core.skin.paint.texture.EntityTextureDescriptor;
 import moe.plushie.armourers_workshop.compatibility.api.AbstractItemTransformType;
 import moe.plushie.armourers_workshop.compatibility.client.renderer.AbstractItemStackRenderer;
 import moe.plushie.armourers_workshop.core.math.Vector3f;
@@ -34,7 +34,7 @@ public class MannequinItemRenderer extends AbstractItemStackRenderer {
         poseStack.pushPose();
         poseStack.translate(0.5f, 0.5f, 0.5f); // reset to center
 
-        PlayerTextureDescriptor descriptor = PlayerTextureDescriptor.of(itemStack);
+        EntityTextureDescriptor descriptor = EntityTextureDescriptor.of(itemStack);
         Vector3f rotation = new Vector3f(transform.rotation.x(), transform.rotation.y(), transform.rotation.z());
         Vector3f scale = new Vector3f(transform.scale.x(), transform.scale.y(), transform.scale.z());
 

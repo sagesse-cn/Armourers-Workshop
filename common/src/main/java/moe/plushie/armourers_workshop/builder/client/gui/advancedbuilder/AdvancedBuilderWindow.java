@@ -32,10 +32,10 @@ import moe.plushie.armourers_workshop.core.client.gui.widget.FileProviderDialog;
 import moe.plushie.armourers_workshop.core.client.gui.widget.MenuWindow;
 import moe.plushie.armourers_workshop.core.client.gui.widget.TreeIndexPath;
 import moe.plushie.armourers_workshop.core.skin.Skin;
-import moe.plushie.armourers_workshop.core.skin.document.SkinDocument;
-import moe.plushie.armourers_workshop.core.skin.document.SkinDocumentListener;
-import moe.plushie.armourers_workshop.core.skin.document.SkinDocumentNode;
-import moe.plushie.armourers_workshop.core.skin.document.SkinDocumentType;
+import moe.plushie.armourers_workshop.core.skin.serializer.document.SkinDocument;
+import moe.plushie.armourers_workshop.core.skin.serializer.document.SkinDocumentListener;
+import moe.plushie.armourers_workshop.core.skin.serializer.document.SkinDocumentNode;
+import moe.plushie.armourers_workshop.core.skin.serializer.document.SkinDocumentType;
 import moe.plushie.armourers_workshop.init.ModMenuOptions;
 import moe.plushie.armourers_workshop.init.ModTextures;
 import moe.plushie.armourers_workshop.init.platform.EnvironmentManager;
@@ -316,8 +316,8 @@ public class AdvancedBuilderWindow extends MenuWindow<AdvancedBuilderMenu> imple
     @Override
     public void documentDidUpdateNode(SkinDocumentNode node, CompoundTag tag) {
         rightCard.documentDidUpdateNode(node, tag);
-        if (tag.contains(SkinDocumentNode.Keys.NAME)) {
-            DocumentMinimapNode nodeView = minimapView.findNode(node);
+        if (tag.contains("Name")) {
+            var nodeView = minimapView.findNode(node);
             if (nodeView != null) {
                 nodeView.setTitle(node.getName());
             }

@@ -1,15 +1,17 @@
 package moe.plushie.armourers_workshop.library.data;
 
 import moe.plushie.armourers_workshop.api.library.ISkinLibraryListener;
-import moe.plushie.armourers_workshop.api.skin.ISkinFileHeader;
+import moe.plushie.armourers_workshop.api.skin.serializer.ISkinFileHeader;
 import moe.plushie.armourers_workshop.core.skin.serializer.SkinFileHeader;
+import moe.plushie.armourers_workshop.core.skin.serializer.SkinSerializer;
+import moe.plushie.armourers_workshop.core.utils.Constants;
+import moe.plushie.armourers_workshop.core.utils.FileUtils;
 import moe.plushie.armourers_workshop.init.ModLog;
 import moe.plushie.armourers_workshop.init.platform.EnvironmentManager;
-import moe.plushie.armourers_workshop.utils.Constants;
-import moe.plushie.armourers_workshop.utils.SkinFileStreamUtils;
-import moe.plushie.armourers_workshop.utils.SkinFileUtils;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -44,14 +46,14 @@ public class SkinLibraryLoader implements Runnable {
         }
 
         for (var file : templateFiles) {
-            var path = SkinFileUtils.getRelativePath(file, libraryDirectory, true);
+            var path = FileUtils.getRelativePath(file, libraryDirectory, true);
             var filename = file.getName();
             if (file.isDirectory()) {
                 fileList.add(new SkinLibraryFile(library.domain, filename, path));
                 continue;
             }
             if (filename.toLowerCase().endsWith(Constants.EXT)) {
-                var name = SkinFileUtils.getBaseName(filename);
+                var name = FileUtils.getBaseName(filename);
                 var header = getSkinFileHeader(file);
                 if (header == null) {
                     continue; // Armour file load fail.
@@ -79,15 +81,16 @@ public class SkinLibraryLoader implements Runnable {
         if (cache != null && cache.isValid(modifiedTime)) {
             return cache.getHeader();
         }
-        var header = SkinFileStreamUtils.readHeaderFromFile(file);
-        if (header != null) {
+        try (var inputStream = new FileInputStream(file)) {
+            var header = SkinSerializer.readHeaderFromStream(inputStream);
             if (header instanceof SkinFileHeader) {
-                ((SkinFileHeader) header).setLastModified((int) modifiedTime);
+                header.setLastModified((int) modifiedTime);
             }
             CACHED_FILE_HEADERS.put(key, new CachedFileHeader(modifiedTime, header));
             return header;
+        } catch (IOException exception) {
+            return null;
         }
-        return null;
     }
 
     @Override

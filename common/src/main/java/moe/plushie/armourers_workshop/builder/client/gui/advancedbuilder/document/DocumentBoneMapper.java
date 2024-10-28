@@ -1,6 +1,5 @@
 package moe.plushie.armourers_workshop.builder.client.gui.advancedbuilder.document;
 
-import com.google.common.collect.ImmutableMap;
 import moe.plushie.armourers_workshop.api.armature.IJoint;
 import moe.plushie.armourers_workshop.api.skin.ISkinType;
 import moe.plushie.armourers_workshop.api.skin.part.ISkinPartType;
@@ -9,25 +8,26 @@ import moe.plushie.armourers_workshop.core.armature.Armatures;
 import moe.plushie.armourers_workshop.core.math.Vector3f;
 import moe.plushie.armourers_workshop.core.skin.SkinTypes;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPartTypes;
+import moe.plushie.armourers_workshop.core.utils.Collections;
 
 import java.util.Map;
 import java.util.function.Function;
 
 public class DocumentBoneMapper {
 
-    private static final ImmutableMap<String, ISkinPartType> BOW_PARTS = new ImmutableMap.Builder<String, ISkinPartType>()
-            .put("Arrow", SkinPartTypes.ITEM_ARROW)
-            .put("Frame0", SkinPartTypes.ITEM_BOW0)
-            .put("Frame1", SkinPartTypes.ITEM_BOW1)
-            .put("Frame2", SkinPartTypes.ITEM_BOW2)
-            .put("Frame3", SkinPartTypes.ITEM_BOW3)
-            .build();
+    private static final Map<String, ISkinPartType> BOW_PARTS = Collections.immutableMap(builder -> {
+        builder.put("Arrow", SkinPartTypes.ITEM_ARROW);
+        builder.put("Frame0", SkinPartTypes.ITEM_BOW0);
+        builder.put("Frame1", SkinPartTypes.ITEM_BOW1);
+        builder.put("Frame2", SkinPartTypes.ITEM_BOW2);
+        builder.put("Frame3", SkinPartTypes.ITEM_BOW3);
+    });
 
-    private static final ImmutableMap<String, ISkinPartType> FINISHING_PARTS = new ImmutableMap.Builder<String, ISkinPartType>()
-            .put("Hook", SkinPartTypes.ITEM_FISHING_HOOK)
-            .put("Frame0", SkinPartTypes.ITEM_FISHING_ROD)
-            .put("Frame1", SkinPartTypes.ITEM_FISHING_ROD1)
-            .build();
+    private static final Map<String, ISkinPartType> FINISHING_PARTS = Collections.immutableMap(builder -> {
+        builder.put("Hook", SkinPartTypes.ITEM_FISHING_HOOK);
+        builder.put("Frame0", SkinPartTypes.ITEM_FISHING_ROD);
+        builder.put("Frame1", SkinPartTypes.ITEM_FISHING_ROD1);
+    });
 
     private final Function<String, Entry> provider;
 

@@ -3,7 +3,7 @@ package moe.plushie.armourers_workshop.core.math;
 import moe.plushie.armourers_workshop.api.core.math.IMatrix3f;
 import moe.plushie.armourers_workshop.api.core.math.IMatrix4f;
 import moe.plushie.armourers_workshop.api.core.math.IQuaternion3f;
-import moe.plushie.armourers_workshop.core.utils.MatrixBuffers;
+import moe.plushie.armourers_workshop.core.utils.MatrixUtils;
 
 import java.nio.FloatBuffer;
 
@@ -20,11 +20,11 @@ public class OpenMatrix3f implements IMatrix3f {
     }
 
     public OpenMatrix3f(IMatrix3f matrix) {
-        MatrixBuffers.set(matrix, this);
+        MatrixUtils.set(matrix, this);
     }
 
     public OpenMatrix3f(IMatrix4f matrix) {
-        var buffer = MatrixBuffers.createFloatBuffer(16);
+        var buffer = MatrixUtils.createFloatBuffer(16);
         matrix.store(buffer);
         import44(buffer);
     }
@@ -363,7 +363,7 @@ public class OpenMatrix3f implements IMatrix3f {
 
         private static final ThreadLocal<FastLocal> LOCALS = ThreadLocal.withInitial(FastLocal::new);
 
-        private final FloatBuffer buffer = MatrixBuffers.createFloatBuffer(9);
+        private final FloatBuffer buffer = MatrixUtils.createFloatBuffer(9);
 
         private static OpenMatrix3f from(IMatrix3f value) {
             if (value instanceof OpenMatrix3f matrix) {

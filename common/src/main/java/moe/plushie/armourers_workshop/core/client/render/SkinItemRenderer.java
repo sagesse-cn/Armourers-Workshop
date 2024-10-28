@@ -2,12 +2,12 @@ package moe.plushie.armourers_workshop.core.client.render;
 
 import moe.plushie.armourers_workshop.api.client.IBufferSource;
 import moe.plushie.armourers_workshop.api.core.math.IPoseStack;
+import moe.plushie.armourers_workshop.core.skin.paint.texture.EntityTextureDescriptor;
 import moe.plushie.armourers_workshop.compatibility.api.AbstractItemTransformType;
 import moe.plushie.armourers_workshop.compatibility.client.renderer.AbstractItemStackRenderer;
 import moe.plushie.armourers_workshop.core.client.model.MannequinModel;
 import moe.plushie.armourers_workshop.core.client.other.PlaceholderManager;
 import moe.plushie.armourers_workshop.core.entity.MannequinEntity;
-import moe.plushie.armourers_workshop.core.item.MannequinItem;
 import moe.plushie.armourers_workshop.init.platform.EnvironmentManager;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -52,7 +52,9 @@ public class SkinItemRenderer extends AbstractItemStackRenderer {
             if (player == null) {
                 return ItemStack.EMPTY;
             }
-            playerMannequinItem = MannequinItem.of(player, 1.0f);
+            var entityData = new MannequinEntity.EntityData();
+            entityData.setTexture(EntityTextureDescriptor.fromProfile(player.getGameProfile()));
+            playerMannequinItem = entityData.getItemStack();
         }
         return playerMannequinItem;
     }

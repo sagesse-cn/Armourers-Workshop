@@ -1,11 +1,15 @@
 package moe.plushie.armourers_workshop.core.holiday;
 
+import moe.plushie.armourers_workshop.api.core.IDataCodec;
+import moe.plushie.armourers_workshop.init.ModHolidays;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.Calendar;
 
 public class Holiday {
+
+    public static final IDataCodec<Holiday> CODEC = IDataCodec.STRING.xmap(ModHolidays::byName, Holiday::getName);
 
     protected final String name;
     protected final Calendar startDate;

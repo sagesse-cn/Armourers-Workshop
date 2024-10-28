@@ -9,7 +9,7 @@ import moe.plushie.armourers_workshop.core.math.OpenMatrix3f;
 import moe.plushie.armourers_workshop.core.math.OpenMatrix4f;
 import moe.plushie.armourers_workshop.core.math.Vector4f;
 import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
-import moe.plushie.armourers_workshop.core.utils.MatrixBuffers;
+import moe.plushie.armourers_workshop.core.utils.MatrixUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
@@ -35,7 +35,7 @@ public final class RenderSystem extends AbstractRenderSystem {
     private static final Storage<Float> extendedFogStart = new Storage<>(0.0f);
     private static final Storage<Float> extendedFogEnd = new Storage<>(0.0f);
 
-    private static final FloatBuffer BUFFER = MatrixBuffers.createFloatBuffer(3);
+    private static final FloatBuffer BUFFER = MatrixUtils.createFloatBuffer(3);
 
     public static void call(Runnable task) {
         if (isOnRenderThread()) {

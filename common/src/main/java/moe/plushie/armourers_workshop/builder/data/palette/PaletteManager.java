@@ -4,13 +4,17 @@ import com.apple.library.uikit.UIColor;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import moe.plushie.armourers_workshop.core.utils.FileUtils;
+import moe.plushie.armourers_workshop.core.utils.StreamUtils;
 import moe.plushie.armourers_workshop.init.ModLog;
 import moe.plushie.armourers_workshop.init.platform.EnvironmentManager;
 import moe.plushie.armourers_workshop.utils.ColorUtils;
-import moe.plushie.armourers_workshop.utils.SerializeHelper;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -114,15 +118,25 @@ public class PaletteManager {
             jsonPalette.add("colours", intToJsonArray(palette.getColors()));
             json.add(jsonPalette);
         }
-        var gson = new GsonBuilder().setPrettyPrinting().create();
-        SerializeHelper.writeFile(paletteFile, StandardCharsets.UTF_8, gson.toJson(json));
+        try {
+            FileUtils.forceMkdirParent(paletteFile);
+            var outputStream = new FileOutputStream(paletteFile, false);
+            var text = new GsonBuilder().setPrettyPrinting().create().toJson(json);
+            var data = text.getBytes(StandardCharsets.UTF_8);
+            outputStream.write(data);
+            outputStream.flush();
+            outputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void loadPalettes() {
         ModLog.info("Loading palettes.");
         try {
             paletteMap.clear();
-            var json = SerializeHelper.readJsonFile(paletteFile, StandardCharsets.UTF_8).getAsJsonArray();
+            var text = StreamUtils.readFileToString(paletteFile, StandardCharsets.UTF_8);
+            var json = new JsonParser().parse(text).getAsJsonArray();
             for (var i = 0; i < json.size(); i++) {
                 var jsonPalette = json.get(i).getAsJsonObject();
                 if (jsonPalette.has("name") & jsonPalette.has("colours")) {

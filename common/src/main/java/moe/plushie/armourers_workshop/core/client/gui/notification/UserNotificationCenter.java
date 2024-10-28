@@ -13,7 +13,7 @@ import moe.plushie.armourers_workshop.core.client.gui.widget.BaseDialog;
 import moe.plushie.armourers_workshop.core.client.gui.widget.ContainerMenuToast;
 import moe.plushie.armourers_workshop.core.client.gui.widget.ToastWindow;
 import moe.plushie.armourers_workshop.core.network.ExecuteAlertPacket;
-import moe.plushie.armourers_workshop.core.skin.exception.TranslatableException;
+import moe.plushie.armourers_workshop.core.skin.serializer.exception.TranslatableException;
 import moe.plushie.armourers_workshop.init.ModTextures;
 import moe.plushie.armourers_workshop.utils.RenderSystem;
 import net.fabricmc.api.EnvType;

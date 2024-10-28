@@ -2,7 +2,7 @@ package moe.plushie.armourers_workshop.core.skin.serializer.importer.blockbench;
 
 import io.netty.buffer.Unpooled;
 import moe.plushie.armourers_workshop.api.skin.paint.texture.ITextureProvider;
-import moe.plushie.armourers_workshop.core.data.transform.SkinItemTransforms;
+import moe.plushie.armourers_workshop.core.math.OpenItemTransforms;
 import moe.plushie.armourers_workshop.core.math.OpenMath;
 import moe.plushie.armourers_workshop.core.math.OpenPoseStack;
 import moe.plushie.armourers_workshop.core.math.OpenTransform3f;
@@ -200,8 +200,8 @@ public class BlockBenchExporter {
         return new SkinGeometrySetV2.Mesh(transform, defaultTexturePos[0], faces);
     }
 
-    protected SkinItemTransforms exportItemTransforms(Map<String, BlockBenchDisplay> transforms) {
-        var itemTransforms = new SkinItemTransforms();
+    protected OpenItemTransforms exportItemTransforms(Map<String, BlockBenchDisplay> transforms) {
+        var itemTransforms = new OpenItemTransforms();
         transforms.forEach((name, transform) -> {
             var translation = transform.getTranslation();
             var rotation = transform.getRotation();
@@ -592,13 +592,13 @@ public class BlockBenchExporter {
             int count = values.size();
             for (int i = 0; i < count; i++) {
                 if (i % 3 == 1) { // y-axis.
-                    var value = values[i];
+                    var value = values.get(i);
                     if (value instanceof String script) {
                         value = "-(" + script + ")";
                     } else if (value instanceof Number number) {
                         value = -number.floatValue();
                     }
-                    values[i] = value;
+                    values.set(i, value);
                 }
             }
         }

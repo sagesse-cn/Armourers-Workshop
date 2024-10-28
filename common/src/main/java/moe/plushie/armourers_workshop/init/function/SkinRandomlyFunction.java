@@ -1,6 +1,5 @@
 package moe.plushie.armourers_workshop.init.function;
 
-import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
@@ -8,7 +7,7 @@ import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import moe.plushie.armourers_workshop.api.common.ILootFunction;
-import moe.plushie.armourers_workshop.api.common.IResultHandler;
+import moe.plushie.armourers_workshop.api.core.IResultHandler;
 import moe.plushie.armourers_workshop.core.capability.SkinWardrobe;
 import moe.plushie.armourers_workshop.core.data.slot.SkinSlotType;
 import moe.plushie.armourers_workshop.core.skin.SkinDescriptor;
@@ -67,7 +66,7 @@ public class SkinRandomlyFunction implements ILootFunction {
     public final List<SkinSource> sources;
 
     public SkinRandomlyFunction(Collection<SkinSource> sources) {
-        this.sources = ImmutableList.copyOf(sources);
+        this.sources = Collections.newList(sources);
     }
 
     @Override

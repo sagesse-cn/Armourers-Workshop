@@ -1,7 +1,7 @@
 package moe.plushie.armourers_workshop.builder.data.undo.action;
 
 import moe.plushie.armourers_workshop.api.action.IUserAction;
-import moe.plushie.armourers_workshop.utils.Constants;
+import moe.plushie.armourers_workshop.core.utils.Constants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;

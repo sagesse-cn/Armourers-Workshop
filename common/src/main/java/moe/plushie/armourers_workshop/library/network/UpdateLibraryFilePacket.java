@@ -4,11 +4,11 @@ import moe.plushie.armourers_workshop.api.network.IFriendlyByteBuf;
 import moe.plushie.armourers_workshop.api.network.IServerPacketHandler;
 import moe.plushie.armourers_workshop.core.network.CustomPacket;
 import moe.plushie.armourers_workshop.core.permission.BlockPermission;
+import moe.plushie.armourers_workshop.core.utils.FileUtils;
 import moe.plushie.armourers_workshop.init.ModLog;
 import moe.plushie.armourers_workshop.init.ModPermissions;
 import moe.plushie.armourers_workshop.library.data.SkinLibraryFile;
 import moe.plushie.armourers_workshop.library.data.SkinLibraryManager;
-import moe.plushie.armourers_workshop.utils.SkinFileUtils;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 
@@ -75,7 +75,7 @@ public class UpdateLibraryFilePacket extends CustomPacket {
     }
 
     private String decodePath(IFriendlyByteBuf buffer) {
-        var path = SkinFileUtils.normalize(buffer.readUtf(), true); // security check
+        var path = FileUtils.normalize(buffer.readUtf(), true); // security check
         if (path != null) {
             return path;
         }

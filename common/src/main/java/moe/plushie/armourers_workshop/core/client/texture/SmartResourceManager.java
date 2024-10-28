@@ -1,10 +1,10 @@
 package moe.plushie.armourers_workshop.core.client.texture;
 
-import com.google.common.collect.Sets;
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.Unpooled;
 import moe.plushie.armourers_workshop.api.core.IResourceLocation;
 import moe.plushie.armourers_workshop.compatibility.core.data.AbstractPackResources;
+import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.init.ModConstants;
 import moe.plushie.armourers_workshop.init.ModLog;
 import net.minecraft.server.packs.PackType;
@@ -20,7 +20,7 @@ public class SmartResourceManager {
     private static final SmartResourceManager INSTANCE = new SmartResourceManager();
 
     protected final String id;
-    protected final Set<String> namespaces = Sets.newHashSet(ModConstants.MOD_ID);
+    protected final Set<String> namespaces = Collections.immutableSet(builder -> builder.add(ModConstants.MOD_ID));
     protected final HashMap<IResourceLocation, ByteBuffer> resources = new HashMap<>();
 
     protected SmartResourceManager() {

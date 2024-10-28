@@ -2,6 +2,7 @@ package moe.plushie.armourers_workshop.utils;
 
 import moe.plushie.armourers_workshop.api.skin.part.ISkinPartType;
 import moe.plushie.armourers_workshop.api.skin.part.features.ICanOverride;
+import moe.plushie.armourers_workshop.compatibility.core.data.AbstractDataSerializer;
 import moe.plushie.armourers_workshop.core.capability.SkinWardrobe;
 import moe.plushie.armourers_workshop.core.data.slot.SkinSlotType;
 import moe.plushie.armourers_workshop.core.math.OpenMatrix4f;
@@ -9,6 +10,7 @@ import moe.plushie.armourers_workshop.core.math.Vector4f;
 import moe.plushie.armourers_workshop.core.skin.Skin;
 import moe.plushie.armourers_workshop.core.skin.SkinDescriptor;
 import moe.plushie.armourers_workshop.core.utils.Collections;
+import moe.plushie.armourers_workshop.core.utils.Constants;
 import moe.plushie.armourers_workshop.core.utils.Objects;
 import moe.plushie.armourers_workshop.init.ModConfig;
 import moe.plushie.armourers_workshop.init.ModDataComponents;
@@ -210,8 +212,8 @@ public final class SkinUtils {
         if (tag == null || !tag.contains(Constants.Key.SKIN, Constants.TagFlags.COMPOUND)) {
             return;
         }
-        SkinDescriptor descriptor = new SkinDescriptor(tag.getCompound(Constants.Key.SKIN));
-        SkinWardrobe wardrobe = SkinWardrobe.of(entity);
+        var descriptor = new SkinDescriptor(AbstractDataSerializer.wrap(tag.getCompound(Constants.Key.SKIN), entity));
+        var wardrobe = SkinWardrobe.of(entity);
         if (wardrobe != null) {
             wardrobe.setItem(SkinSlotType.ANY, 0, descriptor.asItemStack());
             wardrobe.broadcast();

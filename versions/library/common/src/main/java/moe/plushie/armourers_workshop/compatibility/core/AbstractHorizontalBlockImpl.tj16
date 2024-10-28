@@ -1,12 +1,12 @@
 package moe.plushie.armourers_workshop.compatibility.core;
 
-import com.google.common.collect.ImmutableMap;
 import moe.plushie.armourers_workshop.api.annotation.Available;
 import moe.plushie.armourers_workshop.api.common.ILootContext;
 import moe.plushie.armourers_workshop.api.common.ILootContextParam;
 import moe.plushie.armourers_workshop.api.common.ITooltipContext;
 import moe.plushie.armourers_workshop.compatibility.core.data.AbstractTooltipContext;
 import moe.plushie.armourers_workshop.core.math.Vector3f;
+import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.core.utils.Objects;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -28,6 +28,7 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Map;
 
 @Available("[1.16, 1.20)")
 public abstract class AbstractHorizontalBlockImpl extends HorizontalDirectionalBlock {
@@ -90,18 +91,18 @@ public abstract class AbstractHorizontalBlockImpl extends HorizontalDirectionalB
 
     public static class LootContextBuilder implements ILootContext {
 
-        private static final ImmutableMap<ILootContextParam<?>, LootContextParam<?>> KEYS = ImmutableMap.<ILootContextParam<?>, LootContextParam<?>>builder()
-                .put(ILootContextParam.THIS_ENTITY, LootContextParams.THIS_ENTITY)
-                .put(ILootContextParam.LAST_DAMAGE_PLAYER, LootContextParams.LAST_DAMAGE_PLAYER)
-                .put(ILootContextParam.DAMAGE_SOURCE, LootContextParams.DAMAGE_SOURCE)
-                .put(ILootContextParam.ATTACKING_ENTITY, LootContextParams.KILLER_ENTITY)
-                .put(ILootContextParam.DIRECT_ATTACKING_ENTITY, LootContextParams.DIRECT_KILLER_ENTITY)
-                .put(ILootContextParam.ORIGIN, LootContextParams.ORIGIN)
-                .put(ILootContextParam.BLOCK_STATE, LootContextParams.BLOCK_STATE)
-                .put(ILootContextParam.BLOCK_ENTITY, LootContextParams.BLOCK_ENTITY)
-                .put(ILootContextParam.TOOL, LootContextParams.TOOL)
-                .put(ILootContextParam.EXPLOSION_RADIUS, LootContextParams.EXPLOSION_RADIUS)
-                .build();
+        private static final Map<ILootContextParam<?>, LootContextParam<?>> KEYS = Collections.immutableMap(builder -> {
+            builder.put(ILootContextParam.THIS_ENTITY, LootContextParams.THIS_ENTITY);
+            builder.put(ILootContextParam.LAST_DAMAGE_PLAYER, LootContextParams.LAST_DAMAGE_PLAYER);
+            builder.put(ILootContextParam.DAMAGE_SOURCE, LootContextParams.DAMAGE_SOURCE);
+            builder.put(ILootContextParam.ATTACKING_ENTITY, LootContextParams.KILLER_ENTITY);
+            builder.put(ILootContextParam.DIRECT_ATTACKING_ENTITY, LootContextParams.DIRECT_KILLER_ENTITY);
+            builder.put(ILootContextParam.ORIGIN, LootContextParams.ORIGIN);
+            builder.put(ILootContextParam.BLOCK_STATE, LootContextParams.BLOCK_STATE);
+            builder.put(ILootContextParam.BLOCK_ENTITY, LootContextParams.BLOCK_ENTITY);
+            builder.put(ILootContextParam.TOOL, LootContextParams.TOOL);
+            builder.put(ILootContextParam.EXPLOSION_RADIUS, LootContextParams.EXPLOSION_RADIUS);
+        });
 
         private final LootContext.Builder builder;
 

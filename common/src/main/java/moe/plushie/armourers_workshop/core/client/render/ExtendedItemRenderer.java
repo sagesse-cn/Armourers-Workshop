@@ -3,7 +3,7 @@ package moe.plushie.armourers_workshop.core.client.render;
 import com.apple.library.uikit.UIColor;
 import moe.plushie.armourers_workshop.api.client.IBufferSource;
 import moe.plushie.armourers_workshop.api.core.math.IPoseStack;
-import moe.plushie.armourers_workshop.builder.data.PlayerTextureDescriptor;
+import moe.plushie.armourers_workshop.core.skin.paint.texture.EntityTextureDescriptor;
 import moe.plushie.armourers_workshop.compatibility.client.AbstractBufferSource;
 import moe.plushie.armourers_workshop.compatibility.client.AbstractPoseStack;
 import moe.plushie.armourers_workshop.core.client.bake.BakedSkin;
@@ -112,7 +112,7 @@ public final class ExtendedItemRenderer {
         return counter;
     }
 
-    public static void renderMannequin(PlayerTextureDescriptor descriptor, Vector3f rotation, Vector3f scale, float targetWidth, float targetHeight, float targetDepth, float partialTicks, int light, IPoseStack poseStack, IBufferSource bufferSource) {
+    public static void renderMannequin(EntityTextureDescriptor descriptor, Vector3f rotation, Vector3f scale, float targetWidth, float targetHeight, float targetDepth, float partialTicks, int light, IPoseStack poseStack, IBufferSource bufferSource) {
         var entity = PlaceholderManager.MANNEQUIN.get();
         if (entity == null || entity.getLevel() == null) {
             return;

@@ -1,7 +1,8 @@
 package moe.plushie.armourers_workshop.core.blockentity;
 
-import com.google.common.collect.ImmutableMap;
-import moe.plushie.armourers_workshop.api.data.IDataSerializer;
+import moe.plushie.armourers_workshop.api.core.IDataCodec;
+import moe.plushie.armourers_workshop.api.core.IDataSerializer;
+import moe.plushie.armourers_workshop.api.core.IDataSerializerKey;
 import moe.plushie.armourers_workshop.core.block.HologramProjectorBlock;
 import moe.plushie.armourers_workshop.core.client.bake.SkinBakery;
 import moe.plushie.armourers_workshop.core.client.other.SkinItemSource;
@@ -11,9 +12,8 @@ import moe.plushie.armourers_workshop.core.math.OpenQuaternion3f;
 import moe.plushie.armourers_workshop.core.math.Rectangle3f;
 import moe.plushie.armourers_workshop.core.math.Vector3f;
 import moe.plushie.armourers_workshop.core.skin.SkinDescriptor;
-import moe.plushie.armourers_workshop.utils.Constants;
-import moe.plushie.armourers_workshop.utils.DataSerializerKey;
-import moe.plushie.armourers_workshop.utils.DataTypeCodecs;
+import moe.plushie.armourers_workshop.core.utils.Collections;
+import moe.plushie.armourers_workshop.core.utils.Constants;
 import moe.plushie.armourers_workshop.utils.NonNullItemList;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -29,29 +29,20 @@ import java.util.Map;
 
 public class HologramProjectorBlockEntity extends RotableContainerBlockEntity {
 
-    private static final DataSerializerKey<Vector3f> ANGLE_KEY = DataSerializerKey.create("Angle", DataTypeCodecs.VECTOR_3F, Vector3f.ZERO);
-    private static final DataSerializerKey<Vector3f> OFFSET_KEY = DataSerializerKey.create("Offset", DataTypeCodecs.VECTOR_3F, Vector3f.ZERO);
-    private static final DataSerializerKey<Vector3f> ROTATION_SPEED_KEY = DataSerializerKey.create("RotSpeed", DataTypeCodecs.VECTOR_3F, Vector3f.ZERO);
-    private static final DataSerializerKey<Vector3f> ROTATION_OFFSET_KEY = DataSerializerKey.create("RotOffset", DataTypeCodecs.VECTOR_3F, Vector3f.ZERO);
-    private static final DataSerializerKey<Boolean> IS_GLOWING_KEY = DataSerializerKey.create("Glowing", DataTypeCodecs.BOOL, true);
-    private static final DataSerializerKey<Boolean> IS_POWERED_KEY = DataSerializerKey.create("Powered", DataTypeCodecs.BOOL, false);
-    private static final DataSerializerKey<Float> SCALE_KEY = DataSerializerKey.create("Scale", DataTypeCodecs.FLOAT, 1.0f);
-    private static final DataSerializerKey<Integer> POWER_MODE_KEY = DataSerializerKey.create("PowerMode", DataTypeCodecs.INT, 0);
-
-    private static final Map<?, Vector3f> FACING_TO_ROT = new ImmutableMap.Builder<Object, Vector3f>()
-            .put(Pair.of(AttachFace.CEILING, Direction.EAST), new Vector3f(180, 270, 0))
-            .put(Pair.of(AttachFace.CEILING, Direction.NORTH), new Vector3f(180, 180, 0))
-            .put(Pair.of(AttachFace.CEILING, Direction.WEST), new Vector3f(180, 90, 0))
-            .put(Pair.of(AttachFace.CEILING, Direction.SOUTH), new Vector3f(180, 0, 0))
-            .put(Pair.of(AttachFace.WALL, Direction.EAST), new Vector3f(270, 0, 270))
-            .put(Pair.of(AttachFace.WALL, Direction.SOUTH), new Vector3f(270, 0, 180))
-            .put(Pair.of(AttachFace.WALL, Direction.WEST), new Vector3f(270, 0, 90))
-            .put(Pair.of(AttachFace.WALL, Direction.NORTH), new Vector3f(270, 0, 0))
-            .put(Pair.of(AttachFace.FLOOR, Direction.EAST), new Vector3f(0, 270, 0))
-            .put(Pair.of(AttachFace.FLOOR, Direction.SOUTH), new Vector3f(0, 180, 0))
-            .put(Pair.of(AttachFace.FLOOR, Direction.WEST), new Vector3f(0, 90, 0))
-            .put(Pair.of(AttachFace.FLOOR, Direction.NORTH), new Vector3f(0, 0, 0))
-            .build();
+    private static final Map<?, Vector3f> FACING_TO_ROT = Collections.immutableMap(builder -> {
+        builder.put(Pair.of(AttachFace.CEILING, Direction.EAST), new Vector3f(180, 270, 0));
+        builder.put(Pair.of(AttachFace.CEILING, Direction.NORTH), new Vector3f(180, 180, 0));
+        builder.put(Pair.of(AttachFace.CEILING, Direction.WEST), new Vector3f(180, 90, 0));
+        builder.put(Pair.of(AttachFace.CEILING, Direction.SOUTH), new Vector3f(180, 0, 0));
+        builder.put(Pair.of(AttachFace.WALL, Direction.EAST), new Vector3f(270, 0, 270));
+        builder.put(Pair.of(AttachFace.WALL, Direction.SOUTH), new Vector3f(270, 0, 180));
+        builder.put(Pair.of(AttachFace.WALL, Direction.WEST), new Vector3f(270, 0, 90));
+        builder.put(Pair.of(AttachFace.WALL, Direction.NORTH), new Vector3f(270, 0, 0));
+        builder.put(Pair.of(AttachFace.FLOOR, Direction.EAST), new Vector3f(0, 270, 0));
+        builder.put(Pair.of(AttachFace.FLOOR, Direction.SOUTH), new Vector3f(0, 180, 0));
+        builder.put(Pair.of(AttachFace.FLOOR, Direction.WEST), new Vector3f(0, 90, 0));
+        builder.put(Pair.of(AttachFace.FLOOR, Direction.NORTH), new Vector3f(0, 0, 0));
+    });
 
     private final NonNullItemList items = new NonNullItemList(1);
 
@@ -77,28 +68,28 @@ public class HologramProjectorBlockEntity extends RotableContainerBlockEntity {
     @Override
     public void readAdditionalData(IDataSerializer serializer) {
         items.deserialize(serializer);
-        modelAngle = serializer.read(ANGLE_KEY);
-        modelOffset = serializer.read(OFFSET_KEY);
-        rotationSpeed = serializer.read(ROTATION_SPEED_KEY);
-        rotationOffset = serializer.read(ROTATION_OFFSET_KEY);
-        isGlowing = serializer.read(IS_GLOWING_KEY);
-        isPowered = serializer.read(IS_POWERED_KEY);
-        modelScale = serializer.read(SCALE_KEY);
-        powerMode = serializer.read(POWER_MODE_KEY);
+        modelAngle = serializer.read(CodingKeys.ANGLE);
+        modelOffset = serializer.read(CodingKeys.OFFSET);
+        rotationSpeed = serializer.read(CodingKeys.ROTATION_SPEED);
+        rotationOffset = serializer.read(CodingKeys.ROTATION_OFFSET);
+        isGlowing = serializer.read(CodingKeys.IS_GLOWING);
+        isPowered = serializer.read(CodingKeys.IS_POWERED);
+        modelScale = serializer.read(CodingKeys.SCALE);
+        powerMode = serializer.read(CodingKeys.POWER_MODE);
         setRenderChanged();
     }
 
     @Override
     public void writeAdditionalData(IDataSerializer serializer) {
         items.serialize(serializer);
-        serializer.write(ANGLE_KEY, modelAngle);
-        serializer.write(OFFSET_KEY, modelOffset);
-        serializer.write(ROTATION_SPEED_KEY, rotationSpeed);
-        serializer.write(ROTATION_OFFSET_KEY, rotationOffset);
-        serializer.write(IS_GLOWING_KEY, isGlowing);
-        serializer.write(IS_POWERED_KEY, isPowered);
-        serializer.write(SCALE_KEY, modelScale);
-        serializer.write(POWER_MODE_KEY, powerMode);
+        serializer.write(CodingKeys.ANGLE, modelAngle);
+        serializer.write(CodingKeys.OFFSET, modelOffset);
+        serializer.write(CodingKeys.ROTATION_SPEED, rotationSpeed);
+        serializer.write(CodingKeys.ROTATION_OFFSET, rotationOffset);
+        serializer.write(CodingKeys.IS_GLOWING, isGlowing);
+        serializer.write(CodingKeys.IS_POWERED, isPowered);
+        serializer.write(CodingKeys.SCALE, modelScale);
+        serializer.write(CodingKeys.POWER_MODE, powerMode);
     }
 
     public void updatePowerStats() {
@@ -290,5 +281,17 @@ public class HologramProjectorBlockEntity extends RotableContainerBlockEntity {
         }
 
         return new Rectangle3f(tx - tr, ty - tr, tz - tr, tr * 2, tr * 2, tr * 2);
+    }
+
+    private static class CodingKeys {
+
+        public static final IDataSerializerKey<Vector3f> ANGLE = IDataSerializerKey.create("Angle", Vector3f.CODEC, Vector3f.ZERO);
+        public static final IDataSerializerKey<Vector3f> OFFSET = IDataSerializerKey.create("Offset", Vector3f.CODEC, Vector3f.ZERO);
+        public static final IDataSerializerKey<Vector3f> ROTATION_SPEED = IDataSerializerKey.create("RotSpeed", Vector3f.CODEC, Vector3f.ZERO);
+        public static final IDataSerializerKey<Vector3f> ROTATION_OFFSET = IDataSerializerKey.create("RotOffset", Vector3f.CODEC, Vector3f.ZERO);
+        public static final IDataSerializerKey<Boolean> IS_GLOWING = IDataSerializerKey.create("Glowing", IDataCodec.BOOL, true);
+        public static final IDataSerializerKey<Boolean> IS_POWERED = IDataSerializerKey.create("Powered", IDataCodec.BOOL, false);
+        public static final IDataSerializerKey<Float> SCALE = IDataSerializerKey.create("Scale", IDataCodec.FLOAT, 1.0f);
+        public static final IDataSerializerKey<Integer> POWER_MODE = IDataSerializerKey.create("PowerMode", IDataCodec.INT, 0);
     }
 }

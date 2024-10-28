@@ -1,9 +1,9 @@
 package moe.plushie.armourers_workshop.core.skin.paint;
 
+import moe.plushie.armourers_workshop.api.core.IDataCodec;
 import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintColor;
 import moe.plushie.armourers_workshop.core.math.Vector2i;
-import moe.plushie.armourers_workshop.core.skin.paint.texture.PlayerTextureModel;
-import moe.plushie.armourers_workshop.utils.StreamUtils;
+import moe.plushie.armourers_workshop.core.skin.paint.texture.EntityTextureModel;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -22,6 +22,8 @@ public class SkinPaintData {
 
     public static final int TEXTURE_WIDTH = 64;
     public static final int TEXTURE_HEIGHT = 64;
+
+    public static final IDataCodec<SkinPaintData> CODEC = IDataCodec.BYTE_BUFFER.xmap(SkinPaintData::decompress, SkinPaintData::compress);
 
     private final int width;
     private final int height;
@@ -48,11 +50,9 @@ public class SkinPaintData {
         return new SkinPaintData(TEXTURE_WIDTH, TEXTURE_HEIGHT);
     }
 
-    public static SkinPaintData uncompress(ByteBuffer buffer) {
-        try {
-            var bufferedStream = new ByteArrayInputStream(buffer.array());
-            var compressedStream = new GZIPInputStream(bufferedStream);
-            var dataStream = new DataInputStream(compressedStream);
+    public static SkinPaintData decompress(ByteBuffer buffer) {
+        var inputStream = new ByteArrayInputStream(buffer.array());
+        try (var dataStream = new DataInputStream(new GZIPInputStream(inputStream))) {
             var paintData = SkinPaintData.v2();
             var length = dataStream.readInt();
             var colors = paintData.getData();
@@ -61,7 +61,6 @@ public class SkinPaintData {
                     colors[i] = dataStream.readInt();
                 }
             }
-            StreamUtils.closeQuietly(dataStream, compressedStream, bufferedStream);
             return paintData;
         } catch (IOException exception) {
             return null;
@@ -91,8 +90,8 @@ public class SkinPaintData {
         if (height <= TEXTURE_OLD_HEIGHT) {
             return;
         }
-        var source = PlayerTextureModel.of(paintData.getWidth(), paintData.getHeight(), false);
-        var destination = PlayerTextureModel.of(getWidth(), getHeight(), false);
+        var source = EntityTextureModel.of(paintData.getWidth(), paintData.getHeight(), false);
+        var destination = EntityTextureModel.of(getWidth(), getHeight(), false);
         source.forEach((partType, sourceBox) -> {
             var destinationBox = destination.get(partType);
             if (sourceBox.equals(destinationBox) || destinationBox == null) {
@@ -148,17 +147,14 @@ public class SkinPaintData {
     }
 
     public ByteBuffer compress() {
-        try {
+        var outputStream = new ByteArrayOutputStream();
+        try (var dataStream = new DataOutputStream(new GZIPOutputStream(outputStream))) {
             var colors = getData();
-            var bufferedStream = new ByteArrayOutputStream();
-            var compressedStream = new GZIPOutputStream(bufferedStream);
-            var dataStream = new DataOutputStream(compressedStream);
             dataStream.writeInt(colors.length);
             for (int color : colors) {
                 dataStream.writeInt(color);
             }
-            StreamUtils.closeQuietly(dataStream, compressedStream, bufferedStream);
-            return ByteBuffer.wrap(bufferedStream.toByteArray());
+            return ByteBuffer.wrap(outputStream.toByteArray());
         } catch (IOException e) {
             return null;
         }

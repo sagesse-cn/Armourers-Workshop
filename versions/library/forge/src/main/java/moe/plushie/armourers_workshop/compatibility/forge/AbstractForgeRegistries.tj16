@@ -1,7 +1,7 @@
 package moe.plushie.armourers_workshop.compatibility.forge;
 
 import moe.plushie.armourers_workshop.api.annotation.Available;
-import moe.plushie.armourers_workshop.api.common.IDataComponentType;
+import moe.plushie.armourers_workshop.api.core.IDataComponentType;
 import moe.plushie.armourers_workshop.api.common.IItemTag;
 import moe.plushie.armourers_workshop.utils.TypedRegistry;
 import net.minecraft.core.Registry;

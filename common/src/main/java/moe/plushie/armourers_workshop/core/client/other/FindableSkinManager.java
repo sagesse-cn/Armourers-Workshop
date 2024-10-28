@@ -7,13 +7,13 @@ import moe.plushie.armourers_workshop.core.data.DataDomain;
 import moe.plushie.armourers_workshop.core.data.DataPackType;
 import moe.plushie.armourers_workshop.core.data.ticket.Tickets;
 import moe.plushie.armourers_workshop.core.skin.SkinDescriptor;
+import moe.plushie.armourers_workshop.core.utils.JsonSerializer;
 import moe.plushie.armourers_workshop.core.utils.OpenResourceLocation;
 import moe.plushie.armourers_workshop.init.ModConfig;
 import moe.plushie.armourers_workshop.init.ModLog;
 import moe.plushie.armourers_workshop.init.platform.EnvironmentManager;
 import moe.plushie.armourers_workshop.init.platform.EventManager;
 import moe.plushie.armourers_workshop.init.platform.event.common.DataPackEvent;
-import moe.plushie.armourers_workshop.utils.StreamUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.Util;
@@ -98,7 +98,7 @@ public class FindableSkinManager {
         try {
             var resourceManager = EnvironmentManager.getResourceManager();
             var location = OpenResourceLocation.create(id.getNamespace(), "models/" + id.getPath() + ".json");
-            var rootObject = StreamUtils.fromPackObject(resourceManager.readResource(location));
+            var rootObject = JsonSerializer.readFromResource(resourceManager.readResource(location));
             if (rootObject == null) {
                 return null;
             }

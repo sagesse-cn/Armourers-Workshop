@@ -6,12 +6,12 @@ import moe.plushie.armourers_workshop.api.skin.ISkinType;
 import moe.plushie.armourers_workshop.core.data.DataDomain;
 import moe.plushie.armourers_workshop.core.skin.Skin;
 import moe.plushie.armourers_workshop.core.skin.serializer.SkinFileOptions;
+import moe.plushie.armourers_workshop.core.skin.serializer.SkinSerializer;
+import moe.plushie.armourers_workshop.core.utils.FileUtils;
 import moe.plushie.armourers_workshop.init.ModLog;
 import moe.plushie.armourers_workshop.init.platform.NetworkManager;
 import moe.plushie.armourers_workshop.library.network.UpdateLibraryFilePacket;
-import moe.plushie.armourers_workshop.utils.SkinFileStreamUtils;
-import moe.plushie.armourers_workshop.utils.SkinFileUtils;
-import moe.plushie.armourers_workshop.utils.ThreadUtils;
+import moe.plushie.armourers_workshop.core.utils.Executors;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.File;
@@ -24,7 +24,7 @@ import java.util.concurrent.Executor;
 
 public class SkinLibrary implements ISkinLibrary {
 
-    private static final Executor workThread = ThreadUtils.newFixedThreadPool(1, "AW-SKIN/L-LD");
+    private static final Executor workThread = Executors.newFixedThreadPool(1, "AW-SKIN/L-LD");
 
     protected final File basePath;
     protected final DataDomain domain;
@@ -82,19 +82,19 @@ public class SkinLibrary implements ISkinLibrary {
     }
 
     public void save(String path, Skin skin, SkinFileOptions options) {
-        File file = new File(basePath, SkinFileUtils.normalize(path));
-        if (file.exists() && !SkinFileUtils.deleteQuietly(file)) {
+        File file = new File(basePath, FileUtils.normalize(path));
+        if (file.exists() && !FileUtils.deleteQuietly(file)) {
             ModLog.error("Can't remove file '{}'", file);
             return;
         }
         ModLog.debug("Save file '{}'", file);
         try {
-            SkinFileUtils.forceMkdirParent(file);
+            FileUtils.forceMkdirParent(file);
             if (file.exists()) {
-                SkinFileUtils.deleteQuietly(file);
+                FileUtils.deleteQuietly(file);
             }
             try (var outputStream = new FileOutputStream(file)) {
-                SkinFileStreamUtils.saveSkinToStream(outputStream, skin, options);
+                SkinSerializer.writeToStream(skin, options, outputStream);
             }
             reload();
         } catch (Exception e) {
@@ -106,7 +106,7 @@ public class SkinLibrary implements ISkinLibrary {
         if (basePath == null) {
             return;
         }
-        File file = new File(basePath, SkinFileUtils.normalize(path));
+        File file = new File(basePath, FileUtils.normalize(path));
         if (!file.mkdirs()) {
             ModLog.error("can't make new folder '{}'", file);
             return;
@@ -119,8 +119,8 @@ public class SkinLibrary implements ISkinLibrary {
         if (basePath == null) {
             return;
         }
-        File file = new File(basePath, SkinFileUtils.normalize(libraryFile.getPath()));
-        if (!SkinFileUtils.deleteQuietly(file)) {
+        File file = new File(basePath, FileUtils.normalize(libraryFile.getPath()));
+        if (!FileUtils.deleteQuietly(file)) {
             ModLog.error("can't remove file '{}'", file);
             return;
         }
@@ -136,9 +136,9 @@ public class SkinLibrary implements ISkinLibrary {
         if (basePath == null) {
             return;
         }
-        File file = new File(basePath, SkinFileUtils.normalize(libraryFile.getPath()));
-        File targetFile = new File(basePath, SkinFileUtils.normalize(path));
-        if (targetFile.exists() && !SkinFileUtils.deleteQuietly(targetFile)) {
+        File file = new File(basePath, FileUtils.normalize(libraryFile.getPath()));
+        File targetFile = new File(basePath, FileUtils.normalize(path));
+        if (targetFile.exists() && !FileUtils.deleteQuietly(targetFile)) {
             ModLog.error("can't remove file '{}'", file);
             return;
         }
@@ -180,16 +180,16 @@ public class SkinLibrary implements ISkinLibrary {
     }
 
     public ArrayList<SkinLibraryFile> search(String keyword, ISkinType skinType, String rootPath) {
-        String fixedRootPath = rootPath;
-        ArrayList<SkinLibraryFile> files = new ArrayList<>();
+        var fixedRootPath = rootPath;
+        var files = new ArrayList<SkinLibraryFile>();
         if (keyword != null) {
             keyword = keyword.toLowerCase();
         }
         if (!rootPath.equals("/")) {
             fixedRootPath = rootPath + "/";
         }
-        ArrayList<SkinLibraryFile> removedChildDirs = new ArrayList<>();
-        for (SkinLibraryFile file : getFiles()) {
+        var removedChildDirs = new ArrayList<SkinLibraryFile>();
+        for (var file : getFiles()) {
             boolean isChild = file.isChildDirectory(fixedRootPath);
             boolean isMatches = file.matches(keyword, skinType);
             if (isMatches && isChild) {
@@ -210,7 +210,7 @@ public class SkinLibrary implements ISkinLibrary {
         }
         Collections.sort(files);
         if (!rootPath.equals(this.rootPath)) {
-            files.add(0, new SkinLibraryFile(domain, "..", SkinFileUtils.normalizeNoEndSeparator(rootPath + "/..", true)));
+            files.add(0, new SkinLibraryFile(domain, "..", FileUtils.normalizeNoEndSeparator(rootPath + "/..", true)));
         }
         return files;
     }
@@ -242,7 +242,7 @@ public class SkinLibrary implements ISkinLibrary {
             return;
         }
         try {
-            SkinFileUtils.forceMkdir(basePath);
+            FileUtils.forceMkdir(basePath);
         } catch (IOException e) {
             e.printStackTrace();
         }

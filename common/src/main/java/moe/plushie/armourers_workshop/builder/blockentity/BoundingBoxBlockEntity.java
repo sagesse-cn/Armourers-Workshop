@@ -2,7 +2,9 @@ package moe.plushie.armourers_workshop.builder.blockentity;
 
 import moe.plushie.armourers_workshop.api.client.IBlockEntityExtendedRenderer;
 import moe.plushie.armourers_workshop.api.common.IPaintable;
-import moe.plushie.armourers_workshop.api.data.IDataSerializer;
+import moe.plushie.armourers_workshop.api.core.IDataCodec;
+import moe.plushie.armourers_workshop.api.core.IDataSerializer;
+import moe.plushie.armourers_workshop.api.core.IDataSerializerKey;
 import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintColor;
 import moe.plushie.armourers_workshop.api.skin.part.ISkinPartType;
 import moe.plushie.armourers_workshop.builder.data.BoundingBox;
@@ -13,8 +15,6 @@ import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
 import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintTypes;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPartTypes;
 import moe.plushie.armourers_workshop.utils.BlockUtils;
-import moe.plushie.armourers_workshop.utils.DataSerializerKey;
-import moe.plushie.armourers_workshop.utils.DataTypeCodecs;
 import moe.plushie.armourers_workshop.utils.TextureUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -29,10 +29,6 @@ import java.util.Map;
 
 public class BoundingBoxBlockEntity extends UpdatableBlockEntity implements IPaintable, IBlockEntityExtendedRenderer {
 
-    public static final DataSerializerKey<BlockPos> REFER_KEY = DataSerializerKey.create("Refer", DataTypeCodecs.BLOCK_POS, null);
-    public static final DataSerializerKey<Vector3i> OFFSET_KEY = DataSerializerKey.create("Offset", DataTypeCodecs.VECTOR_3I, Vector3i.ZERO);
-    public static final DataSerializerKey<ISkinPartType> PART_TYPE_KEY = DataSerializerKey.create("PartType", DataTypeCodecs.SKIN_PART_TYPE, SkinPartTypes.UNKNOWN);
-
     protected Vector3i guide = Vector3i.ZERO;
     protected BlockPos parent = null;
 
@@ -46,17 +42,17 @@ public class BoundingBoxBlockEntity extends UpdatableBlockEntity implements IPai
     }
 
     public void readAdditionalData(IDataSerializer serializer) {
-        parent = serializer.read(REFER_KEY);
-        guide = serializer.read(OFFSET_KEY);
-        partType = serializer.read(PART_TYPE_KEY);
+        parent = serializer.read(CodingKeys.REFER);
+        guide = serializer.read(CodingKeys.OFFSET);
+        partType = serializer.read(CodingKeys.PART_TYPE);
         customRenderer = Arrays.stream(Direction.values()).anyMatch(this::shouldChangeColor);
         cachedParentBlockEntity = null;
     }
 
     public void writeAdditionalData(IDataSerializer serializer) {
-        serializer.write(REFER_KEY, parent);
-        serializer.write(OFFSET_KEY, guide);
-        serializer.write(PART_TYPE_KEY, partType);
+        serializer.write(CodingKeys.REFER, parent);
+        serializer.write(CodingKeys.OFFSET, guide);
+        serializer.write(CodingKeys.PART_TYPE, partType);
     }
 
     public ISkinPartType getPartType() {
@@ -226,5 +222,12 @@ public class BoundingBoxBlockEntity extends UpdatableBlockEntity implements IPai
             return isValid();
         }
         return false;
+    }
+
+    private static class CodingKeys {
+
+        public static final IDataSerializerKey<BlockPos> REFER = IDataSerializerKey.create("Refer", IDataCodec.BLOCK_POS, null);
+        public static final IDataSerializerKey<Vector3i> OFFSET = IDataSerializerKey.create("Offset", Vector3i.CODEC, Vector3i.ZERO);
+        public static final IDataSerializerKey<ISkinPartType> PART_TYPE = IDataSerializerKey.create("PartType", SkinPartTypes.CODEC, SkinPartTypes.UNKNOWN);
     }
 }

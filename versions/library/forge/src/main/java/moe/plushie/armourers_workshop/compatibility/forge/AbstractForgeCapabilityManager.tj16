@@ -4,7 +4,7 @@ import moe.plushie.armourers_workshop.api.annotation.Available;
 import moe.plushie.armourers_workshop.api.common.ICapabilityType;
 import moe.plushie.armourers_workshop.api.core.IRegistryHolder;
 import moe.plushie.armourers_workshop.api.core.IResourceLocation;
-import moe.plushie.armourers_workshop.api.data.IDataSerializerProvider;
+import moe.plushie.armourers_workshop.api.core.IDataSerializable;
 import moe.plushie.armourers_workshop.core.capability.SkinWardrobe;
 import moe.plushie.armourers_workshop.core.capability.SkinWardrobeStorage;
 import moe.plushie.armourers_workshop.core.utils.Objects;
@@ -48,7 +48,7 @@ public abstract class AbstractForgeCapabilityManager {
         return new RegistryObjectProxy<>(registryName, SkinWardrobe.class, provider, capabilityType, () -> WARDROBE_KEY);
     }
 
-    public static class RegistryObjectProxy<T extends IDataSerializerProvider> implements IRegistryHolder<ICapabilityType<T>> {
+    public static class RegistryObjectProxy<T extends IDataSerializable.Mutable> implements IRegistryHolder<ICapabilityType<T>> {
 
         final IResourceLocation registryName;
         final Supplier<Capability<T>> capability;
@@ -108,7 +108,7 @@ public abstract class AbstractForgeCapabilityManager {
         }
     }
 
-    public static abstract class CapabilityProviderProxy<T extends IDataSerializerProvider> implements ICapabilityProvider, INBTSerializable<CompoundTag> {
+    public static abstract class CapabilityProviderProxy<T extends IDataSerializable.Mutable> implements ICapabilityProvider, INBTSerializable<CompoundTag> {
 
         protected final T value;
         protected final WeakReference<Entity> entity;

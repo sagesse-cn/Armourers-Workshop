@@ -1,7 +1,7 @@
 package moe.plushie.armourers_workshop.core.network;
 
 import moe.plushie.armourers_workshop.api.common.IConfigurableTool;
-import moe.plushie.armourers_workshop.api.common.IDataComponentType;
+import moe.plushie.armourers_workshop.api.core.IDataComponentType;
 import moe.plushie.armourers_workshop.api.network.IFriendlyByteBuf;
 import moe.plushie.armourers_workshop.api.network.IServerPacketHandler;
 import moe.plushie.armourers_workshop.init.ModDataComponents;

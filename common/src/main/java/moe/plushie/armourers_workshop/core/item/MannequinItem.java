@@ -1,16 +1,14 @@
 package moe.plushie.armourers_workshop.core.item;
 
 import moe.plushie.armourers_workshop.api.common.ITooltipContext;
-import moe.plushie.armourers_workshop.builder.data.PlayerTextureDescriptor;
+import moe.plushie.armourers_workshop.core.skin.paint.texture.EntityTextureDescriptor;
 import moe.plushie.armourers_workshop.core.data.MannequinHitResult;
+import moe.plushie.armourers_workshop.core.entity.MannequinEntity;
 import moe.plushie.armourers_workshop.init.ModDataComponents;
 import moe.plushie.armourers_workshop.init.ModEntityTypes;
-import moe.plushie.armourers_workshop.init.ModItems;
-import moe.plushie.armourers_workshop.utils.Constants;
 import moe.plushie.armourers_workshop.utils.TranslateUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -18,11 +16,9 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -32,38 +28,22 @@ public class MannequinItem extends FlavouredItem {
         super(properties);
     }
 
-    public static ItemStack of(@Nullable Player player, float scale) {
-        var itemStack = new ItemStack(ModItems.MANNEQUIN.get());
-        var entityTag = new CompoundTag();
-        if (scale != 1.0f) {
-            entityTag.putFloat(Constants.Key.ENTITY_SCALE, scale);
-        }
-        if (player != null) {
-            var descriptor = PlayerTextureDescriptor.fromPlayer(player);
-            entityTag.put(Constants.Key.ENTITY_TEXTURE, descriptor.serializeNBT());
-        }
-        if (!entityTag.isEmpty()) {
-            entityTag.putString(Constants.Key.ID, ModEntityTypes.MANNEQUIN.getRegistryName().toString());
-            itemStack.set(ModDataComponents.ENTITY_DATA.get(), entityTag);
-        }
-        return itemStack;
-
-    }
-
     public static boolean isSmall(ItemStack itemStack) {
         var entityTag = itemStack.get(ModDataComponents.ENTITY_DATA.get());
         if (entityTag != null) {
-            return entityTag.getBoolean(Constants.Key.ENTITY_IS_SMALL);
+            var entityData = new MannequinEntity.EntityData(entityTag);
+            return entityData.isSmall();
         }
         return false;
     }
 
     public static float getScale(ItemStack itemStack) {
         var entityTag = itemStack.get(ModDataComponents.ENTITY_DATA.get());
-        if (entityTag == null || !entityTag.contains(Constants.Key.ENTITY_SCALE, Constants.TagFlags.FLOAT)) {
-            return 1.0f;
+        if (entityTag != null) {
+            var entityData = new MannequinEntity.EntityData(entityTag);
+            return entityData.getScale();
         }
-        return entityTag.getFloat(Constants.Key.ENTITY_SCALE);
+        return 1.0f;
     }
 
     @Override
@@ -113,7 +93,7 @@ public class MannequinItem extends FlavouredItem {
     @Environment(EnvType.CLIENT)
     public void appendHoverText(ItemStack itemStack, List<Component> tooltips, ITooltipContext context) {
         super.appendHoverText(itemStack, tooltips, context);
-        var descriptor = PlayerTextureDescriptor.of(itemStack);
+        var descriptor = EntityTextureDescriptor.of(itemStack);
         if (descriptor.getName() != null) {
             tooltips.add(TranslateUtils.subtitle("item.armourers_workshop.rollover.user", descriptor.getName()));
         }

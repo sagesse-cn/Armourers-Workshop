@@ -1,6 +1,5 @@
 package moe.plushie.armourers_workshop.core.skin.serializer.v20.geometry;
 
-import com.google.common.collect.ImmutableMap;
 import moe.plushie.armourers_workshop.api.skin.geometry.ISkinGeometryType;
 import moe.plushie.armourers_workshop.core.skin.Skin;
 import moe.plushie.armourers_workshop.core.skin.geometry.SkinGeometryTypes;
@@ -20,14 +19,14 @@ import java.util.Map;
 
 public class ChunkGeometrySerializers {
 
-    private static final Map<ISkinGeometryType, ChunkGeometrySerializer> SERIALIZERS = ImmutableMap.<ISkinGeometryType, ChunkGeometrySerializer>builder()
-            .put(SkinGeometryTypes.BLOCK_SOLID, new ChunkGeometrySerializerV1())
-            .put(SkinGeometryTypes.BLOCK_GLOWING, new ChunkGeometrySerializerV1())
-            .put(SkinGeometryTypes.BLOCK_GLASS, new ChunkGeometrySerializerV1())
-            .put(SkinGeometryTypes.BLOCK_GLASS_GLOWING, new ChunkGeometrySerializerV1())
-            .put(SkinGeometryTypes.CUBE, new ChunkGeometrySerializerV2())
-            .put(SkinGeometryTypes.MESH, new ChunkGeometrySerializerV3())
-            .build();
+    private static final Map<ISkinGeometryType, ChunkGeometrySerializer> SERIALIZERS = Collections.immutableMap(builder -> {
+        builder.put(SkinGeometryTypes.BLOCK_SOLID, new ChunkGeometrySerializerV1());
+        builder.put(SkinGeometryTypes.BLOCK_GLOWING, new ChunkGeometrySerializerV1());
+        builder.put(SkinGeometryTypes.BLOCK_GLASS, new ChunkGeometrySerializerV1());
+        builder.put(SkinGeometryTypes.BLOCK_GLASS_GLOWING, new ChunkGeometrySerializerV1());
+        builder.put(SkinGeometryTypes.CUBE, new ChunkGeometrySerializerV2());
+        builder.put(SkinGeometryTypes.MESH, new ChunkGeometrySerializerV3());
+    });
 
     public static ChunkGeometrySerializer getSerializer(ISkinGeometryType geometryType) {
         return SERIALIZERS.get(geometryType);

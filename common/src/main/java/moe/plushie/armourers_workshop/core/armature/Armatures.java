@@ -7,11 +7,12 @@ import moe.plushie.armourers_workshop.api.skin.part.ISkinPartType;
 import moe.plushie.armourers_workshop.core.skin.SkinTypes;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPartTypes;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IODataObject;
+import moe.plushie.armourers_workshop.core.utils.JsonSerializer;
 import moe.plushie.armourers_workshop.init.ModConstants;
 import moe.plushie.armourers_workshop.init.ModLog;
-import moe.plushie.armourers_workshop.utils.StreamUtils;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.function.Consumer;
@@ -56,10 +57,10 @@ public class Armatures {
 
         private Builder(String path) {
             var loader = this.getClass().getClassLoader();
-            var inputStream = loader.getResourceAsStream(path);
-            var object = StreamUtils.fromPackObject(inputStream);
-            if (object != null) {
-                load(object);
+            try (var inputStream = loader.getResourceAsStream(path)) {
+                this.load(JsonSerializer.readFromStream(inputStream));
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
 

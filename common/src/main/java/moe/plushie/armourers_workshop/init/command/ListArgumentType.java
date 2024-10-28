@@ -1,6 +1,5 @@
 package moe.plushie.armourers_workshop.init.command;
 
-import com.google.common.collect.Lists;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.mojang.brigadier.StringReader;
@@ -11,6 +10,7 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import moe.plushie.armourers_workshop.api.common.IArgumentSerializer;
 import moe.plushie.armourers_workshop.api.common.IArgumentType;
 import moe.plushie.armourers_workshop.api.network.IFriendlyByteBuf;
+import moe.plushie.armourers_workshop.core.utils.Collections;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.SharedSuggestionProvider;
 
@@ -28,7 +28,7 @@ public class ListArgumentType implements IArgumentType<String> {
     }
 
     public static ListArgumentType list(Iterable<String> values) {
-        return new ListArgumentType(Lists.newArrayList(values));
+        return new ListArgumentType(Collections.newList(values));
     }
 
     public static String getString(CommandContext<CommandSourceStack> context, String name) {

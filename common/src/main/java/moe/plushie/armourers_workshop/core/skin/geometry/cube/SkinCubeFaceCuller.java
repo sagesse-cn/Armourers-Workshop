@@ -1,6 +1,5 @@
 package moe.plushie.armourers_workshop.core.skin.geometry.cube;
 
-import com.google.common.collect.ImmutableMap;
 import moe.plushie.armourers_workshop.api.skin.part.ISkinPartType;
 import moe.plushie.armourers_workshop.core.math.Rectangle3i;
 import moe.plushie.armourers_workshop.core.math.Vector3i;
@@ -17,26 +16,27 @@ import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Map;
 
 public class SkinCubeFaceCuller {
 
     private static final int DIRECTION_SIZE = OpenDirection.values().length;
 
     // joints array:
-    private static final ImmutableMap<ISkinPartType, Partition> PARTITIONS2 = ImmutableMap.<ISkinPartType, Partition>builder()
-            .put(SkinPartTypes.BIPPED_HAT, new Simple(SkinPartTypes.BIPPED_HAT))
-            .put(SkinPartTypes.BIPPED_HEAD, new Simple(SkinPartTypes.BIPPED_HEAD))
-            .put(SkinPartTypes.BIPPED_CHEST, new Limb(SkinPartTypes.BIPPED_CHEST, SkinPartTypes.BIPPED_TORSO, 6))
-            .put(SkinPartTypes.BIPPED_LEFT_ARM, new Limb(SkinPartTypes.BIPPED_LEFT_ARM, SkinPartTypes.BIPPED_LEFT_HAND, 4))
-            .put(SkinPartTypes.BIPPED_RIGHT_ARM, new Limb(SkinPartTypes.BIPPED_RIGHT_ARM, SkinPartTypes.BIPPED_RIGHT_HAND, 4))
-            .put(SkinPartTypes.BIPPED_SKIRT, new Simple(SkinPartTypes.BIPPED_SKIRT))
-            .put(SkinPartTypes.BIPPED_LEFT_THIGH, new Limb(SkinPartTypes.BIPPED_LEFT_THIGH, SkinPartTypes.BIPPED_LEFT_LEG, 6))
-            .put(SkinPartTypes.BIPPED_RIGHT_THIGH, new Limb(SkinPartTypes.BIPPED_RIGHT_THIGH, SkinPartTypes.BIPPED_RIGHT_LEG, 6))
-            .put(SkinPartTypes.BIPPED_LEFT_FOOT, new Simple(SkinPartTypes.BIPPED_LEFT_FOOT))
-            .put(SkinPartTypes.BIPPED_RIGHT_FOOT, new Simple(SkinPartTypes.BIPPED_RIGHT_FOOT))
-            .put(SkinPartTypes.BIPPED_LEFT_WING, new Simple(SkinPartTypes.BIPPED_LEFT_WING))
-            .put(SkinPartTypes.BIPPED_RIGHT_WING, new Simple(SkinPartTypes.BIPPED_RIGHT_WING))
-            .build();
+    private static final Map<ISkinPartType, Partition> PARTITIONS2 = Collections.immutableMap(builder -> {
+        builder.put(SkinPartTypes.BIPPED_HAT, new Simple(SkinPartTypes.BIPPED_HAT));
+        builder.put(SkinPartTypes.BIPPED_HEAD, new Simple(SkinPartTypes.BIPPED_HEAD));
+        builder.put(SkinPartTypes.BIPPED_CHEST, new Limb(SkinPartTypes.BIPPED_CHEST, SkinPartTypes.BIPPED_TORSO, 6));
+        builder.put(SkinPartTypes.BIPPED_LEFT_ARM, new Limb(SkinPartTypes.BIPPED_LEFT_ARM, SkinPartTypes.BIPPED_LEFT_HAND, 4));
+        builder.put(SkinPartTypes.BIPPED_RIGHT_ARM, new Limb(SkinPartTypes.BIPPED_RIGHT_ARM, SkinPartTypes.BIPPED_RIGHT_HAND, 4));
+        builder.put(SkinPartTypes.BIPPED_SKIRT, new Simple(SkinPartTypes.BIPPED_SKIRT));
+        builder.put(SkinPartTypes.BIPPED_LEFT_THIGH, new Limb(SkinPartTypes.BIPPED_LEFT_THIGH, SkinPartTypes.BIPPED_LEFT_LEG, 6));
+        builder.put(SkinPartTypes.BIPPED_RIGHT_THIGH, new Limb(SkinPartTypes.BIPPED_RIGHT_THIGH, SkinPartTypes.BIPPED_RIGHT_LEG, 6));
+        builder.put(SkinPartTypes.BIPPED_LEFT_FOOT, new Simple(SkinPartTypes.BIPPED_LEFT_FOOT));
+        builder.put(SkinPartTypes.BIPPED_RIGHT_FOOT, new Simple(SkinPartTypes.BIPPED_RIGHT_FOOT));
+        builder.put(SkinPartTypes.BIPPED_LEFT_WING, new Simple(SkinPartTypes.BIPPED_LEFT_WING));
+        builder.put(SkinPartTypes.BIPPED_RIGHT_WING, new Simple(SkinPartTypes.BIPPED_RIGHT_WING));
+    });
 
     interface Partition {
         Collection<SearchResult> subdivide(Rectangle3i rect);

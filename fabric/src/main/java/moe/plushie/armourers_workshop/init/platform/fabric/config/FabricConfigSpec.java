@@ -302,7 +302,7 @@ public class FabricConfigSpec extends UnmodifiableConfigWrapper<UnmodifiableConf
         }
 
         public <V extends Comparable<? super V>> ConfigValue<V> defineInRange(List<String> path, Supplier<V> defaultSupplier, V min, V max, Class<V> clazz) {
-            Range<V> range = new Range<>(clazz, min, max);
+            var range = new Range<V>(clazz, min, max);
             context.setRange(range);
             context.setComment(ObjectArrays.concat(context.getComment(), "Range: " + range));
             if (min.compareTo(max) > 0)
@@ -347,7 +347,7 @@ public class FabricConfigSpec extends UnmodifiableConfigWrapper<UnmodifiableConf
                         ModLog.debug("List on key {} is deemed to need correction. It is null, not a list, or an empty list. Modders, consider defineListAllowEmpty?", path.get(path.size() - 1));
                         return getDefault();
                     }
-                    List<?> list = Lists.newArrayList((List<?>) value);
+                    List<?> list = Collections.newList((List<?>) value);
                     list.removeIf(elementValidator.negate());
                     if (list.isEmpty()) {
                         ModLog.debug("List on key {} is deemed to need correction. It failed validation.", path.get(path.size() - 1));
@@ -367,7 +367,7 @@ public class FabricConfigSpec extends UnmodifiableConfigWrapper<UnmodifiableConf
                         ModLog.debug("List on key {} is deemed to need correction, as it is null or not a list.", path.get(path.size() - 1));
                         return getDefault();
                     }
-                    List<?> list = Lists.newArrayList((List<?>) value);
+                    List<?> list = Collections.newList((List<?>) value);
                     list.removeIf(elementValidator.negate());
                     if (list.isEmpty()) {
                         ModLog.debug("List on key {} is deemed to need correction. It failed validation.", path.get(path.size() - 1));

@@ -12,14 +12,14 @@ import moe.plushie.armourers_workshop.core.skin.Skin;
 import moe.plushie.armourers_workshop.core.skin.SkinDescriptor;
 import moe.plushie.armourers_workshop.core.skin.SkinLoader;
 import moe.plushie.armourers_workshop.core.skin.serializer.SkinFileOptions;
+import moe.plushie.armourers_workshop.core.skin.serializer.SkinSerializer;
+import moe.plushie.armourers_workshop.core.utils.Constants;
+import moe.plushie.armourers_workshop.core.utils.FileUtils;
 import moe.plushie.armourers_workshop.init.ModLog;
 import moe.plushie.armourers_workshop.init.ModPermissions;
 import moe.plushie.armourers_workshop.init.platform.NetworkManager;
 import moe.plushie.armourers_workshop.library.data.SkinLibraryManager;
 import moe.plushie.armourers_workshop.library.menu.SkinLibraryMenu;
-import moe.plushie.armourers_workshop.utils.Constants;
-import moe.plushie.armourers_workshop.utils.SkinFileStreamUtils;
-import moe.plushie.armourers_workshop.utils.SkinFileUtils;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 
@@ -197,7 +197,7 @@ public class SaveSkinPacket extends CustomPacket {
 
     private void encodeSkin(Skin skin, IFriendlyByteBuf buffer) {
         try (var outputStream = new GZIPOutputStream(new ByteBufOutputStream(buffer.asByteBuf()))) {
-            SkinFileStreamUtils.saveSkinToStream(outputStream, skin);
+            SkinSerializer.writeToStream(skin, null, outputStream);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -205,7 +205,7 @@ public class SaveSkinPacket extends CustomPacket {
 
     private Skin decodeSkin(IFriendlyByteBuf buffer) {
         try (var inputStream = new GZIPInputStream(new ByteBufInputStream(buffer.asByteBuf()))) {
-            return SkinFileStreamUtils.loadSkinFromStream(inputStream);
+            return SkinSerializer.readFromStream(null, inputStream);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -215,7 +215,7 @@ public class SaveSkinPacket extends CustomPacket {
     private Skin loadSkin(String identifier, SkinFileOptions options) {
         try {
             var stream = SkinLoader.getInstance().loadSkinData(identifier);
-            return SkinFileStreamUtils.loadSkinFromStream(stream, resolveLoadOptions(options));
+            return SkinSerializer.readFromStream(resolveLoadOptions(options), stream);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -265,7 +265,7 @@ public class SaveSkinPacket extends CustomPacket {
             if (index < 0) {
                 throw new RuntimeException("illegal identifier!!!");
             }
-            String path = SkinFileUtils.normalize(identifier.substring(index + 1), true); // security check
+            String path = FileUtils.normalize(identifier.substring(index + 1), true); // security check
             if (path != null) {
                 identifier = identifier.subSequence(0, index + 1) + path;
             }

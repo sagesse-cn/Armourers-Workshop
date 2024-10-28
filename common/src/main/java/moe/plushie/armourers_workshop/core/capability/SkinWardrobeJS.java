@@ -1,15 +1,16 @@
 package moe.plushie.armourers_workshop.core.capability;
 
-import com.google.common.collect.ImmutableMap;
 import moe.plushie.armourers_workshop.core.data.slot.SkinSlotType;
 import moe.plushie.armourers_workshop.core.skin.SkinDescriptor;
 import moe.plushie.armourers_workshop.core.skin.SkinLoader;
 import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintScheme;
+import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.init.ModDataComponents;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
+import java.util.Map;
 import java.util.function.BiConsumer;
 
 /**
@@ -34,13 +35,13 @@ import java.util.function.BiConsumer;
 @SuppressWarnings("unused")
 public class SkinWardrobeJS {
 
-    private static final ImmutableMap<String, BiConsumer<SkinWardrobe, Boolean>> OPTIONS = new ImmutableMap.Builder<String, BiConsumer<SkinWardrobe, Boolean>>()
-            .put("render.head", (w, f) -> w.setRenderEquipment(EquipmentSlot.HEAD, f))
-            .put("render.chest", (w, f) -> w.setRenderEquipment(EquipmentSlot.CHEST, f))
-            .put("render.legs", (w, f) -> w.setRenderEquipment(EquipmentSlot.LEGS, f))
-            .put("render.feet", (w, f) -> w.setRenderEquipment(EquipmentSlot.FEET, f))
-            .put("render.extra", SkinWardrobe::setRenderExtra)
-            .build();
+    private static final Map<String, BiConsumer<SkinWardrobe, Boolean>> OPTIONS = Collections.immutableMap(builder -> {
+        builder.put("render.head", (w, f) -> w.setRenderEquipment(EquipmentSlot.HEAD, f));
+        builder.put("render.chest", (w, f) -> w.setRenderEquipment(EquipmentSlot.CHEST, f));
+        builder.put("render.legs", (w, f) -> w.setRenderEquipment(EquipmentSlot.LEGS, f));
+        builder.put("render.feet", (w, f) -> w.setRenderEquipment(EquipmentSlot.FEET, f));
+        builder.put("render.extra", SkinWardrobe::setRenderExtra);
+    });
 
     private final SkinWardrobe wardrobe;
 

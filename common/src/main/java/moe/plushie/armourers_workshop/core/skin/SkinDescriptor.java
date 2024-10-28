@@ -1,23 +1,28 @@
 package moe.plushie.armourers_workshop.core.skin;
 
+import moe.plushie.armourers_workshop.api.core.IDataCodec;
+import moe.plushie.armourers_workshop.api.core.IDataSerializable;
+import moe.plushie.armourers_workshop.api.core.IDataSerializer;
+import moe.plushie.armourers_workshop.api.core.IDataSerializerKey;
 import moe.plushie.armourers_workshop.api.skin.ISkinDescriptor;
 import moe.plushie.armourers_workshop.api.skin.ISkinToolType;
 import moe.plushie.armourers_workshop.api.skin.ISkinType;
 import moe.plushie.armourers_workshop.core.data.ItemStackStorage;
 import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintScheme;
 import moe.plushie.armourers_workshop.core.utils.Objects;
+import moe.plushie.armourers_workshop.core.utils.TagSerializer;
 import moe.plushie.armourers_workshop.init.ModConfig;
 import moe.plushie.armourers_workshop.init.ModDataComponents;
 import moe.plushie.armourers_workshop.init.ModItems;
-import moe.plushie.armourers_workshop.utils.Constants;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.function.BooleanSupplier;
 
-public class SkinDescriptor implements ISkinDescriptor {
+public class SkinDescriptor implements IDataSerializable.Immutable, ISkinDescriptor {
 
     public static final SkinDescriptor EMPTY = new SkinDescriptor("");
+
+    public static final IDataCodec<SkinDescriptor> CODEC = IDataCodec.COMPOUND_TAG.either(IDataCodec.STRING, TagSerializer::parse).serializer(SkinDescriptor::new);
 
     private final String identifier;
     private final ISkinType type;
@@ -50,11 +55,11 @@ public class SkinDescriptor implements ISkinDescriptor {
         this(descriptor.getIdentifier(), descriptor.getType(), descriptor.getOptions(), colorScheme);
     }
 
-    public SkinDescriptor(CompoundTag tag) {
-        this.identifier = tag.getString(Constants.Key.SKIN_IDENTIFIER);
-        this.type = SkinTypes.byName(tag.getString(Constants.Key.SKIN_TYPE));
-        this.options = tag.getOptionalSkinOptions(Constants.Key.SKIN_OPTIONS, Options.DEFAULT);
-        this.colorScheme = tag.getOptionalColorScheme(Constants.Key.SKIN_DYE, SkinPaintScheme.EMPTY);
+    public SkinDescriptor(IDataSerializer serializer) {
+        this.identifier = serializer.read(CodingKeys.IDENTIFIER);
+        this.type = serializer.read(CodingKeys.TYPE);
+        this.options = serializer.read(CodingKeys.OPTIONS);
+        this.colorScheme = serializer.read(CodingKeys.SCHEME);
     }
 
     public static SkinDescriptor of(ItemStack itemStack) {
@@ -85,16 +90,12 @@ public class SkinDescriptor implements ISkinDescriptor {
         return false;
     }
 
-    public CompoundTag serializeNBT() {
-        var nbt = new CompoundTag();
-        if (isEmpty()) {
-            return nbt;
-        }
-        nbt.putString(Constants.Key.SKIN_TYPE, type.getRegistryName().toString());
-        nbt.putString(Constants.Key.SKIN_IDENTIFIER, identifier);
-        nbt.putOptionalSkinOptions(Constants.Key.SKIN_OPTIONS, options, Options.DEFAULT);
-        nbt.putOptionalColorScheme(Constants.Key.SKIN_DYE, colorScheme, SkinPaintScheme.EMPTY);
-        return nbt;
+    @Override
+    public void serialize(IDataSerializer serializer) {
+        serializer.write(CodingKeys.IDENTIFIER, identifier);
+        serializer.write(CodingKeys.TYPE, type);
+        serializer.write(CodingKeys.OPTIONS, options);
+        serializer.write(CodingKeys.SCHEME, colorScheme);
     }
 
     public ItemStack sharedItemStack() {
@@ -152,10 +153,22 @@ public class SkinDescriptor implements ISkinDescriptor {
         return identifier.hashCode();
     }
 
+    private static class CodingKeys {
 
-    public static class Options {
+        public static final IDataSerializerKey<String> IDENTIFIER = IDataSerializerKey.create("Identifier", IDataCodec.STRING, "");
+        public static final IDataSerializerKey<ISkinType> TYPE = IDataSerializerKey.create("SkinType", SkinTypes.CODEC, SkinTypes.UNKNOWN);
+        public static final IDataSerializerKey<Options> OPTIONS = IDataSerializerKey.create("SkinOptions", Options.CODEC, Options.DEFAULT);
+        public static final IDataSerializerKey<SkinPaintScheme> SCHEME = IDataSerializerKey.create("SkinDyes", SkinPaintScheme.CODEC, SkinPaintScheme.EMPTY);
+
+        public static final IDataSerializerKey<Integer> TOOLTIP_FLAGS = IDataSerializerKey.create("TooltipFlags", IDataCodec.INT, 0);
+        public static final IDataSerializerKey<Integer> USING_EMBEDDED_RENDERER = IDataSerializerKey.create("EmbeddedItemRenderer", IDataCodec.INT, 0);
+    }
+
+    public static class Options implements IDataSerializable.Immutable {
 
         public static Options DEFAULT = new Options();
+
+        public static final IDataCodec<Options> CODEC = IDataCodec.COMPOUND_TAG.serializer(Options::new);
 
         private int tooltipFlags = 0;
         private int enableEmbeddedItemRenderer = 0;
@@ -163,16 +176,15 @@ public class SkinDescriptor implements ISkinDescriptor {
         public Options() {
         }
 
-        public Options(CompoundTag tag) {
-            this.tooltipFlags = tag.getInt(Constants.Key.OPTIONS_TOOLTIP_FLAGS);
-            this.enableEmbeddedItemRenderer = tag.getInt(Constants.Key.OPTIONS_EMBEDDED_ITEM_RENDERER);
+        public Options(IDataSerializer serializer) {
+            this.tooltipFlags = serializer.read(CodingKeys.TOOLTIP_FLAGS);
+            this.enableEmbeddedItemRenderer = serializer.read(CodingKeys.USING_EMBEDDED_RENDERER);
         }
 
-        public CompoundTag serializeNBT() {
-            var tag = new CompoundTag();
-            tag.putOptionalInt(Constants.Key.OPTIONS_TOOLTIP_FLAGS, tooltipFlags, 0);
-            tag.putOptionalInt(Constants.Key.OPTIONS_EMBEDDED_ITEM_RENDERER, enableEmbeddedItemRenderer, 0);
-            return tag;
+        @Override
+        public void serialize(IDataSerializer serializer) {
+            serializer.write(CodingKeys.TOOLTIP_FLAGS, tooltipFlags);
+            serializer.write(CodingKeys.USING_EMBEDDED_RENDERER, enableEmbeddedItemRenderer);
         }
 
         public Options copy() {

@@ -1,8 +1,8 @@
 package moe.plushie.armourers_workshop.library.data.impl;
 
-import moe.plushie.armourers_workshop.core.skin.serializer.io.IODataObject;
+import moe.plushie.armourers_workshop.core.utils.JsonSerializer;
 import moe.plushie.armourers_workshop.init.ModLog;
-import moe.plushie.armourers_workshop.utils.StreamUtils;
+import moe.plushie.armourers_workshop.core.utils.StreamUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -47,9 +47,9 @@ public class MinecraftAuth {
 
             try {
                 // returns non 204 if error occurred
-                String result = performPostRequest(new URL(JOIN_URL), data, "application/json");
-                IODataObject object = StreamUtils.fromPackObject(result);
-                if (object != null && object.get("error") != null) {
+                var result = performPostRequest(new URL(JOIN_URL), data, "application/json");
+                var object = JsonSerializer.readFromString(result);
+                if (object.get("error") != null) {
                     throw new RuntimeException(object.get("error").stringValue());
                 }
                 lastAuthTime = System.currentTimeMillis();
@@ -85,13 +85,13 @@ public class MinecraftAuth {
         InputStream inputStream = null;
         try {
             inputStream = connection.getInputStream();
-            return StreamUtils.toString(inputStream, StandardCharsets.UTF_8);
+            return StreamUtils.readStreamToString(inputStream, StandardCharsets.UTF_8);
         } catch (IOException e) {
             StreamUtils.closeQuietly(inputStream);
             inputStream = connection.getErrorStream();
 
             if (inputStream != null) {
-                return StreamUtils.toString(inputStream, StandardCharsets.UTF_8);
+                return StreamUtils.readStreamToString(inputStream, StandardCharsets.UTF_8);
             } else {
                 throw e;
             }

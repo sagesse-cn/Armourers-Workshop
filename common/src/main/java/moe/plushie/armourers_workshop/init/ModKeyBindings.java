@@ -4,7 +4,7 @@ import moe.plushie.armourers_workshop.api.client.key.IKeyBinding;
 import moe.plushie.armourers_workshop.api.registry.IKeyBindingBuilder;
 import moe.plushie.armourers_workshop.init.client.InputMotionHandler;
 import moe.plushie.armourers_workshop.init.platform.BuilderManager;
-import moe.plushie.armourers_workshop.utils.ext.OpenKeyModifier;
+import moe.plushie.armourers_workshop.utils.OpenKeyModifier;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 

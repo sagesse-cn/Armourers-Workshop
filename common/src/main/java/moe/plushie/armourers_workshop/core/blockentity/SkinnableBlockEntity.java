@@ -1,8 +1,9 @@
 package moe.plushie.armourers_workshop.core.blockentity;
 
-import com.google.common.collect.ImmutableMap;
 import moe.plushie.armourers_workshop.api.client.IBlockEntityExtendedRenderer;
-import moe.plushie.armourers_workshop.api.data.IDataSerializer;
+import moe.plushie.armourers_workshop.api.core.IDataCodec;
+import moe.plushie.armourers_workshop.api.core.IDataSerializer;
+import moe.plushie.armourers_workshop.api.core.IDataSerializerKey;
 import moe.plushie.armourers_workshop.core.block.SkinnableBlock;
 import moe.plushie.armourers_workshop.core.client.bake.SkinBakery;
 import moe.plushie.armourers_workshop.core.client.other.SkinItemSource;
@@ -17,10 +18,9 @@ import moe.plushie.armourers_workshop.core.skin.SkinDescriptor;
 import moe.plushie.armourers_workshop.core.skin.SkinMarker;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperties;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperty;
+import moe.plushie.armourers_workshop.core.utils.Collections;
+import moe.plushie.armourers_workshop.core.utils.Constants;
 import moe.plushie.armourers_workshop.core.utils.Objects;
-import moe.plushie.armourers_workshop.utils.Constants;
-import moe.plushie.armourers_workshop.utils.DataSerializerKey;
-import moe.plushie.armourers_workshop.utils.DataTypeCodecs;
 import moe.plushie.armourers_workshop.utils.NonNullItemList;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -39,34 +39,26 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
 public class SkinnableBlockEntity extends RotableContainerBlockEntity implements IBlockEntityExtendedRenderer {
 
-    private static final DataSerializerKey<BlockPos> REFERENCE_KEY = DataSerializerKey.create("Refer", DataTypeCodecs.BLOCK_POS, BlockPos.ZERO);
-    private static final DataSerializerKey<Rectangle3i> SHAPE_KEY = DataSerializerKey.create("Shape", DataTypeCodecs.RECTANGLE_3I, Rectangle3i.ZERO);
-    private static final DataSerializerKey<BlockPos> LINKED_POS_KEY = DataSerializerKey.create("LinkedPos", DataTypeCodecs.BLOCK_POS, null);
-    private static final DataSerializerKey<SkinDescriptor> SKIN_KEY = DataSerializerKey.create("Skin", DataTypeCodecs.SKIN_DESCRIPTOR, SkinDescriptor.EMPTY);
-    private static final DataSerializerKey<SkinProperties> SKIN_PROPERTIES_KEY = DataSerializerKey.create("SkinProperties", DataTypeCodecs.SKIN_PROPERTIES, SkinProperties.EMPTY, SkinProperties::new);
-    private static final DataSerializerKey<List<BlockPos>> REFERS_KEY = DataSerializerKey.create("Refers", DataTypeCodecs.BLOCK_POS.listOf(), Collections.emptyList());
-    private static final DataSerializerKey<List<SkinMarker>> MARKERS_KEY = DataSerializerKey.create("Markers", DataTypeCodecs.SKIN_MARKER.listOf(), Collections.emptyList());
-
-    private static final ImmutableMap<?, Vector3f> FACING_TO_ROT = new ImmutableMap.Builder<Object, Vector3f>()
-            .put(Pair.of(AttachFace.CEILING, Direction.EAST), new Vector3f(180, 270, 0))
-            .put(Pair.of(AttachFace.CEILING, Direction.NORTH), new Vector3f(180, 180, 0))
-            .put(Pair.of(AttachFace.CEILING, Direction.WEST), new Vector3f(180, 90, 0))
-            .put(Pair.of(AttachFace.CEILING, Direction.SOUTH), new Vector3f(180, 0, 0))
-            .put(Pair.of(AttachFace.WALL, Direction.EAST), new Vector3f(0, 270, 0))
-            .put(Pair.of(AttachFace.WALL, Direction.SOUTH), new Vector3f(0, 180, 0))
-            .put(Pair.of(AttachFace.WALL, Direction.WEST), new Vector3f(0, 90, 0))
-            .put(Pair.of(AttachFace.WALL, Direction.NORTH), new Vector3f(0, 0, 0))
-            .put(Pair.of(AttachFace.FLOOR, Direction.EAST), new Vector3f(0, 270, 0))
-            .put(Pair.of(AttachFace.FLOOR, Direction.SOUTH), new Vector3f(0, 180, 0))
-            .put(Pair.of(AttachFace.FLOOR, Direction.WEST), new Vector3f(0, 90, 0))
-            .put(Pair.of(AttachFace.FLOOR, Direction.NORTH), new Vector3f(0, 0, 0))
-            .build();
+    private static final Map<?, Vector3f> FACING_TO_ROT = Collections.immutableMap(builder -> {
+        builder.put(Pair.of(AttachFace.CEILING, Direction.EAST), new Vector3f(180, 270, 0));
+        builder.put(Pair.of(AttachFace.CEILING, Direction.NORTH), new Vector3f(180, 180, 0));
+        builder.put(Pair.of(AttachFace.CEILING, Direction.WEST), new Vector3f(180, 90, 0));
+        builder.put(Pair.of(AttachFace.CEILING, Direction.SOUTH), new Vector3f(180, 0, 0));
+        builder.put(Pair.of(AttachFace.WALL, Direction.EAST), new Vector3f(0, 270, 0));
+        builder.put(Pair.of(AttachFace.WALL, Direction.SOUTH), new Vector3f(0, 180, 0));
+        builder.put(Pair.of(AttachFace.WALL, Direction.WEST), new Vector3f(0, 90, 0));
+        builder.put(Pair.of(AttachFace.WALL, Direction.NORTH), new Vector3f(0, 0, 0));
+        builder.put(Pair.of(AttachFace.FLOOR, Direction.EAST), new Vector3f(0, 270, 0));
+        builder.put(Pair.of(AttachFace.FLOOR, Direction.SOUTH), new Vector3f(0, 180, 0));
+        builder.put(Pair.of(AttachFace.FLOOR, Direction.WEST), new Vector3f(0, 90, 0));
+        builder.put(Pair.of(AttachFace.FLOOR, Direction.NORTH), new Vector3f(0, 0, 0));
+    });
 
     private BlockPos reference = BlockPos.ZERO;
     private Rectangle3i collisionShape = Rectangle3i.ZERO;
@@ -99,19 +91,19 @@ public class SkinnableBlockEntity extends RotableContainerBlockEntity implements
 
     @Override
     public void readAdditionalData(IDataSerializer serializer) {
-        reference = serializer.read(REFERENCE_KEY);
-        collisionShape = serializer.read(SHAPE_KEY);
+        reference = serializer.read(CodingKeys.REFERENCE);
+        collisionShape = serializer.read(CodingKeys.SHAPE);
         renderVoxelShape = null;
         isParent = BlockPos.ZERO.equals(reference);
         if (!isParent()) {
             return;
         }
         var oldProperties = properties;
-        refers = serializer.read(REFERS_KEY);
-        markers = serializer.read(MARKERS_KEY);
-        descriptor = serializer.read(SKIN_KEY);
-        properties = serializer.read(SKIN_PROPERTIES_KEY);
-        linkedBlockPos = serializer.read(LINKED_POS_KEY);
+        refers = serializer.read(CodingKeys.REFERENCES);
+        markers = serializer.read(CodingKeys.MARKERS);
+        descriptor = serializer.read(CodingKeys.SKIN);
+        properties = serializer.read(CodingKeys.SKIN_PROPERTIES);
+        linkedBlockPos = serializer.read(CodingKeys.LINKED_POS);
         if (oldProperties != null) {
             oldProperties.clear();
             oldProperties.putAll(properties);
@@ -122,16 +114,16 @@ public class SkinnableBlockEntity extends RotableContainerBlockEntity implements
 
     @Override
     public void writeAdditionalData(IDataSerializer serializer) {
-        serializer.write(REFERENCE_KEY, reference);
-        serializer.write(SHAPE_KEY, collisionShape);
+        serializer.write(CodingKeys.REFERENCE, reference);
+        serializer.write(CodingKeys.SHAPE, collisionShape);
         if (!isParent()) {
             return;
         }
-        serializer.write(REFERS_KEY, refers);
-        serializer.write(MARKERS_KEY, markers);
-        serializer.write(SKIN_KEY, descriptor);
-        serializer.write(SKIN_PROPERTIES_KEY, properties);
-        serializer.write(LINKED_POS_KEY, linkedBlockPos);
+        serializer.write(CodingKeys.REFERENCES, refers);
+        serializer.write(CodingKeys.MARKERS, markers);
+        serializer.write(CodingKeys.SKIN, descriptor);
+        serializer.write(CodingKeys.SKIN_PROPERTIES, properties);
+        serializer.write(CodingKeys.LINKED_POS, linkedBlockPos);
         getOrCreateItems().serialize(serializer);
     }
 
@@ -385,5 +377,16 @@ public class SkinnableBlockEntity extends RotableContainerBlockEntity implements
             return properties.get(property);
         }
         return property.getDefaultValue();
+    }
+
+    private static class CodingKeys {
+
+        public static final IDataSerializerKey<BlockPos> REFERENCE = IDataSerializerKey.create("Refer", IDataCodec.BLOCK_POS, BlockPos.ZERO);
+        public static final IDataSerializerKey<Rectangle3i> SHAPE = IDataSerializerKey.create("Shape", Rectangle3i.CODEC, Rectangle3i.ZERO);
+        public static final IDataSerializerKey<BlockPos> LINKED_POS = IDataSerializerKey.create("LinkedPos", IDataCodec.BLOCK_POS, null);
+        public static final IDataSerializerKey<SkinDescriptor> SKIN = IDataSerializerKey.create("Skin", SkinDescriptor.CODEC, SkinDescriptor.EMPTY);
+        public static final IDataSerializerKey<SkinProperties> SKIN_PROPERTIES = IDataSerializerKey.create("SkinProperties", SkinProperties.CODEC, SkinProperties.EMPTY, SkinProperties::new);
+        public static final IDataSerializerKey<List<BlockPos>> REFERENCES = IDataSerializerKey.create("Refers", IDataCodec.BLOCK_POS.listOf(), Collections.emptyList());
+        public static final IDataSerializerKey<List<SkinMarker>> MARKERS = IDataSerializerKey.create("Markers", SkinMarker.CODEC.listOf(), Collections.emptyList());
     }
 }

@@ -1,6 +1,6 @@
 package moe.plushie.armourers_workshop.builder.client.gui.advancedbuilder.document;
 
-import moe.plushie.armourers_workshop.core.skin.document.SkinDocumentNode;
+import moe.plushie.armourers_workshop.core.skin.serializer.document.SkinDocumentNode;
 
 public class DocumentPasteboard {
 

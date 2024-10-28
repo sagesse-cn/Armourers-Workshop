@@ -1,6 +1,5 @@
 package moe.plushie.armourers_workshop.core.client.skinrender;
 
-import com.google.common.collect.ImmutableMap;
 import moe.plushie.armourers_workshop.api.core.IResourceLocation;
 import moe.plushie.armourers_workshop.api.data.IDataPackBuilder;
 import moe.plushie.armourers_workshop.compatibility.client.model.AbstractModelHolder;
@@ -25,6 +24,7 @@ import moe.plushie.armourers_workshop.core.client.skinrender.plugin.TridentModel
 import moe.plushie.armourers_workshop.core.client.skinrender.plugin.VillagerModelArmaturePlugin;
 import moe.plushie.armourers_workshop.core.data.DataPackType;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IODataObject;
+import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.init.platform.DataPackManager;
 import net.minecraft.client.model.Model;
 
@@ -38,10 +38,10 @@ public class SkinRendererManager2 extends ArmatureSerializers {
     public static final ArmatureTransformerManager DEFAULT = new DefaultArmatureTransformerManager();
     public static final ArmatureTransformerManager EPICFIGHT = new EpicFlightArmatureTransformerManager();
 
-    private static final ImmutableMap<String, ArmatureTransformerManager> MANAGERS = ImmutableMap.<String, ArmatureTransformerManager>builder()
-            .put("armourers_workshop:armature", DEFAULT)
-            .put("epicfight:armature", EPICFIGHT)
-            .build();
+    private static final Map<String, ArmatureTransformerManager> MANAGERS = Collections.immutableMap(builder -> {
+        builder.put("armourers_workshop:armature", DEFAULT);
+        builder.put("epicfight:armature", EPICFIGHT);
+    });
 
     public static void init() {
         registerModifiers();

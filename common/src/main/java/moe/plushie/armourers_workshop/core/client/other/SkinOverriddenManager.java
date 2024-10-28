@@ -1,7 +1,5 @@
 package moe.plushie.armourers_workshop.core.client.other;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import moe.plushie.armourers_workshop.api.skin.property.ISkinProperties;
 import moe.plushie.armourers_workshop.api.skin.property.ISkinProperty;
 import moe.plushie.armourers_workshop.compatibility.api.AbstractItemTransformType;
@@ -18,58 +16,60 @@ import net.minecraft.world.item.ItemStack;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 
 @SuppressWarnings("unused")
 @Environment(EnvType.CLIENT)
 public class SkinOverriddenManager {
 
-    private static final ImmutableList<EquipmentSlot> ARMOUR_EQUIPMENT_SLOTS = new ImmutableList.Builder<EquipmentSlot>()
-            .add(EquipmentSlot.HEAD)
-            .add(EquipmentSlot.CHEST)
-            .add(EquipmentSlot.LEGS)
-            .add(EquipmentSlot.FEET)
-            .build();
+    private static final List<EquipmentSlot> ARMOUR_EQUIPMENT_SLOTS = Collections.immutableList(builder -> {
+        builder.add(EquipmentSlot.HEAD);
+        builder.add(EquipmentSlot.CHEST);
+        builder.add(EquipmentSlot.LEGS);
+        builder.add(EquipmentSlot.FEET);
+    });
 
-    private static final ImmutableList<ISkinProperty<Boolean>> OVERRIDDEN_PROPERTIES = new ImmutableList.Builder<ISkinProperty<Boolean>>()
-            .add(SkinProperty.OVERRIDE_MODEL_HEAD)
-            .add(SkinProperty.OVERRIDE_MODEL_CHEST)
-            .add(SkinProperty.OVERRIDE_MODEL_LEFT_ARM)
-            .add(SkinProperty.OVERRIDE_MODEL_RIGHT_ARM)
-            .add(SkinProperty.OVERRIDE_MODEL_LEFT_LEG)
-            .add(SkinProperty.OVERRIDE_MODEL_RIGHT_LEG)
-            .add(SkinProperty.OVERRIDE_MODEL_LEFT_FRONT_LEG)
-            .add(SkinProperty.OVERRIDE_MODEL_RIGHT_FRONT_LEG)
-            .add(SkinProperty.OVERRIDE_MODEL_LEFT_HIND_LEG)
-            .add(SkinProperty.OVERRIDE_MODEL_RIGHT_HIND_LEG)
-            .add(SkinProperty.OVERRIDE_MODEL_TAIL)
-            .add(SkinProperty.OVERRIDE_OVERLAY_HAT)
-            .add(SkinProperty.OVERRIDE_OVERLAY_CLOAK)
-            .add(SkinProperty.OVERRIDE_OVERLAY_JACKET)
-            .add(SkinProperty.OVERRIDE_OVERLAY_LEFT_SLEEVE)
-            .add(SkinProperty.OVERRIDE_OVERLAY_RIGHT_SLEEVE)
-            .add(SkinProperty.OVERRIDE_OVERLAY_LEFT_PANTS)
-            .add(SkinProperty.OVERRIDE_OVERLAY_RIGHT_PANTS)
-            .add(SkinProperty.OVERRIDE_EQUIPMENT_HELMET)
-            .add(SkinProperty.OVERRIDE_EQUIPMENT_CHESTPLATE)
-            .add(SkinProperty.OVERRIDE_EQUIPMENT_LEGGINGS)
-            .add(SkinProperty.OVERRIDE_EQUIPMENT_BOOTS)
-            .build();
+    private static final List<ISkinProperty<Boolean>> OVERRIDDEN_PROPERTIES = Collections.immutableList(builder -> {
+        builder.add(SkinProperty.OVERRIDE_MODEL_HEAD);
+        builder.add(SkinProperty.OVERRIDE_MODEL_CHEST);
+        builder.add(SkinProperty.OVERRIDE_MODEL_LEFT_ARM);
+        builder.add(SkinProperty.OVERRIDE_MODEL_RIGHT_ARM);
+        builder.add(SkinProperty.OVERRIDE_MODEL_LEFT_LEG);
+        builder.add(SkinProperty.OVERRIDE_MODEL_RIGHT_LEG);
+        builder.add(SkinProperty.OVERRIDE_MODEL_LEFT_FRONT_LEG);
+        builder.add(SkinProperty.OVERRIDE_MODEL_RIGHT_FRONT_LEG);
+        builder.add(SkinProperty.OVERRIDE_MODEL_LEFT_HIND_LEG);
+        builder.add(SkinProperty.OVERRIDE_MODEL_RIGHT_HIND_LEG);
+        builder.add(SkinProperty.OVERRIDE_MODEL_TAIL);
+        builder.add(SkinProperty.OVERRIDE_OVERLAY_HAT);
+        builder.add(SkinProperty.OVERRIDE_OVERLAY_CLOAK);
+        builder.add(SkinProperty.OVERRIDE_OVERLAY_JACKET);
+        builder.add(SkinProperty.OVERRIDE_OVERLAY_LEFT_SLEEVE);
+        builder.add(SkinProperty.OVERRIDE_OVERLAY_RIGHT_SLEEVE);
+        builder.add(SkinProperty.OVERRIDE_OVERLAY_LEFT_PANTS);
+        builder.add(SkinProperty.OVERRIDE_OVERLAY_RIGHT_PANTS);
+        builder.add(SkinProperty.OVERRIDE_EQUIPMENT_HELMET);
+        builder.add(SkinProperty.OVERRIDE_EQUIPMENT_CHESTPLATE);
+        builder.add(SkinProperty.OVERRIDE_EQUIPMENT_LEGGINGS);
+        builder.add(SkinProperty.OVERRIDE_EQUIPMENT_BOOTS);
+    });
 
-    private static final ImmutableMap<ISkinProperty<Boolean>, EquipmentSlot> OVERRIDDEN_EQUIPMENT_TO_SLOT = new ImmutableMap.Builder<ISkinProperty<Boolean>, EquipmentSlot>()
-            .put(SkinProperty.OVERRIDE_EQUIPMENT_HELMET, EquipmentSlot.HEAD)
-            .put(SkinProperty.OVERRIDE_EQUIPMENT_CHESTPLATE, EquipmentSlot.CHEST)
-            .put(SkinProperty.OVERRIDE_EQUIPMENT_LEGGINGS, EquipmentSlot.LEGS)
-            .put(SkinProperty.OVERRIDE_EQUIPMENT_BOOTS, EquipmentSlot.FEET)
-            .build();
+    private static final Map<ISkinProperty<Boolean>, EquipmentSlot> OVERRIDDEN_EQUIPMENT_TO_SLOT = Collections.immutableMap(builder -> {
+        builder.put(SkinProperty.OVERRIDE_EQUIPMENT_HELMET, EquipmentSlot.HEAD);
+        builder.put(SkinProperty.OVERRIDE_EQUIPMENT_CHESTPLATE, EquipmentSlot.CHEST);
+        builder.put(SkinProperty.OVERRIDE_EQUIPMENT_LEGGINGS, EquipmentSlot.LEGS);
+        builder.put(SkinProperty.OVERRIDE_EQUIPMENT_BOOTS, EquipmentSlot.FEET);
+    });
 
-    private static final ImmutableMap<ISkinProperty<Boolean>, Collection<ISkinProperty<Boolean>>> OVERRIDDEN_MODEL_TO_OVERLAY = new ImmutableMap.Builder<ISkinProperty<Boolean>, Collection<ISkinProperty<Boolean>>>()
-            .put(SkinProperty.OVERRIDE_MODEL_HEAD, Collections.newList(SkinProperty.OVERRIDE_OVERLAY_HAT))
-            .put(SkinProperty.OVERRIDE_MODEL_CHEST, Collections.newList(SkinProperty.OVERRIDE_OVERLAY_JACKET, SkinProperty.OVERRIDE_OVERLAY_CLOAK))
-            .put(SkinProperty.OVERRIDE_MODEL_LEFT_ARM, Collections.newList(SkinProperty.OVERRIDE_OVERLAY_LEFT_SLEEVE))
-            .put(SkinProperty.OVERRIDE_MODEL_RIGHT_ARM, Collections.newList(SkinProperty.OVERRIDE_OVERLAY_RIGHT_SLEEVE))
-            .put(SkinProperty.OVERRIDE_MODEL_LEFT_LEG, Collections.newList(SkinProperty.OVERRIDE_OVERLAY_LEFT_PANTS))
-            .put(SkinProperty.OVERRIDE_MODEL_RIGHT_LEG, Collections.newList(SkinProperty.OVERRIDE_OVERLAY_RIGHT_PANTS))
-            .build();
+    private static final Map<ISkinProperty<Boolean>, Collection<ISkinProperty<Boolean>>> OVERRIDDEN_MODEL_TO_OVERLAY = Collections.immutableMap(builder -> {
+        builder.put(SkinProperty.OVERRIDE_MODEL_HEAD, Collections.newList(SkinProperty.OVERRIDE_OVERLAY_HAT));
+        builder.put(SkinProperty.OVERRIDE_MODEL_CHEST, Collections.newList(SkinProperty.OVERRIDE_OVERLAY_JACKET, SkinProperty.OVERRIDE_OVERLAY_CLOAK));
+        builder.put(SkinProperty.OVERRIDE_MODEL_LEFT_ARM, Collections.newList(SkinProperty.OVERRIDE_OVERLAY_LEFT_SLEEVE));
+        builder.put(SkinProperty.OVERRIDE_MODEL_RIGHT_ARM, Collections.newList(SkinProperty.OVERRIDE_OVERLAY_RIGHT_SLEEVE));
+        builder.put(SkinProperty.OVERRIDE_MODEL_LEFT_LEG, Collections.newList(SkinProperty.OVERRIDE_OVERLAY_LEFT_PANTS));
+        builder.put(SkinProperty.OVERRIDE_MODEL_RIGHT_LEG, Collections.newList(SkinProperty.OVERRIDE_OVERLAY_RIGHT_PANTS));
+    });
 
     private final HashSet<ISkinProperty<Boolean>> disabledProperties = new HashSet<>();
     private final HashSet<ISkinProperty<Boolean>> disabledModelByProperties = new HashSet<>();

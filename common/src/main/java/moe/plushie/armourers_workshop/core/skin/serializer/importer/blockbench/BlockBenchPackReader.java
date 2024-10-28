@@ -11,9 +11,9 @@ import moe.plushie.armourers_workshop.core.skin.serializer.io.IOConsumer;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IOConsumer2;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IODataObject;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IOFunction;
+import moe.plushie.armourers_workshop.core.utils.FileUtils;
+import moe.plushie.armourers_workshop.core.utils.JsonSerializer;
 import moe.plushie.armourers_workshop.core.utils.OpenDirection;
-import moe.plushie.armourers_workshop.utils.SkinFileUtils;
-import moe.plushie.armourers_workshop.utils.StreamUtils;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.BufferedInputStream;
@@ -288,13 +288,8 @@ public class BlockBenchPackReader {
             if (resource == null) {
                 return null;
             }
-            var inputStream = new BufferedInputStream(resource.getInputStream());
-            try {
-                var object = StreamUtils.fromPackObject(inputStream);
-                if (object == null) {
-                    return null;
-                }
-                return new PackObject(object);
+            try (var inputStream = new BufferedInputStream(resource.getInputStream())) {
+                return new PackObject(JsonSerializer.readFromStream(inputStream));
             } catch (Exception exception) {
                 throw new IOException(exception);
             }
@@ -488,11 +483,11 @@ public class BlockBenchPackReader {
 
         protected Collection<Resource> getResourcesFromDirectory(File rootPath) throws IOException {
             var resources = new ArrayList<Resource>();
-            for (var entry : SkinFileUtils.listAllFiles(rootPath)) {
+            for (var entry : FileUtils.listFilesRecursive(rootPath)) {
                 if (entry.isDirectory()) {
                     continue;
                 }
-                var fileName = SkinFileUtils.getRelativePath(entry, rootPath, true).substring(1);
+                var fileName = FileUtils.getRelativePath(entry, rootPath, true).substring(1);
                 resources.add(new Resource() {
                     @Override
                     public String getName() {

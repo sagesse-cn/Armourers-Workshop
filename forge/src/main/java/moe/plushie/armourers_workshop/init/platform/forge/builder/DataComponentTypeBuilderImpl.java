@@ -1,7 +1,7 @@
 package moe.plushie.armourers_workshop.init.platform.forge.builder;
 
-import com.mojang.serialization.Codec;
-import moe.plushie.armourers_workshop.api.common.IDataComponentType;
+import moe.plushie.armourers_workshop.api.core.IDataCodec;
+import moe.plushie.armourers_workshop.api.core.IDataComponentType;
 import moe.plushie.armourers_workshop.api.core.IRegistryHolder;
 import moe.plushie.armourers_workshop.api.registry.IDataComponentTypeBuilder;
 import moe.plushie.armourers_workshop.compatibility.core.data.AbstractDataComponentType;
@@ -11,10 +11,10 @@ import moe.plushie.armourers_workshop.utils.TypedRegistry;
 
 public class DataComponentTypeBuilderImpl<T> implements IDataComponentTypeBuilder<T> {
 
-    private final Codec<T> codec;
+    private final IDataCodec<T> codec;
     private String tag;
 
-    public DataComponentTypeBuilderImpl(Codec<T> codec) {
+    public DataComponentTypeBuilderImpl(IDataCodec<T> codec) {
         this.codec = codec;
     }
 

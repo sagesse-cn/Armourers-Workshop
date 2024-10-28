@@ -6,8 +6,8 @@ import moe.plushie.armourers_workshop.compatibility.client.renderer.AbstractBloc
 import moe.plushie.armourers_workshop.core.client.other.SkinRenderType;
 import moe.plushie.armourers_workshop.core.math.OpenQuaternion3f;
 import moe.plushie.armourers_workshop.library.block.GlobalSkinLibraryBlock;
-import moe.plushie.armourers_workshop.utils.ext.OpenModelPart;
-import moe.plushie.armourers_workshop.utils.ext.OpenModelPartBuilder;
+import moe.plushie.armourers_workshop.utils.OpenModelPart;
+import moe.plushie.armourers_workshop.utils.OpenModelPartBuilder;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.Direction;

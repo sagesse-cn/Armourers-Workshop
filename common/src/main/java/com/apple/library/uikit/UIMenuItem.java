@@ -4,33 +4,33 @@ import com.apple.library.foundation.NSString;
 import com.apple.library.impl.InputKeyImpl;
 import com.apple.library.impl.InputManagerImpl;
 import com.apple.library.impl.StringImpl;
-import com.google.common.collect.ImmutableMap;
+import moe.plushie.armourers_workshop.core.utils.Collections;
 import net.minecraft.client.Minecraft;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Map;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 public class UIMenuItem {
 
-    private static final ImmutableMap<String, Predicate<UIEvent>> TESTER = ImmutableMap.<String, Predicate<UIEvent>>builder()
-            .put("key.keyboard.control", event -> InputManagerImpl.hasControlDown())
-            .put("key.keyboard.shift", event -> InputManagerImpl.hasShiftDown())
-            .put("key.keyboard.alt", event -> InputManagerImpl.hasAltDown())
-            .build();
+    private static final Map<String, Predicate<UIEvent>> TESTER = Collections.immutableMap(builder -> {
+        builder.put("key.keyboard.control", event -> InputManagerImpl.hasControlDown());
+        builder.put("key.keyboard.shift", event -> InputManagerImpl.hasShiftDown());
+        builder.put("key.keyboard.alt", event -> InputManagerImpl.hasAltDown());
+    });
 
-    private static final ImmutableMap<String, Supplier<String>> TESTER_NAME = ImmutableMap.<String, Supplier<String>>builder()
-            .put("key.keyboard.alt", () -> "ALT")
-            .put("key.keyboard.shift", () -> "SHIFT")
-            .put("key.keyboard.control", () -> {
-                if (Minecraft.ON_OSX) {
-                    return "CMD";
-                }
-                return "CTRL";
-            })
-            .build();
-
+    private static final Map<String, Supplier<String>> TESTER_NAME = Collections.immutableMap(builder -> {
+        builder.put("key.keyboard.alt", () -> "ALT");
+        builder.put("key.keyboard.shift", () -> "SHIFT");
+        builder.put("key.keyboard.control", () -> {
+            if (Minecraft.ON_OSX) {
+                return "CMD";
+            }
+            return "CTRL";
+        });
+    });
 
     private final NSString title;
     private final NSString key;

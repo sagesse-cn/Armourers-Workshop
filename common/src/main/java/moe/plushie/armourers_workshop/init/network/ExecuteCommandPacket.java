@@ -1,15 +1,15 @@
 package moe.plushie.armourers_workshop.init.network;
 
-import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.ByteBufOutputStream;
 import moe.plushie.armourers_workshop.api.network.IClientPacketHandler;
 import moe.plushie.armourers_workshop.api.network.IFriendlyByteBuf;
 import moe.plushie.armourers_workshop.core.network.CustomPacket;
+import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.init.ModConfig;
 import moe.plushie.armourers_workshop.init.ModConfigSpec;
 import moe.plushie.armourers_workshop.init.ModDebugger;
-import moe.plushie.armourers_workshop.utils.StreamUtils;
+import moe.plushie.armourers_workshop.core.utils.StreamUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 
@@ -22,10 +22,10 @@ import java.util.List;
 
 public class ExecuteCommandPacket extends CustomPacket {
 
-    private static final List<Class<?>> SUPPORTED_CLASSES = new ImmutableList.Builder<Class<?>>()
-            .add(ModDebugger.class)
-            .add(ModConfig.Client.class)
-            .build();
+    private static final List<Class<?>> SUPPORTED_CLASSES = Collections.immutableList(builder -> {
+        builder.add(ModDebugger.class);
+        builder.add(ModConfig.Client.class);
+    });
 
     private final Class<?> object;
     private final Mode mode;

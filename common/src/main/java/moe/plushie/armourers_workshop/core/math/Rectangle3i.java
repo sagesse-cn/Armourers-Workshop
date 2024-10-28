@@ -1,8 +1,9 @@
 package moe.plushie.armourers_workshop.core.math;
 
-import com.google.common.collect.Lists;
+import moe.plushie.armourers_workshop.api.core.IDataCodec;
 import moe.plushie.armourers_workshop.api.core.math.IRectangle3f;
 import moe.plushie.armourers_workshop.api.core.math.IRectangle3i;
+import moe.plushie.armourers_workshop.core.utils.Collections;
 
 import java.util.Iterator;
 import java.util.List;
@@ -12,6 +13,8 @@ import java.util.Objects;
 public class Rectangle3i implements IRectangle3i {
 
     public final static Rectangle3i ZERO = new Rectangle3i(0, 0, 0, 0, 0, 0);
+
+    public static final IDataCodec<Rectangle3i> CODEC = IDataCodec.INT.listOf().xmap(Rectangle3i::new, Rectangle3i::toList);
 
     private int x;
     private int y;
@@ -217,7 +220,7 @@ public class Rectangle3i implements IRectangle3i {
     }
 
     public List<Integer> toList() {
-        return Lists.newArrayList(x, y, z, width, height, depth);
+        return Collections.newList(x, y, z, width, height, depth);
     }
 
     @Override

@@ -13,6 +13,7 @@ import moe.plushie.armourers_workshop.api.common.IItemTag;
 import moe.plushie.armourers_workshop.api.common.ILootFunction;
 import moe.plushie.armourers_workshop.api.common.IMenuProvider;
 import moe.plushie.armourers_workshop.api.common.IMenuSerializer;
+import moe.plushie.armourers_workshop.api.core.IDataCodec;
 import moe.plushie.armourers_workshop.api.permission.IPermissionNode;
 import moe.plushie.armourers_workshop.api.registry.IArgumentTypeBuilder;
 import moe.plushie.armourers_workshop.api.registry.IBlockBuilder;
@@ -78,7 +79,7 @@ public class BuilderManager {
 
         <T extends IPermissionNode> IPermissionNodeBuilder<T> createPermissionBuilder();
 
-        <T> IDataComponentTypeBuilder<T> createDataComponentTypeBuilder(Codec<T> codec);
+        <T> IDataComponentTypeBuilder<T> createDataComponentTypeBuilder(IDataCodec<T> codec);
 
         <T extends SoundEvent> ISoundEventBuilder<T> createSoundEventBuilder();
     }

@@ -1,33 +1,35 @@
 package moe.plushie.armourers_workshop.compatibility.core.data;
 
-import com.mojang.serialization.Codec;
 import moe.plushie.armourers_workshop.api.annotation.Available;
-import moe.plushie.armourers_workshop.api.data.IDataSerializer;
-import moe.plushie.armourers_workshop.api.data.IDataSerializerKey;
+import moe.plushie.armourers_workshop.api.core.IDataSerializer;
+import moe.plushie.armourers_workshop.api.core.IDataSerializerKey;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 
 import java.util.Objects;
-import java.util.function.Supplier;
 
 @Available("[1.16, 1.21)")
 public class AbstractDataSerializer implements IDataSerializer {
 
     private final CompoundTag tag;
 
-    public AbstractDataSerializer(CompoundTag tag) {
+    public AbstractDataSerializer(CompoundTag tag, Object registryAccess) {
         this.tag = tag;
     }
 
+    public static AbstractDataSerializer wrap(CompoundTag tag) {
+        return new AbstractDataSerializer(tag, null);
+    }
+
     public static AbstractDataSerializer wrap(CompoundTag tag, Object registryAccess) {
-        return new AbstractDataSerializer(tag);
+        return new AbstractDataSerializer(tag, registryAccess);
     }
 
     @Override
     public <T> T read(IDataSerializerKey<T> key) {
-        String name = key.getName();
+        var name = key.getName();
         if (tag.contains(name)) {
-            Codec<T> codec = key.getCodec();
+            var codec = key.getCodec().codec();
             var value = codec.decode(NbtOps.INSTANCE, tag.get(key.getName())).get().left();
             if (value.isPresent()) {
                 T value2 = value.get().getFirst();
@@ -36,7 +38,7 @@ public class AbstractDataSerializer implements IDataSerializer {
                 }
             }
         }
-        Supplier<T> constructor = key.getConstructor();
+        var constructor = key.getConstructor();
         if (constructor != null) {
             return constructor.get();
         }
@@ -45,12 +47,12 @@ public class AbstractDataSerializer implements IDataSerializer {
 
     @Override
     public <T> void write(IDataSerializerKey<T> key, T value) {
-        T defaultValue = key.getDefault();
+        var defaultValue = key.getDefault();
         if (defaultValue == value || Objects.equals(defaultValue, value)) {
             return;
         }
-        String name = key.getName();
-        Codec<T> codec = key.getCodec();
+        var name = key.getName();
+        var codec = key.getCodec().codec();
         codec.encodeStart(NbtOps.INSTANCE, value).get().ifLeft(it -> {
             // we need to merge new value into the item.
             tag.put(name, it);

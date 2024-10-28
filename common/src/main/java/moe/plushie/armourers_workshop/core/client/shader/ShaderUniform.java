@@ -3,7 +3,7 @@ package moe.plushie.armourers_workshop.core.client.shader;
 import moe.plushie.armourers_workshop.core.math.OpenMatrix3f;
 import moe.plushie.armourers_workshop.core.math.OpenMatrix4f;
 import moe.plushie.armourers_workshop.core.math.Vector4f;
-import moe.plushie.armourers_workshop.core.utils.MatrixBuffers;
+import moe.plushie.armourers_workshop.core.utils.MatrixUtils;
 import moe.plushie.armourers_workshop.utils.RenderSystem;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -109,7 +109,7 @@ public abstract class ShaderUniform {
 
     public static class Matrix4f extends ShaderUniform {
 
-        private final FloatBuffer buffer = MatrixBuffers.createFloatBuffer(16);
+        private final FloatBuffer buffer = MatrixUtils.createFloatBuffer(16);
         private final Supplier<OpenMatrix4f> value;
         private final OpenMatrix4f cachedValue = OpenMatrix4f.createScaleMatrix(0, 0, 0);
 
@@ -132,7 +132,7 @@ public abstract class ShaderUniform {
 
     public static class Matrix3f extends ShaderUniform {
 
-        private final FloatBuffer buffer = MatrixBuffers.createFloatBuffer(9);
+        private final FloatBuffer buffer = MatrixUtils.createFloatBuffer(9);
         private final Supplier<OpenMatrix3f> value;
         private final OpenMatrix3f cachedValue = OpenMatrix3f.createScaleMatrix(0, 0, 0);
 

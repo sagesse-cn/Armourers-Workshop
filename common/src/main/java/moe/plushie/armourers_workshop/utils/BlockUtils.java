@@ -1,11 +1,11 @@
 package moe.plushie.armourers_workshop.utils;
 
-import com.google.common.collect.ImmutableSet;
 import moe.plushie.armourers_workshop.api.common.IPaintable;
 import moe.plushie.armourers_workshop.api.core.IRegistryHolder;
 import moe.plushie.armourers_workshop.builder.data.undo.UndoManager;
 import moe.plushie.armourers_workshop.builder.data.undo.action.NamedUserAction;
 import moe.plushie.armourers_workshop.builder.data.undo.action.SetBlockAction;
+import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.init.ModBlocks;
 import moe.plushie.armourers_workshop.init.platform.event.common.BlockEvent;
 import net.minecraft.core.BlockPos;
@@ -20,16 +20,17 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.Map;
+import java.util.Set;
 
 public final class BlockUtils {
 
-    private static final ImmutableSet<IRegistryHolder<Block>> SNAPSHOT_BLOCKS = new ImmutableSet.Builder<IRegistryHolder<Block>>()
-            .add(ModBlocks.SKIN_CUBE)
-            .add(ModBlocks.SKIN_CUBE_GLASS)
-            .add(ModBlocks.SKIN_CUBE_GLASS_GLOWING)
-            .add(ModBlocks.SKIN_CUBE_GLOWING)
-            .add(ModBlocks.ADVANCED_SKIN_BUILDER)
-            .build();
+    private static final Set<IRegistryHolder<Block>> SNAPSHOT_BLOCKS = Collections.immutableSet(builder -> {
+        builder.add(ModBlocks.SKIN_CUBE);
+        builder.add(ModBlocks.SKIN_CUBE_GLASS);
+        builder.add(ModBlocks.SKIN_CUBE_GLASS_GLOWING);
+        builder.add(ModBlocks.SKIN_CUBE_GLOWING);
+        builder.add(ModBlocks.ADVANCED_SKIN_BUILDER);
+    });
 
     private static final ThreadLocal<Map<BlockEntity, Runnable>> SNAPSHOT_QUEUE = ThreadLocal.withInitial(() -> null);
 

@@ -1,6 +1,8 @@
 package moe.plushie.armourers_workshop.api.network;
 
+import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBuf;
+import moe.plushie.armourers_workshop.api.core.IDataCodec;
 import moe.plushie.armourers_workshop.api.core.IResourceLocation;
 import moe.plushie.armourers_workshop.api.data.IGenericProperties;
 import moe.plushie.armourers_workshop.api.data.IGenericValue;
@@ -83,6 +85,10 @@ public interface IFriendlyByteBuf {
     CompoundTag readNbt();
 
     void writeNbt(CompoundTag tag);
+
+    <T> T readNbtWithCodec(IDataCodec<T> codec);
+
+    <T> void writeNbtWithCodec(IDataCodec<T> codec, T value);
 
     Component readComponent();
 

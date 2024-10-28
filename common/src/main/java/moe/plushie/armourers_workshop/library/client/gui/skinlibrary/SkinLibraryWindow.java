@@ -30,6 +30,8 @@ import moe.plushie.armourers_workshop.core.skin.SkinTypes;
 import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintScheme;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperty;
 import moe.plushie.armourers_workshop.core.skin.serializer.SkinFileOptions;
+import moe.plushie.armourers_workshop.core.utils.Constants;
+import moe.plushie.armourers_workshop.core.utils.FileUtils;
 import moe.plushie.armourers_workshop.init.ModLog;
 import moe.plushie.armourers_workshop.init.ModTextures;
 import moe.plushie.armourers_workshop.init.platform.EnvironmentManager;
@@ -39,9 +41,7 @@ import moe.plushie.armourers_workshop.library.data.SkinLibraryFile;
 import moe.plushie.armourers_workshop.library.data.SkinLibraryManager;
 import moe.plushie.armourers_workshop.library.menu.SkinLibraryMenu;
 import moe.plushie.armourers_workshop.library.network.SaveSkinPacket;
-import moe.plushie.armourers_workshop.utils.Constants;
 import moe.plushie.armourers_workshop.utils.RenderSystem;
-import moe.plushie.armourers_workshop.utils.SkinFileUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.Util;
@@ -346,7 +346,7 @@ public class SkinLibraryWindow extends MenuWindow<SkinLibraryMenu> implements UI
         dialog.setVerifier(value -> value.replaceAll("[:\\\\/]|^[.]+$", "_").equals(value));
         dialog.showInView(this, () -> {
             if (!dialog.isCancelled()) {
-                String newPath = SkinFileUtils.normalize(SkinFileUtils.concat(selectedPath, dialog.value()), true);
+                String newPath = FileUtils.normalize(FileUtils.concat(selectedPath, dialog.value()), true);
                 selectedLibrary.mkdir(newPath);
             }
         });
@@ -391,7 +391,7 @@ public class SkinLibraryWindow extends MenuWindow<SkinLibraryMenu> implements UI
             toast(getDisplayText("error.noFileName"));
             return; // must input name
         }
-        var newPath = SkinFileUtils.normalize(SkinFileUtils.concat(selectedPath, newName + Constants.EXT), true);
+        var newPath = FileUtils.normalize(FileUtils.concat(selectedPath, newName + Constants.EXT), true);
         if (selectedLibrary.get(newPath) != null) {
             if (!isAuthorized()) {
                 toast(getDisplayText("error.illegalOperation"));
@@ -431,7 +431,7 @@ public class SkinLibraryWindow extends MenuWindow<SkinLibraryMenu> implements UI
             return; // not changes.
         }
         var ext = file.isDirectory() ? "" : Constants.EXT;
-        var newPath = SkinFileUtils.normalize(file.getPath() + "/../" + sender + ext, true);
+        var newPath = FileUtils.normalize(file.getPath() + "/../" + sender + ext, true);
         if (selectedLibrary.get(newPath) != null) {
             overwriteItem(newPath, () -> selectedLibrary.rename(file, newPath));
             return;
@@ -442,7 +442,7 @@ public class SkinLibraryWindow extends MenuWindow<SkinLibraryMenu> implements UI
     private void overwriteItem(String path, Runnable handler) {
         var dialog = new ConfirmDialog();
         dialog.setTitle(getDisplayText("dialog.overwrite.title"));
-        dialog.setMessage(getDisplayText("dialog.overwrite.overwriteFile", SkinFileUtils.getBaseName(path)));
+        dialog.setMessage(getDisplayText("dialog.overwrite.overwriteFile", FileUtils.getBaseName(path)));
         dialog.setMessageColor(new UIColor(0xff5555));
         dialog.setConfirmText(getDisplayText("dialog.overwrite.ok"));
         dialog.setCancelText(getDisplayText("dialog.overwrite.close"));

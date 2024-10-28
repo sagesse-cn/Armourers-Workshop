@@ -1,8 +1,7 @@
 package moe.plushie.armourers_workshop.core.data;
 
 
-import joptsimple.internal.Strings;
-import moe.plushie.armourers_workshop.core.data.transform.SkinWingsTransform;
+import moe.plushie.armourers_workshop.core.skin.part.wings.WingPartTransform;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Pose;
@@ -136,7 +135,7 @@ public class EntityActionSet {
     }
 
     private boolean isFlying(LivingEntity entity) {
-        return SkinWingsTransform.isFlying(entity);
+        return WingPartTransform.isFlying(entity);
     }
 
     private boolean isBoat(Entity entity) {
@@ -186,9 +185,7 @@ public class EntityActionSet {
             results.append(entry.getKey());
             prefix = "; ";
             if (!entry.getValue().isEmpty()) {
-                results.append("[");
-                results.append(Strings.join(entry.getValue(), ","));
-                results.append("]");
+                results.append(entry.getValue());
             }
         }
         return results.toString();

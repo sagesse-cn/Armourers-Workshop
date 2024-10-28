@@ -2,7 +2,7 @@ package moe.plushie.armourers_workshop.core.skin;
 
 import moe.plushie.armourers_workshop.api.skin.ISkin;
 import moe.plushie.armourers_workshop.api.skin.ISkinType;
-import moe.plushie.armourers_workshop.core.data.transform.SkinItemTransforms;
+import moe.plushie.armourers_workshop.core.math.OpenItemTransforms;
 import moe.plushie.armourers_workshop.core.math.Rectangle3f;
 import moe.plushie.armourers_workshop.core.math.Rectangle3i;
 import moe.plushie.armourers_workshop.core.math.Vector3i;
@@ -134,7 +134,7 @@ public class Skin implements ISkin {
         return animations;
     }
 
-    public SkinItemTransforms getItemTransforms() {
+    public OpenItemTransforms getItemTransforms() {
         return settings.getItemTransforms();
     }
 

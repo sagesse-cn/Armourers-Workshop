@@ -2,7 +2,7 @@ package moe.plushie.armourers_workshop.compatibility.core;
 
 import moe.plushie.armourers_workshop.api.annotation.Available;
 import moe.plushie.armourers_workshop.api.common.IBlockEntityHandler;
-import moe.plushie.armourers_workshop.api.data.IDataSerializer;
+import moe.plushie.armourers_workshop.api.core.IDataSerializer;
 import moe.plushie.armourers_workshop.compatibility.core.data.AbstractDataSerializer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;

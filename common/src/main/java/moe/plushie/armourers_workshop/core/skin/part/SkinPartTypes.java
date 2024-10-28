@@ -1,5 +1,6 @@
 package moe.plushie.armourers_workshop.core.skin.part;
 
+import moe.plushie.armourers_workshop.api.core.IDataCodec;
 import moe.plushie.armourers_workshop.api.skin.part.ISkinPartType;
 import moe.plushie.armourers_workshop.core.skin.part.advanced.AdvancedPartType;
 import moe.plushie.armourers_workshop.core.skin.part.block.BlockPartType;
@@ -27,14 +28,15 @@ import moe.plushie.armourers_workshop.core.utils.OpenResourceLocation;
 import moe.plushie.armourers_workshop.init.ModLog;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.LinkedHashMap;
 import java.util.Set;
 
 @SuppressWarnings("unused")
 public final class SkinPartTypes {
 
-    private static final Map<String, ISkinPartType> ALL_PART_TYPES = new HashMap<>();
+    private static final LinkedHashMap<String, ISkinPartType> ALL_PART_TYPES = new LinkedHashMap<>();
+
+    public static final IDataCodec<ISkinPartType> CODEC = IDataCodec.STRING.xmap(SkinPartTypes::byName, ISkinPartType::getName);
 
     public static final ISkinPartType UNKNOWN = register("unknown", new UnknownPartType());
 

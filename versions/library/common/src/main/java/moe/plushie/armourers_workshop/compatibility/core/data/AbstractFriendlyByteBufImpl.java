@@ -1,7 +1,10 @@
 package moe.plushie.armourers_workshop.compatibility.core.data;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.handler.codec.DecoderException;
+import io.netty.handler.codec.EncoderException;
 import moe.plushie.armourers_workshop.api.annotation.Available;
+import moe.plushie.armourers_workshop.api.core.IDataCodec;
 import moe.plushie.armourers_workshop.api.network.IFriendlyByteBuf;
 import moe.plushie.armourers_workshop.init.environment.EnvironmentExecutor;
 import moe.plushie.armourers_workshop.init.environment.EnvironmentType;
@@ -9,6 +12,8 @@ import moe.plushie.armourers_workshop.init.platform.EnvironmentManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
@@ -76,5 +81,17 @@ public abstract class AbstractFriendlyByteBufImpl implements IFriendlyByteBuf {
     @Override
     public void writeComponent(Component value) {
         ComponentSerialization.STREAM_CODEC.encode(source, value);
+    }
+
+    @Override
+    public <T> T readNbtWithCodec(IDataCodec<T> codec) {
+        var dataResult = codec.codec().parse(NbtOps.INSTANCE, readNbt());
+        return dataResult.getOrThrow(string -> new DecoderException("Failed to decode json: " + string));
+    }
+
+    @Override
+    public <T> void writeNbtWithCodec(IDataCodec<T> codec, T value) {
+        var dataResult = codec.codec().encodeStart(NbtOps.INSTANCE, value);
+        writeNbt((CompoundTag) dataResult.getOrThrow(string -> new EncoderException("Failed to encode: " + string + " " + value)));
     }
 }

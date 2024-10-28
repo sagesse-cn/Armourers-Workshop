@@ -9,7 +9,7 @@ import com.apple.library.uikit.UIComboItem;
 import com.apple.library.uikit.UIControl;
 import com.apple.library.uikit.UITextField;
 import com.apple.library.uikit.UITextFieldDelegate;
-import moe.plushie.armourers_workshop.builder.data.PlayerTextureDescriptor;
+import moe.plushie.armourers_workshop.core.skin.paint.texture.EntityTextureDescriptor;
 import moe.plushie.armourers_workshop.core.capability.SkinWardrobe;
 import moe.plushie.armourers_workshop.core.client.texture.PlayerTextureLoader;
 import moe.plushie.armourers_workshop.core.entity.MannequinEntity;
@@ -27,13 +27,13 @@ import java.util.HashMap;
 public class SkinWardrobeTextureSetting extends SkinWardrobeBaseSetting implements UITextFieldDelegate {
 
     private final SkinWardrobe wardrobe;
-    private final HashMap<PlayerTextureDescriptor.Source, String> defaultValues = new HashMap<>();
+    private final HashMap<EntityTextureDescriptor.Source, String> defaultValues = new HashMap<>();
 
     private final UIComboBox comboView = new UIComboBox(new CGRect(83, 27, 80, 14));
     private final UITextField textField = new UITextField(new CGRect(83, 70, 165, 18));
 
-    private PlayerTextureDescriptor lastDescriptor = PlayerTextureDescriptor.EMPTY;
-    private PlayerTextureDescriptor.Source lastSource = PlayerTextureDescriptor.Source.NONE;
+    private EntityTextureDescriptor lastDescriptor = EntityTextureDescriptor.EMPTY;
+    private EntityTextureDescriptor.Source lastSource = EntityTextureDescriptor.Source.NONE;
 
     public SkinWardrobeTextureSetting(SkinWardrobe wardrobe) {
         super("wardrobe.man_texture");
@@ -55,7 +55,7 @@ public class SkinWardrobeTextureSetting extends SkinWardrobeBaseSetting implemen
 
     private void setupComboView() {
         int selectedIndex = 0;
-        if (lastSource != PlayerTextureDescriptor.Source.NONE) {
+        if (lastSource != EntityTextureDescriptor.Source.NONE) {
             selectedIndex = lastSource.ordinal() - 1;
         }
         var items = new ArrayList<UIComboItem>();
@@ -65,7 +65,7 @@ public class SkinWardrobeTextureSetting extends SkinWardrobeBaseSetting implemen
         comboView.reloadData(items);
         comboView.addTarget(this, UIControl.Event.VALUE_CHANGED, (self, e) -> {
             int index = self.comboView.selectedIndex();
-            self.changeSource(PlayerTextureDescriptor.Source.values()[index + 1]);
+            self.changeSource(EntityTextureDescriptor.Source.values()[index + 1]);
         });
         addSubview(comboView);
     }
@@ -87,10 +87,10 @@ public class SkinWardrobeTextureSetting extends SkinWardrobeBaseSetting implemen
         defaultValues.clear();
         lastDescriptor = entity.getEntityData().get(MannequinEntity.DATA_TEXTURE);
         lastSource = lastDescriptor.getSource();
-        if (lastSource == PlayerTextureDescriptor.Source.USER) {
+        if (lastSource == EntityTextureDescriptor.Source.USER) {
             defaultValues.put(lastSource, lastDescriptor.getName());
         }
-        if (lastSource == PlayerTextureDescriptor.Source.URL) {
+        if (lastSource == EntityTextureDescriptor.Source.URL) {
             defaultValues.put(lastSource, lastDescriptor.getURL());
         }
     }
@@ -98,11 +98,11 @@ public class SkinWardrobeTextureSetting extends SkinWardrobeBaseSetting implemen
     private void submit(Object button) {
         textField.resignFirstResponder();
         int index = comboView.selectedIndex();
-        PlayerTextureDescriptor.Source source = PlayerTextureDescriptor.Source.values()[index + 1];
+        EntityTextureDescriptor.Source source = EntityTextureDescriptor.Source.values()[index + 1];
         applyText(source, textField.text());
     }
 
-    private void changeSource(PlayerTextureDescriptor.Source newSource) {
+    private void changeSource(EntityTextureDescriptor.Source newSource) {
         if (this.lastSource == newSource) {
             return;
         }
@@ -114,22 +114,22 @@ public class SkinWardrobeTextureSetting extends SkinWardrobeBaseSetting implemen
         lastSource = newSource;
     }
 
-    private void applyText(PlayerTextureDescriptor.Source source, String value) {
-        var descriptor = PlayerTextureDescriptor.EMPTY;
+    private void applyText(EntityTextureDescriptor.Source source, String value) {
+        var descriptor = EntityTextureDescriptor.EMPTY;
         if (Strings.isNotEmpty(value)) {
-            if (source == PlayerTextureDescriptor.Source.URL) {
-                descriptor = PlayerTextureDescriptor.fromURL(value);
+            if (source == EntityTextureDescriptor.Source.URL) {
+                descriptor = EntityTextureDescriptor.fromURL(value);
             }
-            if (source == PlayerTextureDescriptor.Source.USER) {
-                descriptor = PlayerTextureDescriptor.fromName(value);
+            if (source == EntityTextureDescriptor.Source.USER) {
+                descriptor = EntityTextureDescriptor.fromName(value);
             }
         }
         PlayerTextureLoader.getInstance().loadTextureDescriptor(descriptor, resolvedDescriptor -> {
-            var newValue = resolvedDescriptor.orElse(PlayerTextureDescriptor.EMPTY);
+            var newValue = resolvedDescriptor.orElse(EntityTextureDescriptor.EMPTY);
             if (lastDescriptor.equals(newValue)) {
                 return; // no changes
             }
-            lastSource = PlayerTextureDescriptor.Source.NONE;
+            lastSource = EntityTextureDescriptor.Source.NONE;
             lastDescriptor = newValue;
             NetworkManager.sendToServer(UpdateWardrobePacket.Field.MANNEQUIN_TEXTURE.buildPacket(wardrobe, newValue));
             // update to use

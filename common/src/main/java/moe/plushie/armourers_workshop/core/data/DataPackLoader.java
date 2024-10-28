@@ -3,11 +3,11 @@ package moe.plushie.armourers_workshop.core.data;
 import moe.plushie.armourers_workshop.api.core.IResourceLocation;
 import moe.plushie.armourers_workshop.api.core.IResourceManager;
 import moe.plushie.armourers_workshop.api.data.IDataPackBuilder;
+import moe.plushie.armourers_workshop.core.utils.FileUtils;
+import moe.plushie.armourers_workshop.core.utils.JsonSerializer;
 import moe.plushie.armourers_workshop.core.utils.OpenResourceLocation;
 import moe.plushie.armourers_workshop.init.ModConstants;
 import moe.plushie.armourers_workshop.init.ModLog;
-import moe.plushie.armourers_workshop.utils.SkinFileUtils;
-import moe.plushie.armourers_workshop.utils.StreamUtils;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.profiling.ProfilerFiller;
@@ -75,11 +75,11 @@ public class DataPackLoader implements PreparableReloadListener {
             return () -> {
                 var results = new HashMap<IResourceLocation, IDataPackBuilder>();
                 resourceManager.readResources(target, s -> s.endsWith(".json"), (location, resource) -> {
-                    var object = StreamUtils.fromPackObject(resource);
+                    var object = JsonSerializer.readFromResource(resource);
                     if (object == null) {
                         return;
                     }
-                    var path = SkinFileUtils.removeExtension(location.getPath());
+                    var path = FileUtils.removeExtension(location.getPath());
                     var location1 = OpenResourceLocation.create(location.getNamespace(), path);
                     ModLog.debug("Load entry '{}' in '{}'", location1, resource.getSource());
                     results.computeIfAbsent(location1, provider).append(object, location);

@@ -8,9 +8,8 @@ import moe.plushie.armourers_workshop.core.client.model.CachedModel;
 import moe.plushie.armourers_workshop.core.client.other.thirdparty.EpicFlightModelPartBuilder;
 import moe.plushie.armourers_workshop.core.client.other.thirdparty.EpicFlightModelTransformer;
 import moe.plushie.armourers_workshop.core.client.skinrender.patch.EpicFightEntityRendererPatch;
-import moe.plushie.armourers_workshop.core.utils.MatrixBuffers;
+import moe.plushie.armourers_workshop.core.utils.MatrixUtils;
 import moe.plushie.armourers_workshop.init.ModConfig;
-import moe.plushie.armourers_workshop.utils.PoseUtils;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.world.entity.LivingEntity;
@@ -25,7 +24,7 @@ import java.util.HashMap;
 @Available("[1.16, )")
 public class AbstractForgeEpicFightHandler extends AbstractForgeEpicFightHandlerImpl {
 
-    private static final FloatBuffer AW_MAT_BUFFER4 = MatrixBuffers.createFloatBuffer(16);
+    private static final FloatBuffer AW_MAT_BUFFER4 = MatrixUtils.createFloatBuffer(16);
 
     public static void onRenderPre(LivingEntity entityIn, int packedLightIn, float partialTicks, boolean isFirstPerson, PoseStack poseStackIn, MultiBufferSource bufferSourceIn, LivingEntityRenderer<?, ?> renderer) {
         EpicFightEntityRendererPatch.activate(entityIn, partialTicks, packedLightIn, poseStackIn, renderer, patch -> {
@@ -45,8 +44,8 @@ public class AbstractForgeEpicFightHandler extends AbstractForgeEpicFightHandler
                     return IJointTransform.NONE;
                 }
                 copyTo(joint, poses, AW_MAT_BUFFER4);
-                var poseMatrix = PoseUtils.createPoseMatrix(AW_MAT_BUFFER4);
-                var normalMatrix = PoseUtils.createNormalMatrix(AW_MAT_BUFFER4);
+                var poseMatrix = MatrixUtils.createPoseMatrix(AW_MAT_BUFFER4);
+                var normalMatrix = MatrixUtils.createNormalMatrix(AW_MAT_BUFFER4);
                 return poseStack1 -> {
                     poseStack1.multiply(poseMatrix);
                     poseStack1.multiply(normalMatrix);

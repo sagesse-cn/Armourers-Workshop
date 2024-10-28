@@ -1,6 +1,6 @@
 package moe.plushie.armourers_workshop.core.skin.property;
 
-import moe.plushie.armourers_workshop.core.data.transform.SkinItemTransforms;
+import moe.plushie.armourers_workshop.core.math.OpenItemTransforms;
 import moe.plushie.armourers_workshop.core.math.OpenTransform3f;
 import moe.plushie.armourers_workshop.core.math.Rectangle3f;
 import moe.plushie.armourers_workshop.core.skin.serializer.SkinFileOptions;
@@ -21,7 +21,7 @@ public class SkinSettings {
 
     private int flags = 0;
     private List<Rectangle3f> collisionBox;
-    private SkinItemTransforms itemTransforms;
+    private OpenItemTransforms itemTransforms;
 
     private String securityData;
 
@@ -113,11 +113,11 @@ public class SkinSettings {
     }
 
 
-    public void setItemTransforms(SkinItemTransforms itemTransforms) {
+    public void setItemTransforms(OpenItemTransforms itemTransforms) {
         this.itemTransforms = itemTransforms;
     }
 
-    public SkinItemTransforms getItemTransforms() {
+    public OpenItemTransforms getItemTransforms() {
         return itemTransforms;
     }
 
@@ -191,10 +191,10 @@ public class SkinSettings {
             }
         };
 
-        static final DataItem<SkinItemTransforms> ITEM_TRANSFORMS = new DataItem<SkinItemTransforms>(2, null) {
+        static final DataItem<OpenItemTransforms> ITEM_TRANSFORMS = new DataItem<OpenItemTransforms>(2, null) {
             @Override
-            SkinItemTransforms read(IInputStream inputStream) throws IOException {
-                var itemTransforms = new SkinItemTransforms();
+            OpenItemTransforms read(IInputStream inputStream) throws IOException {
+                var itemTransforms = new OpenItemTransforms();
                 var size = inputStream.readVarInt();
                 for (int i = 1; i < size; ++i) {
                     var name = inputStream.readString();
@@ -207,7 +207,7 @@ public class SkinSettings {
             }
 
             @Override
-            void write(SkinItemTransforms itemTransforms, IOutputStream outputStream) throws IOException {
+            void write(OpenItemTransforms itemTransforms, IOutputStream outputStream) throws IOException {
                 outputStream.writeVarInt(itemTransforms.size() + 1);
                 for (var entry : itemTransforms.entrySet()) {
                     var transform = entry.getValue();

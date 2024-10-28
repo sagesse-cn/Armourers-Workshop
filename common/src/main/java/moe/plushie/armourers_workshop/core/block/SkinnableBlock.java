@@ -19,6 +19,7 @@ import moe.plushie.armourers_workshop.init.ModPermissions;
 import moe.plushie.armourers_workshop.utils.DataSerializers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionResult;
@@ -82,12 +83,14 @@ public class SkinnableBlock extends AbstractAttachedHorizontalBlock implements A
             return;
         }
         // add all part into level
-        context.getParts().forEach(p -> {
-            var target = blockPos.offset(p.getOffset());
+        context.getParts().forEach(part -> {
+            var target = blockPos.offset(part.getOffset());
             level.setBlock(target, blockState, 11);
             var blockEntity = getBlockEntity(level, target);
             if (blockEntity != null) {
-                blockEntity.readAdditionalData(AbstractDataSerializer.wrap(p.getEntityTag(), level));
+                var serializer = AbstractDataSerializer.wrap(new CompoundTag(), level);
+                part.serialize(serializer);
+                blockEntity.readAdditionalData(serializer);
                 blockEntity.updateBlockStates();
             }
         });

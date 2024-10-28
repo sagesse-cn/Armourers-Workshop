@@ -19,8 +19,8 @@ import moe.plushie.armourers_workshop.core.client.skinrender.SkinRenderer;
 import moe.plushie.armourers_workshop.core.client.texture.PlayerTextureLoader;
 import moe.plushie.armourers_workshop.core.data.cache.PrimaryKey;
 import moe.plushie.armourers_workshop.core.data.color.ColorDescriptor;
-import moe.plushie.armourers_workshop.core.data.transform.SkinItemTransforms;
-import moe.plushie.armourers_workshop.core.data.transform.SkinWingsTransform;
+import moe.plushie.armourers_workshop.core.math.OpenItemTransforms;
+import moe.plushie.armourers_workshop.core.skin.part.wings.WingPartTransform;
 import moe.plushie.armourers_workshop.core.math.OpenMatrix4f;
 import moe.plushie.armourers_workshop.core.math.OpenQuaternion3f;
 import moe.plushie.armourers_workshop.core.math.OpenVoxelShape;
@@ -60,7 +60,7 @@ public class BakedSkin implements IBakedSkin {
     private final HashMap<Object, Rectangle3f> cachedBounds = new HashMap<>();
     private final HashMap<Vector3i, Rectangle3f> cachedBlockBounds = new HashMap<>();
 
-    private final ArrayList<SkinWingsTransform> cachedWingsTransforms = new ArrayList<>();
+    private final ArrayList<WingPartTransform> cachedWingsTransforms = new ArrayList<>();
     private final ArrayList<BakedItemTransform> cachedItemTransforms = new ArrayList<>();
     private final ArrayList<BakedLocatorTransform> cachedLocatorTransforms = new ArrayList<>();
 
@@ -226,7 +226,7 @@ public class BakedSkin implements IBakedSkin {
         });
         // search all transform
         skinParts.forEach(it -> it.getTransform().getChildren().forEach(transform -> {
-            if (transform instanceof SkinWingsTransform transform1) {
+            if (transform instanceof WingPartTransform transform1) {
                 cachedWingsTransforms.add(transform1);
             }
             if (transform instanceof BakedItemTransform transform1) {
@@ -267,7 +267,7 @@ public class BakedSkin implements IBakedSkin {
         return Range.closed(minUseTick, maxUseTick);
     }
 
-    private BakedItemModel resolveItemModel(List<BakedSkinPart> skinParts, SkinItemTransforms oldValue) {
+    private BakedItemModel resolveItemModel(List<BakedSkinPart> skinParts, OpenItemTransforms oldValue) {
         // we only convert transform when override item transforms is enabled.
         if (oldValue != null) {
             return BakedItemModel.from(resolveItemOverrides(skinParts), oldValue, false);

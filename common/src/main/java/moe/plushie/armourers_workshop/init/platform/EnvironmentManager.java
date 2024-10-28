@@ -4,14 +4,15 @@ import dev.architectury.injectables.annotations.ExpectPlatform;
 import moe.plushie.armourers_workshop.api.config.IConfigSpec;
 import moe.plushie.armourers_workshop.api.core.IResourceManager;
 import moe.plushie.armourers_workshop.core.skin.serializer.SkinServerType;
+import moe.plushie.armourers_workshop.core.utils.Constants;
 import moe.plushie.armourers_workshop.init.environment.EnvironmentPlatformType;
 import moe.plushie.armourers_workshop.init.environment.EnvironmentType;
-import moe.plushie.armourers_workshop.utils.Constants;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.storage.LevelResource;
 
 import java.io.File;
 
@@ -46,7 +47,7 @@ public class EnvironmentManager {
     }
 
     public static File getSkinDatabaseDirectory() {
-        return getServer().getWorldPath(Constants.Folder.LOCAL_DB).toFile();
+        return getServer().getWorldPath(new LevelResource(Constants.Folder.LOCAL_DB)).toFile();
     }
 
     @ExpectPlatform

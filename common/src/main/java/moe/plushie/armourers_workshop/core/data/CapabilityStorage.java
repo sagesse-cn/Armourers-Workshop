@@ -2,11 +2,11 @@ package moe.plushie.armourers_workshop.core.data;
 
 import moe.plushie.armourers_workshop.api.common.ICapabilityType;
 import moe.plushie.armourers_workshop.api.core.IResourceLocation;
-import moe.plushie.armourers_workshop.api.data.IDataSerializerProvider;
+import moe.plushie.armourers_workshop.api.core.IDataSerializable;
 import moe.plushie.armourers_workshop.compatibility.core.data.AbstractCapabilityStorage;
 import moe.plushie.armourers_workshop.core.capability.SkinWardrobeStorage;
 import moe.plushie.armourers_workshop.core.utils.Objects;
-import moe.plushie.armourers_workshop.utils.Constants;
+import moe.plushie.armourers_workshop.core.utils.Constants;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
 import org.apache.commons.lang3.tuple.Pair;
@@ -64,7 +64,7 @@ public class CapabilityStorage {
         var capsKey = AbstractCapabilityStorage.KEY;
         var caps = tag.getCompound(capsKey);
         capabilities.values().forEach(pair -> {
-            if (pair.getValue().orElse(null) instanceof IDataSerializerProvider provider) {
+            if (pair.getValue().orElse(null) instanceof IDataSerializable.Mutable provider) {
                 var tag1 = new CompoundTag();
                 provider.serialize(SkinWardrobeStorage.writer(entity, tag1));
                 caps.put(pair.getKey().registryName.toString(), tag1);
@@ -86,7 +86,7 @@ public class CapabilityStorage {
             return;
         }
         capabilities.values().forEach(pair -> {
-            if (pair.getValue().orElse(null) instanceof IDataSerializerProvider provider) {
+            if (pair.getValue().orElse(null) instanceof IDataSerializable.Mutable provider) {
                 var containerTag = caps.get(pair.getKey().registryName.toString());
                 if (containerTag instanceof CompoundTag compoundTag) {
                     provider.deserialize(SkinWardrobeStorage.reader(entity, compoundTag));

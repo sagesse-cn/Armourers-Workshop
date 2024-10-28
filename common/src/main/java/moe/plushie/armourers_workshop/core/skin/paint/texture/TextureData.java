@@ -3,7 +3,7 @@ package moe.plushie.armourers_workshop.core.skin.paint.texture;
 import io.netty.buffer.ByteBuf;
 import moe.plushie.armourers_workshop.api.skin.paint.texture.ITextureProvider;
 import moe.plushie.armourers_workshop.core.utils.Collections;
-import moe.plushie.armourers_workshop.core.utils.MatrixBuffers;
+import moe.plushie.armourers_workshop.core.utils.MatrixUtils;
 import moe.plushie.armourers_workshop.core.utils.Objects;
 import moe.plushie.armourers_workshop.core.utils.OpenSequenceSource;
 
@@ -15,6 +15,8 @@ import java.nio.channels.Channels;
 import java.util.Collection;
 
 public class TextureData implements ITextureProvider {
+
+    public static final TextureData EMPTY = new TextureData("", 256, 256);
 
     private final int id = OpenSequenceSource.nextInt(TextureData.class);
     private final String name;
@@ -50,7 +52,7 @@ public class TextureData implements ITextureProvider {
         // we have known the length of the file stream, fast copy.
         if (inputStream instanceof FileInputStream fileInputStream) {
             var fileChannel = fileInputStream.getChannel();
-            bytes = MatrixBuffers.createByteBuffer((int) fileChannel.size() + 1);
+            bytes = MatrixUtils.createByteBuffer((int) fileChannel.size() + 1);
             while (fileChannel.read(bytes) != -1) {
                 // ignored.
             }
@@ -62,7 +64,7 @@ public class TextureData implements ITextureProvider {
         // we don't need to merge buffers,
         // this give some a performance boost.
         int capacity = 16384; // 16k
-        bytes = MatrixBuffers.createByteBuffer(capacity);
+        bytes = MatrixUtils.createByteBuffer(capacity);
         var buffers = Collections.newList(bytes);
         var byteChannel = Channels.newChannel(inputStream);
 
@@ -82,7 +84,7 @@ public class TextureData implements ITextureProvider {
         // merge all buffers into one buffer
         if (buffers.size() != 1) {
             int total = capacity - bytes.remaining();
-            bytes = MatrixBuffers.createByteBuffer(total);
+            bytes = MatrixUtils.createByteBuffer(total);
             for (var buffer : buffers) {
                 buffer.flip();
                 bytes.put(buffer);

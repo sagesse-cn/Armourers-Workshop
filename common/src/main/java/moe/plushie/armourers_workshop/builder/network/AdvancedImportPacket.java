@@ -9,11 +9,11 @@ import moe.plushie.armourers_workshop.builder.menu.AdvancedBuilderMenu;
 import moe.plushie.armourers_workshop.core.network.CustomPacket;
 import moe.plushie.armourers_workshop.core.skin.Skin;
 import moe.plushie.armourers_workshop.core.skin.SkinLoader;
-import moe.plushie.armourers_workshop.core.skin.document.SkinDocumentNode;
+import moe.plushie.armourers_workshop.core.skin.serializer.document.SkinDocumentNode;
+import moe.plushie.armourers_workshop.core.skin.serializer.SkinSerializer;
 import moe.plushie.armourers_workshop.init.ModLog;
 import moe.plushie.armourers_workshop.init.ModPermissions;
 import moe.plushie.armourers_workshop.library.data.SkinLibraryManager;
-import moe.plushie.armourers_workshop.utils.SkinFileStreamUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -94,7 +94,7 @@ public class AdvancedImportPacket extends CustomPacket {
 
     private void encodeSkin(IFriendlyByteBuf buffer) {
         try (var outputStream = new GZIPOutputStream(new ByteBufOutputStream(buffer.asByteBuf()))) {
-            SkinFileStreamUtils.saveSkinToStream(outputStream, skin);
+            SkinSerializer.writeToStream(skin, null, outputStream);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -102,7 +102,7 @@ public class AdvancedImportPacket extends CustomPacket {
 
     private Skin decodeSkin(IFriendlyByteBuf buffer) {
         try (var inputStream = new GZIPInputStream(new ByteBufInputStream(buffer.asByteBuf()))) {
-            return SkinFileStreamUtils.loadSkinFromStream(inputStream);
+            return SkinSerializer.readFromStream(null, inputStream);
         } catch (Exception e) {
             e.printStackTrace();
             return null;

@@ -10,7 +10,7 @@ import moe.plushie.armourers_workshop.api.common.IPlayerDataSerializer;
 import moe.plushie.armourers_workshop.api.network.IFriendlyByteBuf;
 import moe.plushie.armourers_workshop.api.skin.ISkinType;
 import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintColor;
-import moe.plushie.armourers_workshop.builder.data.PlayerTextureDescriptor;
+import moe.plushie.armourers_workshop.core.skin.paint.texture.EntityTextureDescriptor;
 import moe.plushie.armourers_workshop.compatibility.core.data.AbstractEntityDataSerializer;
 import moe.plushie.armourers_workshop.core.capability.SkinWardrobe;
 import moe.plushie.armourers_workshop.core.entity.EntityProfile;
@@ -18,6 +18,7 @@ import moe.plushie.armourers_workshop.core.math.Vector3f;
 import moe.plushie.armourers_workshop.core.skin.SkinTypes;
 import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperties;
+import moe.plushie.armourers_workshop.core.utils.StreamUtils;
 import moe.plushie.armourers_workshop.init.ModConfig;
 import moe.plushie.armourers_workshop.init.ModEntityProfiles;
 import net.minecraft.core.BlockPos;
@@ -95,16 +96,16 @@ public class DataSerializers {
         }
     };
 
-    public static final IEntitySerializer<PlayerTextureDescriptor> PLAYER_TEXTURE = new IEntitySerializer<PlayerTextureDescriptor>() {
+    public static final IEntitySerializer<EntityTextureDescriptor> PLAYER_TEXTURE = new IEntitySerializer<EntityTextureDescriptor>() {
 
         @Override
-        public void write(IFriendlyByteBuf buffer, PlayerTextureDescriptor descriptor) {
-            buffer.writeNbt(descriptor.serializeNBT());
+        public void write(IFriendlyByteBuf buffer, EntityTextureDescriptor descriptor) {
+            buffer.writeNbtWithCodec(EntityTextureDescriptor.CODEC, descriptor);
         }
 
         @Override
-        public PlayerTextureDescriptor read(IFriendlyByteBuf buffer) {
-            return new PlayerTextureDescriptor(buffer.readNbt());
+        public EntityTextureDescriptor read(IFriendlyByteBuf buffer) {
+            return buffer.readNbtWithCodec(EntityTextureDescriptor.CODEC);
         }
     };
 

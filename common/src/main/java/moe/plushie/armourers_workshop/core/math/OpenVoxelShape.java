@@ -1,11 +1,11 @@
 package moe.plushie.armourers_workshop.core.math;
 
-import com.google.common.collect.Lists;
 import moe.plushie.armourers_workshop.api.core.math.IMatrix4f;
 import moe.plushie.armourers_workshop.api.core.math.IRectangle3f;
 import moe.plushie.armourers_workshop.api.core.math.IRectangle3i;
 import moe.plushie.armourers_workshop.api.core.math.IVector3f;
 import moe.plushie.armourers_workshop.api.core.math.IVoxelShape;
+import moe.plushie.armourers_workshop.core.utils.Collections;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -17,7 +17,7 @@ public class OpenVoxelShape implements IVoxelShape, Iterable<Vector4f> {
 
     private OpenBoundingBox aabb;
     private Rectangle3f box;
-    private ArrayList<Vector4f> vertexes;
+    private List<Vector4f> vertexes;
 
     public OpenVoxelShape() {
     }
@@ -129,7 +129,7 @@ public class OpenVoxelShape implements IVoxelShape, Iterable<Vector4f> {
         var list = getVertexes();
         var uniquesVertexes = new LinkedHashSet<Vector4f>(list.size());
         uniquesVertexes.addAll(list);
-        vertexes = Lists.newArrayList(uniquesVertexes);
+        vertexes = Collections.newList(uniquesVertexes);
     }
 
     public OpenVoxelShape copy() {
@@ -162,11 +162,11 @@ public class OpenVoxelShape implements IVoxelShape, Iterable<Vector4f> {
         return vertexes;
     }
 
-    private ArrayList<Vector4f> getVertexes(IRectangle3f box) {
+    private List<Vector4f> getVertexes(IRectangle3f box) {
         if (box == null) {
-            return Lists.newArrayList();
+            return Collections.newList();
         }
-        return Lists.newArrayList(
+        return Collections.newList(
                 new Vector4f(box.getMinX(), box.getMinY(), box.getMinZ(), 1.0f),
                 new Vector4f(box.getMaxX(), box.getMinY(), box.getMinZ(), 1.0f),
                 new Vector4f(box.getMaxX(), box.getMaxY(), box.getMinZ(), 1.0f),

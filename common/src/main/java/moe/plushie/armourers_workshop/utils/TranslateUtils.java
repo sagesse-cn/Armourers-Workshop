@@ -6,7 +6,7 @@ import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintType;
 import moe.plushie.armourers_workshop.api.skin.part.ISkinPartType;
 import moe.plushie.armourers_workshop.core.data.slot.ItemOverrideType;
 import moe.plushie.armourers_workshop.core.skin.SkinTypes;
-import moe.plushie.armourers_workshop.core.skin.document.SkinDocumentType;
+import moe.plushie.armourers_workshop.core.skin.serializer.document.SkinDocumentType;
 import moe.plushie.armourers_workshop.init.ModLog;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;

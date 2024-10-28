@@ -1,6 +1,5 @@
 package moe.plushie.armourers_workshop.core.client.bake;
 
-import com.google.common.collect.Lists;
 import moe.plushie.armourers_workshop.api.armature.IJointFilter;
 import moe.plushie.armourers_workshop.api.armature.IJointTransform;
 import moe.plushie.armourers_workshop.api.client.model.IModelProvider;
@@ -9,6 +8,7 @@ import moe.plushie.armourers_workshop.core.armature.ArmaturePlugin;
 import moe.plushie.armourers_workshop.core.armature.ArmatureTransformer;
 import moe.plushie.armourers_workshop.core.client.render.EntityRendererStorage;
 import moe.plushie.armourers_workshop.core.client.skinrender.SkinRendererManager2;
+import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.utils.ModelHolder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
@@ -50,7 +50,7 @@ public class BakedArmatureTransformer {
             return null;
         }
         var context = transformer.getContext();
-        var plugins = Lists.newArrayList(transformer.getPlugins());
+        var plugins = Collections.newList(transformer.getPlugins());
         context.setEntityRenderer(entityRenderer);
         // we need tried load entity model from entity renderer.
         if (context.getEntityModel() == null && entityRenderer instanceof IModelProvider<?>) {

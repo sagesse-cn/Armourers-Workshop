@@ -54,7 +54,7 @@ public class ColorPickerItem extends AbstractPaintToolItem implements IItemTintC
             if (!level.isClientSide()) {
                 return InteractionResult.CONSUME;
             }
-            var color = paintable.getColor(dir);
+            var color = (SkinPaintColor) paintable.getColor(dir);
             itemStack.set(ModDataComponents.TOOL_COLOR.get(), color);
             var packet = new UpdateColorPickerPacket(context.getHand(), itemStack);
             NetworkManager.sendToServer(packet);
@@ -103,7 +103,7 @@ public class ColorPickerItem extends AbstractPaintToolItem implements IItemTintC
 
     @Override
     public void setItemColor(ItemStack itemStack, ISkinPaintColor paintColor) {
-        itemStack.set(ModDataComponents.TOOL_COLOR.get(), paintColor);
+        itemStack.set(ModDataComponents.TOOL_COLOR.get(), (SkinPaintColor) paintColor);
     }
 
     @Override

@@ -1,8 +1,9 @@
 package moe.plushie.armourers_workshop.core.math;
 
-import com.google.common.collect.Lists;
+import moe.plushie.armourers_workshop.api.core.IDataCodec;
 import moe.plushie.armourers_workshop.api.core.math.IVector3f;
 import moe.plushie.armourers_workshop.api.core.math.IVector3i;
+import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.core.utils.OpenDirection;
 
 import java.util.List;
@@ -16,6 +17,8 @@ public class Vector3i implements Comparable<Vector3i>, IVector3i {
     private int x;
     private int y;
     private int z;
+
+    public static final IDataCodec<Vector3i> CODEC = IDataCodec.INT.listOf().xmap(Vector3i::new, Vector3i::toList);
 
     public Vector3i(int x, int y, int z) {
         this.x = x;
@@ -134,7 +137,7 @@ public class Vector3i implements Comparable<Vector3i>, IVector3i {
     }
 
     public List<Integer> toList() {
-        return Lists.newArrayList(x, y, z);
+        return Collections.newList(x, y, z);
     }
 
     @Override

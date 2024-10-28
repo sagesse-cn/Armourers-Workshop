@@ -5,8 +5,8 @@ import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import com.electronwill.nightconfig.core.file.FileWatcher;
 import com.electronwill.nightconfig.core.io.ParsingException;
 import com.electronwill.nightconfig.core.io.WritingMode;
+import moe.plushie.armourers_workshop.core.utils.FileUtils;
 import moe.plushie.armourers_workshop.init.ModLog;
-import moe.plushie.armourers_workshop.utils.SkinFileUtils;
 import net.fabricmc.loader.api.FabricLoader;
 
 import java.io.IOException;
@@ -71,13 +71,13 @@ public class FabricConfigFileTypeHandler {
     }
 
     public static void backUpConfig(final CommentedFileConfig commentedFileConfig, final int maxBackups) {
-        Path bakFileLocation = commentedFileConfig.getNioPath().getParent();
-        String bakFileName = SkinFileUtils.removeExtension(commentedFileConfig.getFile().getName());
-        String bakFileExtension = SkinFileUtils.getExtension(commentedFileConfig.getFile().getName()) + ".bak";
-        Path bakFile = bakFileLocation.resolve(bakFileName + "-1" + "." + bakFileExtension);
+        var bakFileLocation = commentedFileConfig.getNioPath().getParent();
+        var bakFileName = FileUtils.removeExtension(commentedFileConfig.getFile().getName());
+        var bakFileExtension = FileUtils.getExtension(commentedFileConfig.getFile().getName()) + ".bak";
+        var bakFile = bakFileLocation.resolve(bakFileName + "-1" + "." + bakFileExtension);
         try {
             for (int i = maxBackups; i > 0; i--) {
-                Path oldBak = bakFileLocation.resolve(bakFileName + "-" + i + "." + bakFileExtension);
+                var oldBak = bakFileLocation.resolve(bakFileName + "-" + i + "." + bakFileExtension);
                 if (Files.exists(oldBak)) {
                     if (i >= maxBackups)
                         Files.delete(oldBak);

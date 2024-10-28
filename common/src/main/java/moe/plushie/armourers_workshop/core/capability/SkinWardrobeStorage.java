@@ -1,11 +1,11 @@
 package moe.plushie.armourers_workshop.core.capability;
 
-import moe.plushie.armourers_workshop.api.data.IDataSerializer;
+import moe.plushie.armourers_workshop.api.core.IDataCodec;
+import moe.plushie.armourers_workshop.api.core.IDataSerializer;
+import moe.plushie.armourers_workshop.api.core.IDataSerializerKey;
 import moe.plushie.armourers_workshop.compatibility.core.data.AbstractDataSerializer;
 import moe.plushie.armourers_workshop.core.data.slot.SkinSlotType;
 import moe.plushie.armourers_workshop.utils.DataFixerUtils;
-import moe.plushie.armourers_workshop.utils.DataSerializerKey;
-import moe.plushie.armourers_workshop.utils.DataTypeCodecs;
 import moe.plushie.armourers_workshop.utils.NonNullItemList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.Container;
@@ -20,10 +20,6 @@ import java.util.Objects;
 
 public class SkinWardrobeStorage {
 
-    private static final DataSerializerKey<Byte> VERSION_KEY = DataSerializerKey.create("DataVersion", DataTypeCodecs.BYTE, (byte) 0);
-    private static final DataSerializerKey<Integer> VISIBILITY_KEY = DataSerializerKey.create("Visibility", DataTypeCodecs.INT, 0);
-    private static final DataSerializerKey<List<Short>> SLOTS_KEY = DataSerializerKey.create("Slots", DataTypeCodecs.SHORT.listOf(), Collections.emptyList());
-
     public static IDataSerializer reader(Entity entity, CompoundTag inputTag) {
         return AbstractDataSerializer.wrap(inputTag, entity);
     }
@@ -33,11 +29,11 @@ public class SkinWardrobeStorage {
     }
 
     public static void saveDataFixer(SkinWardrobe wardrobe, IDataSerializer serializer) {
-        serializer.write(VERSION_KEY, (byte) 1);
+        serializer.write(CodingKeys.VERSION, (byte) 1);
     }
 
     public static void loadDataFixer(SkinWardrobe wardrobe, IDataSerializer serializer) {
-        var version = serializer.read(VERSION_KEY);
+        var version = serializer.read(CodingKeys.VERSION);
         if (version <= 0) {
             var inventory = wardrobe.getInventory();
             DataFixerUtils.move(inventory, 67, SkinSlotType.DYE.getIndex(), 16, "align dye slots storage");
@@ -73,12 +69,12 @@ public class SkinWardrobeStorage {
             }
         }
         if (value != 0) {
-            serializer.write(VISIBILITY_KEY, value);
+            serializer.write(CodingKeys.VISIBILITY, value);
         }
     }
 
     public static void loadFlags(BitSet flags, IDataSerializer serializer) {
-        var value = serializer.read(VISIBILITY_KEY);
+        var value = serializer.read(CodingKeys.VISIBILITY);
         flags.clear();
         for (int i = 0; i < 32; ++i) {
             int mask = 1 << i;
@@ -99,17 +95,24 @@ public class SkinWardrobeStorage {
             value.add((short) encoded);
         });
         if (!value.isEmpty()) {
-            serializer.write(SLOTS_KEY, value);
+            serializer.write(CodingKeys.SLOTS, value);
         }
     }
 
     public static void loadSkinSlots(HashMap<SkinSlotType, Integer> slots, IDataSerializer serializer) {
-        var value = serializer.read(SLOTS_KEY);
+        var value = serializer.read(CodingKeys.SLOTS);
         for (var encoded : value) {
             var slotType = SkinSlotType.byId((encoded >> 8) & 0xff);
             if (slotType != null) {
                 slots.put(slotType, encoded & 0xff);
             }
         }
+    }
+
+    private static class CodingKeys {
+
+        public static final IDataSerializerKey<Byte> VERSION = IDataSerializerKey.create("DataVersion", IDataCodec.BYTE, (byte) 0);
+        public static final IDataSerializerKey<Integer> VISIBILITY = IDataSerializerKey.create("Visibility", IDataCodec.INT, 0);
+        public static final IDataSerializerKey<List<Short>> SLOTS = IDataSerializerKey.create("Slots", IDataCodec.SHORT.listOf(), Collections.emptyList());
     }
 }

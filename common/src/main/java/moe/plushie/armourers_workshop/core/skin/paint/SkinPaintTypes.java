@@ -5,15 +5,14 @@ import moe.plushie.armourers_workshop.init.ModLog;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.LinkedHashMap;
 
 @SuppressWarnings("unused")
 public final class SkinPaintTypes {
 
     private static final ArrayList<SkinPaintType> ALL_SORTED_TYPES = new ArrayList<>();
     private static final SkinPaintType[] ALL_PAINT_MAPPING = new SkinPaintType[256];
-    private static final Map<String, SkinPaintType> ALL_PAINT_TYPES = new HashMap<>();
+    private static final LinkedHashMap<String, SkinPaintType> ALL_PAINT_TYPES = new LinkedHashMap<>();
 
     public static final SkinPaintType NORMAL = register("normal", 255, 0);
 

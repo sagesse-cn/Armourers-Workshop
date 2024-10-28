@@ -1,6 +1,5 @@
 package moe.plushie.armourers_workshop.builder.client.gui.armourer;
 
-import com.google.common.collect.ImmutableMap;
 import moe.plushie.armourers_workshop.api.skin.ISkinType;
 import moe.plushie.armourers_workshop.api.skin.property.ISkinProperty;
 import moe.plushie.armourers_workshop.builder.blockentity.ArmourerBlockEntity;
@@ -16,27 +15,29 @@ import moe.plushie.armourers_workshop.builder.menu.ArmourerMenu;
 import moe.plushie.armourers_workshop.builder.network.UpdateArmourerPacket;
 import moe.plushie.armourers_workshop.core.skin.SkinTypes;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperties;
+import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.core.utils.OpenProperties;
 import moe.plushie.armourers_workshop.init.platform.NetworkManager;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 @Environment(EnvType.CLIENT)
 public class ArmourerSkinSetting extends ArmourerBaseSetting {
 
-    public static final ImmutableMap<ISkinType, Function<SkinProperties, ArmourerBaseSkinPanel>> REGISTERED = ImmutableMap.<ISkinType, Function<SkinProperties, ArmourerBaseSkinPanel>>builder()
-            .put(SkinTypes.ARMOR_HEAD, ArmourerHeadSkinPanel::new)
-            .put(SkinTypes.ARMOR_CHEST, ArmourerChestSkinPanel::new)
-            .put(SkinTypes.ARMOR_LEGS, ArmourerLegSkinPanel::new)
-            .put(SkinTypes.ARMOR_FEET, ArmourerFeetSkinPanel::new)
-            .put(SkinTypes.ARMOR_WINGS, ArmourerWingsSkinPanel::new)
-            .put(SkinTypes.BLOCK, ArmourerBlockSkinPanel::new)
-            .put(SkinTypes.ADVANCED, ArmourerAdvancedSkinPanel::new)
-            .build();
+    public static final Map<ISkinType, Function<SkinProperties, ArmourerBaseSkinPanel>> REGISTERED = Collections.immutableMap(builder -> {
+        builder.put(SkinTypes.ARMOR_HEAD, ArmourerHeadSkinPanel::new);
+        builder.put(SkinTypes.ARMOR_CHEST, ArmourerChestSkinPanel::new);
+        builder.put(SkinTypes.ARMOR_LEGS, ArmourerLegSkinPanel::new);
+        builder.put(SkinTypes.ARMOR_FEET, ArmourerFeetSkinPanel::new);
+        builder.put(SkinTypes.ARMOR_WINGS, ArmourerWingsSkinPanel::new);
+        builder.put(SkinTypes.BLOCK, ArmourerBlockSkinPanel::new);
+        builder.put(SkinTypes.ADVANCED, ArmourerAdvancedSkinPanel::new);
+    });
 
     protected final DifferenceSkinProperties skinProperties = new DifferenceSkinProperties();
     protected final ArmourerBlockEntity blockEntity;

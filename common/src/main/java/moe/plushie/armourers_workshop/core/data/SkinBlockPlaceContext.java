@@ -1,5 +1,9 @@
 package moe.plushie.armourers_workshop.core.data;
 
+import moe.plushie.armourers_workshop.api.core.IDataCodec;
+import moe.plushie.armourers_workshop.api.core.IDataSerializable;
+import moe.plushie.armourers_workshop.api.core.IDataSerializer;
+import moe.plushie.armourers_workshop.api.core.IDataSerializerKey;
 import moe.plushie.armourers_workshop.core.blockentity.SkinnableBlockEntity;
 import moe.plushie.armourers_workshop.core.math.OpenMatrix4f;
 import moe.plushie.armourers_workshop.core.math.OpenQuaternion3f;
@@ -15,10 +19,9 @@ import moe.plushie.armourers_workshop.core.skin.SkinMarker;
 import moe.plushie.armourers_workshop.core.skin.SkinTypes;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperties;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperty;
+import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.init.ModBlocks;
-import moe.plushie.armourers_workshop.utils.Constants;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -28,6 +31,7 @@ import net.minecraft.world.phys.BlockHitResult;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.function.Function;
 
 public class SkinBlockPlaceContext extends BlockPlaceContext {
@@ -131,7 +135,20 @@ public class SkinBlockPlaceContext extends BlockPlaceContext {
         return parts;
     }
 
-    public static class Part {
+
+    // same the SkinnableBlockEntity.CodingKeys
+    private static class CodingKeys {
+
+        public static final IDataSerializerKey<BlockPos> REFERENCE = IDataSerializerKey.create("Refer", IDataCodec.BLOCK_POS, BlockPos.ZERO);
+        public static final IDataSerializerKey<Rectangle3i> SHAPE = IDataSerializerKey.create("Shape", Rectangle3i.CODEC, Rectangle3i.ZERO);
+        public static final IDataSerializerKey<BlockPos> LINKED_POS = IDataSerializerKey.create("LinkedPos", IDataCodec.BLOCK_POS, null);
+        public static final IDataSerializerKey<SkinDescriptor> SKIN = IDataSerializerKey.create("Skin", SkinDescriptor.CODEC, SkinDescriptor.EMPTY);
+        public static final IDataSerializerKey<SkinProperties> SKIN_PROPERTIES = IDataSerializerKey.create("SkinProperties", SkinProperties.CODEC, SkinProperties.EMPTY, SkinProperties::new);
+        public static final IDataSerializerKey<List<BlockPos>> REFERENCES = IDataSerializerKey.create("Refers", IDataCodec.BLOCK_POS.listOf(), Collections.emptyList());
+        public static final IDataSerializerKey<List<SkinMarker>> MARKERS = IDataSerializerKey.create("Markers", SkinMarker.CODEC.listOf(), Collections.emptyList());
+    }
+
+    public static class Part implements IDataSerializable.Immutable {
 
         private BlockPos offset;
         private Rectangle3i shape;
@@ -145,10 +162,10 @@ public class SkinBlockPlaceContext extends BlockPlaceContext {
             this.shape = shape;
         }
 
-        public CompoundTag writeToNBT(CompoundTag tag) {
-            tag.putOptionalBlockPos(Constants.Key.BLOCK_ENTITY_REFER, offset, null);
-            tag.putOptionalRectangle3i(Constants.Key.BLOCK_ENTITY_SHAPE, shape, null);
-            return tag;
+        @Override
+        public void serialize(IDataSerializer serializer) {
+            serializer.write(CodingKeys.REFERENCE, offset);
+            serializer.write(CodingKeys.SHAPE, shape);
         }
 
         public void transform(Vector3f r) {
@@ -176,35 +193,30 @@ public class SkinBlockPlaceContext extends BlockPlaceContext {
         public Rectangle3i getShape() {
             return shape;
         }
-
-        public CompoundTag getEntityTag() {
-            return writeToNBT(new CompoundTag());
-        }
     }
 
     public static class ParentPart extends Part {
 
         private final SkinDescriptor descriptor;
         private final SkinProperties properties;
-        private final Collection<BlockPos> blockPosList;
-        private Collection<SkinMarker> markerList;
+        private final List<BlockPos> blockPosList;
+        private List<SkinMarker> markerList;
 
         public ParentPart(BlockPos offset, Rectangle3i shape, Collection<BlockPos> blockPosList, SkinDescriptor descriptor, Skin skin) {
             super(offset, shape);
             this.descriptor = descriptor;
-            this.blockPosList = blockPosList;
+            this.blockPosList = Collections.newList(blockPosList);
             this.properties = skin.getProperties();
-            this.markerList = skin.getMarkers();
+            this.markerList = Collections.newList(skin.getMarkers());
         }
 
         @Override
-        public CompoundTag writeToNBT(CompoundTag tag) {
-            tag = super.writeToNBT(tag);
-            tag.putOptionalBlockPosArray(Constants.Key.BLOCK_ENTITY_REFERS, blockPosList);
-            tag.putOptionalSkinMarkerArray(Constants.Key.BLOCK_ENTITY_MARKERS, markerList);
-            tag.putOptionalSkinDescriptor(Constants.Key.BLOCK_ENTITY_SKIN, descriptor);
-            tag.putOptionalSkinProperties(Constants.Key.BLOCK_ENTITY_SKIN_PROPERTIES, properties);
-            return tag;
+        public void serialize(IDataSerializer serializer) {
+            super.serialize(serializer);
+            serializer.write(CodingKeys.REFERENCES, blockPosList);
+            serializer.write(CodingKeys.MARKERS, markerList);
+            serializer.write(CodingKeys.SKIN, descriptor);
+            serializer.write(CodingKeys.SKIN_PROPERTIES, properties);
         }
 
         @Override

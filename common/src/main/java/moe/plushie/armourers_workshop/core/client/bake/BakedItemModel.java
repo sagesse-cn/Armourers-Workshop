@@ -1,7 +1,7 @@
 package moe.plushie.armourers_workshop.core.client.bake;
 
 import moe.plushie.armourers_workshop.compatibility.api.AbstractItemTransformType;
-import moe.plushie.armourers_workshop.core.data.transform.SkinItemTransforms;
+import moe.plushie.armourers_workshop.core.math.OpenItemTransforms;
 import moe.plushie.armourers_workshop.core.math.OpenTransform3f;
 import moe.plushie.armourers_workshop.core.math.Vector3f;
 import net.fabricmc.api.EnvType;
@@ -45,11 +45,11 @@ public class BakedItemModel extends BuiltInModel {
         return bakedModel;
     }
 
-    public static BakedItemModel from(SkinItemTransforms itemTransforms, boolean usesBlockLight) {
+    public static BakedItemModel from(OpenItemTransforms itemTransforms, boolean usesBlockLight) {
         return from(Collections.emptyList(), itemTransforms, usesBlockLight);
     }
 
-    public static BakedItemModel from(Collection<String> overrideNames, SkinItemTransforms itemTransforms, boolean usesBlockLight) {
+    public static BakedItemModel from(Collection<String> overrideNames, OpenItemTransforms itemTransforms, boolean usesBlockLight) {
         var baker = new Baker(itemTransforms, usesBlockLight);
         var entries = new ArrayList<Variant>();
         for (var name : overrideNames) {
@@ -83,7 +83,7 @@ public class BakedItemModel extends BuiltInModel {
         }
     }
 
-    public static class DefaultItemTransforms extends SkinItemTransforms {
+    public static class DefaultItemTransforms extends OpenItemTransforms {
 
         public DefaultItemTransforms() {
             put(AbstractItemTransformType.GUI, translate(0, 0, 0), rotation(30, 135, 0), scale(1, 1, 1));
@@ -117,9 +117,9 @@ public class BakedItemModel extends BuiltInModel {
         private String prefix = "";
 
         private final boolean usesBlockLight;
-        private final SkinItemTransforms itemTransforms;
+        private final OpenItemTransforms itemTransforms;
 
-        public Baker(SkinItemTransforms itemTransforms, boolean usesBlockLight) {
+        public Baker(OpenItemTransforms itemTransforms, boolean usesBlockLight) {
             this.itemTransforms = itemTransforms;
             this.usesBlockLight = usesBlockLight;
         }

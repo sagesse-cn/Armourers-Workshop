@@ -1,10 +1,17 @@
 package moe.plushie.armourers_workshop.core.utils;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -104,16 +111,26 @@ public class Collections {
         };
     }
 
+
+    public static <T> List<T> emptyList() {
+        return java.util.Collections.emptyList();
+    }
+
     @SafeVarargs
-    public static <T> List<T> newList(T... elements) {
+    public static <T> HashSet<T> newSet(T... elements) {
+        return Sets.newHashSet(elements);
+    }
+
+    @SafeVarargs
+    public static <T> ArrayList<T> newList(T... elements) {
         return Lists.newArrayList(elements);
     }
 
-    public static <T> List<T> newList(Iterable<? extends T> elements) {
+    public static <T> ArrayList<T> newList(Iterable<? extends T> elements) {
         return Lists.newArrayList(elements);
     }
 
-    public static <T> Collection<T> newList(int size, Function<Integer, T> builder) {
+    public static <T> ArrayList<T> newList(int size, Function<Integer, T> builder) {
         ArrayList<T> results = new ArrayList<>();
         results.ensureCapacity(size);
         for (int i = 0; i < size; ++i) {
@@ -122,10 +139,23 @@ public class Collections {
         return results;
     }
 
-    public static <T> List<T> emptyList() {
-        return java.util.Collections.emptyList();
+    public static <T> ImmutableSet<T> immutableSet(Consumer<ImmutableSet.Builder<T>> builder) {
+        var setBuilder = ImmutableSet.<T>builder();
+        builder.accept(setBuilder);
+        return setBuilder.build();
     }
 
+    public static <T> ImmutableList<T> immutableList(Consumer<ImmutableList.Builder<T>> builder) {
+        var listBuilder = ImmutableList.<T>builder();
+        builder.accept(listBuilder);
+        return listBuilder.build();
+    }
+
+    public static <K, V> ImmutableMap<K, V> immutableMap(Consumer<ImmutableMap.Builder<K, V>> builder) {
+        var mapBuilder = ImmutableMap.<K, V>builder();
+        builder.accept(mapBuilder);
+        return mapBuilder.build();
+    }
 
     public static <T> Set<T> singleton(T o) {
         return java.util.Collections.singleton(o);
@@ -141,5 +171,18 @@ public class Collections {
             consumer.accept(value);
             eachTree(children.apply(value), children, consumer);
         }
+    }
+
+
+    public static <T> Iterator<T> cycle(Iterable<T> iterable) {
+        return Iterators.cycle(iterable);
+    }
+
+    public static <T> Iterable<T> concat(Iterable<? extends T> a, Iterable<? extends T> b) {
+        return Iterables.concat(a, b);
+    }
+
+    public static <T> int indexOf(Iterable<T> iterable, Predicate<? super T> predicate) {
+        return Iterables.indexOf(iterable, predicate::test);
     }
 }

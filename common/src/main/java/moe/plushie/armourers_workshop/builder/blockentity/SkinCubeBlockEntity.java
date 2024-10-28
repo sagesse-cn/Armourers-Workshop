@@ -2,7 +2,8 @@ package moe.plushie.armourers_workshop.builder.blockentity;
 
 import moe.plushie.armourers_workshop.api.client.IBlockEntityExtendedRenderer;
 import moe.plushie.armourers_workshop.api.common.IPaintable;
-import moe.plushie.armourers_workshop.api.data.IDataSerializer;
+import moe.plushie.armourers_workshop.api.core.IDataSerializer;
+import moe.plushie.armourers_workshop.api.core.IDataSerializerKey;
 import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintColor;
 import moe.plushie.armourers_workshop.builder.block.ArmourerBlock;
 import moe.plushie.armourers_workshop.core.blockentity.UpdatableBlockEntity;
@@ -10,11 +11,8 @@ import moe.plushie.armourers_workshop.core.data.color.BlockPaintColor;
 import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
 import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintTypes;
 import moe.plushie.armourers_workshop.utils.BlockUtils;
-import moe.plushie.armourers_workshop.utils.DataSerializerKey;
-import moe.plushie.armourers_workshop.utils.DataTypeCodecs;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -23,22 +21,22 @@ import java.util.Map;
 
 public class SkinCubeBlockEntity extends UpdatableBlockEntity implements IPaintable, IBlockEntityExtendedRenderer {
 
-    private static final DataSerializerKey<CompoundTag> COLORS_KEY = DataSerializerKey.create("Color", DataTypeCodecs.COMPOUND_TAG, new CompoundTag());
-
-    protected BlockPaintColor colors = new BlockPaintColor(SkinPaintColor.WHITE);
+    protected BlockPaintColor colors = BlockPaintColor.WHITE;
     protected boolean customRenderer = false;
 
     public SkinCubeBlockEntity(BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState) {
         super(blockEntityType, blockPos, blockState);
     }
 
+    @Override
     public void readAdditionalData(IDataSerializer serializer) {
-        colors.deserializeNBT(serializer.read(COLORS_KEY));
+        colors = serializer.read(CodingKeys.COLORS);
         customRenderer = checkRendererFromColors();
     }
 
+    @Override
     public void writeAdditionalData(IDataSerializer serializer) {
-        serializer.write(COLORS_KEY, colors.serializeNBT());
+        serializer.write(CodingKeys.COLORS, colors);
 //        // we must need to tracking the facing at the save it,
 //        // because we need to get the colors based facing from copied NBT.
 //        // we can know the direction has been changed when the load copied NBT.
@@ -70,14 +68,14 @@ public class SkinCubeBlockEntity extends UpdatableBlockEntity implements IPainta
 
     @Override
     public void setColor(Direction direction, ISkinPaintColor color) {
-        this.colors.put(getResolvedDirection(direction), color);
+        this.colors.put(getResolvedDirection(direction), (SkinPaintColor) color);
         this.customRenderer = checkRendererFromColors();
         BlockUtils.combine(this, this::sendBlockUpdates);
     }
 
     @Override
     public void setColors(Map<Direction, ISkinPaintColor> colors) {
-        colors.forEach((direction, color) -> this.colors.put(getResolvedDirection(direction), color));
+        colors.forEach((direction, color) -> this.colors.put(getResolvedDirection(direction), (SkinPaintColor) color));
         this.customRenderer = checkRendererFromColors();
         BlockUtils.combine(this, this::sendBlockUpdates);
     }
@@ -89,5 +87,10 @@ public class SkinCubeBlockEntity extends UpdatableBlockEntity implements IPainta
     @Override
     public boolean shouldUseExtendedRenderer() {
         return customRenderer;
+    }
+
+    private static class CodingKeys {
+
+        public static final IDataSerializerKey<BlockPaintColor> COLORS = IDataSerializerKey.create("Color", BlockPaintColor.CODEC, BlockPaintColor.WHITE);
     }
 }

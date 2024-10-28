@@ -8,7 +8,7 @@ import moe.plushie.armourers_workshop.compatibility.fabric.AbstractFabricKeyMapp
 import moe.plushie.armourers_workshop.core.utils.Objects;
 import moe.plushie.armourers_workshop.init.platform.EventManager;
 import moe.plushie.armourers_workshop.init.platform.event.client.RenderFrameEvent;
-import moe.plushie.armourers_workshop.utils.ext.OpenKeyModifier;
+import moe.plushie.armourers_workshop.utils.OpenKeyModifier;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.network.chat.Component;
 import org.apache.commons.lang3.tuple.Pair;

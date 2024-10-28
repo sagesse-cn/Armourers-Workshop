@@ -1,9 +1,8 @@
 package moe.plushie.armourers_workshop.compatibility.core.data;
 
-import com.mojang.serialization.Codec;
 import moe.plushie.armourers_workshop.api.annotation.Available;
-import moe.plushie.armourers_workshop.api.common.IDataComponentType;
-import net.minecraft.nbt.CompoundTag;
+import moe.plushie.armourers_workshop.api.core.IDataCodec;
+import moe.plushie.armourers_workshop.api.core.IDataComponentType;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
@@ -12,14 +11,14 @@ import org.jetbrains.annotations.Nullable;
 public class AbstractDataComponentType<T> implements IDataComponentType<T> {
 
     private final String name;
-    private final Codec<T> codec;
+    private final IDataCodec<T> codec;
 
-    public AbstractDataComponentType(String name, Codec<T> codec) {
+    public AbstractDataComponentType(String name, IDataCodec<T> codec) {
         this.name = name;
         this.codec = codec;
     }
 
-    public static <T> AbstractDataComponentType<T> create(String name, Codec<T> codec) {
+    public static <T> AbstractDataComponentType<T> create(String name, IDataCodec<T> codec) {
         return new AbstractDataComponentType<>(name, codec);
     }
 
@@ -37,7 +36,7 @@ public class AbstractDataComponentType<T> implements IDataComponentType<T> {
     public void set(ItemStack itemStack, @Nullable T value) {
         if (value != null) {
             var tag = itemStack.getOrCreateTag();
-            codec.encodeStart(NbtOps.INSTANCE, value).get().ifLeft(it -> {
+            codec.codec().encodeStart(NbtOps.INSTANCE, value).get().ifLeft(it -> {
                 // we need to merge new value into the item.
                 tag.put(name, it);
             });
@@ -49,9 +48,9 @@ public class AbstractDataComponentType<T> implements IDataComponentType<T> {
     @Nullable
     @Override
     public T get(ItemStack itemStack) {
-        CompoundTag tag = itemStack.getTag();
+        var tag = itemStack.getTag();
         if (tag != null && tag.contains(name)) {
-            var value = codec.decode(NbtOps.INSTANCE, tag.get(name)).get().left();
+            var value = codec.codec().decode(NbtOps.INSTANCE, tag.get(name)).get().left();
             if (value.isPresent()) {
                 return value.get().getFirst();
             }

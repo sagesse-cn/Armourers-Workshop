@@ -1,7 +1,7 @@
 package moe.plushie.armourers_workshop.builder.client.gui.advancedbuilder.document;
 
 import moe.plushie.armourers_workshop.core.client.gui.widget.TreeNode;
-import moe.plushie.armourers_workshop.core.skin.document.SkinDocumentNode;
+import moe.plushie.armourers_workshop.core.skin.serializer.document.SkinDocumentNode;
 
 public class DocumentMinimapNode extends TreeNode {
 

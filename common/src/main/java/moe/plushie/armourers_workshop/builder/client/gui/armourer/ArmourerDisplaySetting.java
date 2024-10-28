@@ -11,7 +11,7 @@ import com.apple.library.uikit.UILabel;
 import com.apple.library.uikit.UITextField;
 import com.apple.library.uikit.UITextFieldDelegate;
 import moe.plushie.armourers_workshop.builder.blockentity.ArmourerBlockEntity;
-import moe.plushie.armourers_workshop.builder.data.PlayerTextureDescriptor;
+import moe.plushie.armourers_workshop.core.skin.paint.texture.EntityTextureDescriptor;
 import moe.plushie.armourers_workshop.builder.menu.ArmourerMenu;
 import moe.plushie.armourers_workshop.builder.network.UpdateArmourerPacket;
 import moe.plushie.armourers_workshop.core.client.texture.PlayerTextureLoader;
@@ -28,7 +28,7 @@ import java.util.HashMap;
 public class ArmourerDisplaySetting extends ArmourerBaseSetting implements UITextFieldDelegate {
 
     protected final ArmourerBlockEntity blockEntity;
-    private final HashMap<PlayerTextureDescriptor.Source, String> defaultValues = new HashMap<>();
+    private final HashMap<EntityTextureDescriptor.Source, String> defaultValues = new HashMap<>();
 
     private final UIComboBox comboList = new UIComboBox(new CGRect(10, 30, 80, 14));
 
@@ -39,8 +39,8 @@ public class ArmourerDisplaySetting extends ArmourerBaseSetting implements UITex
     private final UICheckBox checkShowModelGuides = new UICheckBox(new CGRect(10, 130, 160, 9));
     private final UICheckBox checkShowHelper = new UICheckBox(new CGRect(10, 145, 160, 9));
 
-    private PlayerTextureDescriptor lastDescriptor = PlayerTextureDescriptor.EMPTY;
-    private PlayerTextureDescriptor.Source lastSource = PlayerTextureDescriptor.Source.NONE;
+    private EntityTextureDescriptor lastDescriptor = EntityTextureDescriptor.EMPTY;
+    private EntityTextureDescriptor.Source lastSource = EntityTextureDescriptor.Source.NONE;
 
     public ArmourerDisplaySetting(ArmourerMenu container) {
         super("armourer.displaySettings");
@@ -110,7 +110,7 @@ public class ArmourerDisplaySetting extends ArmourerBaseSetting implements UITex
         checkShowHelper.setSelected(blockEntity.isShowHelper());
         checkShowHelper.setHidden(!blockEntity.isUseHelper());
         // update input type
-        if (lastSource == PlayerTextureDescriptor.Source.URL) {
+        if (lastSource == EntityTextureDescriptor.Source.URL) {
             inputType.setText(getDisplayText("label.url"));
         } else {
             inputType.setText(getDisplayText("label.username"));
@@ -123,10 +123,10 @@ public class ArmourerDisplaySetting extends ArmourerBaseSetting implements UITex
             lastDescriptor = blockEntity.getTextureDescriptor();
         }
         lastSource = lastDescriptor.getSource();
-        if (lastSource == PlayerTextureDescriptor.Source.USER) {
+        if (lastSource == EntityTextureDescriptor.Source.USER) {
             defaultValues.put(lastSource, lastDescriptor.getName());
         }
-        if (lastSource == PlayerTextureDescriptor.Source.URL) {
+        if (lastSource == EntityTextureDescriptor.Source.URL) {
             defaultValues.put(lastSource, lastDescriptor.getURL());
         }
     }
@@ -134,11 +134,11 @@ public class ArmourerDisplaySetting extends ArmourerBaseSetting implements UITex
     private void submit(Object button) {
         textBox.resignFirstResponder();
         var index = comboList.selectedIndex();
-        var source = PlayerTextureDescriptor.Source.values()[index + 1];
+        var source = EntityTextureDescriptor.Source.values()[index + 1];
         applyText(source, textBox.text());
     }
 
-    private void changeSource(PlayerTextureDescriptor.Source newSource) {
+    private void changeSource(EntityTextureDescriptor.Source newSource) {
         if (this.lastSource == newSource) {
             return;
         }
@@ -151,22 +151,22 @@ public class ArmourerDisplaySetting extends ArmourerBaseSetting implements UITex
         reloadStatus();
     }
 
-    private void applyText(PlayerTextureDescriptor.Source source, String value) {
-        var descriptor = PlayerTextureDescriptor.EMPTY;
+    private void applyText(EntityTextureDescriptor.Source source, String value) {
+        var descriptor = EntityTextureDescriptor.EMPTY;
         if (Strings.isNotEmpty(value)) {
-            if (source == PlayerTextureDescriptor.Source.URL) {
-                descriptor = PlayerTextureDescriptor.fromURL(value);
+            if (source == EntityTextureDescriptor.Source.URL) {
+                descriptor = EntityTextureDescriptor.fromURL(value);
             }
-            if (source == PlayerTextureDescriptor.Source.USER) {
-                descriptor = PlayerTextureDescriptor.fromName(value);
+            if (source == EntityTextureDescriptor.Source.USER) {
+                descriptor = EntityTextureDescriptor.fromName(value);
             }
         }
         PlayerTextureLoader.getInstance().loadTextureDescriptor(descriptor, resolvedDescriptor -> {
-            var newValue = resolvedDescriptor.orElse(PlayerTextureDescriptor.EMPTY);
+            var newValue = resolvedDescriptor.orElse(EntityTextureDescriptor.EMPTY);
             if (lastDescriptor.equals(newValue)) {
                 return; // no changes
             }
-            lastSource = PlayerTextureDescriptor.Source.NONE;
+            lastSource = EntityTextureDescriptor.Source.NONE;
             lastDescriptor = newValue;
             blockEntity.setTextureDescriptor(newValue);
             NetworkManager.sendToServer(UpdateArmourerPacket.Field.TEXTURE_DESCRIPTOR.buildPacket(blockEntity, newValue));
@@ -189,9 +189,9 @@ public class ArmourerDisplaySetting extends ArmourerBaseSetting implements UITex
         NetworkManager.sendToServer(UpdateArmourerPacket.Field.FLAGS.buildPacket(blockEntity, flags));
     }
 
-    private void setupComboList(PlayerTextureDescriptor.Source source) {
+    private void setupComboList(EntityTextureDescriptor.Source source) {
         var selectedIndex = 0;
-        if (source != PlayerTextureDescriptor.Source.NONE) {
+        if (source != EntityTextureDescriptor.Source.NONE) {
             selectedIndex = source.ordinal() - 1;
         }
         var items = new ArrayList<UIComboItem>();
@@ -201,7 +201,7 @@ public class ArmourerDisplaySetting extends ArmourerBaseSetting implements UITex
         comboList.reloadData(items);
         comboList.addTarget(this, UIControl.Event.VALUE_CHANGED, (self, ctr) -> {
             int index = ((UIComboBox) ctr).selectedIndex();
-            changeSource(PlayerTextureDescriptor.Source.values()[index + 1]);
+            changeSource(EntityTextureDescriptor.Source.values()[index + 1]);
         });
         addSubview(comboList);
     }

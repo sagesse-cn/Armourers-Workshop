@@ -2,7 +2,7 @@ package moe.plushie.armourers_workshop.core.client.other;
 
 import com.mojang.blaze3d.platform.NativeImage;
 import moe.plushie.armourers_workshop.api.core.IResourceLocation;
-import moe.plushie.armourers_workshop.builder.data.PlayerTexture;
+import moe.plushie.armourers_workshop.core.data.PlayerTexture;
 import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
 import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintData;
 import moe.plushie.armourers_workshop.core.utils.Objects;

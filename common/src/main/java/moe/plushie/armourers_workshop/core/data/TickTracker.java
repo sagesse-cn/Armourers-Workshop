@@ -1,14 +1,12 @@
 package moe.plushie.armourers_workshop.core.data;
 
-import moe.plushie.armourers_workshop.api.data.IDataSerializer;
-import moe.plushie.armourers_workshop.api.data.IDataSerializerProvider;
+import moe.plushie.armourers_workshop.api.core.IDataCodec;
+import moe.plushie.armourers_workshop.api.core.IDataSerializable;
+import moe.plushie.armourers_workshop.api.core.IDataSerializer;
+import moe.plushie.armourers_workshop.api.core.IDataSerializerKey;
 import moe.plushie.armourers_workshop.init.ModDebugger;
-import moe.plushie.armourers_workshop.utils.DataSerializerKey;
-import moe.plushie.armourers_workshop.utils.DataTypeCodecs;
 
-public class TickTracker implements IDataSerializerProvider {
-
-    private static final DataSerializerKey<Float> TIME_KEY = DataSerializerKey.create("Time", DataTypeCodecs.FLOAT, 0f);
+public class TickTracker implements IDataSerializable.Mutable {
 
     private static final TickTracker CLIENT = new TickTracker();
     private static final TickTracker SERVER = new TickTracker();
@@ -44,11 +42,16 @@ public class TickTracker implements IDataSerializerProvider {
 
     @Override
     public void serialize(IDataSerializer serializer) {
-        serializer.write(TIME_KEY, animationTicks);
+        serializer.write(CodingKeys.TIME, animationTicks);
     }
 
     @Override
     public void deserialize(IDataSerializer serializer) {
-        animationTicks = serializer.read(TIME_KEY);
+        animationTicks = serializer.read(CodingKeys.TIME);
+    }
+
+    private static class CodingKeys {
+
+        public static final IDataSerializerKey<Float> TIME = IDataSerializerKey.create("Time", IDataCodec.FLOAT, 0f);
     }
 }

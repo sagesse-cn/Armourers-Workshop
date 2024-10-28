@@ -4,7 +4,7 @@ import moe.plushie.armourers_workshop.api.annotation.Available;
 import moe.plushie.armourers_workshop.api.common.ICapabilityType;
 import moe.plushie.armourers_workshop.api.core.IRegistryHolder;
 import moe.plushie.armourers_workshop.api.core.IResourceLocation;
-import moe.plushie.armourers_workshop.api.data.IDataSerializerProvider;
+import moe.plushie.armourers_workshop.api.core.IDataSerializable;
 import moe.plushie.armourers_workshop.core.capability.SkinWardrobe;
 import moe.plushie.armourers_workshop.core.capability.SkinWardrobeStorage;
 import moe.plushie.armourers_workshop.core.utils.Objects;
@@ -41,7 +41,7 @@ public class AbstractForgeCapabilityManager {
         return new Proxy<>(registryName, SkinWardrobe.class, provider, capabilityType, () -> capability);
     }
 
-    public static class Proxy<T extends IDataSerializerProvider> implements IRegistryHolder<ICapabilityType<T>> {
+    public static class Proxy<T extends IDataSerializable.Mutable> implements IRegistryHolder<ICapabilityType<T>> {
 
         final IResourceLocation registryName;
         final Supplier<EntityCapability<T, Void>> capability;
@@ -78,7 +78,7 @@ public class AbstractForgeCapabilityManager {
         }
     }
 
-    public static class Serializer<T extends IDataSerializerProvider> implements INBTSerializable<CompoundTag> {
+    public static class Serializer<T extends IDataSerializable.Mutable> implements INBTSerializable<CompoundTag> {
 
         protected static final ArrayList<String> DATA_KEYS = new ArrayList<>();
 
@@ -90,7 +90,7 @@ public class AbstractForgeCapabilityManager {
             this.entity = new WeakReference<>(entity);
         }
 
-        public static <T extends IDataSerializerProvider> IRegistryHolder<AttachmentType<Serializer<T>>> register(IResourceLocation registryName, Function<Entity, Optional<T>> factory) {
+        public static <T extends IDataSerializable.Mutable> IRegistryHolder<AttachmentType<Serializer<T>>> register(IResourceLocation registryName, Function<Entity, Optional<T>> factory) {
             DATA_KEYS.add(registryName.toString());
             Function<IAttachmentHolder, Serializer<T>> transformer = holder -> new Serializer<>((Entity) holder, factory.apply((Entity) holder).orElse(null));
             return AbstractForgeRegistries.ATTACHMENT_TYPES.register(registryName.getPath(), () -> AttachmentType.serializable(transformer).build());

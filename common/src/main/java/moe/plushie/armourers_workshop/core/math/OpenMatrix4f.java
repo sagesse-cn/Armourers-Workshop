@@ -2,7 +2,7 @@ package moe.plushie.armourers_workshop.core.math;
 
 import moe.plushie.armourers_workshop.api.core.math.IMatrix4f;
 import moe.plushie.armourers_workshop.api.core.math.IQuaternion3f;
-import moe.plushie.armourers_workshop.core.utils.MatrixBuffers;
+import moe.plushie.armourers_workshop.core.utils.MatrixUtils;
 
 import java.nio.FloatBuffer;
 
@@ -20,7 +20,7 @@ public class OpenMatrix4f implements IMatrix4f {
     }
 
     public OpenMatrix4f(IMatrix4f matrix) {
-        var buffer = MatrixBuffers.createFloatBuffer(16);
+        var buffer = MatrixUtils.createFloatBuffer(16);
         matrix.store(buffer);
         load(buffer);
     }
@@ -539,7 +539,7 @@ public class OpenMatrix4f implements IMatrix4f {
 
         private static final ThreadLocal<FastLocal> LOCALS = ThreadLocal.withInitial(FastLocal::new);
 
-        private final FloatBuffer buffer = MatrixBuffers.createFloatBuffer(16);
+        private final FloatBuffer buffer = MatrixUtils.createFloatBuffer(16);
 
         private static OpenMatrix4f from(IMatrix4f value) {
             if (value instanceof OpenMatrix4f matrix) {

@@ -3,7 +3,7 @@ package moe.plushie.armourers_workshop.library.data.impl;
 import io.netty.buffer.ByteBuf;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IODataObject;
 import moe.plushie.armourers_workshop.init.ModLog;
-import moe.plushie.armourers_workshop.utils.StreamUtils;
+import moe.plushie.armourers_workshop.core.utils.StreamUtils;
 
 import java.io.IOException;
 import java.io.InputStream;

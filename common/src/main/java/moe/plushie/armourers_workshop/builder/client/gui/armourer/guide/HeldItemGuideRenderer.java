@@ -6,8 +6,8 @@ import moe.plushie.armourers_workshop.api.core.math.IPoseStack;
 import moe.plushie.armourers_workshop.core.client.other.SkinRenderType;
 import moe.plushie.armourers_workshop.core.math.Vector3f;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPartTypes;
-import moe.plushie.armourers_workshop.utils.ext.OpenModelPart;
-import moe.plushie.armourers_workshop.utils.ext.OpenModelPartBuilder;
+import moe.plushie.armourers_workshop.utils.OpenModelPart;
+import moe.plushie.armourers_workshop.utils.OpenModelPartBuilder;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 

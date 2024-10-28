@@ -2,8 +2,10 @@ package moe.plushie.armourers_workshop.utils;
 
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
-import moe.plushie.armourers_workshop.api.data.IDataSerializer;
-import moe.plushie.armourers_workshop.api.data.IDataSerializerProvider;
+import moe.plushie.armourers_workshop.api.core.IDataCodec;
+import moe.plushie.armourers_workshop.api.core.IDataSerializable;
+import moe.plushie.armourers_workshop.api.core.IDataSerializer;
+import moe.plushie.armourers_workshop.api.core.IDataSerializerKey;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
 
@@ -12,10 +14,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class NonNullItemList extends NonNullList<ItemStack> implements IDataSerializerProvider {
-
-    private static final Codec<Pair<Byte, ItemStack>> CODEC = Codec.pair(DataTypeCodecs.BYTE.fieldOf("Slot").codec(), DataTypeCodecs.ITEM_STACK);
-    private static final DataSerializerKey<List<Pair<Byte, ItemStack>>> SERIALIZER_KEY = DataSerializerKey.create("Items", CODEC.listOf(), Collections.emptyList());
+public class NonNullItemList extends NonNullList<ItemStack> implements IDataSerializable.Mutable {
 
     public NonNullItemList(int size) {
         super(buildDefaultList(size), ItemStack.EMPTY);
@@ -37,18 +36,23 @@ public class NonNullItemList extends NonNullList<ItemStack> implements IDataSeri
                 values.add(Pair.of((byte) i, get(i)));
             }
         }
-        serializer.write(SERIALIZER_KEY, values);
+        serializer.write(CodingKeys.SERIALIZER, values);
     }
 
     @Override
     public void deserialize(IDataSerializer serializer) {
         var size = size();
-        var values = serializer.read(SERIALIZER_KEY);
+        var values = serializer.read(CodingKeys.SERIALIZER);
         for (var pair : values) {
             var slot = pair.getFirst() & 0xff;
             if (slot < size) {
                 set(slot, pair.getSecond());
             }
         }
+    }
+
+    private static class CodingKeys {
+
+        public static final IDataSerializerKey<List<Pair<Byte, ItemStack>>> SERIALIZER = IDataSerializerKey.create("Items", IDataCodec.wrap(Codec.pair(Codec.BYTE.fieldOf("Slot").codec(), ItemStack.CODEC).listOf()), Collections.emptyList());
     }
 }

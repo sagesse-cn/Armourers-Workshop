@@ -8,9 +8,10 @@ import moe.plushie.armourers_workshop.core.data.color.BlockPaintColor;
 import moe.plushie.armourers_workshop.core.item.impl.IPaintProvider;
 import moe.plushie.armourers_workshop.core.item.impl.IPaintToolPicker;
 import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
+import moe.plushie.armourers_workshop.core.utils.Constants;
+import moe.plushie.armourers_workshop.core.utils.TagSerializer;
 import moe.plushie.armourers_workshop.init.ModDataComponents;
 import moe.plushie.armourers_workshop.utils.ColorUtils;
-import moe.plushie.armourers_workshop.utils.Constants;
 import moe.plushie.armourers_workshop.utils.TypedRegistry;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -72,13 +73,15 @@ public class SkinCubeItem extends AbstractBlockItem implements IItemColorProvide
     @Override
     public void setItemColor(ItemStack itemStack, ISkinPaintColor paintColor) {
         var entityTag = new CompoundTag();
-        var color = new BlockPaintColor(paintColor);
         var oldEntityTag = itemStack.get(ModDataComponents.BLOCK_ENTITY_DATA.get());
         if (oldEntityTag != null) {
             entityTag.merge(oldEntityTag);
         }
         entityTag.putString(Constants.Key.ID, TypedRegistry.findKey(getBlock()).toString());
-        entityTag.putOptionalBlockPaintColor(Constants.Key.COLOR, color, null);
+        var color = new BlockPaintColor((SkinPaintColor) paintColor);
+        var serializer = new TagSerializer();
+        color.serialize(serializer);
+        entityTag.put(Constants.Key.COLOR, serializer.getTag());
         itemStack.set(ModDataComponents.TOOL_FLAGS.get(), 1);
         itemStack.set(ModDataComponents.BLOCK_ENTITY_DATA.get(), entityTag);
     }

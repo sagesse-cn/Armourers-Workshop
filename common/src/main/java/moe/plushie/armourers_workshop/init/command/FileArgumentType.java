@@ -13,9 +13,9 @@ import moe.plushie.armourers_workshop.api.common.IArgumentSerializer;
 import moe.plushie.armourers_workshop.api.common.IArgumentType;
 import moe.plushie.armourers_workshop.api.network.IFriendlyByteBuf;
 import moe.plushie.armourers_workshop.core.utils.Collections;
+import moe.plushie.armourers_workshop.core.utils.Constants;
+import moe.plushie.armourers_workshop.core.utils.FileUtils;
 import moe.plushie.armourers_workshop.init.ModLog;
-import moe.plushie.armourers_workshop.utils.Constants;
-import moe.plushie.armourers_workshop.utils.SkinFileUtils;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.network.chat.Component;
@@ -100,7 +100,7 @@ public class FileArgumentType implements IArgumentType<String> {
         var parent = getParentPath(inputPath);
         builder = builder.createOffset(builder.getStart() + parent.length());
         for (var file : fileList) {
-            var name = SkinFileUtils.getRelativePath(file, parent);
+            var name = FileUtils.getRelativePath(file, parent);
             if (!name.isEmpty()) {
                 builder.suggest(name);
             }
@@ -123,14 +123,14 @@ public class FileArgumentType implements IArgumentType<String> {
     }
 
     public ArrayList<String> getFileList(File parentFile, String name) {
-        ArrayList<String> results = new ArrayList<>();
-        File[] files = parentFile.listFiles();
+        var results = new ArrayList<String>();
+        var files = parentFile.listFiles();
         if (files == null) {
             ModLog.error("load file error at {}", parentFile);
             return results;
         }
-        for (File file : files) {
-            String rv = SkinFileUtils.getRelativePath(file, rootFile, true);
+        for (var file : files) {
+            var rv = FileUtils.getRelativePath(file, rootFile, true);
             if (file.isDirectory()) {
                 if (name.startsWith(rv)) {
                     results.addAll(getFileList(file, name));

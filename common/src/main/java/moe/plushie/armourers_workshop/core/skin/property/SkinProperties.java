@@ -1,5 +1,6 @@
 package moe.plushie.armourers_workshop.core.skin.property;
 
+import moe.plushie.armourers_workshop.api.core.IDataCodec;
 import moe.plushie.armourers_workshop.api.skin.property.ISkinProperties;
 import moe.plushie.armourers_workshop.api.skin.property.ISkinProperty;
 import moe.plushie.armourers_workshop.core.utils.Objects;
@@ -13,6 +14,8 @@ import java.util.LinkedHashMap;
 public class SkinProperties extends OpenProperties implements ISkinProperties {
 
     public static final SkinProperties EMPTY = new SkinProperties();
+
+    public static final IDataCodec<SkinProperties> CODEC = IDataCodec.COMPOUND_TAG.xmap(SkinProperties::new, SkinProperties::serializeNBT);
 
     public SkinProperties() {
         super();

@@ -1,17 +1,22 @@
 package moe.plushie.armourers_workshop.core.skin.serializer;
 
+import moe.plushie.armourers_workshop.api.core.IDataCodec;
+import moe.plushie.armourers_workshop.api.core.IDataSerializerKey;
+import moe.plushie.armourers_workshop.core.utils.TagSerializer;
 import net.minecraft.nbt.CompoundTag;
 
 public class SkinFileOptions {
 
     private final CompoundTag values;
+    private final TagSerializer serializer;
 
     public SkinFileOptions() {
-        this.values = new CompoundTag();
+        this(new CompoundTag());
     }
 
     public SkinFileOptions(CompoundTag compoundTag) {
         this.values = compoundTag;
+        this.serializer = new TagSerializer(compoundTag);
     }
 
     public CompoundTag serializeNBT() {
@@ -28,61 +33,76 @@ public class SkinFileOptions {
 
 
     public void setFileVersion(int fileVersion) {
-        values.putOptionalInt("FileVersion", fileVersion, 0);
+        serializer.write(CodingKeys.FILE_VERSION, fileVersion);
     }
 
     public int getFileVersion() {
-        return values.getOptionalInt("FileVersion", 0);
+        return serializer.read(CodingKeys.FILE_VERSION);
     }
 
     public void setEditable(boolean isEditable) {
-        values.putOptionalBoolean("Editable", isEditable, true);
+        serializer.write(CodingKeys.IS_EDITABLE, isEditable);
     }
 
     public boolean getEditable(boolean defaultValue) {
-        return values.getOptionalBoolean("Editable", defaultValue);
+        var value = serializer.read(CodingKeys.IS_EDITABLE);
+        if (value != null) {
+            return value;
+        }
+        return defaultValue;
     }
 
-
     public void setSavable(boolean isSavable) {
-        values.putOptionalBoolean("Savable", isSavable, true);
+        serializer.write(CodingKeys.IS_SAVABLE, isSavable);
     }
 
     public boolean getSavable(boolean defaultValue) {
-        return values.getOptionalBoolean("Savable", defaultValue);
+        var value = serializer.read(CodingKeys.IS_SAVABLE);
+        if (value != null) {
+            return value;
+        }
+        return defaultValue;
     }
 
     public void setExportable(boolean isExportable) {
-        values.putOptionalBoolean("Exportable", isExportable, true);
+        serializer.write(CodingKeys.IS_EXPORTABLE, isExportable);
     }
 
     public boolean getExportable(boolean defaultValue) {
-        return values.getOptionalBoolean("Exportable", defaultValue);
+        var value = serializer.read(CodingKeys.IS_EXPORTABLE);
+        if (value != null) {
+            return value;
+        }
+        return defaultValue;
     }
 
 
     public void setCompressed(boolean compressed) {
-        values.putOptionalBoolean("Compressed", compressed, false);
+        serializer.write(CodingKeys.IS_COMPRESSED, compressed);
     }
 
     public boolean getCompressed(boolean defaultValue) {
-        return values.getOptionalBoolean("Compressed", defaultValue);
+        var value = serializer.read(CodingKeys.IS_COMPRESSED);
+        if (value != null) {
+            return value;
+        }
+        return defaultValue;
     }
 
     public void setSecurityKey(String securityKey) {
-        values.putOptionalString("SecurityKey", securityKey, null);
+        serializer.write(CodingKeys.SECURITY_KEY, securityKey);
     }
 
     public String getSecurityKey() {
-        return values.getOptionalString("SecurityKey", null);
+        return serializer.read(CodingKeys.SECURITY_KEY);
     }
 
     public void setSecurityData(String securityData) {
-        values.putOptionalString("SecurityData", securityData, null);
+        serializer.write(CodingKeys.SECURITY_DATA, securityData);
     }
 
     public String getSecurityData() {
-        return values.getOptionalString("SecurityData", null);
+        return serializer.read(CodingKeys.SECURITY_DATA);
     }
 
     @Override
@@ -100,5 +120,18 @@ public class SkinFileOptions {
     @Override
     public String toString() {
         return values.toString();
+    }
+
+    private static class CodingKeys {
+
+        public static final IDataSerializerKey<Integer> FILE_VERSION = IDataSerializerKey.create("FileVersion", IDataCodec.INT, 0);
+
+        public static final IDataSerializerKey<Boolean> IS_EDITABLE = IDataSerializerKey.create("Editable", IDataCodec.BOOL, null);
+        public static final IDataSerializerKey<Boolean> IS_SAVABLE = IDataSerializerKey.create("Savable", IDataCodec.BOOL, null);
+        public static final IDataSerializerKey<Boolean> IS_EXPORTABLE = IDataSerializerKey.create("Exportable", IDataCodec.BOOL, null);
+        public static final IDataSerializerKey<Boolean> IS_COMPRESSED = IDataSerializerKey.create("Compressed", IDataCodec.BOOL, null);
+
+        public static final IDataSerializerKey<String> SECURITY_KEY = IDataSerializerKey.create("SecurityKey", IDataCodec.STRING, null);
+        public static final IDataSerializerKey<String> SECURITY_DATA = IDataSerializerKey.create("SecurityData", IDataCodec.STRING, null);
     }
 }

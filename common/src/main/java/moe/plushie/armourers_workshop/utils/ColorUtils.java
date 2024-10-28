@@ -7,6 +7,8 @@ import moe.plushie.armourers_workshop.core.data.ItemStackStorage;
 import moe.plushie.armourers_workshop.core.data.color.BlockPaintColor;
 import moe.plushie.armourers_workshop.core.math.OpenMath;
 import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintTypes;
+import moe.plushie.armourers_workshop.core.utils.Constants;
+import moe.plushie.armourers_workshop.core.utils.TagSerializer;
 import moe.plushie.armourers_workshop.init.ModDataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -235,14 +237,17 @@ public class ColorUtils {
 
     @Nullable
     public static BlockPaintColor getBlockColor(ItemStack itemStack) {
-        ItemStackStorage storage = ItemStackStorage.of(itemStack);
+        var storage = ItemStackStorage.of(itemStack);
         if (storage.blockPaintColor != null) {
             return storage.blockPaintColor.orElse(null);
         }
         BlockPaintColor color = null;
         CompoundTag tag = itemStack.get(ModDataComponents.BLOCK_ENTITY_DATA.get());
         if (tag != null) {
-            color = tag.getOptionalBlockPaintColor(Constants.Key.COLOR, null);
+            var colorTag = tag.getCompound(Constants.Key.COLOR);
+            if (!colorTag.isEmpty()) {
+                color = new BlockPaintColor(new TagSerializer(colorTag));
+            }
         }
         storage.blockPaintColor = Optional.ofNullable(color);
         return color;

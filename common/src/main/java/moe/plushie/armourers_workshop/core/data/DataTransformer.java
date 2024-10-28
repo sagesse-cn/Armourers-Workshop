@@ -1,8 +1,8 @@
 package moe.plushie.armourers_workshop.core.data;
 
-import moe.plushie.armourers_workshop.api.common.IResultHandler;
+import moe.plushie.armourers_workshop.api.core.IResultHandler;
 import moe.plushie.armourers_workshop.core.data.ticket.Ticket;
-import moe.plushie.armourers_workshop.utils.ThreadUtils;
+import moe.plushie.armourers_workshop.core.utils.Executors;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Nullable;
 
@@ -37,8 +37,8 @@ public class DataTransformer<K, V, T> {
     private final int maxTransformCount;
 
     public DataTransformer(ThreadFactory config, LoadHandler<K, T> loader, TransformHandler<K, T, V> transformer, int maxLoadCount, int maxTransformCount) {
-        this.mainThread = ThreadUtils.newFixedThreadPool(1, config);
-        this.transformThread = ThreadUtils.newFixedThreadPool(maxTransformCount, config);
+        this.mainThread = Executors.newFixedThreadPool(1, config);
+        this.transformThread = Executors.newFixedThreadPool(maxTransformCount, config);
         this.loader = loader;
         this.transformer = transformer;
         this.maxLoadCount = maxLoadCount;

@@ -1,10 +1,10 @@
 package moe.plushie.armourers_workshop.builder.blockentity;
 
-import moe.plushie.armourers_workshop.api.data.IDataSerializer;
+import moe.plushie.armourers_workshop.api.core.IDataCodec;
+import moe.plushie.armourers_workshop.api.core.IDataSerializer;
+import moe.plushie.armourers_workshop.api.core.IDataSerializerKey;
 import moe.plushie.armourers_workshop.core.blockentity.UpdatableContainerBlockEntity;
 import moe.plushie.armourers_workshop.utils.BlockUtils;
-import moe.plushie.armourers_workshop.utils.DataSerializerKey;
-import moe.plushie.armourers_workshop.utils.DataTypeCodecs;
 import moe.plushie.armourers_workshop.utils.NonNullItemList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -12,9 +12,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.apache.logging.log4j.util.Strings;
 
 public class OutfitMakerBlockEntity extends UpdatableContainerBlockEntity {
-
-    private static final DataSerializerKey<String> MAKER_NAME_KEY = DataSerializerKey.create("Name", DataTypeCodecs.STRING, "");
-    private static final DataSerializerKey<String> MAKER_FLAVOUR_KEY = DataSerializerKey.create("Flavour", DataTypeCodecs.STRING, "");
 
     private String itemName = "";
     private String itemFlavour = "";
@@ -27,17 +24,17 @@ public class OutfitMakerBlockEntity extends UpdatableContainerBlockEntity {
 
     public void readAdditionalData(IDataSerializer serializer) {
         items.deserialize(serializer);
-        itemName = serializer.read(MAKER_NAME_KEY);
-        itemFlavour = serializer.read(MAKER_FLAVOUR_KEY);
+        itemName = serializer.read(CodingKeys.MAKER_NAME);
+        itemFlavour = serializer.read(CodingKeys.MAKER_FLAVOUR);
     }
 
     public void writeAdditionalData(IDataSerializer serializer) {
         items.serialize(serializer);
         if (Strings.isNotEmpty(itemName)) {
-            serializer.write(MAKER_NAME_KEY, itemName);
+            serializer.write(CodingKeys.MAKER_NAME, itemName);
         }
         if (Strings.isNotEmpty(itemFlavour)) {
-            serializer.write(MAKER_FLAVOUR_KEY, itemFlavour);
+            serializer.write(CodingKeys.MAKER_FLAVOUR, itemFlavour);
         }
     }
 
@@ -67,6 +64,12 @@ public class OutfitMakerBlockEntity extends UpdatableContainerBlockEntity {
     @Override
     public int getContainerSize() {
         return 21;
+    }
+
+    private static class CodingKeys {
+
+        public static final IDataSerializerKey<String> MAKER_NAME = IDataSerializerKey.create("Name", IDataCodec.STRING, "");
+        public static final IDataSerializerKey<String> MAKER_FLAVOUR = IDataSerializerKey.create("Flavour", IDataCodec.STRING, "");
     }
 }
 

@@ -17,7 +17,7 @@ import moe.plushie.armourers_workshop.api.data.IDataProperty;
 import moe.plushie.armourers_workshop.builder.client.gui.advancedbuilder.document.DocumentEditor;
 import moe.plushie.armourers_workshop.builder.client.gui.widget.NewSlider;
 import moe.plushie.armourers_workshop.builder.data.properties.VectorProperty;
-import moe.plushie.armourers_workshop.core.skin.document.SkinDocument;
+import moe.plushie.armourers_workshop.core.skin.serializer.document.SkinDocument;
 import moe.plushie.armourers_workshop.init.ModTextures;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Nullable;

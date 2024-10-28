@@ -10,8 +10,8 @@ import moe.plushie.armourers_workshop.api.core.IResourceLocation;
 import moe.plushie.armourers_workshop.api.skin.ISkinType;
 import moe.plushie.armourers_workshop.builder.client.gui.widget.NewComboBox;
 import moe.plushie.armourers_workshop.builder.client.gui.widget.NewComboItem;
-import moe.plushie.armourers_workshop.core.skin.document.SkinDocumentType;
-import moe.plushie.armourers_workshop.core.skin.document.SkinDocumentTypes;
+import moe.plushie.armourers_workshop.core.skin.serializer.document.SkinDocumentType;
+import moe.plushie.armourers_workshop.core.skin.serializer.document.SkinDocumentTypes;
 import moe.plushie.armourers_workshop.utils.TranslateUtils;
 
 import java.util.ArrayList;

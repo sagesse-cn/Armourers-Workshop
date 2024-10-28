@@ -18,7 +18,7 @@ public class UpdateSkinningTablePacket extends CustomPacket {
 
     public UpdateSkinningTablePacket(IFriendlyByteBuf buffer) {
         this.pos = buffer.readBlockPos();
-        this.options = new SkinDescriptor.Options(buffer.readNbt());
+        this.options = buffer.readNbtWithCodec(SkinDescriptor.Options.CODEC);
     }
 
     public UpdateSkinningTablePacket(SkinningTableBlockEntity entity, SkinDescriptor.Options options) {
@@ -29,7 +29,7 @@ public class UpdateSkinningTablePacket extends CustomPacket {
     @Override
     public void encode(IFriendlyByteBuf buffer) {
         buffer.writeBlockPos(pos);
-        buffer.writeNbt(options.serializeNBT());
+        buffer.writeNbtWithCodec(SkinDescriptor.Options.CODEC, options);
     }
 
     @Override

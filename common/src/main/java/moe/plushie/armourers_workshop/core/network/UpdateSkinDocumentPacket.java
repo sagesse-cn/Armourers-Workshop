@@ -3,11 +3,12 @@ package moe.plushie.armourers_workshop.core.network;
 import moe.plushie.armourers_workshop.api.network.IClientPacketHandler;
 import moe.plushie.armourers_workshop.api.network.IFriendlyByteBuf;
 import moe.plushie.armourers_workshop.api.network.IServerPacketHandler;
-import moe.plushie.armourers_workshop.core.skin.document.SkinDocument;
-import moe.plushie.armourers_workshop.core.skin.document.SkinDocumentNode;
-import moe.plushie.armourers_workshop.core.skin.document.SkinDocumentProvider;
-import moe.plushie.armourers_workshop.core.skin.document.SkinDocumentType;
-import moe.plushie.armourers_workshop.core.skin.document.SkinDocumentTypes;
+import moe.plushie.armourers_workshop.core.skin.serializer.document.SkinDocument;
+import moe.plushie.armourers_workshop.core.skin.serializer.document.SkinDocumentNode;
+import moe.plushie.armourers_workshop.core.skin.serializer.document.SkinDocumentProvider;
+import moe.plushie.armourers_workshop.core.skin.serializer.document.SkinDocumentType;
+import moe.plushie.armourers_workshop.core.skin.serializer.document.SkinDocumentTypes;
+import moe.plushie.armourers_workshop.core.utils.TagSerializer;
 import moe.plushie.armourers_workshop.init.ModLog;
 import moe.plushie.armourers_workshop.init.platform.NetworkManager;
 import net.minecraft.core.BlockPos;
@@ -241,7 +242,7 @@ public class UpdateSkinDocumentPacket extends CustomPacket {
         public void execute(SkinDocument document, Player player) {
             var target = document.nodeById(id);
             if (target != null) {
-                var newValue = new SkinDocumentNode(tag);
+                var newValue = new SkinDocumentNode(new TagSerializer(tag));
                 target.insertAtIndex(newValue, targetIndex);
             }
         }
@@ -277,7 +278,7 @@ public class UpdateSkinDocumentPacket extends CustomPacket {
         public void execute(SkinDocument document, Player player) {
             var target = document.nodeById(id);
             if (target != null) {
-                target.deserializeNBT(tag);
+                target.applyChanges(tag);
             }
         }
 

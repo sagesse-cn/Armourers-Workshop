@@ -1,11 +1,11 @@
 package moe.plushie.armourers_workshop.core.holiday;
 
-import moe.plushie.armourers_workshop.api.data.IDataSerializer;
+import moe.plushie.armourers_workshop.api.core.IDataCodec;
+import moe.plushie.armourers_workshop.api.core.IDataSerializer;
+import moe.plushie.armourers_workshop.api.core.IDataSerializerKey;
 import moe.plushie.armourers_workshop.compatibility.core.AbstractSavedData;
+import moe.plushie.armourers_workshop.core.utils.Constants;
 import moe.plushie.armourers_workshop.init.ModLog;
-import moe.plushie.armourers_workshop.utils.Constants;
-import moe.plushie.armourers_workshop.utils.DataSerializerKey;
-import moe.plushie.armourers_workshop.utils.DataTypeCodecs;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.player.Player;
 
@@ -16,8 +16,6 @@ import java.util.HashSet;
 import java.util.List;
 
 public class HolidayTracker extends AbstractSavedData {
-
-    private static final DataSerializerKey<List<String>> LOG_KEY = DataSerializerKey.create("Logs", DataTypeCodecs.STRING.listOf(), Collections.emptyList());
 
     private final Calendar calendar = Calendar.getInstance();
     private final HashSet<String> logs = new HashSet<>();
@@ -49,7 +47,7 @@ public class HolidayTracker extends AbstractSavedData {
     public void deserialize(IDataSerializer serializer) {
         logs.clear();
         var prefix = calendar.get(Calendar.YEAR) + ":";
-        for (var log : serializer.read(LOG_KEY)) {
+        for (var log : serializer.read(CodingKeys.LOG)) {
             // ignore more than 1 year ago the logs
             if (log.startsWith(prefix)) {
                 logs.add(log);
@@ -67,11 +65,16 @@ public class HolidayTracker extends AbstractSavedData {
                 filteredLogs.add(log);
             }
         }
-        serializer.write(LOG_KEY, filteredLogs);
+        serializer.write(CodingKeys.LOG, filteredLogs);
     }
 
     private String getKey(Player player, Holiday holiday) {
         // 2020:new-years:889bebd9-9ebc-4dec-97ee-de9907cbbc85
         return calendar.get(Calendar.YEAR) + ":" + holiday.getName() + ":" + player.getStringUUID();
+    }
+
+    private static class CodingKeys {
+
+        public static final IDataSerializerKey<List<String>> LOG = IDataSerializerKey.create("Logs", IDataCodec.STRING.listOf(), Collections.emptyList());
     }
 }

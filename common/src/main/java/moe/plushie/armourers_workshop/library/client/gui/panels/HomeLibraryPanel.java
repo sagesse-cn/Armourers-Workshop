@@ -8,9 +8,8 @@ import com.apple.library.uikit.UIColor;
 import com.apple.library.uikit.UIControl;
 import com.apple.library.uikit.UILabel;
 import com.apple.library.uikit.UIScrollView;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Iterators;
 import moe.plushie.armourers_workshop.core.skin.SkinTypes;
+import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.init.ModLog;
 import moe.plushie.armourers_workshop.init.ModTextures;
 import moe.plushie.armourers_workshop.library.client.gui.GlobalSkinLibraryWindow;
@@ -138,7 +137,7 @@ public class HomeLibraryPanel extends AbstractLibraryPanel implements GlobalSkin
         if (newValue != null) {
             return;
         }
-        for (ServerItemList fileList : lists()) {
+        for (var fileList : lists()) {
             if (indexOf(fileList, skinId) != -1) {
                 // removed skin in here
                 reloadData();
@@ -173,10 +172,10 @@ public class HomeLibraryPanel extends AbstractLibraryPanel implements GlobalSkin
     }
 
     private int indexOf(ServerItemList list, String skinId) {
-        return Iterables.indexOf(list.getEntries(), e -> Objects.equals(e.getId(), skinId));
+        return Collections.indexOf(list.getEntries(), e -> Objects.equals(e.getId(), skinId));
     }
 
     private Iterable<ServerItemList> lists() {
-        return () -> Iterators.filter(scrollView.subviews().listIterator(), ServerItemList.class);
+        return Collections.collect(scrollView.subviews(), ServerItemList.class);
     }
 }

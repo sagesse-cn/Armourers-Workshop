@@ -1,14 +1,14 @@
 package moe.plushie.armourers_workshop.core.network;
 
 import moe.plushie.armourers_workshop.api.common.IEntitySerializer;
-import moe.plushie.armourers_workshop.api.common.IResultHandler;
+import moe.plushie.armourers_workshop.api.core.IResultHandler;
 import moe.plushie.armourers_workshop.api.network.IClientPacketHandler;
 import moe.plushie.armourers_workshop.api.network.IFriendlyByteBuf;
 import moe.plushie.armourers_workshop.api.network.IServerPacketHandler;
 import moe.plushie.armourers_workshop.core.utils.Objects;
 import moe.plushie.armourers_workshop.init.platform.NetworkManager;
 import moe.plushie.armourers_workshop.utils.DataSerializers;
-import moe.plushie.armourers_workshop.utils.ThreadUtils;
+import moe.plushie.armourers_workshop.core.utils.Executors;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 
@@ -83,7 +83,7 @@ public class CustomReplyPacket<R> extends CustomPacket {
     public static class Receiver<R> extends CustomPacket {
 
         private static final AtomicInteger COUNTER = new AtomicInteger(1000);
-        private static final ScheduledExecutorService TIMER = ThreadUtils.newSingleThreadScheduledExecutor();
+        private static final ScheduledExecutorService TIMER = Executors.newSingleThreadScheduledExecutor();
         private static final HashMap<Integer, Request<?>> REQUESTS = new HashMap<>();
 
         private final int id;

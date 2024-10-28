@@ -8,10 +8,10 @@ import moe.plushie.armourers_workshop.core.client.other.SkinRenderType;
 import moe.plushie.armourers_workshop.core.data.cache.ReferenceCounted;
 import moe.plushie.armourers_workshop.core.skin.geometry.SkinGeometryTypes;
 import moe.plushie.armourers_workshop.core.skin.paint.texture.TextureAnimation;
+import moe.plushie.armourers_workshop.core.utils.FileUtils;
 import moe.plushie.armourers_workshop.init.ModConstants;
 import moe.plushie.armourers_workshop.utils.DataContainer;
 import moe.plushie.armourers_workshop.utils.RenderSystem;
-import moe.plushie.armourers_workshop.utils.SkinFileUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
@@ -148,7 +148,7 @@ public class TextureManager {
         }
 
         private Map<IResourceLocation, ByteBuffer> resolveTextureBuffers(IResourceLocation location, ITextureProvider provider) {
-            var path = SkinFileUtils.removeExtension(location.getPath());
+            var path = FileUtils.removeExtension(location.getPath());
             var results = new LinkedHashMap<IResourceLocation, ByteBuffer>();
             results.put(location, provider.getBuffer());
             for (var variant : provider.getVariants()) {

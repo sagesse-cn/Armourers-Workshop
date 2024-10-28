@@ -1,5 +1,6 @@
 package moe.plushie.armourers_workshop.core.skin;
 
+import moe.plushie.armourers_workshop.api.core.IDataCodec;
 import moe.plushie.armourers_workshop.api.skin.ISkinMarker;
 import moe.plushie.armourers_workshop.core.math.Vector3i;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IInputStream;
@@ -11,6 +12,8 @@ import org.jetbrains.annotations.Nullable;
 import java.io.IOException;
 
 public class SkinMarker implements ISkinMarker {
+
+    public static final IDataCodec<SkinMarker> CODEC = IDataCodec.LONG.xmap(SkinMarker::of, SkinMarker::asLong);
 
     public final byte x;
     public final byte y;

@@ -7,11 +7,11 @@ import com.apple.library.uikit.UIButton;
 import com.apple.library.uikit.UIColor;
 import com.apple.library.uikit.UIControl;
 import com.apple.library.uikit.UILabel;
-import com.google.common.collect.Iterables;
-import moe.plushie.armourers_workshop.api.common.IResultHandler;
+import moe.plushie.armourers_workshop.api.core.IResultHandler;
 import moe.plushie.armourers_workshop.api.skin.ISkinType;
 import moe.plushie.armourers_workshop.core.math.OpenMath;
 import moe.plushie.armourers_workshop.core.skin.SkinTypes;
+import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.init.ModLog;
 import moe.plushie.armourers_workshop.init.ModTextures;
 import moe.plushie.armourers_workshop.library.client.gui.GlobalSkinLibraryWindow;
@@ -30,7 +30,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.Predicate;
@@ -254,8 +253,8 @@ public class SearchResultsLibraryPanel extends AbstractLibraryPanel implements G
     }
 
     private Pair<Integer, Integer> getPageBySkin(String skinId) {
-        for (Map.Entry<Integer, ArrayList<ServerSkin>> entry : downloadedPageList.entrySet()) {
-            int index = Iterables.indexOf(entry.getValue(), e -> Objects.equals(e.getId(), skinId));
+        for (var entry : downloadedPageList.entrySet()) {
+            int index = Collections.indexOf(entry.getValue(), e -> Objects.equals(e.getId(), skinId));
             if (index != -1) {
                 return Pair.of(entry.getKey(), index);
             }

@@ -1,20 +1,28 @@
 package moe.plushie.armourers_workshop.core.skin.paint;
 
-import com.google.common.collect.Iterables;
+import moe.plushie.armourers_workshop.api.core.IDataCodec;
+import moe.plushie.armourers_workshop.api.core.IDataSerializable;
+import moe.plushie.armourers_workshop.api.core.IDataSerializer;
+import moe.plushie.armourers_workshop.api.core.IDataSerializerKey;
 import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintType;
+import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.core.utils.Objects;
 import moe.plushie.armourers_workshop.core.utils.OpenResourceLocation;
-import moe.plushie.armourers_workshop.utils.Constants;
-import net.minecraft.nbt.CompoundTag;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Predicate;
 
 @SuppressWarnings("unused")
-public class SkinPaintScheme {
+public class SkinPaintScheme implements IDataSerializable.Immutable {
 
     public final static SkinPaintScheme EMPTY = new SkinPaintScheme();
+
+    public static final IDataCodec<SkinPaintScheme> CODEC = IDataCodec.COMPOUND_TAG.serializer(SkinPaintScheme::new);
 
     private final HashMap<ISkinPaintType, SkinPaintColor> colors = new HashMap<>();
     private HashMap<ISkinPaintType, SkinPaintColor> resolvedColors;
@@ -27,19 +35,23 @@ public class SkinPaintScheme {
     public SkinPaintScheme() {
     }
 
-    public SkinPaintScheme(CompoundTag nbt) {
-        for (var key : nbt.getAllKeys()) {
-            var paintType = SkinPaintTypes.byName(key);
-            if (paintType != SkinPaintTypes.NONE && nbt.contains(key, Constants.TagFlags.INT)) {
-                colors.put(paintType, SkinPaintColor.of(nbt.getInt(key)));
+    public SkinPaintScheme(IDataSerializer serializer) {
+        for (var entry : CodingKeys.KEYS.entrySet()) {
+            var value = serializer.read(entry.getValue());
+            if (value != null) {
+                colors.put(entry.getKey(), value);
             }
         }
     }
 
-    public CompoundTag serializeNBT() {
-        var nbt = new CompoundTag();
-        colors.forEach((paintType, paintColor) -> nbt.putInt(paintType.getRegistryName().toString(), paintColor.getRawValue()));
-        return nbt;
+    @Override
+    public void serialize(IDataSerializer serializer) {
+        for (var entry : CodingKeys.KEYS.entrySet()) {
+            var value = colors.get(entry.getKey());
+            if (value != null) {
+                serializer.write(entry.getValue(), value);
+            }
+        }
     }
 
     public SkinPaintScheme copy() {
@@ -123,7 +135,7 @@ public class SkinPaintScheme {
             resolvedColors.putAll(reference.getResolvedColors());
         }
         // build all item dependencies
-        Iterables.concat(colors.entrySet(), getReference().colors.entrySet()).forEach(e -> {
+        Collections.concat(colors.entrySet(), getReference().colors.entrySet()).forEach(e -> {
             var paintType = e.getKey();
             var color = e.getValue();
             if (color.getPaintType().getDyeType() != null) {
@@ -136,7 +148,7 @@ public class SkinPaintScheme {
             return resolvedColors;
         }
         // merge all items whens dependencies
-        dependencies.forEach((key, value) -> Iterables.tryFind(dependencies.values(), v -> v.contains(key)).toJavaUtil().ifPresent(target -> {
+        dependencies.forEach((key, value) -> find(dependencies.values(), v -> v.contains(key)).ifPresent(target -> {
             if (target != value) {
                 target.addAll(value);
             }
@@ -144,6 +156,15 @@ public class SkinPaintScheme {
         }));
         dependencies.forEach((key, value) -> value.forEach(paintType -> resolvedColors.put(paintType, resolvedColors.get(key))));
         return resolvedColors;
+    }
+
+    private <T> Optional<T> find(Collection<T> values, Predicate<T> predicate) {
+        for (var value : values) {
+            if (predicate.test(value)) {
+                return Optional.of(value);
+            }
+        }
+        return Optional.empty();
     }
 
     @Override
@@ -167,5 +188,17 @@ public class SkinPaintScheme {
     @Override
     public String toString() {
         return "[" + getResolvedColors() + "]";
+    }
+
+    private static class CodingKeys {
+        public static final Map<SkinPaintType, IDataSerializerKey<SkinPaintColor>> KEYS = Collections.immutableMap(builder -> {
+            for (var paintType : SkinPaintTypes.values()) {
+                if (paintType != SkinPaintTypes.NONE) {
+                    var name = paintType.getRegistryName().toString();
+                    var key = IDataSerializerKey.create(name, SkinPaintColor.CODEC, null);
+                    builder.put(paintType, key);
+                }
+            }
+        });
     }
 }

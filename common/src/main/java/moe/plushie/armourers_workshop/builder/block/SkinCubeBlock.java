@@ -37,7 +37,6 @@ public class SkinCubeBlock extends AbstractHorizontalBlock implements AbstractBl
 
     public static OptionalDirection getMarker(BlockState blockState) {
         if (blockState.getOptionalValue(HAS_MARKER).orElse(false)) {
-            var facing = blockState.getValue(MARKER);
             return OptionalDirection.of(blockState.getValue(MARKER));
         }
         return OptionalDirection.NONE;

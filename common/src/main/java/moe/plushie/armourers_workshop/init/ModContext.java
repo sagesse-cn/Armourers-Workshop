@@ -1,11 +1,11 @@
 package moe.plushie.armourers_workshop.init;
 
-import moe.plushie.armourers_workshop.api.data.IDataSerializer;
+import moe.plushie.armourers_workshop.api.core.IDataCodec;
+import moe.plushie.armourers_workshop.api.core.IDataSerializer;
+import moe.plushie.armourers_workshop.api.core.IDataSerializerKey;
 import moe.plushie.armourers_workshop.compatibility.core.AbstractSavedData;
 import moe.plushie.armourers_workshop.core.data.TickTracker;
-import moe.plushie.armourers_workshop.utils.Constants;
-import moe.plushie.armourers_workshop.utils.DataSerializerKey;
-import moe.plushie.armourers_workshop.utils.DataTypeCodecs;
+import moe.plushie.armourers_workshop.core.utils.Constants;
 import net.minecraft.server.MinecraftServer;
 import org.jetbrains.annotations.NotNull;
 
@@ -15,9 +15,6 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class ModContext extends AbstractSavedData {
-
-    private static final DataSerializerKey<UUID> T0_KEY = DataSerializerKey.create("t0", DataTypeCodecs.UUID, null);
-    private static final DataSerializerKey<UUID> T1_KEY = DataSerializerKey.create("t1", DataTypeCodecs.UUID, null);
 
     private static ModContext current;
 
@@ -141,11 +138,11 @@ public class ModContext extends AbstractSavedData {
     public void deserialize(IDataSerializer serializer) {
         TickTracker.server().deserialize(serializer);
         int count = 0;
-        t0 = serializer.read(T0_KEY);
+        t0 = serializer.read(CodingKeys.T0);
         if (t0 != null) {
             count += 1;
         }
-        t1 = serializer.read(T1_KEY);
+        t1 = serializer.read(CodingKeys.T1);
         if (t1 != null) {
             count += 1;
         }
@@ -158,7 +155,13 @@ public class ModContext extends AbstractSavedData {
     @Override
     public void serialize(IDataSerializer serializer) {
         TickTracker.server().serialize(serializer);
-        serializer.write(T0_KEY, t0);
-        serializer.write(T1_KEY, t1);
+        serializer.write(CodingKeys.T0, t0);
+        serializer.write(CodingKeys.T1, t1);
+    }
+
+    private static class CodingKeys {
+
+        public static final IDataSerializerKey<UUID> T0 = IDataSerializerKey.create("t0", IDataCodec.UUID, null);
+        public static final IDataSerializerKey<UUID> T1 = IDataSerializerKey.create("t1", IDataCodec.UUID, null);
     }
 }

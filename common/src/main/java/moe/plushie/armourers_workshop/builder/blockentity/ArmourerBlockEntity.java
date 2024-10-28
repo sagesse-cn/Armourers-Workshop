@@ -1,9 +1,10 @@
 package moe.plushie.armourers_workshop.builder.blockentity;
 
-import com.google.common.collect.ImmutableMap;
 import moe.plushie.armourers_workshop.api.common.IBlockEntityHandler;
 import moe.plushie.armourers_workshop.api.common.IWorldUpdateTask;
-import moe.plushie.armourers_workshop.api.data.IDataSerializer;
+import moe.plushie.armourers_workshop.api.core.IDataCodec;
+import moe.plushie.armourers_workshop.api.core.IDataSerializer;
+import moe.plushie.armourers_workshop.api.core.IDataSerializerKey;
 import moe.plushie.armourers_workshop.api.skin.ISkinToolType;
 import moe.plushie.armourers_workshop.api.skin.ISkinType;
 import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintColor;
@@ -11,7 +12,7 @@ import moe.plushie.armourers_workshop.api.skin.part.ISkinPartType;
 import moe.plushie.armourers_workshop.api.skin.property.ISkinProperty;
 import moe.plushie.armourers_workshop.builder.block.ArmourerBlock;
 import moe.plushie.armourers_workshop.builder.data.BoundingBox;
-import moe.plushie.armourers_workshop.builder.data.PlayerTextureDescriptor;
+import moe.plushie.armourers_workshop.core.skin.paint.texture.EntityTextureDescriptor;
 import moe.plushie.armourers_workshop.builder.item.impl.IPaintToolSelector;
 import moe.plushie.armourers_workshop.builder.other.CubeChangesCollector;
 import moe.plushie.armourers_workshop.builder.other.CubeReplacingEvent;
@@ -30,10 +31,9 @@ import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintData;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPartTypes;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperties;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperty;
+import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.init.ModBlocks;
 import moe.plushie.armourers_workshop.utils.BlockUtils;
-import moe.plushie.armourers_workshop.utils.DataSerializerKey;
-import moe.plushie.armourers_workshop.utils.DataTypeCodecs;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
@@ -50,34 +50,28 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Map;
 import java.util.Objects;
 
 public class ArmourerBlockEntity extends UpdatableBlockEntity implements IBlockEntityHandler, IPaintToolSelector.Provider {
 
-    private static final DataSerializerKey<ISkinType> SKIN_TYPE_KEY = DataSerializerKey.create("SkinType", DataTypeCodecs.SKIN_TYPE, SkinTypes.UNKNOWN);
-    private static final DataSerializerKey<SkinProperties> SKIN_PROPERTIES_KEY = DataSerializerKey.create("SkinProperties", DataTypeCodecs.SKIN_PROPERTIES, SkinProperties.EMPTY, SkinProperties::new);
-    private static final DataSerializerKey<PlayerTextureDescriptor> PLAYER_TEXTURE_KEY = DataSerializerKey.create("Texture", DataTypeCodecs.TEXTURE_DESCRIPTOR, PlayerTextureDescriptor.EMPTY);
-    private static final DataSerializerKey<SkinPaintData> PAINT_DATA_KEY = DataSerializerKey.create("PaintData", DataTypeCodecs.SKIN_PAINT_DATA, null);
-    private static final DataSerializerKey<Integer> FLAGS_KEY = DataSerializerKey.create("Flags", DataTypeCodecs.INT, 0);
-    private static final DataSerializerKey<Integer> VERSION_KEY = DataSerializerKey.create("DataVersion", DataTypeCodecs.INT, 0);
-
-    private static final ImmutableMap<ISkinPartType, ISkinProperty<Boolean>> PART_TO_MODEL = new ImmutableMap.Builder<ISkinPartType, ISkinProperty<Boolean>>()
-            .put(SkinPartTypes.BIPPED_HEAD, SkinProperty.OVERRIDE_MODEL_HEAD)
-            .put(SkinPartTypes.BIPPED_CHEST, SkinProperty.OVERRIDE_MODEL_CHEST)
-            .put(SkinPartTypes.BIPPED_LEFT_ARM, SkinProperty.OVERRIDE_MODEL_LEFT_ARM)
-            .put(SkinPartTypes.BIPPED_RIGHT_ARM, SkinProperty.OVERRIDE_MODEL_RIGHT_ARM)
-            .put(SkinPartTypes.BIPPED_LEFT_THIGH, SkinProperty.OVERRIDE_MODEL_LEFT_LEG)
-            .put(SkinPartTypes.BIPPED_RIGHT_THIGH, SkinProperty.OVERRIDE_MODEL_RIGHT_LEG)
-            .put(SkinPartTypes.BIPPED_LEFT_FOOT, SkinProperty.OVERRIDE_MODEL_LEFT_LEG)
-            .put(SkinPartTypes.BIPPED_RIGHT_FOOT, SkinProperty.OVERRIDE_MODEL_RIGHT_LEG)
-            .build();
+    private static final Map<ISkinPartType, ISkinProperty<Boolean>> PART_TO_MODEL = Collections.immutableMap(builder -> {
+        builder.put(SkinPartTypes.BIPPED_HEAD, SkinProperty.OVERRIDE_MODEL_HEAD);
+        builder.put(SkinPartTypes.BIPPED_CHEST, SkinProperty.OVERRIDE_MODEL_CHEST);
+        builder.put(SkinPartTypes.BIPPED_LEFT_ARM, SkinProperty.OVERRIDE_MODEL_LEFT_ARM);
+        builder.put(SkinPartTypes.BIPPED_RIGHT_ARM, SkinProperty.OVERRIDE_MODEL_RIGHT_ARM);
+        builder.put(SkinPartTypes.BIPPED_LEFT_THIGH, SkinProperty.OVERRIDE_MODEL_LEFT_LEG);
+        builder.put(SkinPartTypes.BIPPED_RIGHT_THIGH, SkinProperty.OVERRIDE_MODEL_RIGHT_LEG);
+        builder.put(SkinPartTypes.BIPPED_LEFT_FOOT, SkinProperty.OVERRIDE_MODEL_LEFT_LEG);
+        builder.put(SkinPartTypes.BIPPED_RIGHT_FOOT, SkinProperty.OVERRIDE_MODEL_RIGHT_LEG);
+    });
 
     protected int flags = 0;
     protected int version = 0;
 
     protected ISkinType skinType = SkinTypes.ARMOR_HEAD;
     protected SkinProperties skinProperties = new SkinProperties();
-    protected PlayerTextureDescriptor textureDescriptor = PlayerTextureDescriptor.EMPTY;
+    protected EntityTextureDescriptor textureDescriptor = EntityTextureDescriptor.EMPTY;
 
     protected SkinPaintData paintData;
 
@@ -89,12 +83,12 @@ public class ArmourerBlockEntity extends UpdatableBlockEntity implements IBlockE
 
     @Override
     public void readAdditionalData(IDataSerializer serializer) {
-        this.skinType = serializer.read(SKIN_TYPE_KEY);
-        this.skinProperties = serializer.read(SKIN_PROPERTIES_KEY);
-        this.textureDescriptor = serializer.read(PLAYER_TEXTURE_KEY);
-        this.flags = serializer.read(FLAGS_KEY);
-        this.version = serializer.read(VERSION_KEY);
-        this.paintData = serializer.read(PAINT_DATA_KEY);
+        this.skinType = serializer.read(CodingKeys.SKIN_TYPE);
+        this.skinProperties = serializer.read(CodingKeys.SKIN_PROPERTIES);
+        this.textureDescriptor = serializer.read(CodingKeys.PLAYER_TEXTURE);
+        this.flags = serializer.read(CodingKeys.FLAGS);
+        this.version = serializer.read(CodingKeys.VERSION);
+        this.paintData = serializer.read(CodingKeys.PAINT_DATA);
         // when no skin type is provided, default select head.
         if (this.skinType == SkinTypes.UNKNOWN) {
             this.skinType = SkinTypes.ARMOR_HEAD;
@@ -103,18 +97,18 @@ public class ArmourerBlockEntity extends UpdatableBlockEntity implements IBlockE
 
     @Override
     public void writeAdditionalData(IDataSerializer serializer) {
-        serializer.write(SKIN_TYPE_KEY, skinType);
-        serializer.write(SKIN_PROPERTIES_KEY, skinProperties);
-        serializer.write(PLAYER_TEXTURE_KEY, textureDescriptor);
-        serializer.write(FLAGS_KEY, flags);
-        serializer.write(VERSION_KEY, version);
-        serializer.write(PAINT_DATA_KEY, paintData);
+        serializer.write(CodingKeys.SKIN_TYPE, skinType);
+        serializer.write(CodingKeys.SKIN_PROPERTIES, skinProperties);
+        serializer.write(CodingKeys.PLAYER_TEXTURE, textureDescriptor);
+        serializer.write(CodingKeys.FLAGS, flags);
+        serializer.write(CodingKeys.VERSION, version);
+        serializer.write(CodingKeys.PAINT_DATA, paintData);
     }
 
     public void onPlace(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity entity) {
         remakeBoundingBoxes(null, getBoundingBoxes(), true);
         if (entity instanceof Player player) {
-            setTextureDescriptor(PlayerTextureDescriptor.fromPlayer(player));
+            setTextureDescriptor(EntityTextureDescriptor.fromProfile(player.getGameProfile()));
         }
     }
 
@@ -164,11 +158,11 @@ public class ArmourerBlockEntity extends UpdatableBlockEntity implements IBlockE
         BlockUtils.combine(this, this::sendBlockUpdates);
     }
 
-    public PlayerTextureDescriptor getTextureDescriptor() {
+    public EntityTextureDescriptor getTextureDescriptor() {
         return textureDescriptor;
     }
 
-    public void setTextureDescriptor(PlayerTextureDescriptor textureDescriptor) {
+    public void setTextureDescriptor(EntityTextureDescriptor textureDescriptor) {
         this.textureDescriptor = textureDescriptor;
         BlockUtils.combine(this, this::sendBlockUpdates);
     }
@@ -361,8 +355,8 @@ public class ArmourerBlockEntity extends UpdatableBlockEntity implements IBlockE
     }
 
     private void remakeSkinProperties() {
-        String name = skinProperties.get(SkinProperty.ALL_CUSTOM_NAME);
-        String flavour = skinProperties.get(SkinProperty.ALL_FLAVOUR_TEXT);
+        var name = skinProperties.get(SkinProperty.ALL_CUSTOM_NAME);
+        var flavour = skinProperties.get(SkinProperty.ALL_FLAVOUR_TEXT);
         this.skinProperties = new SkinProperties();
         this.skinProperties.put(SkinProperty.ALL_CUSTOM_NAME, name);
         this.skinProperties.put(SkinProperty.ALL_FLAVOUR_TEXT, flavour);
@@ -462,6 +456,16 @@ public class ArmourerBlockEntity extends UpdatableBlockEntity implements IBlockE
     public CubeTransform getTransform() {
         var pos = getBlockPos().offset(0, 1, 0);
         return new CubeTransform(getLevel(), pos, getFacing());
+    }
+
+    private static class CodingKeys {
+
+        public static final IDataSerializerKey<ISkinType> SKIN_TYPE = IDataSerializerKey.create("SkinType", SkinTypes.CODEC, SkinTypes.UNKNOWN);
+        public static final IDataSerializerKey<SkinProperties> SKIN_PROPERTIES = IDataSerializerKey.create("SkinProperties", SkinProperties.CODEC, SkinProperties.EMPTY, SkinProperties::new);
+        public static final IDataSerializerKey<EntityTextureDescriptor> PLAYER_TEXTURE = IDataSerializerKey.create("Texture", EntityTextureDescriptor.CODEC, EntityTextureDescriptor.EMPTY);
+        public static final IDataSerializerKey<SkinPaintData> PAINT_DATA = IDataSerializerKey.create("PaintData", SkinPaintData.CODEC, null);
+        public static final IDataSerializerKey<Integer> FLAGS = IDataSerializerKey.create("Flags", IDataCodec.INT, 0);
+        public static final IDataSerializerKey<Integer> VERSION = IDataSerializerKey.create("DataVersion", IDataCodec.INT, 0);
     }
 
     public interface IUpdateTaskBuilder {
