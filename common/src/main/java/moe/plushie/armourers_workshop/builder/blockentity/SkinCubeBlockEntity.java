@@ -21,7 +21,7 @@ import java.util.Map;
 
 public class SkinCubeBlockEntity extends UpdatableBlockEntity implements IPaintable, IBlockEntityExtendedRenderer {
 
-    protected BlockPaintColor colors = BlockPaintColor.WHITE;
+    protected BlockPaintColor colors = new BlockPaintColor();
     protected boolean customRenderer = false;
 
     public SkinCubeBlockEntity(BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState) {
@@ -91,6 +91,6 @@ public class SkinCubeBlockEntity extends UpdatableBlockEntity implements IPainta
 
     private static class CodingKeys {
 
-        public static final IDataSerializerKey<BlockPaintColor> COLORS = IDataSerializerKey.create("Color", BlockPaintColor.CODEC, BlockPaintColor.WHITE);
+        public static final IDataSerializerKey<BlockPaintColor> COLORS = IDataSerializerKey.create("Color", BlockPaintColor.CODEC, BlockPaintColor.WHITE, BlockPaintColor.WHITE::copy);
     }
 }

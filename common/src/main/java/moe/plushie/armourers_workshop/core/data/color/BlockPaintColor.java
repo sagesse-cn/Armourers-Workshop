@@ -15,12 +15,16 @@ import java.util.Objects;
 
 public class BlockPaintColor implements IDataSerializable.Immutable {
 
-    public static final BlockPaintColor WHITE = new BlockPaintColor(SkinPaintColor.WHITE);
+    public static final BlockPaintColor WHITE = new BlockPaintColor();
 
     public static final IDataCodec<BlockPaintColor> CODEC = IDataCodec.COMPOUND_TAG.serializer(BlockPaintColor::new);
 
     protected SkinPaintColor paintColor;
     protected EnumMap<Side, SkinPaintColor> paintColors;
+
+    public BlockPaintColor() {
+        this(SkinPaintColor.WHITE);
+    }
 
     public BlockPaintColor(SkinPaintColor paintColor) {
         this.paintColor = paintColor;
