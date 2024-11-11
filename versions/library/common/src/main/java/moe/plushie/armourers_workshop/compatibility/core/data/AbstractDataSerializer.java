@@ -55,7 +55,7 @@ public class AbstractDataSerializer implements IDataSerializer {
     @Override
     public <T> T read(IDataSerializerKey<T> key) {
         var name = key.getName();
-        if (tag.contains(name)) {
+        if (tag != null && tag.contains(name)) {
             var codec = key.getCodec().codec();
             var value = codec.decode(ops, tag.get(key.getName())).result();
             if (value.isPresent()) {
@@ -74,6 +74,9 @@ public class AbstractDataSerializer implements IDataSerializer {
 
     @Override
     public <T> void write(IDataSerializerKey<T> key, T value) {
+        if (tag == null) {
+            return;
+        }
         var defaultValue = key.getDefault();
         if (defaultValue == value || Objects.equals(defaultValue, value)) {
             return;
