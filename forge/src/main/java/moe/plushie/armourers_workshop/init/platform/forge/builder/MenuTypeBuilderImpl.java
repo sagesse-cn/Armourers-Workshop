@@ -14,7 +14,7 @@ import moe.plushie.armourers_workshop.init.environment.EnvironmentExecutor;
 import moe.plushie.armourers_workshop.init.environment.EnvironmentType;
 import moe.plushie.armourers_workshop.init.platform.EventManager;
 import moe.plushie.armourers_workshop.init.platform.event.client.RegisterScreensEvent;
-import moe.plushie.armourers_workshop.utils.TypedRegistry;
+import moe.plushie.armourers_workshop.core.utils.TypedRegistry;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 

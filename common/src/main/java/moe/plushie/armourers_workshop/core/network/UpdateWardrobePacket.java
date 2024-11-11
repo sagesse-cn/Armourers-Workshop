@@ -1,7 +1,6 @@
 package moe.plushie.armourers_workshop.core.network;
 
 import moe.plushie.armourers_workshop.api.common.IEntitySerializer;
-import moe.plushie.armourers_workshop.api.data.IGenericValue;
 import moe.plushie.armourers_workshop.api.network.IClientPacketHandler;
 import moe.plushie.armourers_workshop.api.network.IFriendlyByteBuf;
 import moe.plushie.armourers_workshop.api.network.IServerPacketHandler;
@@ -11,9 +10,11 @@ import moe.plushie.armourers_workshop.compatibility.core.data.AbstractEntityData
 import moe.plushie.armourers_workshop.core.capability.SkinWardrobe;
 import moe.plushie.armourers_workshop.core.data.GenericProperties;
 import moe.plushie.armourers_workshop.core.data.GenericProperty;
-import moe.plushie.armourers_workshop.core.menu.SkinSlotType;
+import moe.plushie.armourers_workshop.core.data.GenericValue;
 import moe.plushie.armourers_workshop.core.entity.MannequinEntity;
+import moe.plushie.armourers_workshop.core.menu.SkinSlotType;
 import moe.plushie.armourers_workshop.core.menu.SkinWardrobeMenu;
+import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
 import moe.plushie.armourers_workshop.core.utils.Objects;
 import moe.plushie.armourers_workshop.init.ModDataComponents;
 import moe.plushie.armourers_workshop.init.ModItems;
@@ -39,7 +40,7 @@ public class UpdateWardrobePacket extends CustomPacket {
     private final Type type;
     private final int entityId;
 
-    private final IGenericValue<SkinWardrobe, ?> fieldValue;
+    private final GenericValue<SkinWardrobe, ?> fieldValue;
 
     private final CompoundTag compoundTag;
 
@@ -50,12 +51,12 @@ public class UpdateWardrobePacket extends CustomPacket {
             this.fieldValue = null;
             this.compoundTag = buffer.readNbt();
         } else {
-            this.fieldValue = buffer.readProperty(Field.TYPE);
+            this.fieldValue = Field.TYPE.read(buffer);
             this.compoundTag = null;
         }
     }
 
-    public UpdateWardrobePacket(SkinWardrobe wardrobe, Type mode, CompoundTag compoundTag, IGenericValue<SkinWardrobe, ?> fieldValue) {
+    public UpdateWardrobePacket(SkinWardrobe wardrobe, Type mode, CompoundTag compoundTag, GenericValue<SkinWardrobe, ?> fieldValue) {
         this.type = mode;
         this.entityId = wardrobe.getId();
         this.fieldValue = fieldValue;
@@ -72,11 +73,11 @@ public class UpdateWardrobePacket extends CustomPacket {
     public static UpdateWardrobePacket dying(SkinWardrobe wardrobe, int slot, ISkinPaintColor color) {
         var compoundNBT = new CompoundTag();
         compoundNBT.putInt("Slot", slot);
-        compoundNBT.putOptionalPaintColor("Color", color, null);
+        compoundNBT.putInt("Color", color.getRawValue());
         return new UpdateWardrobePacket(wardrobe, Type.SYNC_ITEM, compoundNBT, null);
     }
 
-    public static UpdateWardrobePacket field(SkinWardrobe wardrobe, IGenericValue<SkinWardrobe, ?> fieldValue) {
+    public static UpdateWardrobePacket field(SkinWardrobe wardrobe, GenericValue<SkinWardrobe, ?> fieldValue) {
         return new UpdateWardrobePacket(wardrobe, Type.SYNC_OPTION, null, fieldValue);
     }
 
@@ -88,7 +89,7 @@ public class UpdateWardrobePacket extends CustomPacket {
             buffer.writeNbt(compoundTag);
         }
         if (fieldValue != null) {
-            buffer.writeProperty(fieldValue);
+            fieldValue.write(buffer);
         }
     }
 
@@ -137,12 +138,9 @@ public class UpdateWardrobePacket extends CustomPacket {
                 var inventory = wardrobe.getInventory();
                 int slot = compoundTag.getInt("Slot");
                 if (slot < inventory.getContainerSize()) {
-                    var color = compoundTag.getOptionalPaintColor("Color", null);
-                    var itemStack = ItemStack.EMPTY;
-                    if (color != null) {
-                        itemStack = new ItemStack(ModItems.BOTTLE.get());
-                        itemStack.set(ModDataComponents.TOOL_COLOR.get(), color);
-                    }
+                    var color = SkinPaintColor.of(compoundTag.getInt("Color"));
+                    var itemStack = new ItemStack(ModItems.BOTTLE.get());
+                    itemStack.set(ModDataComponents.TOOL_COLOR.get(), color);
                     inventory.setItem(slot, itemStack);
                     yield wardrobe;
                 }
@@ -178,6 +176,7 @@ public class UpdateWardrobePacket extends CustomPacket {
         SYNC, SYNC_ITEM, SYNC_OPTION
     }
 
+    @SuppressWarnings("unused")
     public static final class Field<T> extends GenericProperty<SkinWardrobe, T> {
 
         private static final auto TYPE = GenericProperties.of(SkinWardrobe.class, UpdateWardrobePacket::field);

@@ -16,7 +16,7 @@ import moe.plushie.armourers_workshop.init.ModKeyBindings;
 import moe.plushie.armourers_workshop.init.ModTextures;
 import moe.plushie.armourers_workshop.init.platform.event.client.ItemTooltipEvent;
 import moe.plushie.armourers_workshop.utils.TranslateUtils;
-import moe.plushie.armourers_workshop.utils.TypedRegistry;
+import moe.plushie.armourers_workshop.core.utils.TypedRegistry;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.screens.Screen;

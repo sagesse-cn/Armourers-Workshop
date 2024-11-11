@@ -12,11 +12,11 @@ public class SelfTester {
 
     private static void testConvert() {
 
-        UIWindow w = new UIWindow(new CGRect(5, 5, 1000, 1000));
-        UIView p = new UIView(new CGRect(100, 100, 1000, 1000));
+        var w = new UIWindow(new CGRect(5, 5, 1000, 1000));
+        var p = new UIView(new CGRect(100, 100, 1000, 1000));
 
-        UIView c1 = new UIView(new CGRect(0, 40, 40, 40));
-        UIView c2 = new UIView(new CGRect(40, 0, 40, 40));
+        var c1 = new UIView(new CGRect(0, 40, 40, 40));
+        var c2 = new UIView(new CGRect(40, 0, 40, 40));
 
         p.addSubview(c1);
         p.addSubview(c2);
@@ -35,8 +35,8 @@ public class SelfTester {
         assertEqual(c1.convertPointToView(CGPoint.ZERO, null), 100, 140);
         assertEqual(c2.convertPointToView(CGPoint.ZERO, null), 140, 100);
 
-        UIView c21 = new UIView(new CGRect(0, 40, 40, 40));
-        UIView c22 = new UIView(new CGRect(40, 0, 40, 40));
+        var c21 = new UIView(new CGRect(0, 40, 40, 40));
+        var c22 = new UIView(new CGRect(40, 0, 40, 40));
 
         c2.addSubview(c21);
         c2.addSubview(c22);

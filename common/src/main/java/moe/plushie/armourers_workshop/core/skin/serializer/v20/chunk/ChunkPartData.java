@@ -1,9 +1,9 @@
 package moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk;
 
-import moe.plushie.armourers_workshop.api.core.utils.IPair;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPart;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPartTypes;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IOConsumer2;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -23,7 +23,7 @@ public class ChunkPartData {
 
     public List<SkinPart> readFromStream(ChunkInputStream stream, IOConsumer2<ChunkReader, SkinPart.Builder> consumer) throws IOException {
         var chunkTransform = new ChunkTransform();
-        var pairs = new ArrayList<IPair<Integer, SkinPart.Builder>>();
+        var pairs = new ArrayList<Pair<Integer, SkinPart.Builder>>();
         var relationship = new LinkedHashMap<Integer, Integer>();
         int count = stream.readVarInt();
         for (var i = 0; i < count; ++i) {
@@ -37,7 +37,7 @@ public class ChunkPartData {
             builder.name(name);
             builder.geometries(geometries);
             builder.transform(chunkTransform.build());
-            pairs.add(IPair.of(id, builder));
+            pairs.add(Pair.of(id, builder));
             relationship.put(id, parentId);
         }
         return stream.readChunk(ChunkPartReader::new, it -> {
@@ -64,10 +64,10 @@ public class ChunkPartData {
 
     public void writeToStream(ChunkOutputStream stream, List<SkinPart> parts, IOConsumer2<ChunkWriter, SkinPart> consumer) throws IOException {
         var relationship = new HashMap<Integer, Integer>();
-        var pairs = new ArrayList<IPair<Integer, SkinPart>>();
+        var pairs = new ArrayList<Pair<Integer, SkinPart>>();
         eachPart(parts, 0, (parent, part) -> {
             var id = pairs.size() + 1;
-            pairs.add(IPair.of(id, part));
+            pairs.add(Pair.of(id, part));
             relationship.put(id, parent);
             return id;
         });

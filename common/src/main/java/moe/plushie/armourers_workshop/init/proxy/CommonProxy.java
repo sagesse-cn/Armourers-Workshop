@@ -99,7 +99,7 @@ public class CommonProxy {
             ReplayManager.startRecording(event.getPlayer().getServer(), event.getPlayer());
             // When the player login, initialize context and wardrobe.
             if (event.getPlayer() instanceof ServerPlayer player) {
-                NetworkManager.sendTo(new UpdateContextPacket(player), player);
+                NetworkManager.sendTo(UpdateContextPacket.all(player), player);
                 NetworkManager.sendWardrobeTo(player, player);
             }
         });

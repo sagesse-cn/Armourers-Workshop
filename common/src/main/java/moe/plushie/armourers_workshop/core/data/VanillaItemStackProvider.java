@@ -2,7 +2,7 @@ package moe.plushie.armourers_workshop.core.data;
 
 import moe.plushie.armourers_workshop.api.common.IItemStackProvider;
 import moe.plushie.armourers_workshop.core.utils.Collections;
-import moe.plushie.armourers_workshop.utils.LazyValue;
+import moe.plushie.armourers_workshop.core.utils.LazyValue;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;

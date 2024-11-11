@@ -2,7 +2,7 @@ package moe.plushie.armourers_workshop.init;
 
 import moe.plushie.armourers_workshop.core.permission.BlockPermission;
 import moe.plushie.armourers_workshop.core.permission.ContainerPermission;
-import moe.plushie.armourers_workshop.utils.TypedRegistry;
+import moe.plushie.armourers_workshop.core.utils.TypedRegistry;
 import net.minecraft.world.inventory.MenuType;
 
 @SuppressWarnings("unused")

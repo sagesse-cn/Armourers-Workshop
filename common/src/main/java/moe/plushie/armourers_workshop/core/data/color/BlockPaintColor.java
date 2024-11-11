@@ -115,6 +115,14 @@ public class BlockPaintColor implements IDataSerializable.Immutable {
         return Objects.hash(paintColor, paintColors);
     }
 
+    public BlockPaintColor copy() {
+        var newValue = new BlockPaintColor(paintColor);
+        if (paintColors != null) {
+            newValue.paintColors = new EnumMap<>(paintColors);
+        }
+        return newValue;
+    }
+
     public boolean isEmpty() {
         if (paintColors != null) {
             return paintColors.isEmpty();

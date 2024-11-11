@@ -1,12 +1,12 @@
 package moe.plushie.armourers_workshop.builder.network;
 
 import moe.plushie.armourers_workshop.api.common.IEntitySerializer;
-import moe.plushie.armourers_workshop.api.data.IGenericValue;
 import moe.plushie.armourers_workshop.api.network.IFriendlyByteBuf;
 import moe.plushie.armourers_workshop.api.network.IServerPacketHandler;
 import moe.plushie.armourers_workshop.builder.blockentity.ColorMixerBlockEntity;
 import moe.plushie.armourers_workshop.core.data.GenericProperties;
 import moe.plushie.armourers_workshop.core.data.GenericProperty;
+import moe.plushie.armourers_workshop.core.data.GenericValue;
 import moe.plushie.armourers_workshop.core.network.CustomPacket;
 import moe.plushie.armourers_workshop.utils.DataSerializers;
 import net.minecraft.core.BlockPos;
@@ -20,14 +20,14 @@ import manifold.ext.rt.api.auto;
 public class UpdateColorMixerPacket extends CustomPacket {
 
     private final BlockPos pos;
-    private final IGenericValue<ColorMixerBlockEntity, ?> fieldValue;
+    private final GenericValue<ColorMixerBlockEntity, ?> fieldValue;
 
     public UpdateColorMixerPacket(IFriendlyByteBuf buffer) {
         this.pos = buffer.readBlockPos();
-        this.fieldValue = buffer.readProperty(Field.TYPE);
+        this.fieldValue = Field.TYPE.read(buffer);
     }
 
-    public UpdateColorMixerPacket(ColorMixerBlockEntity entity, IGenericValue<ColorMixerBlockEntity, ?> fieldValue) {
+    public UpdateColorMixerPacket(ColorMixerBlockEntity entity, GenericValue<ColorMixerBlockEntity, ?> fieldValue) {
         this.pos = entity.getBlockPos();
         this.fieldValue = fieldValue;
     }
@@ -35,7 +35,7 @@ public class UpdateColorMixerPacket extends CustomPacket {
     @Override
     public void encode(IFriendlyByteBuf buffer) {
         buffer.writeBlockPos(pos);
-        buffer.writeProperty(fieldValue);
+        fieldValue.write(buffer);
     }
 
     @Override

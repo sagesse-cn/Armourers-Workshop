@@ -56,7 +56,6 @@ public class UpdateConfigurableToolPacket extends CustomPacket {
     }
 
     private void abort(Player player, String op, String reason) {
-        String playerName = player.getScoreboardName();
-        ModLog.info("abort {} request of the '{}', reason: '{}', from: '{}', to: '{}'", op, playerName, reason, player.getItemInHand(hand), itemStack);
+        ModLog.info("abort {} request of the '{}', reason: '{}', from: '{}', to: '{}'", op, player.getScoreboardName(), reason, player.getItemInHand(hand), itemStack);
     }
 }

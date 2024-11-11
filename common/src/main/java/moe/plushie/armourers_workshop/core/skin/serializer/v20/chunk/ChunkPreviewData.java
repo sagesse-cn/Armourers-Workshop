@@ -1,9 +1,9 @@
 package moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk;
 
 import moe.plushie.armourers_workshop.api.core.math.ITransform;
-import moe.plushie.armourers_workshop.api.core.utils.IPair;
 import moe.plushie.armourers_workshop.core.skin.SkinPreviewData;
 import moe.plushie.armourers_workshop.core.skin.geometry.SkinGeometrySet;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -19,7 +19,7 @@ public class ChunkPreviewData {
 
     public SkinPreviewData readFromStream(ChunkInputStream stream) throws IOException {
         var chunkTransform = new ChunkTransform();
-        var sections = new ArrayList<IPair<ITransform, SkinGeometrySet<?>>>();
+        var sections = new ArrayList<Pair<ITransform, SkinGeometrySet<?>>>();
         while (true) {
             int count = stream.readVarInt();
             if (count == 0) {
@@ -29,7 +29,7 @@ public class ChunkPreviewData {
             chunkTransform.readFromStream(stream);
             for (int i = 0; i < count; ++i) {
                 var geometries = geometryData.readReferenceFromStream(stream);
-                sections.add(IPair.of(chunkTransform.build(), geometries));
+                sections.add(Pair.of(chunkTransform.build(), geometries));
             }
         }
         return new SkinPreviewData(sections);

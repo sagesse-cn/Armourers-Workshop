@@ -10,11 +10,11 @@ import moe.plushie.armourers_workshop.api.registry.IRegistryBinder;
 import moe.plushie.armourers_workshop.compatibility.client.AbstractMenuWindowProvider;
 import moe.plushie.armourers_workshop.compatibility.fabric.AbstractFabricMenuType;
 import moe.plushie.armourers_workshop.compatibility.fabric.AbstractFabricRegistries;
+import moe.plushie.armourers_workshop.core.utils.TypedRegistry;
 import moe.plushie.armourers_workshop.init.environment.EnvironmentExecutor;
 import moe.plushie.armourers_workshop.init.environment.EnvironmentType;
 import moe.plushie.armourers_workshop.init.platform.EventManager;
 import moe.plushie.armourers_workshop.init.platform.event.client.RegisterScreensEvent;
-import moe.plushie.armourers_workshop.utils.TypedRegistry;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 
@@ -44,8 +44,8 @@ public class MenuTypeBuilderImpl<T extends AbstractContainerMenu, D> implements 
 
     @Override
     public IRegistryHolder<IMenuType<T>> build(String name) {
-        AbstractFabricMenuType<T> menuType = AbstractFabricMenuType.create(factory, serializer);
-        IRegistryHolder<MenuType<T>> object = AbstractFabricRegistries.MENU_TYPES.register(name, menuType::getType);
+        var menuType = AbstractFabricMenuType.create(factory, serializer);
+        var object = AbstractFabricRegistries.MENU_TYPES.register(name, menuType::getType);
         menuType.setRegistryName(object.getRegistryName());
         EnvironmentExecutor.willInit(EnvironmentType.CLIENT, IRegistryBinder.perform(binder, object));
         return TypedRegistry.Entry.of(object.getRegistryName(), () -> menuType);

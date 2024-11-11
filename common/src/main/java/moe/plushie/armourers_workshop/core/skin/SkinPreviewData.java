@@ -1,11 +1,11 @@
 package moe.plushie.armourers_workshop.core.skin;
 
 import moe.plushie.armourers_workshop.api.core.math.ITransform;
-import moe.plushie.armourers_workshop.api.core.utils.IPair;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPartTransform;
 import moe.plushie.armourers_workshop.core.math.OpenTransform3f;
 import moe.plushie.armourers_workshop.core.skin.geometry.SkinGeometrySet;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPart;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -14,9 +14,9 @@ import java.util.function.Consumer;
 
 public class SkinPreviewData {
 
-    private final Collection<IPair<ITransform, SkinGeometrySet<?>>> allGeometries;
+    private final Collection<Pair<ITransform, SkinGeometrySet<?>>> allGeometries;
 
-    public SkinPreviewData(Collection<IPair<ITransform, SkinGeometrySet<?>>> allGeometries) {
+    public SkinPreviewData(Collection<Pair<ITransform, SkinGeometrySet<?>>> allGeometries) {
         this.allGeometries = allGeometries;
     }
 
@@ -25,14 +25,14 @@ public class SkinPreviewData {
         if (skin.getPreviewData() != null) {
             return skin.getPreviewData();
         }
-        var allCubes = new ArrayList<IPair<ITransform, SkinGeometrySet<?>>>();
+        var allCubes = new ArrayList<Pair<ITransform, SkinGeometrySet<?>>>();
         eachPart(skin.getParts(), part -> {
             // apply the origin offset.
             var pos = part.getType().getRenderOffset();
             var offset = OpenTransform3f.createTranslateTransform(pos.getX(), pos.getY(), pos.getZ());
             // apply the marker rotation and offset.
             var transform = new SkinPartTransform(part, offset);
-            allCubes.add(IPair.of(transform, part.getGeometries()));
+            allCubes.add(Pair.of(transform, part.getGeometries()));
         });
         return new SkinPreviewData(allCubes);
     }

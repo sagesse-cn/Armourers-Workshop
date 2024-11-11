@@ -50,6 +50,6 @@ public class SkinningTableBlockEntity extends UpdatableContainerBlockEntity {
 
     private static class CodingKeys {
 
-        public static final IDataSerializerKey<SkinDescriptor.Options> OPTIONS = IDataSerializerKey.create("Options", SkinDescriptor.Options.CODEC, SkinDescriptor.Options.DEFAULT, SkinDescriptor.Options::new);
+        public static final IDataSerializerKey<SkinDescriptor.Options> OPTIONS = IDataSerializerKey.create("Options", SkinDescriptor.Options.CODEC, SkinDescriptor.Options.DEFAULT, SkinDescriptor.Options.DEFAULT::copy);
     }
 }

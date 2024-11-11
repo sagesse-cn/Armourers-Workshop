@@ -66,7 +66,7 @@ public class CapabilityStorage {
         capabilities.values().forEach(pair -> {
             if (pair.getValue().orElse(null) instanceof IDataSerializable.Mutable provider) {
                 var tag1 = new CompoundTag();
-                provider.serialize(SkinWardrobeStorage.writer(entity, tag1));
+                provider.serialize(SkinWardrobeStorage.encoder(entity, tag1));
                 caps.put(pair.getKey().registryName.toString(), tag1);
             }
         });
@@ -89,7 +89,7 @@ public class CapabilityStorage {
             if (pair.getValue().orElse(null) instanceof IDataSerializable.Mutable provider) {
                 var containerTag = caps.get(pair.getKey().registryName.toString());
                 if (containerTag instanceof CompoundTag compoundTag) {
-                    provider.deserialize(SkinWardrobeStorage.reader(entity, compoundTag));
+                    provider.deserialize(SkinWardrobeStorage.decoder(entity, compoundTag));
                 }
             }
         });

@@ -29,7 +29,7 @@ public class TagSerializer implements IDataSerializer {
     }
 
     public static void writeToStream(CompoundTag compoundTag, OutputStream outputStream) throws IOException {
-        try (DataOutputStream dataOutputStream = new DataOutputStream(outputStream)) {
+        try (var dataOutputStream = new DataOutputStream(outputStream)) {
             NbtIo.write(compoundTag, dataOutputStream);
         }
     }

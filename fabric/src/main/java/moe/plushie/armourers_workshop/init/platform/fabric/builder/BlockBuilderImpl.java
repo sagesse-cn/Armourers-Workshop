@@ -162,7 +162,7 @@ public class BlockBuilderImpl<T extends Block> implements IBlockBuilder<T> {
 
     @Override
     public IRegistryHolder<T> build(String name) {
-        IRegistryHolder<T> object = AbstractFabricRegistries.BLOCKS.register(name, () -> supplier.apply(properties));
+        var object = AbstractFabricRegistries.BLOCKS.register(name, () -> supplier.apply(properties));
         EnvironmentExecutor.willInit(EnvironmentType.CLIENT, IRegistryBinder.perform(binder, object));
         return object;
     }

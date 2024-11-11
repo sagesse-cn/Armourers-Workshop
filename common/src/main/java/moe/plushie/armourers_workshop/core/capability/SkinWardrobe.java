@@ -133,10 +133,6 @@ public class SkinWardrobe implements IDataSerializable.Mutable {
         inventory.clearContent();
     }
 
-//    public void sendToAll() {
-//        NetworkManager.sendToAll(UpdateWardrobePacket.sync(this));
-//    }
-
     public void sendToServer() {
         NetworkManager.sendToServer(UpdateWardrobePacket.sync(this));
     }
@@ -200,14 +196,6 @@ public class SkinWardrobe implements IDataSerializable.Mutable {
         }
         return slotType.getMaxSize();
     }
-
-
-//    public int getFlags(int bits) {
-//        return 0;
-//    }
-//
-//    public void setFlags(int bits, int value) {
-//    }
 
     public Container getInventory() {
         return inventory;

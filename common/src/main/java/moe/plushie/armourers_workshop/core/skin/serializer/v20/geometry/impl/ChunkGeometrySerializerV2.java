@@ -1,6 +1,5 @@
 package moe.plushie.armourers_workshop.core.skin.serializer.v20.geometry.impl;
 
-import moe.plushie.armourers_workshop.api.core.utils.IPair;
 import moe.plushie.armourers_workshop.api.skin.geometry.ISkinGeometryType;
 import moe.plushie.armourers_workshop.api.skin.paint.texture.ITextureProvider;
 import moe.plushie.armourers_workshop.core.math.OpenTransform3f;
@@ -19,6 +18,7 @@ import moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk.ChunkOutput
 import moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk.ChunkPaletteData;
 import moe.plushie.armourers_workshop.core.skin.serializer.v20.geometry.ChunkGeometrySerializer;
 import moe.plushie.armourers_workshop.core.utils.OpenDirection;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.IOException;
 import java.util.EnumMap;
@@ -243,16 +243,16 @@ public class ChunkGeometrySerializerV2 extends ChunkGeometrySerializer {
 
     protected static class SortedMap<T> {
 
-        private final LinkedHashMap<IPair<T, ITextureProvider>, Integer> impl = new LinkedHashMap<>();
+        private final LinkedHashMap<Pair<T, ITextureProvider>, Integer> impl = new LinkedHashMap<>();
 
-        public void forEach(IOConsumer2<IPair<T, ITextureProvider>, Integer> consumer) throws IOException {
+        public void forEach(IOConsumer2<Pair<T, ITextureProvider>, Integer> consumer) throws IOException {
             for (var entry : impl.entrySet()) {
                 consumer.accept(entry.getKey(), entry.getValue());
             }
         }
 
         public void put(int face, T pos, ITextureProvider provider) {
-            var index = IPair.of(pos, provider);
+            var index = Pair.of(pos, provider);
             int newFace = impl.getOrDefault(index, 0);
             newFace |= face;
             impl.put(index, newFace);

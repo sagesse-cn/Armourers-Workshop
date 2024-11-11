@@ -1,10 +1,9 @@
-package moe.plushie.armourers_workshop.utils;
+package moe.plushie.armourers_workshop.core.utils;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import moe.plushie.armourers_workshop.api.network.IFriendlyByteBuf;
 import moe.plushie.armourers_workshop.core.network.CustomPacket;
-import moe.plushie.armourers_workshop.core.utils.Executors;
 import moe.plushie.armourers_workshop.init.ModLog;
 
 import java.util.ArrayList;

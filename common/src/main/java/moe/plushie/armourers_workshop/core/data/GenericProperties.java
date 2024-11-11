@@ -1,9 +1,6 @@
 package moe.plushie.armourers_workshop.core.data;
 
 import moe.plushie.armourers_workshop.api.common.IEntitySerializer;
-import moe.plushie.armourers_workshop.api.data.IGenericProperties;
-import moe.plushie.armourers_workshop.api.data.IGenericProperty;
-import moe.plushie.armourers_workshop.api.data.IGenericValue;
 import moe.plushie.armourers_workshop.api.network.IFriendlyByteBuf;
 import moe.plushie.armourers_workshop.core.network.CustomPacket;
 
@@ -13,16 +10,16 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class GenericProperties<S> implements IGenericProperties<S> {
+public class GenericProperties<S> {
 
     private final ArrayList<GenericProperty<S, ?>> properties = new ArrayList<>();
-    private final BiFunction<S, IGenericValue<S, ?>, CustomPacket> factory;
+    private final BiFunction<S, GenericValue<S, ?>, CustomPacket> factory;
 
-    protected GenericProperties(BiFunction<S, IGenericValue<S, ?>, CustomPacket> factory) {
+    protected GenericProperties(BiFunction<S, GenericValue<S, ?>, CustomPacket> factory) {
         this.factory = factory;
     }
 
-    public static <S> GenericProperties<S> of(Class<S> clazz, BiFunction<S, IGenericValue<S, ?>, CustomPacket> factory) {
+    public static <S> GenericProperties<S> of(Class<S> clazz, BiFunction<S, GenericValue<S, ?>, CustomPacket> factory) {
         return new GenericProperties<>(factory);
     }
 
@@ -30,8 +27,7 @@ public class GenericProperties<S> implements IGenericProperties<S> {
         return new Builder<>(this, serializer);
     }
 
-    @Override
-    public IGenericValue<S, ?> read(IFriendlyByteBuf buf) {
+    public GenericValue<S, ?> read(IFriendlyByteBuf buf) {
         var ordinal = buf.readVarInt();
         var property = properties.get(ordinal);
         return decodePacket(property, buf);
@@ -41,7 +37,7 @@ public class GenericProperties<S> implements IGenericProperties<S> {
         return factory.apply(source, new Holder<>(property, value));
     }
 
-    protected <T> IGenericValue<S, T> decodePacket(GenericProperty<S, T> property, IFriendlyByteBuf buf) {
+    protected <T> GenericValue<S, T> decodePacket(GenericProperty<S, T> property, IFriendlyByteBuf buf) {
         var value = property.serializer.read(buf);
         return new Holder<>(property, value);
     }
@@ -83,7 +79,7 @@ public class GenericProperties<S> implements IGenericProperties<S> {
 
     }
 
-    protected static class Holder<S, T> implements IGenericValue<S, T> {
+    protected static class Holder<S, T> extends GenericValue<S, T> {
 
         private final GenericProperty<S, T> property;
         private final T value;
@@ -105,7 +101,7 @@ public class GenericProperties<S> implements IGenericProperties<S> {
         }
 
         @Override
-        public IGenericProperty<S, T> getProperty() {
+        public GenericProperty<S, T> getProperty() {
             return property;
         }
 

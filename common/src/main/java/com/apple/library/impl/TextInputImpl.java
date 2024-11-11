@@ -23,7 +23,7 @@ public class TextInputImpl {
     public boolean mouseDown(CGPoint point) {
         float tx = Math.max(point.x - storage.offset.x, 0);
         float ty = Math.max(point.y - storage.offset.y, 0);
-        NSTextPosition pos = storage.positionAtPoint(new CGPoint(tx, ty));
+        var pos = storage.positionAtPoint(new CGPoint(tx, ty));
         if (pos != null) {
             storage.moveCursorTo(pos, InputManagerImpl.hasShiftDown());
         }
@@ -35,7 +35,7 @@ public class TextInputImpl {
         boolean hasShiftDown = InputManagerImpl.hasShiftDown();
         boolean hasControlDown = InputManagerImpl.hasControlDown();
         // each input causes the user cursor to reset, even if it doesn't.
-        CGRect userCursorRect = lastUserCursorRect;
+        var userCursorRect = lastUserCursorRect;
         lastUserCursorRect = null;
         // select all text
         if (InputManagerImpl.isSelectAll(key)) {

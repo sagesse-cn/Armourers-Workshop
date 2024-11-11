@@ -10,13 +10,13 @@ import net.minecraft.world.entity.LivingEntity;
 public class RenderLivingEntityEvents {
 
     public static final Event<Render> PRE = EventFactory.createArrayBacked(Render.class, callbacks -> (entity, partialTicks, light, poseStack, buffers, renderer) -> {
-        for (Render callback : callbacks) {
+        for (var callback : callbacks) {
             callback.render(entity, partialTicks, light, poseStack, buffers, renderer);
         }
     });
 
     public static final Event<Render> POST = EventFactory.createArrayBacked(Render.class, callbacks -> (entity, partialTicks, light, poseStack, buffers, renderer) -> {
-        for (Render callback : callbacks) {
+        for (var callback : callbacks) {
             callback.render(entity, partialTicks, light, poseStack, buffers, renderer);
         }
     });

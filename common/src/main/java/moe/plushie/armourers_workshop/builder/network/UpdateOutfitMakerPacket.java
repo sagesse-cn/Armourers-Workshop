@@ -1,13 +1,13 @@
 package moe.plushie.armourers_workshop.builder.network;
 
 import moe.plushie.armourers_workshop.api.common.IEntitySerializer;
-import moe.plushie.armourers_workshop.api.data.IGenericValue;
 import moe.plushie.armourers_workshop.api.network.IFriendlyByteBuf;
 import moe.plushie.armourers_workshop.api.network.IServerPacketHandler;
 import moe.plushie.armourers_workshop.builder.blockentity.OutfitMakerBlockEntity;
 import moe.plushie.armourers_workshop.builder.menu.OutfitMakerMenu;
 import moe.plushie.armourers_workshop.core.data.GenericProperties;
 import moe.plushie.armourers_workshop.core.data.GenericProperty;
+import moe.plushie.armourers_workshop.core.data.GenericValue;
 import moe.plushie.armourers_workshop.core.network.CustomPacket;
 import moe.plushie.armourers_workshop.init.ModPermissions;
 import moe.plushie.armourers_workshop.utils.BlockUtils;
@@ -24,14 +24,14 @@ import manifold.ext.rt.api.auto;
 public class UpdateOutfitMakerPacket extends CustomPacket {
 
     private final BlockPos pos;
-    private final IGenericValue<OutfitMakerBlockEntity, ?> fieldValue;
+    private final GenericValue<OutfitMakerBlockEntity, ?> fieldValue;
 
     public UpdateOutfitMakerPacket(IFriendlyByteBuf buffer) {
         this.pos = buffer.readBlockPos();
-        this.fieldValue = buffer.readProperty(Field.TYPE);
+        this.fieldValue = Field.TYPE.read(buffer);
     }
 
-    public UpdateOutfitMakerPacket(OutfitMakerBlockEntity entity, IGenericValue<OutfitMakerBlockEntity, ?> fieldValue) {
+    public UpdateOutfitMakerPacket(OutfitMakerBlockEntity entity, GenericValue<OutfitMakerBlockEntity, ?> fieldValue) {
         this.pos = entity.getBlockPos();
         this.fieldValue = fieldValue;
     }
@@ -39,7 +39,7 @@ public class UpdateOutfitMakerPacket extends CustomPacket {
     @Override
     public void encode(IFriendlyByteBuf buffer) {
         buffer.writeBlockPos(pos);
-        buffer.writeProperty(fieldValue);
+        fieldValue.write(buffer);
     }
 
     @Override

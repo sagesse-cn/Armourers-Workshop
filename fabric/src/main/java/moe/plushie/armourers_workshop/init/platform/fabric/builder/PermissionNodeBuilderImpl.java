@@ -26,7 +26,7 @@ public class PermissionNodeBuilderImpl<T extends IPermissionNode> implements IPe
     }
 
     private IPermissionNode makeNode(OpenResourceLocation registryName) {
-        String key = registryName.toLanguageKey();
+        var key = registryName.toLanguageKey();
         return new IPermissionNode() {
 
             @Override

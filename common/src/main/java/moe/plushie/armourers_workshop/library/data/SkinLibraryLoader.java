@@ -82,7 +82,7 @@ public class SkinLibraryLoader implements Runnable {
         }
         try (var inputStream = new FileInputStream(file)) {
             var header = SkinSerializer.readHeaderFromStream(inputStream);
-            if (header instanceof SkinFileHeader) {
+            if (header != null) {
                 header.setLastModified((int) modifiedTime);
             }
             CACHED_FILE_HEADERS.put(key, new CachedFileHeader(modifiedTime, header));
@@ -96,7 +96,7 @@ public class SkinLibraryLoader implements Runnable {
     public void run() {
         long startTime = System.currentTimeMillis();
         ModLog.debug("loading skin library");
-        ArrayList<SkinLibraryFile> files = getSkinFiles(basePath, true);
+        var files = getSkinFiles(basePath, true);
         library.reloadFiles(files);
         library.endLoading();
         ModLog.debug(String.format("finished loading %d client library skins in %d ms", files.size(), System.currentTimeMillis() - startTime));

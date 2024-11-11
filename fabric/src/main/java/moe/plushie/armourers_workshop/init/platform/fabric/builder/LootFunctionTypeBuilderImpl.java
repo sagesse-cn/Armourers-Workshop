@@ -7,8 +7,8 @@ import moe.plushie.armourers_workshop.api.core.IRegistryHolder;
 import moe.plushie.armourers_workshop.api.registry.ILootFunctionTypeBuilder;
 import moe.plushie.armourers_workshop.compatibility.core.AbstractLootItemFunctionType;
 import moe.plushie.armourers_workshop.compatibility.fabric.AbstractFabricRegistries;
+import moe.plushie.armourers_workshop.core.utils.TypedRegistry;
 import moe.plushie.armourers_workshop.init.ModConstants;
-import moe.plushie.armourers_workshop.utils.TypedRegistry;
 
 public class LootFunctionTypeBuilderImpl<T extends ILootFunction> implements ILootFunctionTypeBuilder<T> {
 
@@ -20,7 +20,7 @@ public class LootFunctionTypeBuilderImpl<T extends ILootFunction> implements ILo
 
     @Override
     public IRegistryHolder<ILootFunctionType<T>> build(String name) {
-        AbstractLootItemFunctionType<T> proxy = AbstractLootItemFunctionType.conditional(codec);
+        var proxy = AbstractLootItemFunctionType.conditional(codec);
         AbstractFabricRegistries.ITEM_LOOT_FUNCTIONS.register(name, proxy::getType);
         return TypedRegistry.Entry.of(ModConstants.key(name), () -> proxy);
     }

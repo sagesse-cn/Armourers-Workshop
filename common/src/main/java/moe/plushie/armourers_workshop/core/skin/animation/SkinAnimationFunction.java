@@ -72,6 +72,11 @@ public abstract class SkinAnimationFunction {
         public void writeToStream(IOutputStream stream) throws IOException {
             stream.writeVarInt(1);
         }
+
+        @Override
+        public String toString() {
+            return "step";
+        }
     }
 
     /**
@@ -89,6 +94,11 @@ public abstract class SkinAnimationFunction {
         @Override
         public void writeToStream(IOutputStream stream) throws IOException {
             stream.writeVarInt(0);
+        }
+
+        @Override
+        public String toString() {
+            return "linear";
         }
     }
 
@@ -121,6 +131,11 @@ public abstract class SkinAnimationFunction {
         public void writeToStream(IOutputStream stream) throws IOException {
             stream.writeVarInt(2);
         }
+
+        @Override
+        public String toString() {
+            return "smooth";
+        }
     }
 
     public static class Bezier extends SkinAnimationFunction {
@@ -143,6 +158,11 @@ public abstract class SkinAnimationFunction {
         public void writeToStream(IOutputStream stream) throws IOException {
             stream.writeVarInt(3);
             stream.writeFloatArray(parameters);
+        }
+
+        @Override
+        public String toString() {
+            return String.format("bezier(%s)", (Object) parameters);
         }
     }
 }

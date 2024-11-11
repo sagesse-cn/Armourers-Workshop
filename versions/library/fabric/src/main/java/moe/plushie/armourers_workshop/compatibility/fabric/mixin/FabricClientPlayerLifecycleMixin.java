@@ -24,8 +24,8 @@ public class FabricClientPlayerLifecycleMixin {
 
     @Inject(method = "handleRespawn", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/multiplayer/ClientLevel;addEntity(Lnet/minecraft/world/entity/Entity;)V"))
     public void aw2$respawnPost(ClientboundRespawnPacket packet, CallbackInfo ci) {
-        Player oldPlayer = aw2$respawnOldPlayer;
-        Player newPlayer = Minecraft.getInstance().player;
+        var oldPlayer = aw2$respawnOldPlayer;
+        var newPlayer = Minecraft.getInstance().player;
         ClientPlayerLifecycleEvents.CLONE.invoker().accept(oldPlayer, newPlayer);
         aw2$respawnOldPlayer = null;
     }

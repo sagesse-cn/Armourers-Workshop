@@ -20,11 +20,11 @@ import java.util.Objects;
 
 public class SkinWardrobeStorage {
 
-    public static IDataSerializer reader(Entity entity, CompoundTag inputTag) {
+    public static IDataSerializer decoder(Entity entity, CompoundTag inputTag) {
         return AbstractDataSerializer.wrap(inputTag, entity);
     }
 
-    public static IDataSerializer writer(Entity entity, CompoundTag outputTag) {
+    public static IDataSerializer encoder(Entity entity, CompoundTag outputTag) {
         return AbstractDataSerializer.wrap(outputTag, entity);
     }
 

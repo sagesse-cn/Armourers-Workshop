@@ -19,8 +19,8 @@ import manifold.ext.rt.api.ThisClass;
 public class BuilderProvider {
 
     public static Supplier<CreativeModeTab> createCreativeModeTabFA(@ThisClass Class<?> clazz, String name, Supplier<Supplier<ItemStack>> icon, Consumer<List<ItemStack>> itemProvider) {
-        IResourceLocation registryName = ModConstants.key(name);
-        CreativeModeTab tab = FabricItemGroupBuilder.create(registryName.toLocation())
+        var registryName = ModConstants.key(name);
+        var tab = FabricItemGroupBuilder.create(registryName.toLocation())
                 .icon(() -> icon.get().get())
                 .appendItems(itemProvider)
                 .build();

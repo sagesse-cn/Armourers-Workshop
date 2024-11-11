@@ -30,7 +30,7 @@ public class FabricTrinketsAddonMixin {
                 return null;
             }
             int size = container.getContainerSize();
-            ArrayList<ItemStack> itemStacks = new ArrayList<>(size);
+            var itemStacks = new ArrayList<ItemStack>(size);
             for (int i = 0; i < size; ++i) {
                 itemStacks.add(container.getItem(i));
             }

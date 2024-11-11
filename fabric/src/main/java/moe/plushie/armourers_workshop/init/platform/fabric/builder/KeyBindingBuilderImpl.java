@@ -49,15 +49,15 @@ public class KeyBindingBuilderImpl<T extends IKeyBinding> implements IKeyBinding
 
     @Override
     public T build(String name) {
-        String nameKey = "keys.armourers_workshop." + name;
-        String categoryKey = "keys.armourers_workshop." + category;
-        InputConstants.Key input = InputConstants.getKey(key);
-        KeyMapping binding = createKeyBinding(nameKey, input, categoryKey);
+        var nameKey = "keys.armourers_workshop." + name;
+        var categoryKey = "keys.armourers_workshop." + category;
+        var input = InputConstants.getKey(key);
+        var binding = createKeyBinding(nameKey, input, categoryKey);
         if (handler != null) {
             INPUTS.add(Pair.of(binding, handler));
         }
         AbstractFabricKeyMapping.register(name, binding);
-        IKeyBinding binding1 = new IKeyBinding() {
+        return Objects.unsafeCast(new IKeyBinding() {
 
             @Override
             public Component getKeyName() {
@@ -68,8 +68,7 @@ public class KeyBindingBuilderImpl<T extends IKeyBinding> implements IKeyBinding
             public IKeyModifier getKeyModifier() {
                 return OpenKeyModifier.NONE;
             }
-        };
-        return Objects.unsafeCast(binding1);
+        });
     }
 
     public static class OnceKeyBinding extends AbstractFabricKeyMapping {

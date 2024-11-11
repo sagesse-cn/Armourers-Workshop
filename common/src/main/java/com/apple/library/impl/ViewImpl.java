@@ -25,7 +25,7 @@ public interface ViewImpl {
     CGAffineTransform transform();
 
     default CGPoint convertPointFromView(CGPoint point, @Nullable UIView view) {
-        CGAffineTransform transform = _computeTransformInViewHierarchy(view, false);
+        var transform = _computeTransformInViewHierarchy(view, false);
         if (transform != null) {
             return point.applying(transform);
         }
@@ -33,7 +33,7 @@ public interface ViewImpl {
     }
 
     default CGPoint convertPointToView(CGPoint point, @Nullable UIView view) {
-        CGAffineTransform transform = _computeTransformInViewHierarchy(view, true);
+        var transform = _computeTransformInViewHierarchy(view, true);
         if (transform != null) {
             return point.applying(transform);
         }
@@ -41,7 +41,7 @@ public interface ViewImpl {
     }
 
     default CGRect convertRectFromView(CGRect rect, @Nullable UIView view) {
-        CGAffineTransform transform = _computeTransformInViewHierarchy(view, false);
+        var transform = _computeTransformInViewHierarchy(view, false);
         if (transform != null) {
             return rect.applying(transform);
         }
@@ -49,7 +49,7 @@ public interface ViewImpl {
     }
 
     default CGRect convertRectToView(CGRect rect, @Nullable UIView view) {
-        CGAffineTransform transform = _computeTransformInViewHierarchy(view, true);
+        var transform = _computeTransformInViewHierarchy(view, true);
         if (transform != null) {
             return rect.applying(transform);
         }

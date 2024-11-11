@@ -222,14 +222,14 @@ public class DataSerializers {
 
     public static final IPlayerDataSerializer<SkinProperties> SKIN_PROPERTIES = new IPlayerDataSerializer<SkinProperties>() {
         public void write(IFriendlyByteBuf buffer, Player player, SkinProperties value) {
-            CompoundTag nbt = new CompoundTag();
+            var nbt = new CompoundTag();
             value.writeToNBT(nbt);
             buffer.writeNbt(nbt);
         }
 
         public SkinProperties read(IFriendlyByteBuf buffer, Player player) {
-            SkinProperties properties = new SkinProperties();
-            CompoundTag nbt = buffer.readNbt();
+            var properties = new SkinProperties();
+            var nbt = buffer.readNbt();
             if (nbt != null) {
                 properties.readFromNBT(nbt);
             }

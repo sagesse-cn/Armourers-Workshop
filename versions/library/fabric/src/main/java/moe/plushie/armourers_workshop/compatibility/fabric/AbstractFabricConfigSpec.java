@@ -82,14 +82,14 @@ public class AbstractFabricConfigSpec extends AbstractConfigSpec {
         }));
 
         // bind the config to spec.
-        AbstractFabricConfigSpec spec = (AbstractFabricConfigSpec) pair.getKey().build();
+        var spec = (AbstractFabricConfigSpec) pair.getKey().build();
         spec.bind(pair.getValue(), FabricConfigSpec::save);
 
         // registry the config into loader.
-        FabricConfigSpec config = pair.getValue();
-        Optional<ModContainer> container = FabricLoader.getInstance().getModContainer(ModConstants.MOD_ID);
+        var config = pair.getValue();
+        var container = FabricLoader.getInstance().getModContainer(ModConstants.MOD_ID);
         if (container.isPresent()) {
-            FabricConfig ignored = new FabricConfig(FabricConfig.Type.valueOf(type.name()), config, container.get());
+            var ignored = new FabricConfig(FabricConfig.Type.valueOf(type.name()), config, container.get());
         }
 
         return spec;

@@ -147,14 +147,14 @@ public class FabricConfigSpec extends UnmodifiableConfigWrapper<UnmodifiableConf
     private int correct(UnmodifiableConfig spec, CommentedConfig config, LinkedList<String> parentPath, List<String> parentPathUnmodifiable, CorrectionListener listener, CorrectionListener commentListener, boolean dryRun) {
         int count = 0;
 
-        Map<String, Object> specMap = spec.valueMap();
-        Map<String, Object> configMap = config.valueMap();
+        var specMap = spec.valueMap();
+        var configMap = config.valueMap();
 
-        for (Map.Entry<String, Object> specEntry : specMap.entrySet()) {
-            final String key = specEntry.getKey();
-            final Object specValue = specEntry.getValue();
-            final Object configValue = configMap.get(key);
-            final CorrectionAction action = configValue == null ? ADD : REPLACE;
+        for (var specEntry : specMap.entrySet()) {
+            var key = specEntry.getKey();
+            var specValue = specEntry.getValue();
+            var configValue = configMap.get(key);
+            var action = configValue == null ? ADD : REPLACE;
 
             parentPath.addLast(key);
 

@@ -9,7 +9,7 @@ import moe.plushie.armourers_workshop.compatibility.fabric.AbstractFabricBlockEn
 import moe.plushie.armourers_workshop.compatibility.fabric.AbstractFabricRegistries;
 import moe.plushie.armourers_workshop.init.environment.EnvironmentExecutor;
 import moe.plushie.armourers_workshop.init.environment.EnvironmentType;
-import moe.plushie.armourers_workshop.utils.TypedRegistry;
+import moe.plushie.armourers_workshop.core.utils.TypedRegistry;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
@@ -48,11 +48,11 @@ public class BlockEntityTypeBuilderImpl<T extends BlockEntity> implements IBlock
 
     @Override
     public IRegistryHolder<IBlockEntityType<T>> build(String name) {
-        IRegistryHolder<BlockEntityType<T>> object = AbstractFabricRegistries.BLOCK_ENTITY_TYPES.register(name, () -> {
+        var object = AbstractFabricRegistries.BLOCK_ENTITY_TYPES.register(name, () -> {
             Block[] blocks1 = blocks.stream().map(Supplier::get).toArray(Block[]::new);
             return AbstractFabricBlockEntity.createType(supplier, blocks1);
         });
-        Proxy<T> proxy = new Proxy<>(object);
+        var proxy = new Proxy<>(object);
         EnvironmentExecutor.willInit(EnvironmentType.CLIENT, IRegistryBinder.perform(binder, object));
         return TypedRegistry.Entry.ofValue(object.getRegistryName(), proxy);
     }

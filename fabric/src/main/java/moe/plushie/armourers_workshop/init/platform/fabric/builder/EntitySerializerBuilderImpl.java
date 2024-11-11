@@ -16,7 +16,7 @@ public class EntitySerializerBuilderImpl<T> implements IEntitySerializerBuilder<
 
     @Override
     public EntityDataSerializer<T> build(String name) {
-        EntityDataSerializer<T> proxy = AbstractEntityDataSerializer.create(serializer);
+        var proxy = AbstractEntityDataSerializer.create(serializer);
         AbstractFabricRegistries.ENTITY_DATA_SERIALIZER.register(name, () -> proxy);
         return proxy;
     }

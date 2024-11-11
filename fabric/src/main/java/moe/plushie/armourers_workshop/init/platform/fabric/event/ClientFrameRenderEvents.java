@@ -8,14 +8,14 @@ public class ClientFrameRenderEvents {
 
     public static final Event<Start> START = EventFactory.createArrayBacked(Start.class, context -> {
     }, callbacks -> context -> {
-        for (final Start callback : callbacks) {
+        for (var callback : callbacks) {
             callback.onStart(context);
         }
     });
 
     public static final Event<End> END = EventFactory.createArrayBacked(End.class, context -> {
     }, callbacks -> context -> {
-        for (final End callback : callbacks) {
+        for (var callback : callbacks) {
             callback.onEnd(context);
         }
     });

@@ -6,13 +6,13 @@ import net.fabricmc.fabric.api.event.EventFactory;
 public class FabricConfigEvents {
 
     public static final Event<OnUpdate> LOADING = EventFactory.createArrayBacked(OnUpdate.class, callbacks -> (config) -> {
-        for (OnUpdate callback : callbacks) {
+        for (var callback : callbacks) {
             callback.config(config);
         }
     });
 
     public static final Event<OnUpdate> RELOADING = EventFactory.createArrayBacked(OnUpdate.class, callbacks -> (config) -> {
-        for (OnUpdate callback : callbacks) {
+        for (var callback : callbacks) {
             callback.config(config);
         }
     });

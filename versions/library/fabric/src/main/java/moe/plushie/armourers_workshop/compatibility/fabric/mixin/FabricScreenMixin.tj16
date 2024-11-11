@@ -36,8 +36,8 @@ public class FabricScreenMixin {
         Screen screen = Objects.unsafeCast(this);
         int screenWidth = screen.width;
         int screenHeight = screen.height;
-        ItemStack itemStack = RenderTooltipEvents.TOOLTIP_ITEM_STACK;
-        CGGraphicsContext context = AbstractGraphicsRenderer.of(null, poseStack, mouseX, mouseY, 0);
+        var itemStack = RenderTooltipEvents.TOOLTIP_ITEM_STACK;
+        var context = AbstractGraphicsRenderer.of(null, poseStack, mouseX, mouseY, 0);
         RenderTooltipEvents.BEFORE.invoker().onRenderTooltip(itemStack, x, y, w, h, screenWidth, screenHeight, context);
     }
 }

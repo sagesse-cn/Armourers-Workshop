@@ -39,7 +39,7 @@ public class AbstractFabricRenderHighlightEvent {
 
                 @Override
                 public BlockHitResult getTarget() {
-                    Minecraft minecraft = Minecraft.getInstance();
+                    var minecraft = Minecraft.getInstance();
                     return Objects.safeCast(minecraft.hitResult, BlockHitResult.class);
                 }
             });

@@ -6,7 +6,7 @@ import moe.plushie.armourers_workshop.api.core.IRegistryHolder;
 import moe.plushie.armourers_workshop.api.registry.IItemGroupBuilder;
 import moe.plushie.armourers_workshop.compatibility.forge.AbstractForgeRegistries;
 import moe.plushie.armourers_workshop.init.ModConstants;
-import moe.plushie.armourers_workshop.utils.TypedRegistry;
+import moe.plushie.armourers_workshop.core.utils.TypedRegistry;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -44,7 +44,7 @@ public class ItemGroupBuilderImpl<T extends IItemGroup> implements IItemGroupBui
         }
 
         public void fill(List<ItemStack> results) {
-            for (Supplier<Item> itemProvider : items) {
+            for (var itemProvider : items) {
                 Item item = itemProvider.get();
                 results.add(item.getDefaultInstance());
                 if (item instanceof IItemGroupProvider provider) {

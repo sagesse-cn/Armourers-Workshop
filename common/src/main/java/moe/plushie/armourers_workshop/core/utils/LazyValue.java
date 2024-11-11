@@ -1,4 +1,4 @@
-package moe.plushie.armourers_workshop.utils;
+package moe.plushie.armourers_workshop.core.utils;
 
 import java.util.function.Supplier;
 

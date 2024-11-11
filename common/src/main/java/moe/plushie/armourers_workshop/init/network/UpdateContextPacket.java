@@ -1,111 +1,115 @@
 package moe.plushie.armourers_workshop.init.network;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufInputStream;
-import io.netty.buffer.ByteBufOutputStream;
 import moe.plushie.armourers_workshop.api.network.IClientPacketHandler;
 import moe.plushie.armourers_workshop.api.network.IFriendlyByteBuf;
 import moe.plushie.armourers_workshop.core.data.TickTracker;
 import moe.plushie.armourers_workshop.core.network.CustomPacket;
+import moe.plushie.armourers_workshop.core.skin.property.SkinProperties;
 import moe.plushie.armourers_workshop.init.ModConfigSpec;
 import moe.plushie.armourers_workshop.init.ModConstants;
 import moe.plushie.armourers_workshop.init.ModContext;
 import moe.plushie.armourers_workshop.init.ModLog;
+import moe.plushie.armourers_workshop.init.platform.DataPackManager;
 import moe.plushie.armourers_workshop.init.platform.EnvironmentManager;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 public class UpdateContextPacket extends CustomPacket {
 
-    private UUID token = null;
+    private UUID owner = null;
     private ByteBuf buffer = null;
 
-    public UpdateContextPacket() {
-    }
+    private final int flags;
 
-    public UpdateContextPacket(Player player) {
-        this.token = player.getUUID();
+    public UpdateContextPacket(int flags, UUID player) {
+        this.flags = flags;
+        this.owner = player;
     }
 
     public UpdateContextPacket(IFriendlyByteBuf buffer) {
+        this.flags = buffer.readByte();
         this.buffer = buffer.asByteBuf();
         this.buffer.retain();
     }
 
+    public static UpdateContextPacket all(Player player) {
+        return new UpdateContextPacket(0x07, player.getUUID());
+    }
+
+    public static UpdateContextPacket config() {
+        return new UpdateContextPacket(0x02, null);
+    }
+
     @Override
     public void encode(IFriendlyByteBuf buffer) {
-        if (token != null) {
-            buffer.writeBoolean(true);
-            buffer.writeUUID(ModContext.t2(token));
-            buffer.writeUUID(ModContext.t3(token));
+        buffer.writeByte(flags);
+        if ((flags & 0x01) != 0) {
+            buffer.writeUUID(ModContext.t2(owner));
+            buffer.writeUUID(ModContext.t3(owner));
             buffer.writeFloat(TickTracker.server().animationTicks());
             buffer.writeUtf(ModConstants.MOD_NET_ID);
-        } else {
-            buffer.writeBoolean(false);
         }
-        writeConfigSpec(buffer);
+        if ((flags & 0x02) != 0) {
+            buffer.writeNbt(getConfig());
+        }
+        if ((flags & 0x04) != 0) {
+            buffer.writeNbt(getDataPack());
+        }
     }
 
     @Override
     public void accept(IClientPacketHandler packetHandler, Player player) {
-        if (buffer != null) {
-            IFriendlyByteBuf reader = IFriendlyByteBuf.wrap(buffer);
-            if (buffer.readBoolean()) {
-                ModContext.init(reader.readUUID(), reader.readUUID());
-                TickTracker.client().setAnimationTicks(reader.readFloat());
-                checkNetworkVersion(reader.readUtf());
-            }
-            readConfigSpec(reader);
-            buffer.release();
+        if (buffer == null) {
+            return;
         }
+        var reader = IFriendlyByteBuf.wrap(buffer);
+        if ((flags & 0x01) != 0) {
+            ModContext.init(reader.readUUID(), reader.readUUID());
+            TickTracker.client().setAnimationTicks(reader.readFloat());
+            checkNetworkVersion(reader.readUtf());
+        }
+        if ((flags & 0x02) != 0) {
+            setConfig(reader.readNbt());
+        }
+        if ((flags & 0x04) != 0) {
+            setDataPack(reader.readNbt());
+        }
+        buffer.release();
+        buffer = null;
     }
 
-    private void writeConfigSpec(IFriendlyByteBuf buffer) {
-        try {
-            Map<String, Object> fields = new HashMap<>();
-            if (EnvironmentManager.isDedicatedServer()) {
-                fields = ModConfigSpec.COMMON.snapshot();
-            }
-            buffer.writeInt(fields.size());
-            if (fields.isEmpty()) {
-                return;
-            }
-            ByteBufOutputStream bo = new ByteBufOutputStream(buffer.asByteBuf());
-            ObjectOutputStream oo = new ObjectOutputStream(bo);
-            for (var entry : fields.entrySet()) {
-                oo.writeUTF(entry.getKey());
-                oo.writeObject(entry.getValue());
-            }
-            oo.close();
-        } catch (Exception e) {
-            e.printStackTrace();
+
+    private void setConfig(CompoundTag tag) {
+        if (tag == null) {
+            return;
         }
+        var fields = new HashMap<String, Object>();
+        var properties = new SkinProperties(tag);
+        for (var entry : properties.entrySet()) {
+            fields.put(entry.getKey(), entry.getValue());
+        }
+        ModConfigSpec.COMMON.apply(fields);
     }
 
-    private void readConfigSpec(IFriendlyByteBuf buffer) {
-        try {
-            int size = buffer.readInt();
-            if (size == 0) {
-                return;
-            }
-            HashMap<String, Object> fields = new HashMap<>();
-            ByteBufInputStream bi = new ByteBufInputStream(buffer.asByteBuf());
-            ObjectInputStream oi = new ObjectInputStream(bi);
-            for (int i = 0; i < size; ++i) {
-                String name = oi.readUTF();
-                Object value = oi.readObject();
-                fields.put(name, value);
-            }
-            oi.close();
-            ModConfigSpec.COMMON.apply(fields);
-        } catch (Exception e) {
-            e.printStackTrace();
+    private CompoundTag getConfig() {
+        if (EnvironmentManager.isDedicatedServer()) {
+            var properties = new SkinProperties();
+            ModConfigSpec.COMMON.snapshot().forEach(properties::put);
+            return properties.serializeNBT();
         }
+        return null;
+    }
+
+    private void setDataPack(CompoundTag tag) {
+
+    }
+
+    private CompoundTag getDataPack() {
+        return null;
     }
 
     private void checkNetworkVersion(String version) {

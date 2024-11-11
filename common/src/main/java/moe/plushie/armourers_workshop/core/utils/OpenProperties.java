@@ -9,7 +9,6 @@ import net.minecraft.nbt.FloatTag;
 import net.minecraft.nbt.IntTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
-import net.minecraft.nbt.Tag;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
@@ -27,43 +26,33 @@ public abstract class OpenProperties {
         this(new LinkedHashMap<>());
     }
 
-    public OpenProperties(CompoundTag tag) {
-        this();
-        this.readFromNBT(tag);
-    }
-
     public OpenProperties(LinkedHashMap<String, Object> properties) {
         this.properties = properties;
     }
 
     public void writeToStream(IOutputStream stream) throws IOException {
         stream.writeInt(properties.size());
-        for (int i = 0; i < properties.size(); i++) {
-            var key = (String) properties.keySet().toArray()[i];
-            var value = properties.get(key);
+        for (var entry : properties.entrySet()) {
+            var key = entry.getKey();
+            var value = entry.getValue();
             stream.writeString(key);
             if (value instanceof String stringValue) {
                 stream.writeByte(DataTypes.STRING.ordinal());
                 stream.writeString(stringValue);
-            }
-            if (value instanceof Integer intValue) {
+            } else if (value instanceof Integer intValue) {
                 stream.writeByte(DataTypes.INT.ordinal());
                 stream.writeInt(intValue);
-            }
-            if (value instanceof Double doubleValue) {
+            } else if (value instanceof Double doubleValue) {
                 stream.writeByte(DataTypes.DOUBLE.ordinal());
                 stream.writeDouble(doubleValue);
-            }
-            if (value instanceof Boolean boolValue) {
+            } else if (value instanceof Boolean boolValue) {
                 stream.writeByte(DataTypes.BOOLEAN.ordinal());
                 stream.writeBoolean(boolValue);
-            }
-            if (value instanceof Collection<?> listValue) {
+            } else if (value instanceof Collection<?> listValue) {
                 stream.writeByte(DataTypes.LIST.ordinal());
                 stream.writeInt(listValue.size());
                 // TODO: NO IMPL
-            }
-            if (value instanceof OpenProperties compoundValue) {
+            } else if (value instanceof OpenProperties compoundValue) {
                 stream.writeByte(DataTypes.COMPOUND.ordinal());
                 compoundValue.writeToStream(stream);
             }
@@ -100,8 +89,8 @@ public abstract class OpenProperties {
 
 
     public void readFromNBT(CompoundTag nbt) {
-        for (String key : nbt.getAllKeys()) {
-            Tag value = nbt.get(key);
+        for (var key : nbt.getAllKeys()) {
+            var value = nbt.get(key);
             if (value instanceof StringTag stringTag) {
                 properties.put(key, stringTag.getAsString());
             } else if (value instanceof IntTag intTag) {

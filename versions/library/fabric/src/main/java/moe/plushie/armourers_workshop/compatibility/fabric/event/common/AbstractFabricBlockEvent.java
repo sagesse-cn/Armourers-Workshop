@@ -53,7 +53,7 @@ public class AbstractFabricBlockEvent {
 
                         @Override
                         public CompoundTag getTag() {
-                            BlockEntity oldBlockEntity = level.getBlockEntity(blockPos);
+                            var oldBlockEntity = level.getBlockEntity(blockPos);
                             if (oldBlockEntity != null) {
                                 return oldBlockEntity.saveFullData(level.registryAccess());
                             }

@@ -109,13 +109,13 @@ public class AbstractForgeCapabilityManager {
         @Override
         public CompoundTag serializeNBT() {
             var tag = new CompoundTag();
-            value.serialize(SkinWardrobeStorage.writer(entity.get(), tag));
+            value.serialize(SkinWardrobeStorage.encoder(entity.get(), tag));
             return tag;
         }
 
         @Override
         public void deserializeNBT(CompoundTag tag) {
-            value.deserialize(SkinWardrobeStorage.reader(entity.get(), tag));
+            value.deserialize(SkinWardrobeStorage.decoder(entity.get(), tag));
         }
 
         @Override

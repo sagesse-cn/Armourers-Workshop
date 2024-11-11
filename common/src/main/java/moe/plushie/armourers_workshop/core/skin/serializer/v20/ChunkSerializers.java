@@ -1,6 +1,5 @@
 package moe.plushie.armourers_workshop.core.skin.serializer.v20;
 
-import moe.plushie.armourers_workshop.api.core.utils.IPair;
 import moe.plushie.armourers_workshop.api.skin.ISkinType;
 import moe.plushie.armourers_workshop.core.math.OpenItemTransforms;
 import moe.plushie.armourers_workshop.core.math.OpenTransform3f;
@@ -28,6 +27,7 @@ import moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk.ChunkPartDa
 import moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk.ChunkPreviewData;
 import moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk.ChunkType;
 import moe.plushie.armourers_workshop.core.utils.Collections;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -111,10 +111,10 @@ public class ChunkSerializers {
         }
     });
 
-    public static final ChunkSerializer<IPair<ISkinType, SkinProperties>, Void> SKIN_INFO = register(new ChunkSerializer<>(ChunkType.SKIN) {
+    public static final ChunkSerializer<Pair<ISkinType, SkinProperties>, Void> SKIN_INFO = register(new ChunkSerializer<>(ChunkType.SKIN) {
 
         @Override
-        public IPair<ISkinType, SkinProperties> read(ChunkInputStream stream, Void obj) throws IOException {
+        public Pair<ISkinType, SkinProperties> read(ChunkInputStream stream, Void obj) throws IOException {
             var skinType = stream.readType(SkinTypes::byName);
             return stream.readChunk(it -> {
                 var properties = it.read(SKIN_PROPERTIES);
@@ -123,12 +123,12 @@ public class ChunkSerializers {
                     properties = properties.copy();
                     properties.put(SkinProperty.SECURITY_DATA, settings.getSecurityData());
                 }
-                return IPair.of(skinType, properties);
+                return Pair.of(skinType, properties);
             });
         }
 
         @Override
-        public void write(IPair<ISkinType, SkinProperties> info, Void obj, ChunkOutputStream stream) throws IOException {
+        public void write(Pair<ISkinType, SkinProperties> info, Void obj, ChunkOutputStream stream) throws IOException {
             // we never call write method!!!
         }
     });
@@ -361,7 +361,7 @@ public class ChunkSerializers {
         return SKIN.read(stream1, null);
     }
 
-    public static IPair<ISkinType, SkinProperties> readInfoFromStream(IInputStream stream, ChunkContext context) throws IOException {
+    public static Pair<ISkinType, SkinProperties> readInfoFromStream(IInputStream stream, ChunkContext context) throws IOException {
         var allows = Collections.newList(ChunkType.PROPERTIES.getName(), ChunkType.SKIN_SETTINGS.getName());
         var stream1 = new ChunkInputStream(stream.getInputStream(), context, allows::contains);
         return SKIN_INFO.read(stream1, null);

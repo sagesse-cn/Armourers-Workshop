@@ -84,7 +84,7 @@ public class AbstractFabricNetwork {
                 return;
             }
             if (understood) {
-                String version = buf.readUtf();
+                var version = buf.readUtf();
                 if (version.equals(channelVersion)) {
                     return;
                 }
@@ -94,7 +94,7 @@ public class AbstractFabricNetwork {
 
         @Environment(EnvType.CLIENT)
         public CompletableFuture<@Nullable FriendlyByteBuf> onClientHandshake(Minecraft client, ClientHandshakePacketListenerImpl handler, FriendlyByteBuf buf, Consumer<PacketSendListener> consumer) {
-            FriendlyByteBuf responseBuffer = new FriendlyByteBuf(Unpooled.buffer());
+            var responseBuffer = new FriendlyByteBuf(Unpooled.buffer());
             responseBuffer.writeUtf(channelVersion);
             return CompletableFuture.completedFuture(responseBuffer);
         }
@@ -145,16 +145,16 @@ public class AbstractFabricNetwork {
 
         @Override
         public IPacketDistributor trackingChunk(Supplier<LevelChunk> supplier) {
-            LevelChunk chunk = supplier.get();
-            ServerLevel serverLevel = (ServerLevel) chunk.getLevel();
-            Collection<ServerPlayer> players = PlayerLookup.tracking(serverLevel, chunk.getPos());
+            var chunk = supplier.get();
+            var serverLevel = (ServerLevel) chunk.getLevel();
+            var players = PlayerLookup.tracking(serverLevel, chunk.getPos());
             return new Distributor(LogicalSide.SERVER, dispatch(players), null);
         }
 
         @Override
         public IPacketDistributor trackingEntityAndSelf(Supplier<Entity> supplier) {
-            Entity entity = supplier.get();
-            Collection<ServerPlayer> players = PlayerLookup.tracking(entity);
+            var entity = supplier.get();
+            var players = PlayerLookup.tracking(entity);
             if (entity instanceof ServerPlayer player) {
                 ArrayList<ServerPlayer> trackingAndSelf = new ArrayList<>(players);
                 trackingAndSelf.add(player);
@@ -165,7 +165,7 @@ public class AbstractFabricNetwork {
 
         @Override
         public IPacketDistributor player(Supplier<ServerPlayer> supplier) {
-            ServerPlayer player = supplier.get();
+            var player = supplier.get();
             return new Distributor(LogicalSide.SERVER, dispatch(Collections.singleton(player)), null);
         }
 

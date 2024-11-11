@@ -73,7 +73,7 @@ public class ItemBuilderImpl<T extends Item> implements IItemBuilder<T> {
 
     @Override
     public IRegistryHolder<T> build(String name) {
-        IRegistryHolder<T> object = AbstractFabricRegistries.ITEMS.register(name, () -> supplier.apply(properties));
+        var object = AbstractFabricRegistries.ITEMS.register(name, () -> supplier.apply(properties));
         if (group != null) {
             group.get().add(object::get);
         }

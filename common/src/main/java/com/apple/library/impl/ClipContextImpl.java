@@ -34,7 +34,7 @@ public class ClipContextImpl {
     }
 
     public void addClip(Rectangle rect) {
-        CGRect newClipBox = rect.rect;
+        var newClipBox = rect.rect;
         if (!clipBoxes.isEmpty()) {
             newClipBox = clipBoxes.peek().intersection(newClipBox);
         }
@@ -90,7 +90,7 @@ public class ClipContextImpl {
 
         @Override
         public List<CGRect> offscreenPasses() {
-            ArrayList<CGRect> passes = new ArrayList<>();
+            var passes = new ArrayList<CGRect>();
             passes.add(new CGRect(rect.getMinX(), rect.getMinY(), cornerRadius, cornerRadius));
             passes.add(new CGRect(rect.getMaxX(), rect.getMinY(), -cornerRadius, cornerRadius));
             passes.add(new CGRect(rect.getMaxX(), rect.getMaxY(), -cornerRadius, -cornerRadius));

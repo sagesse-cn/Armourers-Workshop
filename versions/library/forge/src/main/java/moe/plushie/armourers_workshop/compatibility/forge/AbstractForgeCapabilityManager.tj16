@@ -85,7 +85,7 @@ public abstract class AbstractForgeCapabilityManager {
         }
 
         public void attachEntityCapability(AttachCapabilitiesEvent<Entity> event) {
-            Optional<T> value = factory.apply(event.getObject());
+            var value = factory.apply(event.getObject());
             if (!value.isPresent()) {
                 return;
             }
@@ -120,14 +120,14 @@ public abstract class AbstractForgeCapabilityManager {
 
         @Override
         public CompoundTag serializeNBT() {
-            CompoundTag tag = new CompoundTag();
-            value.serialize(SkinWardrobeStorage.writer(entity.get(), tag));
+            var tag = new CompoundTag();
+            value.serialize(SkinWardrobeStorage.encoder(entity.get(), tag));
             return tag;
         }
 
         @Override
         public void deserializeNBT(CompoundTag tag) {
-            value.deserialize(SkinWardrobeStorage.reader(entity.get(), tag));
+            value.deserialize(SkinWardrobeStorage.decoder(entity.get(), tag));
         }
 
         @NotNull

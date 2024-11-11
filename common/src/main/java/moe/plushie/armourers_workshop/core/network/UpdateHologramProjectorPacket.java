@@ -1,12 +1,12 @@
 package moe.plushie.armourers_workshop.core.network;
 
 import moe.plushie.armourers_workshop.api.common.IEntitySerializer;
-import moe.plushie.armourers_workshop.api.data.IGenericValue;
 import moe.plushie.armourers_workshop.api.network.IFriendlyByteBuf;
 import moe.plushie.armourers_workshop.api.network.IServerPacketHandler;
 import moe.plushie.armourers_workshop.core.blockentity.HologramProjectorBlockEntity;
 import moe.plushie.armourers_workshop.core.data.GenericProperties;
 import moe.plushie.armourers_workshop.core.data.GenericProperty;
+import moe.plushie.armourers_workshop.core.data.GenericValue;
 import moe.plushie.armourers_workshop.utils.DataSerializers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
@@ -19,14 +19,14 @@ import manifold.ext.rt.api.auto;
 public class UpdateHologramProjectorPacket extends CustomPacket {
 
     private final BlockPos pos;
-    private final IGenericValue<HologramProjectorBlockEntity, ?> fieldValue;
+    private final GenericValue<HologramProjectorBlockEntity, ?> fieldValue;
 
     public UpdateHologramProjectorPacket(IFriendlyByteBuf buffer) {
         this.pos = buffer.readBlockPos();
-        this.fieldValue = buffer.readProperty(Field.TYPE);
+        this.fieldValue = Field.TYPE.read(buffer);
     }
 
-    public UpdateHologramProjectorPacket(HologramProjectorBlockEntity entity, IGenericValue<HologramProjectorBlockEntity, ?> fieldValue) {
+    public UpdateHologramProjectorPacket(HologramProjectorBlockEntity entity, GenericValue<HologramProjectorBlockEntity, ?> fieldValue) {
         this.pos = entity.getBlockPos();
         this.fieldValue = fieldValue;
     }
@@ -34,7 +34,7 @@ public class UpdateHologramProjectorPacket extends CustomPacket {
     @Override
     public void encode(IFriendlyByteBuf buffer) {
         buffer.writeBlockPos(pos);
-        buffer.writeProperty(fieldValue);
+        fieldValue.write(buffer);
     }
 
     @Override
@@ -46,6 +46,7 @@ public class UpdateHologramProjectorPacket extends CustomPacket {
         }
     }
 
+    @SuppressWarnings("unused")
     public static final class Field<T> extends GenericProperty<HologramProjectorBlockEntity, T> {
 
         private static final auto TYPE = GenericProperties.of(HologramProjectorBlockEntity.class, UpdateHologramProjectorPacket::new);

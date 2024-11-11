@@ -7,7 +7,7 @@ import moe.plushie.armourers_workshop.api.core.IResourceLocation;
 import moe.plushie.armourers_workshop.api.registry.IArgumentTypeBuilder;
 import moe.plushie.armourers_workshop.compatibility.fabric.AbstractFabricArgumentType;
 import moe.plushie.armourers_workshop.init.ModConstants;
-import moe.plushie.armourers_workshop.utils.TypedRegistry;
+import moe.plushie.armourers_workshop.core.utils.TypedRegistry;
 
 import java.util.function.Supplier;
 
@@ -28,7 +28,7 @@ public class ArgumentTypeBuilderImpl<T extends IArgumentType<?>> implements IArg
 
     @Override
     public IRegistryHolder<T> build(String name) {
-        IResourceLocation registryName = ModConstants.key(name);
+        var registryName = ModConstants.key(name);
 //        ModLog.debug("Registering Argument Type '{}'", registryName);
         AbstractFabricArgumentType.register(registryName, argumentType, argumentSerializer.get());
         return TypedRegistry.Entry.ofValue(registryName, null);

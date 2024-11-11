@@ -9,7 +9,7 @@ import net.minecraft.client.Minecraft;
 public final class ClientStartupEvents {
 
     public static final Event<ClientWillStart> CLIENT_WILL_START = EventFactory.createArrayBacked(ClientWillStart.class, callbacks -> (instance) -> {
-        for (ClientWillStart callback : callbacks) {
+        for (var callback : callbacks) {
             callback.onClientWillStart(instance);
         }
     });

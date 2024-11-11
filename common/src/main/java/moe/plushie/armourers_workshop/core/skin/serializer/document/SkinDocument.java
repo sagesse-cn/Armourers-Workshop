@@ -193,6 +193,6 @@ public class SkinDocument {
         public static final IDataSerializerKey<SkinDocumentNode> NODES = IDataSerializerKey.create("Nodes", SkinDocumentNode.CODEC, null);
         public static final IDataSerializerKey<List<SkinDocumentAnimation>> ANIMATIONS = IDataSerializerKey.create("Animations", SkinDocumentAnimation.CODEC.listOf(), null);
         public static final IDataSerializerKey<SkinDocumentSettings> SETTINGS = IDataSerializerKey.create("Settings", SkinDocumentSettings.CODEC, null, SkinDocumentSettings::new);
-        public static final IDataSerializerKey<SkinProperties> PROPERTIES = IDataSerializerKey.create("Properties", SkinProperties.CODEC, SkinProperties.EMPTY, SkinProperties::new);
+        public static final IDataSerializerKey<SkinProperties> PROPERTIES = IDataSerializerKey.create("Properties", SkinProperties.CODEC, SkinProperties.EMPTY, SkinProperties.EMPTY::copy);
     }
 }

@@ -7,7 +7,7 @@ import net.minecraft.world.entity.player.Player;
 public class ClientPlayerLifecycleEvents {
 
     public static final Event<Clone> CLONE = EventFactory.createArrayBacked(Clone.class, callbacks -> (oldPlayer, newPlayer) -> {
-        for (Clone callback : callbacks) {
+        for (var callback : callbacks) {
             callback.accept(oldPlayer, newPlayer);
         }
     });

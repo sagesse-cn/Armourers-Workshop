@@ -1,7 +1,6 @@
 package moe.plushie.armourers_workshop.builder.network;
 
 import moe.plushie.armourers_workshop.api.common.IEntitySerializer;
-import moe.plushie.armourers_workshop.api.data.IGenericValue;
 import moe.plushie.armourers_workshop.api.network.IFriendlyByteBuf;
 import moe.plushie.armourers_workshop.api.network.IServerPacketHandler;
 import moe.plushie.armourers_workshop.builder.blockentity.ArmourerBlockEntity;
@@ -10,14 +9,15 @@ import moe.plushie.armourers_workshop.builder.other.CubeChangesCollector;
 import moe.plushie.armourers_workshop.builder.other.CubeReplacingEvent;
 import moe.plushie.armourers_workshop.core.data.GenericProperties;
 import moe.plushie.armourers_workshop.core.data.GenericProperty;
+import moe.plushie.armourers_workshop.core.data.GenericValue;
 import moe.plushie.armourers_workshop.core.network.CustomPacket;
 import moe.plushie.armourers_workshop.core.permission.BlockPermission;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPartTypes;
+import moe.plushie.armourers_workshop.core.utils.Constants;
 import moe.plushie.armourers_workshop.core.utils.Objects;
 import moe.plushie.armourers_workshop.init.ModLog;
 import moe.plushie.armourers_workshop.init.ModPermissions;
 import moe.plushie.armourers_workshop.utils.BlockUtils;
-import moe.plushie.armourers_workshop.core.utils.Constants;
 import moe.plushie.armourers_workshop.utils.DataSerializers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -34,14 +34,14 @@ import manifold.ext.rt.api.auto;
 public class UpdateArmourerPacket extends CustomPacket {
 
     private final BlockPos pos;
-    private final IGenericValue<ArmourerBlockEntity, ?> fieldValue;
+    private final GenericValue<ArmourerBlockEntity, ?> fieldValue;
 
     public UpdateArmourerPacket(IFriendlyByteBuf buffer) {
         this.pos = buffer.readBlockPos();
-        this.fieldValue = buffer.readProperty(Field.TYPE);
+        this.fieldValue = Field.TYPE.read(buffer);
     }
 
-    public UpdateArmourerPacket(ArmourerBlockEntity entity, IGenericValue<ArmourerBlockEntity, ?> fieldValue) {
+    public UpdateArmourerPacket(ArmourerBlockEntity entity, GenericValue<ArmourerBlockEntity, ?> fieldValue) {
         this.pos = entity.getBlockPos();
         this.fieldValue = fieldValue;
     }
@@ -49,7 +49,7 @@ public class UpdateArmourerPacket extends CustomPacket {
     @Override
     public void encode(IFriendlyByteBuf buffer) {
         buffer.writeBlockPos(pos);
-        buffer.writeProperty(fieldValue);
+        fieldValue.write(buffer);
     }
 
     @Override

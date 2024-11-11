@@ -8,7 +8,7 @@ import net.minecraft.world.level.block.state.BlockState;
 public class PlayerBlockPlaceEvents {
 
     public static final Event<OnPlace> BEFORE = EventFactory.createArrayBacked(OnPlace.class, callbacks -> (blockPlaceContext, blockState) -> {
-        for (OnPlace callback : callbacks) {
+        for (var callback : callbacks) {
             if (!callback.place(blockPlaceContext, blockState)) {
                 return false;
             }

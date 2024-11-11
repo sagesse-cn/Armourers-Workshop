@@ -16,14 +16,14 @@ public final class EntityLifecycleEvents {
     public static final Event<EntityTrackingEvents.StopTracking> DID_STOP_TRACKING = EntityTrackingEvents.STOP_TRACKING;
 
     public static final Event<EntityTrackingEvents.StartTracking> DID_START_TRACKING = EventFactory.createArrayBacked(EntityTrackingEvents.StartTracking.class, callbacks -> (trackedEntity, player) -> {
-        for (EntityTrackingEvents.StartTracking callback : callbacks) {
+        for (var callback : callbacks) {
             callback.onStartTracking(trackedEntity, player);
         }
     });
 
     public static final Event<AllowClimbing> ALLOW_CLIMBING = EventFactory.createArrayBacked(AllowClimbing.class, callbacks -> (entity, blockPos, blockState) -> {
-        for (AllowClimbing callback : callbacks) {
-            InteractionResult result = callback.allowClimbing(entity, blockPos, blockState);
+        for (var callback : callbacks) {
+            var result = callback.allowClimbing(entity, blockPos, blockState);
             if (result != InteractionResult.PASS) {
                 return result;
             }

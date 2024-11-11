@@ -22,7 +22,8 @@ public class SkinProperties extends OpenProperties implements ISkinProperties {
     }
 
     public SkinProperties(CompoundTag tag) {
-        super(tag);
+        this();
+        this.readFromNBT(tag);
     }
 
     protected SkinProperties(LinkedHashMap<String, Object> properties) {

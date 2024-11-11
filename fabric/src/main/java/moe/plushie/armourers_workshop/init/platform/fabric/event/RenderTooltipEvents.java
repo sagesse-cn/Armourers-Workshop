@@ -13,7 +13,7 @@ public class RenderTooltipEvents {
     public static ItemStack TOOLTIP_ITEM_STACK = ItemStack.EMPTY;
 
     public static final Event<Before> BEFORE = EventFactory.createArrayBacked(Before.class, callbacks -> (itemStack, x, y, width, height, screenWidth, screenHeight, context) -> {
-        for (Before callback : callbacks) {
+        for (var callback : callbacks) {
             callback.onRenderTooltip(itemStack, x, y, width, height, screenWidth, screenHeight, context);
         }
     });

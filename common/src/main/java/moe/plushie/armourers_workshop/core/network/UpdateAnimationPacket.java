@@ -95,7 +95,7 @@ public class UpdateAnimationPacket extends CustomPacket {
             return AnimationManager.of(player.getLevel().getEntity(entityId));
         }
         if (value.contains("block")) {
-            var blockPos = value.getOptionalBlockPos("block", BlockPos.ZERO);
+            var blockPos = BlockPos.of(value.getLong("block"));
             return AnimationManager.of(player.getLevel().getBlockEntity(blockPos));
         }
         return null;
@@ -123,7 +123,7 @@ public class UpdateAnimationPacket extends CustomPacket {
         public CompoundTag save() {
             var tag = new CompoundTag();
             if (pos != null) {
-                tag.putOptionalBlockPos("block", pos, null);
+                tag.putLong("block", pos.asLong());
             } else {
                 tag.putInt("entity", id);
             }

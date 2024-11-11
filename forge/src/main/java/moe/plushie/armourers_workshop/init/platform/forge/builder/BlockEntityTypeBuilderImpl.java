@@ -9,7 +9,7 @@ import moe.plushie.armourers_workshop.compatibility.forge.AbstractForgeBlockEnti
 import moe.plushie.armourers_workshop.compatibility.forge.AbstractForgeRegistries;
 import moe.plushie.armourers_workshop.init.environment.EnvironmentExecutor;
 import moe.plushie.armourers_workshop.init.environment.EnvironmentType;
-import moe.plushie.armourers_workshop.utils.TypedRegistry;
+import moe.plushie.armourers_workshop.core.utils.TypedRegistry;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;

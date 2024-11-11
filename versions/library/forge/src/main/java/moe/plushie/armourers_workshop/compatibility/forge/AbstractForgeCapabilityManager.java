@@ -61,7 +61,7 @@ public class AbstractForgeCapabilityManager {
 
         public void register() {
             AbstractForgeEventBus.observer(RegisterCapabilitiesEvent.class, event -> {
-                for (EntityType<?> entityType : BuiltInRegistries.ENTITY_TYPE) {
+                for (var entityType : BuiltInRegistries.ENTITY_TYPE) {
                     event.registerEntity(capability.get(), entityType, (entity, context) -> entity.getData(attachmentType).getValue());
                 }
             });
@@ -99,8 +99,8 @@ public class AbstractForgeCapabilityManager {
         @Override
         public CompoundTag serializeNBT(HolderLookup.Provider provider) {
             if (value != null) {
-                CompoundTag tag = new CompoundTag();
-                value.serialize(SkinWardrobeStorage.writer(entity.get(), tag));
+                var tag = new CompoundTag();
+                value.serialize(SkinWardrobeStorage.encoder(entity.get(), tag));
                 return tag;
             }
             return null;
@@ -109,7 +109,7 @@ public class AbstractForgeCapabilityManager {
         @Override
         public void deserializeNBT(HolderLookup.Provider provider, CompoundTag tag) {
             if (value != null) {
-                value.deserialize(SkinWardrobeStorage.reader(entity.get(), tag));
+                value.deserialize(SkinWardrobeStorage.decoder(entity.get(), tag));
             }
         }
 

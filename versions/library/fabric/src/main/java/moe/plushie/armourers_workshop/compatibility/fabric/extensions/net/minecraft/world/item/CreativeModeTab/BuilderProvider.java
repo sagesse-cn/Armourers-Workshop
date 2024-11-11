@@ -21,12 +21,12 @@ import manifold.ext.rt.api.ThisClass;
 public class BuilderProvider {
 
     public static Supplier<CreativeModeTab> createCreativeModeTabFA(@ThisClass Class<?> clazz, String name, Supplier<Supplier<ItemStack>> icon, Consumer<List<ItemStack>> itemProvider) {
-        IResourceLocation registryName = ModConstants.key(name);
-        CreativeModeTab tab = FabricItemGroup.builder()
+        var registryName = ModConstants.key(name);
+        var tab = FabricItemGroup.builder()
                 .title(Component.translatable(registryName.toLanguageKey("itemGroup")))
                 .icon(() -> icon.get().get())
                 .displayItems((set, out) -> {
-                    ArrayList<ItemStack> results = new ArrayList<>();
+                    var results = new ArrayList<ItemStack>();
                     itemProvider.accept(results);
                     out.acceptAll(results);
                 })

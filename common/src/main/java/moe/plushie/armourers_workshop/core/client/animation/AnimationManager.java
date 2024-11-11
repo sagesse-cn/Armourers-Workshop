@@ -1,5 +1,9 @@
 package moe.plushie.armourers_workshop.core.client.animation;
 
+import moe.plushie.armourers_workshop.api.core.IDataCodec;
+import moe.plushie.armourers_workshop.api.core.IDataSerializable;
+import moe.plushie.armourers_workshop.api.core.IDataSerializer;
+import moe.plushie.armourers_workshop.api.core.IDataSerializerKey;
 import moe.plushie.armourers_workshop.core.client.bake.BakedSkin;
 import moe.plushie.armourers_workshop.core.client.other.BlockEntityRenderData;
 import moe.plushie.armourers_workshop.core.client.other.EntityRenderData;
@@ -11,6 +15,7 @@ import moe.plushie.armourers_workshop.core.math.OpenMath;
 import moe.plushie.armourers_workshop.core.skin.SkinDescriptor;
 import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.core.utils.Objects;
+import moe.plushie.armourers_workshop.core.utils.TagSerializer;
 import moe.plushie.armourers_workshop.init.ModConfig;
 import moe.plushie.armourers_workshop.init.ModLog;
 import moe.plushie.armourers_workshop.utils.TickUtils;
@@ -117,11 +122,11 @@ public class AnimationManager {
         }
     }
 
-    public void play(String name, float atTime, CompoundTag properties) {
+    public void play(String name, float atTime, CompoundTag tag) {
         for (var entry : activeEntries.values()) {
             for (var animationController : entry.getAnimationControllers()) {
                 if (name.equals(animationController.getName())) {
-                    entry.play(animationController, atTime, properties);
+                    entry.play(animationController, atTime, tag);
                 }
             }
         }
@@ -211,19 +216,17 @@ public class AnimationManager {
             }
         }
 
-        public void play(AnimationController animationController, float time, CompoundTag properties) {
-            var speed = OpenMath.clamp(properties.getOptionalNumber("speed", 1).floatValue(), 0.0001f, 1000.0f);
-            var playCount = OpenMath.clamp(properties.getOptionalInt("repeat", 0), -1, 1000);
-            var needsLock = properties.getOptionalBoolean("lock", true);
+        public void play(AnimationController animationController, float time, CompoundTag tag) {
             // play parallel animation (simple).
+            var properties = new Properties(new TagSerializer(tag));
             if (animationController.isParallel()) {
-                startPlay(animationController, time, speed, playCount);
+                startPlay(animationController, time, properties.speed, properties.playCount);
                 return;
             }
             // play triggerable animation (lock).
             var newValue = findTriggerableController(animationController);
             if (newValue != null && newValue != playing) {
-                play(newValue, playing, time, speed, playCount, needsLock);
+                play(newValue, playing, time, properties.speed, properties.playCount, properties.needsLock);
             }
         }
 
@@ -359,6 +362,32 @@ public class AnimationManager {
                 return;
             }
             playing = findTriggerableController(playing.animationController);
+        }
+    }
+
+    protected static class Properties implements IDataSerializable.Immutable {
+
+        public static final IDataSerializerKey<Float> SPEED = IDataSerializerKey.create("speed", IDataCodec.FLOAT, 1.0f);
+        public static final IDataSerializerKey<Integer> REPEAT = IDataSerializerKey.create("repeat", IDataCodec.INT, 0);
+        public static final IDataSerializerKey<Boolean> LOCK = IDataSerializerKey.create("lock", IDataCodec.BOOL, true);
+
+        public static final IDataCodec<Properties> CODEC = IDataCodec.COMPOUND_TAG.serializer(Properties::new);
+
+        private final float speed;
+        private final int playCount;
+        private final boolean needsLock;
+
+        public Properties(IDataSerializer serializer) {
+            this.speed = OpenMath.clamp(serializer.read(SPEED), 0.0001f, 1000.0f);
+            this.playCount = OpenMath.clamp(serializer.read(REPEAT), -1, 1000);
+            this.needsLock = serializer.read(LOCK);
+        }
+
+        @Override
+        public void serialize(IDataSerializer serializer) {
+            serializer.write(SPEED, speed);
+            serializer.write(REPEAT, playCount);
+            serializer.write(LOCK, needsLock);
         }
     }
 

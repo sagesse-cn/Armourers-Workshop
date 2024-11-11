@@ -1,7 +1,7 @@
 package moe.plushie.armourers_workshop.core.skin.serializer.io;
 
 import com.google.gson.JsonElement;
-import moe.plushie.armourers_workshop.api.core.utils.IPair;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -103,10 +103,10 @@ public interface IODataObject {
         return values;
     }
 
-    default Collection<IPair<String, IODataObject>> entrySet() {
-        var keys = new ArrayList<IPair<String, IODataObject>>();
+    default Collection<Pair<String, IODataObject>> entrySet() {
+        var keys = new ArrayList<Pair<String, IODataObject>>();
         if (type() == Type.DICTIONARY) {
-            jsonValue().getAsJsonObject().entrySet().forEach(it -> keys.add(IPair.of(it.getKey(), of(it.getValue()))));
+            jsonValue().getAsJsonObject().entrySet().forEach(it -> keys.add(Pair.of(it.getKey(), of(it.getValue()))));
         }
         return keys;
     }
