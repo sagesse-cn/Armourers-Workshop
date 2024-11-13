@@ -101,6 +101,14 @@ public class FileUtils {
         return FilenameUtils.getBaseName(filename);
     }
 
+
+    public static String getRegistryName(final String path, final String rootPath) {
+        if (path.startsWith(rootPath)) {
+            return path.substring(rootPath.length());
+        }
+        return path;
+    }
+
     /**
      * Removes the extension from a filename.
      */

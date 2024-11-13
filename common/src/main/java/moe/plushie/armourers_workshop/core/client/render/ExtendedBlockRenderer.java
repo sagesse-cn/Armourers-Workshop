@@ -20,8 +20,8 @@ import net.minecraft.world.entity.Entity;
 @Environment(EnvType.CLIENT)
 public class ExtendedBlockRenderer {
 
-    private static BakedArmature armature = new BakedArmature(Armatures.ANY);
-    private static SkinRenderContext context = new SkinRenderContext();
+    private static final BakedArmature armature = new BakedArmature(Armatures.ANY);
+    private static final SkinRenderContext context = new SkinRenderContext();
 
     public static void render(Entity entity, BakedSkin skin, int overlay, int lightmap, float partialTicks, AnimationManager animationManager, IPoseStack poseStack, IBufferSource bufferSource) {
         poseStack.pushPose();

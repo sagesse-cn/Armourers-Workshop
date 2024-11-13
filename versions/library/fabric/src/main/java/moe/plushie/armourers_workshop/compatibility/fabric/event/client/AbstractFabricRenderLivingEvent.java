@@ -46,6 +46,40 @@ public class AbstractFabricRenderLivingEvent {
         }));
     }
 
+    public static IEventHandler<RenderLivingEntityEvent.Setup> setupFactory() {
+        return (priority, receiveCancelled, subscriber) -> RenderLivingEntityEvents.SETUP.register((entity, partialTicks, light, poseStack, buffers, renderer) -> subscriber.accept(new RenderLivingEntityEvent.Setup() {
+            @Override
+            public float getPartialTicks() {
+                return partialTicks;
+            }
+
+            @Override
+            public int getPackedLight() {
+                return light;
+            }
+
+            @Override
+            public LivingEntity getEntity() {
+                return entity;
+            }
+
+            @Override
+            public LivingEntityRenderer<?, ?> getRenderer() {
+                return renderer;
+            }
+
+            @Override
+            public PoseStack getPoseStack() {
+                return poseStack;
+            }
+
+            @Override
+            public MultiBufferSource getMultiBufferSource() {
+                return buffers;
+            }
+        }));
+    }
+
     public static IEventHandler<RenderLivingEntityEvent.Post> postFactory() {
         return (priority, receiveCancelled, subscriber) -> RenderLivingEntityEvents.POST.register((entity, partialTicks, light, poseStack, buffers, renderer) -> subscriber.accept(new RenderLivingEntityEvent.Post() {
 

@@ -1,8 +1,8 @@
 package moe.plushie.armourers_workshop.core.client.skinrender.patch;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import moe.plushie.armourers_workshop.core.client.bake.BakedArmatureTransformer;
 import moe.plushie.armourers_workshop.core.client.other.EntityRenderData;
+import moe.plushie.armourers_workshop.core.client.render.EntityRendererContext;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -15,8 +15,8 @@ public class LivingEntityRenderPatch<T extends LivingEntity> extends EntityRende
 
     protected EntityModel<?> entityModel;
 
-    public LivingEntityRenderPatch(EntityRenderData renderData) {
-        super(renderData);
+    public LivingEntityRenderPatch(EntityRenderData renderData, EntityRendererContext rendererContext) {
+        super(renderData, rendererContext);
     }
 
     public static <T extends LivingEntity> void activate(T entity, float partialTicks, int packedLight, PoseStack poseStackIn, LivingEntityRenderer<?, ?> entityRenderer, Consumer<LivingEntityRenderPatch<T>> handler) {
@@ -44,7 +44,7 @@ public class LivingEntityRenderPatch<T extends LivingEntity> extends EntityRende
         var entityModel = entityRenderer.getModel();
         if (this.entityModel != entityModel) {
             this.entityModel = entityModel;
-            this.transformer = BakedArmatureTransformer.defaultBy(entity, entityModel, entityRenderer);
+            this.transformer = EntityRendererContext.of(entityRenderer).getTransformer(entityModel);
         }
     }
 }

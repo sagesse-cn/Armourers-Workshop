@@ -1,6 +1,6 @@
 {
   "type": "epicfight:armature",
-  "parent": "armourers_workshop:skin/transformers/ef_humanoid",
+  "parent": "armourers_workshop:epicfight/humanoid",
   "transform": {
     "translate": {
       "Head": [ 0, 36, 0 ],
@@ -26,6 +26,6 @@
     }
   },
   "model": [
-    "minecraft:model/iron_golem"
+    "minecraft:model/enderman"
   ]
 }

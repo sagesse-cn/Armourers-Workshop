@@ -18,16 +18,18 @@ import moe.plushie.armourers_workshop.core.client.skinrender.SkinRendererManager
 import moe.plushie.armourers_workshop.core.client.texture.TextureManager;
 import moe.plushie.armourers_workshop.core.data.DataPackType;
 import moe.plushie.armourers_workshop.core.data.cache.AutoreleasePool;
-import moe.plushie.armourers_workshop.core.menu.SkinSlotType;
 import moe.plushie.armourers_workshop.core.data.ticket.Tickets;
+import moe.plushie.armourers_workshop.core.menu.SkinSlotType;
 import moe.plushie.armourers_workshop.core.skin.SkinLoader;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPartTypes;
 import moe.plushie.armourers_workshop.core.utils.OpenResourceLocation;
+import moe.plushie.armourers_workshop.core.utils.TypedRegistry;
 import moe.plushie.armourers_workshop.init.ModConfig;
 import moe.plushie.armourers_workshop.init.ModConfigSpec;
 import moe.plushie.armourers_workshop.init.ModConstants;
 import moe.plushie.armourers_workshop.init.ModContext;
 import moe.plushie.armourers_workshop.init.ModDebugger;
+import moe.plushie.armourers_workshop.init.ModEntityProfiles;
 import moe.plushie.armourers_workshop.init.ModItems;
 import moe.plushie.armourers_workshop.init.ModKeyBindings;
 import moe.plushie.armourers_workshop.init.client.ClientWardrobeHandler;
@@ -51,7 +53,6 @@ import moe.plushie.armourers_workshop.library.data.GlobalSkinLibrary;
 import moe.plushie.armourers_workshop.library.data.SkinLibraryManager;
 import moe.plushie.armourers_workshop.library.data.impl.MinecraftAuth;
 import moe.plushie.armourers_workshop.utils.TickUtils;
-import moe.plushie.armourers_workshop.core.utils.TypedRegistry;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
@@ -134,7 +135,7 @@ public class ClientProxy {
         });
         EventManager.listen(ClientPlayerEvent.LoggingOut.class, event -> {
             var player = event.getPlayer();
-            if (player != null && !player.equals(EnvironmentManager.getPlayer())) {
+            if (player == null || !player.equals(EnvironmentManager.getPlayer())) {
                 return; // other players leave
             }
             AnimationEngine.stop();
@@ -147,6 +148,7 @@ public class ClientProxy {
             SkinLibraryManager.getClient().getPublicSkinLibrary().reset();
             SkinLibraryManager.getClient().getPrivateSkinLibrary().reset();
             ModContext.reset();
+            ModEntityProfiles.setCustomProfiles(null);
             ModConfigSpec.COMMON.apply(null);
         });
 

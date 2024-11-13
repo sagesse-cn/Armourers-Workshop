@@ -37,6 +37,7 @@ import moe.plushie.armourers_workshop.utils.TickUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.BakedModel;
@@ -132,15 +133,15 @@ public class ClientWardrobeHandler {
         poseStack.popPose();
     }
 
-    public static void onRenderEntityPre(Entity entity, float partialTicks, PoseStack poseStackIn, MultiBufferSource bufferSourceIn, int packedLight) {
-        FallbackEntityRenderPatch.activate(entity, partialTicks, packedLight, poseStackIn, null);
+    public static void onRenderEntityPre(Entity entity, float partialTicks, PoseStack poseStackIn, MultiBufferSource bufferSourceIn, int packedLight, EntityRenderer<?> entityRenderer) {
+        FallbackEntityRenderPatch.activate(entity, partialTicks, packedLight, poseStackIn, entityRenderer, null);
     }
 
-    public static void onRenderEntity(Entity entity, float partialTicks, PoseStack poseStackIn, MultiBufferSource bufferSourceIn, int packedLight) {
+    public static void onRenderEntity(Entity entity, float partialTicks, PoseStack poseStackIn, MultiBufferSource bufferSourceIn, int packedLight, EntityRenderer<?> entityRenderer) {
         FallbackEntityRenderPatch.apply(entity, poseStackIn, bufferSourceIn, null);
     }
 
-    public static void onRenderEntityPost(Entity entity, float partialTicks, PoseStack poseStackIn, MultiBufferSource bufferSourceIn, int packedLight) {
+    public static void onRenderEntityPost(Entity entity, float partialTicks, PoseStack poseStackIn, MultiBufferSource bufferSourceIn, int packedLight, EntityRenderer<?> entityRenderer) {
         FallbackEntityRenderPatch.deactivate(entity, null);
     }
 

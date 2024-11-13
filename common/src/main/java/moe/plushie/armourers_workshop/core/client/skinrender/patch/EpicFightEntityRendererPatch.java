@@ -6,6 +6,7 @@ import moe.plushie.armourers_workshop.core.armature.thirdparty.EpicFlightTransfo
 import moe.plushie.armourers_workshop.core.client.bake.BakedArmatureTransformer;
 import moe.plushie.armourers_workshop.core.client.other.EntityRenderData;
 import moe.plushie.armourers_workshop.core.client.other.thirdparty.EpicFlightModel;
+import moe.plushie.armourers_workshop.core.client.render.EntityRendererContext;
 import moe.plushie.armourers_workshop.core.client.skinrender.SkinRendererManager2;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -24,15 +25,15 @@ public class EpicFightEntityRendererPatch<T extends LivingEntity> extends Entity
     private EpicFlightModel transformerModel;
     private EpicFlightTransformProvider transformProvider;
 
-    public EpicFightEntityRendererPatch(EntityRenderData renderData) {
-        super(renderData);
+    public EpicFightEntityRendererPatch(EntityRenderData renderData, EntityRendererContext rendererContext) {
+        super(renderData, rendererContext);
     }
 
     public static <T extends LivingEntity> void activate(T entity, float partialTicks, int packedLight, PoseStack poseStackIn, LivingEntityRenderer<?, ?> entityRenderer, Consumer<EpicFightEntityRendererPatch<T>> handler) {
-        _activate(EpicFightEntityRendererPatch.class, entity, partialTicks, packedLight, poseStackIn, entityRenderer, handler, renderData -> {
+        _activate(EpicFightEntityRendererPatch.class, entity, partialTicks, packedLight, poseStackIn, entityRenderer, handler, (renderData, rendererContext) -> {
             var model = EpicFlightModel.ofNullable(entityRenderer.getModel());
             if (model != null) {
-                return new EpicFightEntityRendererPatch<>(renderData);
+                return new EpicFightEntityRendererPatch<>(renderData, rendererContext);
             }
             return null;
         });
@@ -112,12 +113,9 @@ public class EpicFightEntityRendererPatch<T extends LivingEntity> extends Entity
         return null;
     }
 
-    private BakedArmatureTransformer createTransformer(Entity entity, EpicFlightModel model, LivingEntityRenderer<?, ?> entityRenderer) {
-        if (model != null) {
-            var transformer = SkinRendererManager2.EPICFIGHT.getTransformer(entity.getType(), model);
-            if (transformer != null) {
-                return BakedArmatureTransformer.create(transformer, entityRenderer);
-            }
+    private BakedArmatureTransformer createTransformer(Entity entity, EpicFlightModel entityModel, LivingEntityRenderer<?, ?> entityRenderer) {
+        if (entityModel != null) {
+            return EntityRendererContext.of(entityRenderer).createTransformer(entityModel, SkinRendererManager2.EPIC_FIGHT);
         }
         return null;
     }

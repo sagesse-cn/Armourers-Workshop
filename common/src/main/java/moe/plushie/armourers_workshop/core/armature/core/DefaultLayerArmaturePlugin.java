@@ -5,6 +5,7 @@ import moe.plushie.armourers_workshop.compatibility.client.layer.AbstractSkinnab
 import moe.plushie.armourers_workshop.core.armature.ArmaturePlugin;
 import moe.plushie.armourers_workshop.core.armature.ArmatureTransformerContext;
 import moe.plushie.armourers_workshop.core.client.layer.PlaceholderLayer;
+import moe.plushie.armourers_workshop.core.client.layer.SkinWardrobeLayer;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
@@ -31,7 +32,9 @@ public abstract class DefaultLayerArmaturePlugin extends ArmaturePlugin {
     }
 
     public static DefaultLayerArmaturePlugin any(ArmatureTransformerContext context) {
-        return new Blacklist(context, DefaultLayerArmaturePlugin::whenAnyVisible);
+        var plugin = new Blacklist(context, DefaultLayerArmaturePlugin::whenAnyVisible);
+        plugin.register(SkinWardrobeLayer.class);
+        return plugin;
     }
 
     public static DefaultLayerArmaturePlugin villager(ArmatureTransformerContext context) {

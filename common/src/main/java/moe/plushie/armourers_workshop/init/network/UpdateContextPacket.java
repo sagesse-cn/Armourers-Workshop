@@ -4,17 +4,22 @@ import io.netty.buffer.ByteBuf;
 import moe.plushie.armourers_workshop.api.network.IClientPacketHandler;
 import moe.plushie.armourers_workshop.api.network.IFriendlyByteBuf;
 import moe.plushie.armourers_workshop.core.data.TickTracker;
+import moe.plushie.armourers_workshop.core.entity.EntityProfile;
 import moe.plushie.armourers_workshop.core.network.CustomPacket;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperties;
+import moe.plushie.armourers_workshop.core.utils.Constants;
+import moe.plushie.armourers_workshop.core.utils.TagSerializer;
 import moe.plushie.armourers_workshop.init.ModConfigSpec;
 import moe.plushie.armourers_workshop.init.ModConstants;
 import moe.plushie.armourers_workshop.init.ModContext;
+import moe.plushie.armourers_workshop.init.ModEntityProfiles;
 import moe.plushie.armourers_workshop.init.ModLog;
-import moe.plushie.armourers_workshop.init.platform.DataPackManager;
 import moe.plushie.armourers_workshop.init.platform.EnvironmentManager;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.world.entity.player.Player;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -37,7 +42,13 @@ public class UpdateContextPacket extends CustomPacket {
     }
 
     public static UpdateContextPacket all(Player player) {
-        return new UpdateContextPacket(0x07, player.getUUID());
+        int flags = 0x01;
+        if (EnvironmentManager.isDedicatedServer()) {
+            flags |= 0x02;
+            flags |= 0x04;
+            // TODO: @SAGESSE The single player server is work?
+        }
+        return new UpdateContextPacket(flags, player.getUUID());
     }
 
     public static UpdateContextPacket config() {
@@ -84,7 +95,7 @@ public class UpdateContextPacket extends CustomPacket {
 
 
     private void setConfig(CompoundTag tag) {
-        if (tag == null) {
+        if (tag == null || tag.isEmpty()) {
             return;
         }
         var fields = new HashMap<String, Object>();
@@ -96,20 +107,36 @@ public class UpdateContextPacket extends CustomPacket {
     }
 
     private CompoundTag getConfig() {
-        if (EnvironmentManager.isDedicatedServer()) {
-            var properties = new SkinProperties();
-            ModConfigSpec.COMMON.snapshot().forEach(properties::put);
-            return properties.serializeNBT();
-        }
-        return null;
+        var properties = new SkinProperties();
+        ModConfigSpec.COMMON.snapshot().forEach(properties::put);
+        return properties.serializeNBT();
     }
 
-    private void setDataPack(CompoundTag tag) {
-
+    private void setDataPack(CompoundTag dataPack) {
+        if (dataPack == null || dataPack.isEmpty()) {
+            return;
+        }
+        var profileList = dataPack.getList("Profiles", Constants.TagFlags.COMPOUND);
+        var profiles = new ArrayList<EntityProfile>();
+        for (int i = 0; i < profileList.size(); ++i) {
+            var serializer = new TagSerializer(profileList.getCompound(i));
+            profiles.add(new EntityProfile(serializer));
+        }
+        ModEntityProfiles.setCustomProfiles(profiles);
     }
 
     private CompoundTag getDataPack() {
-        return null;
+        var dataPack = new CompoundTag();
+        var profiles = new ListTag();
+        for (var profile : ModEntityProfiles.getCustomProfiles()) {
+            var serializer = new TagSerializer();
+            profile.serialize(serializer);
+            profiles.add(serializer.getTag());
+        }
+        if (!profiles.isEmpty()) {
+            dataPack.put("Profiles", profiles);
+        }
+        return dataPack;
     }
 
     private void checkNetworkVersion(String version) {

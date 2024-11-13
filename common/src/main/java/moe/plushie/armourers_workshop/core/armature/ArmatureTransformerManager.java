@@ -3,6 +3,7 @@ package moe.plushie.armourers_workshop.core.armature;
 import moe.plushie.armourers_workshop.api.client.model.IModel;
 import moe.plushie.armourers_workshop.api.common.IEntityTypeProvider;
 import moe.plushie.armourers_workshop.api.core.IResourceLocation;
+import moe.plushie.armourers_workshop.core.entity.EntityProfile;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IODataObject;
 import net.minecraft.world.entity.EntityType;
 
@@ -15,6 +16,7 @@ public abstract class ArmatureTransformerManager {
 
     private final HashMap<IResourceLocation, ArmatureTransformerBuilder> pendingBuilders = new HashMap<>();
 
+    private final HashMap<IResourceLocation, ArmatureTransformerBuilder> namedBuilders = new HashMap<>();
     private final HashMap<IEntityTypeProvider<?>, ArrayList<ArmatureTransformerBuilder>> entityBuilders = new HashMap<>();
     private final HashMap<Class<?>, ArrayList<ArmatureTransformerBuilder>> modelBuilders = new HashMap<>();
 
@@ -26,9 +28,9 @@ public abstract class ArmatureTransformerManager {
         pendingBuilders.clear();
     }
 
-    public void append(IODataObject object, IResourceLocation location) {
-        var builder = createBuilder(location);
-        pendingBuilders.put(location, builder);
+    public void append(IResourceLocation registryName, IODataObject object) {
+        var builder = createBuilder(registryName);
+        pendingBuilders.put(registryName, builder);
         builder.load(object);
     }
 
@@ -67,11 +69,12 @@ public abstract class ArmatureTransformerManager {
 //            if (used == 0) {
 //                defaultBuilders.add(builder);
 //            }
+            namedBuilders.put(name, builder);
         });
         version += 1;
     }
 
-    public ArmatureTransformer getTransformer(EntityType<?> entityType, IModel entityModel) {
+    public ArmatureTransformer getTransformer(EntityType<?> entityType, EntityProfile entityProfile, IModel entityModel) {
         var classes = new ArrayList<Class<?>>();
         var finalBuilders = new ArrayList<ArmatureTransformerBuilder>();
         if (entityModel != null) {
@@ -87,10 +90,14 @@ public abstract class ArmatureTransformerManager {
                 }
             });
         }
-        if (entityType != null) {
-            var resultBuilders = find(entityBuilders, entityType, IEntityTypeProvider::get);
-            if (resultBuilders != null) {
-                finalBuilders.addAll(resultBuilders);
+        var resultBuilders = find(entityBuilders, entityType, IEntityTypeProvider::get);
+        if (resultBuilders != null) {
+            finalBuilders.addAll(resultBuilders);
+        }
+        for (var registryName : entityProfile.getTransformers()) {
+            var builder = namedBuilders.get(registryName);
+            if (builder != null) {
+                finalBuilders.add(builder);
             }
         }
         if (!finalBuilders.isEmpty()) {
@@ -105,7 +112,7 @@ public abstract class ArmatureTransformerManager {
     }
 
     public static <K, V, R> V find(Map<K, V> map, R req, Function<K, R> resolver) {
-        for (Map.Entry<K, V> entry : map.entrySet()) {
+        for (var entry : map.entrySet()) {
             if (req.equals(resolver.apply(entry.getKey()))) {
                 return entry.getValue();
             }

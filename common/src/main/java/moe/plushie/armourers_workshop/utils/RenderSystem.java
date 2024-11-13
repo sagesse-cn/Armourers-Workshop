@@ -37,7 +37,7 @@ public final class RenderSystem extends AbstractRenderSystem {
 
     private static final FloatBuffer BUFFER = MatrixUtils.createFloatBuffer(3);
 
-    public static void call(Runnable task) {
+    public static void safeCall(Runnable task) {
         if (isOnRenderThread()) {
             task.run();
         } else {

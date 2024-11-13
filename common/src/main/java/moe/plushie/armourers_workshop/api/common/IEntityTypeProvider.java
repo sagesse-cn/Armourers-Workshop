@@ -44,6 +44,11 @@ public interface IEntityTypeProvider<T extends Entity> extends Supplier<EntityTy
             public int hashCode() {
                 return registryName.hashCode();
             }
+
+            @Override
+            public String toString() {
+                return registryName;
+            }
         };
     }
 }

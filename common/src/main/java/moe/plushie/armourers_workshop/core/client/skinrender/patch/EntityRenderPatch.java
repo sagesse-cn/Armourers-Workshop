@@ -6,7 +6,7 @@ import moe.plushie.armourers_workshop.core.armature.core.DefaultArmaturePluginCo
 import moe.plushie.armourers_workshop.core.client.bake.BakedArmatureTransformer;
 import moe.plushie.armourers_workshop.core.client.other.EntityRenderData;
 import moe.plushie.armourers_workshop.core.client.other.SkinRenderContext;
-import moe.plushie.armourers_workshop.core.client.skinrender.SkinRendererManager;
+import moe.plushie.armourers_workshop.core.client.render.EntityRendererContext;
 import moe.plushie.armourers_workshop.core.utils.Objects;
 import moe.plushie.armourers_workshop.utils.TickUtils;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -14,31 +14,31 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.world.entity.Entity;
 
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 public abstract class EntityRenderPatch<T extends Entity> {
 
-    protected final int libraryVersion;
+    protected final int version;
 
     protected final SkinRenderContext renderingContext = new SkinRenderContext();
     protected final DefaultArmaturePluginContext pluginContext = new DefaultArmaturePluginContext();
 
     protected BakedArmatureTransformer transformer;
 
-    public EntityRenderPatch(EntityRenderData renderData) {
-        this.libraryVersion = SkinRendererManager.getVersion();
+    public EntityRenderPatch(EntityRenderData renderData, EntityRendererContext context) {
+        this.version = context.getVersion();
         this.pluginContext.setRenderData(renderData);
         this.renderingContext.setRenderData(renderData);
     }
 
-    protected static <T extends Entity, P extends EntityRenderPatch<? super T>> void _activate(Class<?> clazz, T entity, float partialTicks, int packedLight, PoseStack poseStackIn, EntityRenderer<?> entityRenderer, Consumer<P> handler, Function<EntityRenderData, EntityRenderPatch<? extends T>> provider) {
+    protected static <T extends Entity, P extends EntityRenderPatch<? super T>> void _activate(Class<?> clazz, T entity, float partialTicks, int packedLight, PoseStack poseStackIn, EntityRenderer<?> entityRenderer, Consumer<P> handler, Factory<? extends T> factory) {
         var renderData = EntityRenderData.of(entity);
         if (renderData == null) {
             return;
         }
         var renderPatch = renderData.getRenderPatch();
-        if (!clazz.isInstance(renderPatch) || !renderPatch.isValid()) {
-            var renderPatch1 = provider.apply(renderData);
+        var rendererContext = EntityRendererContext.of(entityRenderer);
+        if (!clazz.isInstance(renderPatch) || !renderPatch.isValid(rendererContext)) {
+            var renderPatch1 = factory.create(renderData, rendererContext);
             renderPatch = Objects.unsafeCast(renderPatch1);
             renderData.setRenderPatch(renderPatch);
             if (renderPatch == null) {
@@ -106,8 +106,8 @@ public abstract class EntityRenderPatch<T extends Entity> {
         }
     }
 
-    public boolean isValid() {
-        return libraryVersion == SkinRendererManager.getVersion();
+    public boolean isValid(EntityRendererContext context) {
+        return version == context.getVersion();
     }
 
     public BakedArmatureTransformer getTransformer() {
@@ -120,6 +120,12 @@ public abstract class EntityRenderPatch<T extends Entity> {
 
     public SkinRenderContext getRenderingContext() {
         return renderingContext;
+    }
+
+    @FunctionalInterface
+    public interface Factory<T extends Entity> {
+
+        EntityRenderPatch<T> create(EntityRenderData renderData, EntityRendererContext rendererStorage);
     }
 }
 

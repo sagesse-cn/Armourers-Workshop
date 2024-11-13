@@ -46,6 +46,7 @@ public class AbstractFabricClientEvents {
         EventManager.post(RenderHighlightEvent.Block.class, AbstractFabricRenderHighlightEvent.blockFactory());
 
         EventManager.post(RenderLivingEntityEvent.Pre.class, AbstractFabricRenderLivingEvent.preFactory());
+        EventManager.post(RenderLivingEntityEvent.Setup.class, AbstractFabricRenderLivingEvent.setupFactory());
         EventManager.post(RenderLivingEntityEvent.Post.class, AbstractFabricRenderLivingEvent.postFactory());
 
         EventManager.post(RenderSpecificHandEvent.class, AbstractFabricRenderSpecificHandEvent.armFactory());

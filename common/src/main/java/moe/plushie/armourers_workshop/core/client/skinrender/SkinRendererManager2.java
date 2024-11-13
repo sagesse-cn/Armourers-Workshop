@@ -25,6 +25,8 @@ import moe.plushie.armourers_workshop.core.client.skinrender.plugin.VillagerMode
 import moe.plushie.armourers_workshop.core.data.DataPackType;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IODataObject;
 import moe.plushie.armourers_workshop.core.utils.Collections;
+import moe.plushie.armourers_workshop.core.utils.FileUtils;
+import moe.plushie.armourers_workshop.core.utils.OpenResourceLocation;
 import moe.plushie.armourers_workshop.init.platform.DataPackManager;
 import net.minecraft.client.model.Model;
 
@@ -36,11 +38,11 @@ import java.util.function.Consumer;
 public class SkinRendererManager2 extends ArmatureSerializers {
 
     public static final ArmatureTransformerManager DEFAULT = new DefaultArmatureTransformerManager();
-    public static final ArmatureTransformerManager EPICFIGHT = new EpicFlightArmatureTransformerManager();
+    public static final ArmatureTransformerManager EPIC_FIGHT = new EpicFlightArmatureTransformerManager();
 
     private static final Map<String, ArmatureTransformerManager> MANAGERS = Collections.immutableMap(builder -> {
         builder.put("armourers_workshop:armature", DEFAULT);
-        builder.put("epicfight:armature", EPICFIGHT);
+        builder.put("epicfight:armature", EPIC_FIGHT);
     });
 
     public static void init() {
@@ -52,7 +54,6 @@ public class SkinRendererManager2 extends ArmatureSerializers {
     }
 
     private static void registerModifiers() {
-
         registerModifier("armourers_workshop:modifier/baby_head_apt", DefaultBabyJointModifier::new);
         registerModifier("armourers_workshop:modifier/body_to_skirt", DefaultSkirtJointModifier::new);
         registerModifier("armourers_workshop:modifier/body_to_flat_wing", FlatWingJointModifier::new);
@@ -170,12 +171,6 @@ public class SkinRendererManager2 extends ArmatureSerializers {
             it.put("tail", "bodyParts[0].tail");
         });
 
-        registerModel("minecraft:model/pig", AbstractSkinnableModel.PIG);
-        registerModel("minecraft:model/wolf", AbstractSkinnableModel.WOLF);
-        registerModel("minecraft:model/guardian", AbstractSkinnableModel.GUARDIAN);
-        registerModel("minecraft:model/phantom", AbstractSkinnableModel.PHANTOM);
-        registerModel("minecraft:model/shulker", AbstractSkinnableModel.SHULKER);
-
         registerModel("minecraft:model/boat", AbstractSkinnableModel.BOAT, it -> {
             it.put("bottom", "parts[0]");
             it.put("back", "parts[1]");
@@ -234,7 +229,8 @@ public class SkinRendererManager2 extends ArmatureSerializers {
             var type = object.get("type").stringValue();
             var manager = MANAGERS.get(type);
             if (manager != null) {
-                manager.append(object, location);
+                var path = FileUtils.getRegistryName(location.getPath(), "skin/transformers/");
+                manager.append(OpenResourceLocation.create(location.getNamespace(), path), object);
             }
         }
 

@@ -1,5 +1,6 @@
 package moe.plushie.armourers_workshop.init.platform;
 
+import com.mojang.authlib.GameProfile;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import moe.plushie.armourers_workshop.api.config.IConfigSpec;
 import moe.plushie.armourers_workshop.api.core.IResourceManager;

@@ -42,13 +42,5 @@ public class AbstractSkinnableModel extends AbstractSkinnableModelImpl {
     public static final Class<CreeperModel> CREEPER = CreeperModel.class;
     public static final Class<HorseModel> HORSE = HorseModel.class;
 
-    public static final Class<PigModel> PIG = PigModel.class;
-    public static final Class<WolfModel> WOLF = WolfModel.class;
-
-    public static final Class<GuardianModel> GUARDIAN = GuardianModel.class;
-    public static final Class<PhantomModel> PHANTOM = PhantomModel.class;
-
-    public static final Class<ShulkerModel> SHULKER = ShulkerModel.class;
-
     public static final Class<BoatModel> BOAT = BoatModel.class;
 }

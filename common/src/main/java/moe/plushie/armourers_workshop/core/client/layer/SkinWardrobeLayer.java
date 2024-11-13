@@ -9,19 +9,15 @@ import moe.plushie.armourers_workshop.core.client.bake.BakedArmature;
 import moe.plushie.armourers_workshop.core.client.bake.BakedArmatureTransformer;
 import moe.plushie.armourers_workshop.core.client.other.EntityRenderData;
 import moe.plushie.armourers_workshop.core.client.other.SkinItemSource;
-import moe.plushie.armourers_workshop.core.client.other.SkinRenderType;
 import moe.plushie.armourers_workshop.core.client.skinrender.SkinRenderer;
 import moe.plushie.armourers_workshop.core.client.skinrender.patch.EpicFightEntityRendererPatch;
-import moe.plushie.armourers_workshop.core.math.Vector3f;
 import moe.plushie.armourers_workshop.core.utils.Objects;
-import moe.plushie.armourers_workshop.init.ModContributors;
 import moe.plushie.armourers_workshop.utils.ModelHolder;
 import moe.plushie.armourers_workshop.utils.RenderSystem;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.entity.Entity;
 
 @Environment(EnvType.CLIENT)
@@ -71,12 +67,6 @@ public class SkinWardrobeLayer<T extends Entity, V extends EntityModel<T>, M ext
             applyModelScale(poseStack, ModelHolder.of(getParentModel()));
         }
 
-        // render the contributor
-        var contributor = ModContributors.by(entity);
-        if (contributor != null && renderData.shouldRenderExtra() && epicFlightContext == null) {
-            renderMagicCircle(poseStack1, bufferSource, entity.tickCount + entity.getId() * 31, partialTicks, 24, contributor.color, packedLightIn, OverlayTexture.NO_OVERLAY);
-        }
-
         var f = 1 / 16f;
         poseStack.scale(f, f, f);
 
@@ -105,26 +95,6 @@ public class SkinWardrobeLayer<T extends Entity, V extends EntityModel<T>, M ext
             SkinRenderer.render(entity, armature, bakedSkin, colorScheme, renderingContext);
         }
 
-        poseStack.popPose();
-    }
-
-    public void renderMagicCircle(IPoseStack poseStack, IBufferSource bufferSource, int ticks, float partialTickTime, int offset, int color, int lightmap, int overlay) {
-        poseStack.pushPose();
-        poseStack.translate(0, offset / 16.0f, 0);
-
-        var red = color >> 16 & 0xff;
-        var green = color >> 8 & 0xff;
-        var blue = color & 0xff;
-        var circleScale = 2f;
-        var rotation = (float) (ticks / 0.8D % 360D) + partialTickTime;
-        poseStack.rotate(Vector3f.YP.rotationDegrees(rotation));
-        poseStack.scale(circleScale, circleScale, circleScale);
-        var pose = poseStack.last();
-        var builder = bufferSource.getBuffer(SkinRenderType.IMAGE_MAGIC);
-        builder.vertex(pose, -1, 0, -1).color(red, green, blue, 0xff).uv(1, 0).overlayCoords(overlay).uv2(lightmap).endVertex();
-        builder.vertex(pose, 1, 0, -1).color(red, green, blue, 0xff).uv(0, 0).overlayCoords(overlay).uv2(lightmap).endVertex();
-        builder.vertex(pose, 1, 0, 1).color(red, green, blue, 0xff).uv(0, 1).overlayCoords(overlay).uv2(lightmap).endVertex();
-        builder.vertex(pose, -1, 0, 1).color(red, green, blue, 0xff).uv(1, 1).overlayCoords(overlay).uv2(lightmap).endVertex();
         poseStack.popPose();
     }
 

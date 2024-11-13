@@ -11,6 +11,7 @@ import net.minecraft.client.model.ListModel;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.BoatRenderer;
+import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.vehicle.Boat;
 import org.spongepowered.asm.mixin.Final;
@@ -36,17 +37,17 @@ public class BoatRendererMixin<T extends Boat> implements IModelProvider<T> {
 
     @Inject(method = "render(Lnet/minecraft/world/entity/vehicle/Boat;FFLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V", at = @At(value = "HEAD"))
     public void aw2$willRender(T entity, float p_225623_2_, float partialTicks, PoseStack poseStack, MultiBufferSource buffers, int light, CallbackInfo ci) {
-        ClientWardrobeHandler.onRenderEntityPre(entity, partialTicks, poseStack, buffers, light);
+        ClientWardrobeHandler.onRenderEntityPre(entity, partialTicks, poseStack, buffers, light, EntityRenderer.class.cast(this));
     }
 
     @Inject(method = "render(Lnet/minecraft/world/entity/vehicle/Boat;FFLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/model/ListModel;setupAnim(Lnet/minecraft/world/entity/Entity;FFFFF)V", shift = At.Shift.AFTER))
     private void aw2$render(T entity, float f, float g, PoseStack poseStack, MultiBufferSource buffers, int i, CallbackInfo ci) {
-        ClientWardrobeHandler.onRenderEntity(entity, g, poseStack, buffers, i);
+        ClientWardrobeHandler.onRenderEntity(entity, g, poseStack, buffers, i, EntityRenderer.class.cast(this));
     }
 
     @Inject(method = "render(Lnet/minecraft/world/entity/vehicle/Boat;FFLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V", at = @At(value = "RETURN"))
     public void aw2$didRender(T entity, float p_225623_2_, float partialTicks, PoseStack poseStack, MultiBufferSource buffers, int light, CallbackInfo ci) {
-        ClientWardrobeHandler.onRenderEntityPost(entity, partialTicks, poseStack, buffers, light);
+        ClientWardrobeHandler.onRenderEntityPost(entity, partialTicks, poseStack, buffers, light, EntityRenderer.class.cast(this));
     }
 
     @Unique

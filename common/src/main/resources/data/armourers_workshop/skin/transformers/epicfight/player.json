@@ -1,6 +1,6 @@
 {
-  "type": "armourers_workshop:armature",
-  "parent": "armourers_workshop:skin/transformers/aw_humanoid",
+  "type": "epicfight:armature",
+  "parent": "armourers_workshop:epicfight/humanoid",
   "override": {
     "hideOverlayHead": [
       "hat",

@@ -8,6 +8,7 @@ import moe.plushie.armourers_workshop.core.client.model.SinglePlaceholderModel;
 import moe.plushie.armourers_workshop.init.client.ClientWardrobeHandler;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.ArrowRenderer;
+import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -25,12 +26,12 @@ public class ArrowRendererMixin<T extends AbstractArrow> implements IModelProvid
 
     @Inject(method = "render(Lnet/minecraft/world/entity/projectile/AbstractArrow;FFLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V", at = @At(value = "HEAD"))
     public void aw2$willRender(T entity, float p_225623_2_, float partialTicks, PoseStack poseStack, MultiBufferSource buffers, int light, CallbackInfo ci) {
-        ClientWardrobeHandler.onRenderEntityPre(entity, partialTicks, poseStack, buffers, light);
+        ClientWardrobeHandler.onRenderEntityPre(entity, partialTicks, poseStack, buffers, light, EntityRenderer.class.cast(this));
     }
 
     @Inject(method = "render(Lnet/minecraft/world/entity/projectile/AbstractArrow;FFLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/vertex/PoseStack;scale(FFF)V", shift = At.Shift.BEFORE))
     public void aw2$render(T entity, float p_225623_2_, float partialTicks, PoseStack poseStack, MultiBufferSource buffers, int light, CallbackInfo ci) {
-        ClientWardrobeHandler.onRenderEntity(entity, partialTicks, poseStack, buffers, light);
+        ClientWardrobeHandler.onRenderEntity(entity, partialTicks, poseStack, buffers, light, EntityRenderer.class.cast(this));
         if (!aw2$transformModel.isVisible()) {
             poseStack.setIdentity();
             poseStack.scale(0, 0, 0);
@@ -39,7 +40,7 @@ public class ArrowRendererMixin<T extends AbstractArrow> implements IModelProvid
 
     @Inject(method = "render(Lnet/minecraft/world/entity/projectile/AbstractArrow;FFLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V", at = @At(value = "RETURN"))
     public void aw2$didRender(T entity, float p_225623_2_, float partialTicks, PoseStack poseStack, MultiBufferSource buffers, int light, CallbackInfo ci) {
-        ClientWardrobeHandler.onRenderEntityPost(entity, partialTicks, poseStack, buffers, light);
+        ClientWardrobeHandler.onRenderEntityPost(entity, partialTicks, poseStack, buffers, light, EntityRenderer.class.cast(this));
     }
 
     @Override

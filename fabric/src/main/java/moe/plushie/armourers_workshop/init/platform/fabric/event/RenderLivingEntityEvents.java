@@ -15,6 +15,12 @@ public class RenderLivingEntityEvents {
         }
     });
 
+    public static final Event<Render> SETUP = EventFactory.createArrayBacked(Render.class, callbacks -> (entity, partialTicks, light, poseStack, buffers, renderer) -> {
+        for (var callback : callbacks) {
+            callback.render(entity, partialTicks, light, poseStack, buffers, renderer);
+        }
+    });
+
     public static final Event<Render> POST = EventFactory.createArrayBacked(Render.class, callbacks -> (entity, partialTicks, light, poseStack, buffers, renderer) -> {
         for (var callback : callbacks) {
             callback.render(entity, partialTicks, light, poseStack, buffers, renderer);

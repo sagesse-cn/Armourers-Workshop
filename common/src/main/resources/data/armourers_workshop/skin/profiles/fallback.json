@@ -3,6 +3,9 @@
   "slots": {
     "any": 10
   },
+  "transformers": [
+    "armourers_workshop:default/fallback"
+  ],
   "entities": [
     "minecraft:pig",
     "minecraft:wolf",

@@ -235,7 +235,7 @@ public class EntitySlotsHandler<T> implements IAssociatedContainerProvider, Skin
     @Override
     public void didBake(String identifier, BakedSkin bakedSkin) {
         if (missingSkins.contains(identifier)) {
-            RenderSystem.call(this::invalidateAll);
+            RenderSystem.safeCall(this::invalidateAll);
         }
     }
 

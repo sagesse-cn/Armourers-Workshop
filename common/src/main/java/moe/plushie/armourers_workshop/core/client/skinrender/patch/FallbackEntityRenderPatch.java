@@ -6,10 +6,11 @@ import moe.plushie.armourers_workshop.compatibility.client.AbstractPoseStack;
 import moe.plushie.armourers_workshop.core.client.bake.BakedArmature;
 import moe.plushie.armourers_workshop.core.client.bake.BakedArmatureTransformer;
 import moe.plushie.armourers_workshop.core.client.other.EntityRenderData;
-import moe.plushie.armourers_workshop.core.client.skinrender.SkinRendererManager;
+import moe.plushie.armourers_workshop.core.client.render.EntityRendererContext;
 import moe.plushie.armourers_workshop.init.client.ClientWardrobeHandler;
 import moe.plushie.armourers_workshop.utils.RenderSystem;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.world.entity.Entity;
 
 import java.util.function.Consumer;
@@ -20,17 +21,17 @@ public class FallbackEntityRenderPatch<T extends Entity> extends EntityRenderPat
 
     private final BakedArmature armature;
 
-    public FallbackEntityRenderPatch(BakedArmatureTransformer transformer, EntityRenderData renderData) {
-        super(renderData);
+    public FallbackEntityRenderPatch(BakedArmatureTransformer transformer, EntityRenderData renderData, EntityRendererContext context) {
+        super(renderData, context);
         this.transformer = transformer;
         this.armature = BakedArmature.mutableBy(transformer.getArmature());
     }
 
-    public static <T extends Entity> void activate(T entity, float partialTicks, int packedLight, PoseStack poseStackIn, Consumer<FallbackEntityRenderPatch<T>> handler) {
-        _activate(FallbackEntityRenderPatch.class, entity, partialTicks, packedLight, poseStackIn, null, handler, renderData -> {
-            var transformer = SkinRendererManager.getFallbackTransformer(entity.getType());
+    public static <T extends Entity> void activate(T entity, float partialTicks, int packedLight, PoseStack poseStackIn, EntityRenderer<?> entityRenderer, Consumer<FallbackEntityRenderPatch<T>> handler) {
+        _activate(FallbackEntityRenderPatch.class, entity, partialTicks, packedLight, poseStackIn, entityRenderer, handler, (renderData, rendererStorage) -> {
+            var transformer = rendererStorage.getTransformer(null);
             if (transformer != null) {
-                return new FallbackEntityRenderPatch<>(transformer, renderData);
+                return new FallbackEntityRenderPatch<>(transformer, renderData, rendererStorage);
             }
             return null;
         });

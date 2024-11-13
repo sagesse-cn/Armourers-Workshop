@@ -69,11 +69,10 @@ public class OpenResourceLocation implements IResourceLocation, Comparable<OpenR
 
     @Override
     public int compareTo(OpenResourceLocation resourceLocation) {
-        int i = this.path.compareTo(resourceLocation.path);
+        int i = path.compareTo(resourceLocation.path);
         if (i == 0) {
-            i = this.namespace.compareTo(resourceLocation.namespace);
+            i = namespace.compareTo(resourceLocation.namespace);
         }
-
         return i;
     }
 

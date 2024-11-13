@@ -1,6 +1,6 @@
 {
   "type": "armourers_workshop:armature",
-  "parent": "armourers_workshop:skin/transformers/aw_humanoid",
+  "parent": "armourers_workshop:default/humanoid",
   "transform": {
     "translate": {
       "Head": [ 0, -2, -1.5 ],
