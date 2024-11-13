@@ -83,7 +83,7 @@ public abstract class Shader {
         // For polygons that are parallel to the near and far clipping planes, the depth slope is zero.
         // For the polygons in your scene with a depth slope near zero, only a small, constant offset is needed.
         // To create a small, constant offset, you can pass factor = 0.0 and units = 1.0.
-        RenderSystem.polygonOffset(-0.1f, -50.0f - object.getPolygonOffset());
+        RenderSystem.polygonOffset(0.0f, -50.0f + object.getPolygonOffset() * -1f);
 
         // yes, we need update the uniform every render call.
         // maybe need query uniform from current shader.
