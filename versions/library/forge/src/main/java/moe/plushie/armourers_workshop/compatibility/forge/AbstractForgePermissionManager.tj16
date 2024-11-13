@@ -21,7 +21,7 @@ import net.minecraftforge.server.permission.context.TargetContext;
 public abstract class AbstractForgePermissionManager {
 
     public static IPermissionNode makeNode(IResourceLocation registryName, int level) {
-        PermissionNodeBuilderImpl.NodeImpl nodeImpl = new PermissionNodeBuilderImpl.NodeImpl(registryName) {
+        var nodeImpl = new PermissionNodeBuilderImpl.NodeImpl(registryName) {
 
             @Override
             public boolean resolve(GameProfile profile, IPermissionContext context) {
@@ -44,15 +44,15 @@ public abstract class AbstractForgePermissionManager {
         if (context == null) {
             return null;
         }
-        BlockPermissionContext block = Objects.safeCast(context, BlockPermissionContext.class);
+        var block = Objects.safeCast(context, BlockPermissionContext.class);
         if (block != null) {
             return new BlockPosContext(block.player, block.blockPos, block.blockState, block.facing);
         }
-        TargetPermissionContext target = Objects.safeCast(context, TargetPermissionContext.class);
+        var target = Objects.safeCast(context, TargetPermissionContext.class);
         if (target != null) {
             return new TargetContext(target.player, target.target);
         }
-        PlayerPermissionContext player = Objects.safeCast(context, PlayerPermissionContext.class);
+        var player = Objects.safeCast(context, PlayerPermissionContext.class);
         if (player != null) {
             return new PlayerContext(player.player);
         }

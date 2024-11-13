@@ -26,7 +26,7 @@ public class AbstractFabricConfigSpec extends AbstractConfigSpec {
 
     public static <B extends IConfigBuilder> IConfigSpec create(Type type, Function<IConfigBuilder, B> applier) {
         // create a builder from loader.
-        Pair<B, FabricConfigSpec> pair = new FabricConfigSpec.Builder().configure(builder -> applier.apply(new Builder() {
+        var pair = new FabricConfigSpec.Builder().configure(builder -> applier.apply(new Builder() {
 
             @Override
             public IConfigSpec build() {

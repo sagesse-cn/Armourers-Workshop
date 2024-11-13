@@ -36,7 +36,7 @@ public class AbstractForgePlayerEvent {
 
     public static IEventHandler<PlayerEvent.Death> deathFactory() {
         return AbstractForgeCommonEventsImpl.PLAYER_DEATH.flatMap(event -> {
-            Player player = Objects.safeCast(event.getEntity(), Player.class);
+            var player = Objects.safeCast(event.getEntity(), Player.class);
             if (player != null) {
                 return () -> player;
             }

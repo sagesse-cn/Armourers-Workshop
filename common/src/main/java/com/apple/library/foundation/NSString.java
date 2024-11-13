@@ -46,7 +46,7 @@ public class NSString implements StringImpl {
             return completedValue;
         }
         if (characters != null) {
-            StringEncoderImpl impl = new StringEncoderImpl();
+            var impl = new StringEncoderImpl();
             characters.accept(impl::append);
             completedValue = impl.encode();
             return completedValue;

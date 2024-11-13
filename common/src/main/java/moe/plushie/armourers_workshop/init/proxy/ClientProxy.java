@@ -187,7 +187,7 @@ public class ClientProxy {
             // }
             var poseStack = AbstractPoseStack.wrap(event.getPoseStack());
             var buffers = AbstractBufferSource.wrap(event.getMultiBufferSource());
-            ItemStack itemStack = player.getMainHandItem();
+            var itemStack = player.getMainHandItem();
             if (ModConfig.Client.enableEntityPlacementHighlight && itemStack.is(ModItems.MANNEQUIN.get())) {
                 HighlightPlacementRenderer.renderEntity(player, event.getTarget(), event.getCamera(), poseStack, buffers);
             }

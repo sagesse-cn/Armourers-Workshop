@@ -40,14 +40,14 @@ public class AdvancedLeftCardPanel extends UIView {
     }
 
     private void setupLabel(int x, int y, String key) {
-        UILabel label = new UILabel(new CGRect(x, y, bounds().getWidth(), 9));
+        var label = new UILabel(new CGRect(x, y, bounds().getWidth(), 9));
         label.setText(NSString.localizedString(key));
         label.setTextColor(UIColor.WHITE);
         addSubview(label);
     }
 
     private void setupTextField(float x, float y, float width, String placeholderKey, DataProperty<String> property) {
-        UITextField textField = new UITextField(new CGRect(x, y, width, 16));
+        var textField = new UITextField(new CGRect(x, y, width, 16));
         textField.setMaxLength(40);
         textField.setText("");
         textField.setPlaceholder(NSString.localizedString(placeholderKey));

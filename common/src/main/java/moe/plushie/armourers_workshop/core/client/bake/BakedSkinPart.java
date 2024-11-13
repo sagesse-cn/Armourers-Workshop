@@ -79,7 +79,7 @@ public class BakedSkinPart {
     }
 
     public String getName() {
-        String name = part.getName();
+        var name = part.getName();
         if (name == null) {
             name = part.getType().getName();
         }

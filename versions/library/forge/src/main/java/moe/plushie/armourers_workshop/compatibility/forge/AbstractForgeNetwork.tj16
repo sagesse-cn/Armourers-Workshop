@@ -23,7 +23,6 @@ import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.PacketDistributor;
-import net.minecraftforge.fml.network.event.EventNetworkChannel;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.function.Supplier;
@@ -39,7 +38,7 @@ public class AbstractForgeNetwork {
 
         @Override
         public void register() {
-            EventNetworkChannel channel = NetworkRegistry.ChannelBuilder
+            var channel = NetworkRegistry.ChannelBuilder
                     .named(channelName.toLocation())
                     .networkProtocolVersion(() -> channelVersion)
                     .clientAcceptedVersions(sv -> true)
@@ -55,13 +54,13 @@ public class AbstractForgeNetwork {
 
         @SubscribeEvent
         public void onServerEvent(final NetworkEvent.ClientCustomPayloadEvent event) {
-            NetworkEvent.Context context = event.getSource().get();
-            ServerPlayer player = context.getSender();
+            var context = event.getSource().get();
+            var player = context.getSender();
             if (player == null) {
                 return;
             }
             IServerPacketHandler packetHandler = context::enqueueWork;
-            AbstractFriendlyByteBuf payload = AbstractFriendlyByteBuf.wrap(event.getPayload());
+            var payload = AbstractFriendlyByteBuf.wrap(event.getPayload());
             didReceivePacket(packetHandler, payload, player);
             context.setPacketHandled(true);
         }
@@ -72,9 +71,9 @@ public class AbstractForgeNetwork {
             if (event instanceof NetworkEvent.ServerCustomPayloadLoginEvent) {
                 return;
             }
-            NetworkEvent.Context context = event.getSource().get();
+            var context = event.getSource().get();
             IClientPacketHandler packetHandler = context::enqueueWork;
-            AbstractFriendlyByteBuf payload = AbstractFriendlyByteBuf.wrap(event.getPayload());
+            var payload = AbstractFriendlyByteBuf.wrap(event.getPayload());
             didReceivePacket(packetHandler, payload, null);
             context.setPacketHandled(true);
         }
@@ -92,9 +91,9 @@ public class AbstractForgeNetwork {
 
         @Override
         public IPacketDistributor add(IResourceLocation channel, IFriendlyByteBuf buf) {
-            NetworkDirection direction = target.getDirection();
-            FriendlyByteBuf buf1 = (FriendlyByteBuf) buf.asByteBuf();
-            Packet<?> packet1 = direction.buildPacket(Pair.of(buf1, 0), channel.toLocation()).getThis();
+            var direction = target.getDirection();
+            var buf1 = (FriendlyByteBuf) buf.asByteBuf();
+            var packet1 = direction.buildPacket(Pair.of(buf1, 0), channel.toLocation()).getThis();
             return new Distributor(target, packet1);
         }
 
@@ -103,7 +102,7 @@ public class AbstractForgeNetwork {
             if (packet == null) {
                 return;
             }
-            NetworkDirection direction = target.getDirection();
+            var direction = target.getDirection();
             BlockableEventLoop<?> executor = LogicalSidedProvider.WORKQUEUE.get(direction.getOriginationSide());
             executor.submitAsync(() -> target.send(packet));
         }

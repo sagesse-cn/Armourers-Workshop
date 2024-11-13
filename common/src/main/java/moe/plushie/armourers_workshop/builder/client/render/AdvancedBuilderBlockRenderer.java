@@ -180,7 +180,7 @@ public class AdvancedBuilderBlockRenderer<T extends AdvancedBuilderBlockEntity> 
 
         // apply joint transform.
         if (armature != null && node.isLocked()) {
-            IJointTransform transform = armature.getTransform(node.getType());
+            var transform = armature.getTransform(node.getType());
             if (transform != null) {
                 transform.apply(poseStack);
             }

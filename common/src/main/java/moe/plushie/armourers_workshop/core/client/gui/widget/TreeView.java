@@ -126,10 +126,10 @@ public class TreeView extends UIScrollView implements UIMenuControllerDelegate {
     }
 
     private void buildEntriesIfNeeded() {
-        CGRect bounds = bounds();
-        CGSize itemSize = new CGSize(bounds.width, 11);
-        CGSize contentSize = new CGSize(0, 0);
-        HashMap<String, Entry> removedEntries = new HashMap<>(entries);
+        var bounds = bounds();
+        var itemSize = new CGSize(bounds.width, 11);
+        var contentSize = new CGSize(0, 0);
+        var removedEntries = new HashMap<>(entries);
         buildEntry("", 0, 0, itemSize, contentSize, rootNode, removedEntries);
         setContentSize(contentSize);
         removedEntries.forEach((key, view) -> {
@@ -170,11 +170,11 @@ public class TreeView extends UIScrollView implements UIMenuControllerDelegate {
     }
 
     private void showNodeMenuAtPoint(TreeNode node, CGPoint point) {
-        Collection<UIMenuItem> menuItems = delegate.invoker().treeViewShouldShowMenuForNode(this, node);
+        var menuItems = delegate.invoker().treeViewShouldShowMenuForNode(this, node);
         if (menuItems == null || menuItems.isEmpty()) {
             return;
         }
-        UIMenuController menuController = menuController();
+        var menuController = menuController();
         menuController.setMenuItems(menuItems);
         menuController.showMenu(this, point);
         menuController.setDelegate(this);

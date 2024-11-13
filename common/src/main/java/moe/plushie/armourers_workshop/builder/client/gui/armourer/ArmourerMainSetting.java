@@ -123,7 +123,7 @@ public class ArmourerMainSetting extends ArmourerBaseSetting implements UITextFi
         addSubview(skinTypeBox);
 
         var slot1 = new UIImageView(new CGRect(63, 20, 18, 18));
-        UIImageView slot2 = new UIImageView(new CGRect(142, 16, 26, 26));
+        var slot2 = new UIImageView(new CGRect(142, 16, 26, 26));
         slot1.setImage(UIImage.of(ModTextures.ARMOURER).uv(238, 0).build());
         slot2.setImage(UIImage.of(ModTextures.ARMOURER).uv(230, 18).build());
         insertViewAtIndex(slot1, 0);
@@ -152,7 +152,7 @@ public class ArmourerMainSetting extends ArmourerBaseSetting implements UITextFi
     }
 
     private void setupLabel(int x, int y, NSString text) {
-        UILabel label = new UILabel(new CGRect(x, y, bounds().getWidth(), 9));
+        var label = new UILabel(new CGRect(x, y, bounds().getWidth(), 9));
         label.setText(text);
         addSubview(label);
     }

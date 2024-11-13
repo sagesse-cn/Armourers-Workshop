@@ -53,8 +53,8 @@ public class AdvancedItemGuideRenderer extends AbstractAdvancedGuideRenderer {
         if (node.getType() instanceof ICanHeld) {
             return node;
         }
-        for (SkinDocumentNode child : node.children()) {
-            SkinDocumentNode result = findItemNode(child);
+        for (var child : node.children()) {
+            var result = findItemNode(child);
             if (result != null) {
                 return result;
             }

@@ -118,7 +118,7 @@ public abstract class AbstractPoseStackImpl {
 
         @Override
         public void multiply(float[] values) {
-            Vector3f vec = new Vector3f(values[0], values[1], values[2]);
+            var vec = new Vector3f(values[0], values[1], values[2]);
             vec.mul(mat);
             values[0] = vec.x();
             values[1] = vec.y();
@@ -193,7 +193,7 @@ public abstract class AbstractPoseStackImpl {
 
         @Override
         public void multiply(float[] values) {
-            Vector4f vec = new Vector4f(values[0], values[1], values[2], values[3]);
+            var vec = new Vector4f(values[0], values[1], values[2], values[3]);
             vec.mul(mat);
             values[0] = vec.x();
             values[1] = vec.y();

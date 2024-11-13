@@ -16,7 +16,7 @@ public class ABI {
     }
 
     public static float getEyeHeight(@This EntityDimensions dimensions) {
-        EntityDimensionsProxy dimensions1 = Objects.safeCast(dimensions, EntityDimensionsProxy.class);
+        var dimensions1 = Objects.safeCast(dimensions, EntityDimensionsProxy.class);
         if (dimensions1 != null) {
             return dimensions1.eyeHeight;
         }

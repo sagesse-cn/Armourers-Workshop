@@ -52,13 +52,13 @@ public abstract class AbstractLibraryPanel extends UIView {
     }
 
     protected NSString getURLText(String url) {
-        Style style = Style.EMPTY.withColor(ChatFormatting.BLUE).withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, url));
+        var style = Style.EMPTY.withColor(ChatFormatting.BLUE).withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, url));
         return new NSString(Component.literal(url).withStyle(style));
     }
 
     protected CGGradient getDefaultColor() {
-        UIColor startColor = UIColor.rgba(0xC0101010);
-        UIColor endColor = UIColor.rgba(0xD0101010);
+        var startColor = UIColor.rgba(0xC0101010);
+        var endColor = UIColor.rgba(0xD0101010);
         return new CGGradient(startColor, CGPoint.ZERO, endColor, CGPoint.ZERO);
     }
 

@@ -24,7 +24,7 @@ public class CapabilityTypeBuilderImpl<T> implements ICapabilityTypeBuilder<T> {
 
     @Override
     public IRegistryHolder<ICapabilityType<T>> build(String name) {
-        IResourceLocation registryName = ModConstants.key(name);
+        var registryName = ModConstants.key(name);
         ModLog.debug("Registering Capability Type '{}'", registryName);
         return AbstractForgeCapabilityManager.register(registryName, type, factory);
     }

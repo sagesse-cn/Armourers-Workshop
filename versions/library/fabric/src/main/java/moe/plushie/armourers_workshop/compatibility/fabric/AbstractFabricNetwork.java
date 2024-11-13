@@ -156,7 +156,7 @@ public class AbstractFabricNetwork {
             var entity = supplier.get();
             var players = PlayerLookup.tracking(entity);
             if (entity instanceof ServerPlayer player) {
-                ArrayList<ServerPlayer> trackingAndSelf = new ArrayList<>(players);
+                var trackingAndSelf = new ArrayList<ServerPlayer>(players);
                 trackingAndSelf.add(player);
                 players = trackingAndSelf;
             }

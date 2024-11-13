@@ -27,7 +27,7 @@ public class AbstractForgeRegistry {
     }
 
     public static <T, V> TypedRegistry<T> createAndCast(String name, Class<?> type, ResourceKey<Registry<V>> registryKey, Function<V, T> t0, Function<T, V> t1) {
-        TypedRegistry.RegisterProvider<V> register = build(DeferredRegister.create(registryKey, ModConstants.MOD_ID));
+        var register = build(DeferredRegister.create(registryKey, ModConstants.MOD_ID));
         return TypedRegistry.factory(name, type, new TypedRegistry.RegisterProvider<T>() {
             @Override
             public <I extends T> Supplier<I> register(IResourceLocation registryName, Supplier<? extends I> provider) {

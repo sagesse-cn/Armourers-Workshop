@@ -49,8 +49,8 @@ public class AbstractPoseStack extends AbstractPoseStackImpl implements IPoseSta
         if (poseStack instanceof AbstractPoseStack poseStack1) {
             return poseStack1.stack;
         }
-        PoseStack poseStack1 = new PoseStack();
-        IPoseStack poseStack2 = wrap(poseStack1);
+        var poseStack1 = new PoseStack();
+        var poseStack2 = wrap(poseStack1);
         poseStack2.last().set(poseStack.last());
         return poseStack1;
     }

@@ -39,8 +39,8 @@ public abstract class AbstractForgePermissionManager {
     private static final PermissionDynamicContextKey<Direction> FACING = new PermissionDynamicContextKey<>(Direction.class, "facing", Direction::getSerializedName);
 
     public static IPermissionNode makeNode(IResourceLocation registryName, int level) {
-        PermissionNode<Boolean> node = new PermissionNode<>(registryName.toLocation(), PermissionTypes.BOOLEAN, (player, uuid, contexts) -> true, TARGET, PLAYER, BLOCK_POS, BLOCK_STATE, FACING);
-        IPermissionNode nodeImpl = new PermissionNodeBuilderImpl.NodeImpl(registryName) {
+        var node = new PermissionNode<>(registryName.toLocation(), PermissionTypes.BOOLEAN, (player, uuid, contexts) -> true, TARGET, PLAYER, BLOCK_POS, BLOCK_STATE, FACING);
+        var nodeImpl = new PermissionNodeBuilderImpl.NodeImpl(registryName) {
 
             @Override
             public boolean resolve(Player player, IPermissionContext context) {
@@ -67,16 +67,16 @@ public abstract class AbstractForgePermissionManager {
     }
 
     private static PermissionDynamicContext<?>[] makeContexts(IPermissionContext context) {
-        ArrayList<PermissionDynamicContext<?>> contexts = new ArrayList<>();
-        PlayerPermissionContext player = Objects.safeCast(context, PlayerPermissionContext.class);
+        var contexts = new ArrayList<PermissionDynamicContext<?>>();
+        var player = Objects.safeCast(context, PlayerPermissionContext.class);
         if (player != null && player.player != null) {
             contexts.add(PLAYER.createContext(player.player));
         }
-        TargetPermissionContext target = Objects.safeCast(context, TargetPermissionContext.class);
+        var target = Objects.safeCast(context, TargetPermissionContext.class);
         if (target != null && target.target != null) {
             contexts.add(TARGET.createContext(target.target));
         }
-        BlockPermissionContext block = Objects.safeCast(context, BlockPermissionContext.class);
+        var block = Objects.safeCast(context, BlockPermissionContext.class);
         if (block != null) {
             if (block.blockPos != null) {
                 contexts.add(BLOCK_POS.createContext(block.blockPos));

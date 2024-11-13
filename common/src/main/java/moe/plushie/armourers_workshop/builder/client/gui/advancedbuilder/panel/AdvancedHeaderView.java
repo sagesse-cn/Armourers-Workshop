@@ -70,7 +70,7 @@ public class AdvancedHeaderView extends UIView implements UITextFieldDelegate {
     }
 
     private void setupSelectionView() {
-        CGRect rect = bounds().insetBy(1, 1, 1, 1);
+        var rect = bounds().insetBy(1, 1, 1, 1);
 
         selectionView.setFrame(new CGRect(1, 1, rect.getHeight() + 8 + 4, rect.getHeight()));
         selectionView.setAutoresizingMask(AutoresizingMask.flexibleRightMargin | AutoresizingMask.flexibleHeight);
@@ -91,7 +91,7 @@ public class AdvancedHeaderView extends UIView implements UITextFieldDelegate {
     }
 
     private void setupInputView(IDataProperty<String> property) {
-        CGRect rect = bounds().insetBy(1, 1, 1, 1);
+        var rect = bounds().insetBy(1, 1, 1, 1);
         textView.setBordered(false);
         textView.setBackgroundColor(UIColor.CLEAR);
         textView.setFont(UIFont.systemFont(11));
@@ -110,7 +110,7 @@ public class AdvancedHeaderView extends UIView implements UITextFieldDelegate {
         addSubview(textView);
 
         property.addObserver(newValue -> {
-            String oldValue = textView.text();
+            var oldValue = textView.text();
             if (!Objects.equal(oldValue, newValue)) {
                 textView.setText(newValue);
             }

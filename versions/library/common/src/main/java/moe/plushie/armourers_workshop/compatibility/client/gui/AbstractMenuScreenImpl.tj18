@@ -26,8 +26,8 @@ public abstract class AbstractMenuScreenImpl<T extends AbstractContainerMenu> ex
     }
 
     public void renderInView(UIView view, int zLevel, int mouseX, int mouseY, float partialTicks, CGGraphicsContext context) {
-        PoseStack poseStack = AbstractGraphicsRenderer.of(context);
-        PoseStack modelViewStack = RenderSystem.getModelViewStack();
+        var poseStack = AbstractGraphicsRenderer.of(context);
+        var modelViewStack = RenderSystem.getModelViewStack();
         modelViewStack.pushPose();
         modelViewStack.translate(0, 0, zLevel);
         RenderSystem.applyModelViewMatrix();

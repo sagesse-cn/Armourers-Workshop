@@ -81,7 +81,7 @@ public class AbstractLivingEntityImpl {
 
         @Override
         protected float getStandingEyeHeight(Pose pose, EntityDimensions entityDimensions) {
-            EntityDimensions dimensions = getDefaultDimensions(pose);
+            var dimensions = getDefaultDimensions(pose);
             return dimensions.getEyeHeight() * getScale();
         }
     }

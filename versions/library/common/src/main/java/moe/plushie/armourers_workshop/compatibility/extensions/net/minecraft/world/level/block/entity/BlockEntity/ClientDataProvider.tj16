@@ -18,7 +18,7 @@ public class ClientDataProvider {
 
     @Environment(EnvType.CLIENT)
     public static DoubleSupplier createViewDistanceProvider(@This BlockEntity blockEntity) {
-        Object blockEntityRenderer = BlockEntityRenderDispatcher.instance.getRenderer(blockEntity);
+        var blockEntityRenderer = BlockEntityRenderDispatcher.instance.getRenderer(blockEntity);
         if (blockEntityRenderer instanceof AbstractBlockEntityRendererImpl) {
             return ((AbstractBlockEntityRendererImpl<?>) blockEntityRenderer)::getViewDistance;
         }

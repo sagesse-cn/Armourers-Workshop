@@ -37,7 +37,7 @@ public abstract class AbstractForgeItemBuilder<T extends Item> implements IItemB
 
     @Override
     public IRegistryHolder<T> build(String name) {
-        IRegistryHolder<T> item = AbstractForgeRegistries.ITEMS.register(name, () -> {
+        var item = AbstractForgeRegistries.ITEMS.register(name, () -> {
             T value = supplier.apply(properties);
             if (group != null) {
                 group.get().add(() -> value);

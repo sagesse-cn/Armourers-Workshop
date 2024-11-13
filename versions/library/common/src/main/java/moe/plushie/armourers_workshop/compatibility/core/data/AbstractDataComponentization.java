@@ -26,7 +26,7 @@ public class AbstractDataComponentization {
     }
 
     private static Dynamic<?> updateItem(Dynamic<?> item) {
-        DataFixer dataFixer = DataFixers.getDataFixer();
+        var dataFixer = DataFixers.getDataFixer();
         return dataFixer.update(References.ITEM_STACK, item, 3816, 3820);
     }
 
@@ -42,7 +42,7 @@ public class AbstractDataComponentization {
 
         @Override
         protected TypeRewriteRule makeRule() {
-            Schema schema = getInputSchema();
+            var schema = getInputSchema();
             return TypeRewriteRule.seq(
                     fixTypeEverywhereTyped("(AW) SkinWardrobeFix", schema.getType(References.ENTITY), typed -> typed.update(DSL.remainderFinder(), this::fix)),
                     fixTypeEverywhereTyped("(AW) SkinWardrobeFix", schema.getType(References.PLAYER), typed -> typed.update(DSL.remainderFinder(), this::fix)));
@@ -50,14 +50,14 @@ public class AbstractDataComponentization {
 
         private Dynamic<?> fix(Dynamic<?> entityTag) {
             // only upgrade when old format exists.
-            String registryName = "armourers_workshop:entity-skin-provider";
-            Dynamic<?> oldWardrobe = entityTag.get(Constants.Key.OLD_CAPABILITY).get(registryName).result().orElse(null);
+            var registryName = "armourers_workshop:entity-skin-provider";
+            var oldWardrobe = entityTag.get(Constants.Key.OLD_CAPABILITY).get(registryName).result().orElse(null);
             if (oldWardrobe == null) {
                 return entityTag;
             }
             // upgrade the inventory.
-            Dynamic<?> newWardrobe = oldWardrobe.update("Items", AbstractDataComponentization::updateItemList);
-            Dynamic<?> attachments = entityTag.get(Constants.Key.NEW_CAPABILITY).result().orElse(null);
+            var newWardrobe = oldWardrobe.update("Items", AbstractDataComponentization::updateItemList);
+            var attachments = entityTag.get(Constants.Key.NEW_CAPABILITY).result().orElse(null);
             if (attachments == null) {
                 attachments = entityTag.createMap(new HashMap<>());
             }
@@ -89,12 +89,12 @@ public class AbstractDataComponentization {
 
         @Override
         protected TypeRewriteRule makeRule() {
-            Schema inputSchema = getInputSchema();
+            var inputSchema = getInputSchema();
             return fixTypeEverywhereTyped("(AW) BlockEntityFix", inputSchema.getType(References.BLOCK_ENTITY), typed -> typed.update(DSL.remainderFinder(), this::fix));
         }
 
         protected Dynamic<?> fix(Dynamic<?> entityTag) {
-            String id = entityTag.get("id").asString().result().orElse(null);
+            var id = entityTag.get("id").asString().result().orElse(null);
             if (id == null || !id.startsWith("armourers_workshop:")) {
                 return entityTag;
             }

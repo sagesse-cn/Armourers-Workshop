@@ -44,11 +44,11 @@ public abstract class AdvancedEntityGuideRenderer extends AbstractAdvancedGuideR
     @Override
     public void render(SkinDocument document, IPoseStack poseStack, int light, int overlay, IBufferSource bufferSource) {
         poseStack.pushPose();
-        IJointTransform[] transforms = armature.getTransforms();
-        Armature armature1 = armature.getArmature();
-        for (IJoint joint : armature1.allJoints()) {
-            JointShape shape = armature1.getShape(joint.getId());
-            IJointTransform transform = transforms[joint.getId()];
+        var transforms = armature.getTransforms();
+        var armature1 = armature.getArmature();
+        for (var joint : armature1.allJoints()) {
+            var shape = armature1.getShape(joint.getId());
+            var transform = transforms[joint.getId()];
             if (shape != null && transform != null) {
                 poseStack.pushPose();
                 transform.apply(poseStack);
@@ -61,7 +61,7 @@ public abstract class AdvancedEntityGuideRenderer extends AbstractAdvancedGuideR
 
     protected void renderShape(JointShape shape, UIColor color, IPoseStack poseStack, IBufferSource bufferSource) {
         poseStack.pushPose();
-        Rectangle3f rect = shape.bounds();
+        var rect = shape.bounds();
         shape.transform().apply(poseStack);
         renderCube(shape, poseStack, bufferSource);
         renderOutline(rect, color, poseStack, bufferSource);

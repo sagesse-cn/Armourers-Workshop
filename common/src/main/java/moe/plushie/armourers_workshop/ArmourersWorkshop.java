@@ -82,7 +82,7 @@ public class ArmourersWorkshop {
     }
 
     public static IResourceLocation getCustomModel(IResourceLocation location) {
-        String name = location.getPath().toLowerCase();
+        var name = location.getPath().toLowerCase();
         name = name.replaceAll("\\.base", "");
         name = name.replaceAll("\\.", "_");
         return ModConstants.key("skin/" + name);

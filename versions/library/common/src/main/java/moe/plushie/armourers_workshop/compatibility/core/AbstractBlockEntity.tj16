@@ -45,7 +45,7 @@ public abstract class AbstractBlockEntity extends BlockEntity implements IBlockE
 
     @Override
     public ClientboundBlockEntityDataPacket getUpdatePacket() {
-        CompoundTag tag = new CompoundTag();
+        var tag = new CompoundTag();
         this.writeAdditionalData(AbstractDataSerializer.wrap(tag, null));
         return new ClientboundBlockEntityDataPacket(this.worldPosition, 0, tag);
     }

@@ -121,8 +121,8 @@ public class DocumentEditor {
     }
 
     public Collection<UIMenuItem> getNodeMenuItems(SkinDocumentNode node, TreeView treeView) {
-        DocumentMenuBuilder builder = new DocumentMenuBuilder(node, treeView);
-        List<SkinDocumentNode> children = node.parent().children();
+        var builder = new DocumentMenuBuilder(node, treeView);
+        var children = node.parent().children();
         boolean isEnabled = !node.isLocked();
         int order = children.indexOf(node);
 

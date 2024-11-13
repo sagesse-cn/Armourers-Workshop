@@ -51,7 +51,7 @@ public class AbstractGraphicsRenderer implements CGGraphicsRenderer, CGGraphicsS
     }
 
     public static CGGraphicsContext of(AbstractMenuScreenImpl<?> screen, PoseStack poseStack, float mouseX, float mouseY, float partialTicks) {
-        AbstractGraphicsRenderer impl = new AbstractGraphicsRenderer(screen, poseStack, mouseX, mouseY, partialTicks);
+        var impl = new AbstractGraphicsRenderer(screen, poseStack, mouseX, mouseY, partialTicks);
         return new CGGraphicsContext(impl, impl);
     }
 
@@ -71,7 +71,7 @@ public class AbstractGraphicsRenderer implements CGGraphicsRenderer, CGGraphicsS
 
     @Override
     public void renderEntity(Entity entity, CGPoint origin, int scale, CGPoint focus, CGGraphicsContext context) {
-        EntityRendererImpl<Entity> renderer = AbstractGraphicsRendererImpl.getRenderer(entity);
+        var renderer = AbstractGraphicsRendererImpl.getRenderer(entity);
         renderer.render(entity, origin, scale, focus, context);
     }
 

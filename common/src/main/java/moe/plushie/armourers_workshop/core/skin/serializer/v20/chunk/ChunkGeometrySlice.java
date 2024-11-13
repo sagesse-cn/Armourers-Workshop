@@ -145,11 +145,11 @@ public class ChunkGeometrySlice implements OpenSliceAccessor.Provider<SkinGeomet
 
     public OpenTransform3f getTransform(int offset) {
         int flags = getInt(offset);
-        Vector3f translate = getVector3f(offset + 4);
-        Vector3f rotation = getVector3f(offset + 16);
-        Vector3f scale = getVector3f(offset + 28);
-        Vector3f afterTranslate = getVector3f(offset + 40);
-        Vector3f pivot = getVector3f(offset + 52);
+        var translate = getVector3f(offset + 4);
+        var rotation = getVector3f(offset + 16);
+        var scale = getVector3f(offset + 28);
+        var afterTranslate = getVector3f(offset + 40);
+        var pivot = getVector3f(offset + 52);
         return OpenTransform3f.create(translate, rotation, scale, pivot, afterTranslate);
     }
 

@@ -22,7 +22,7 @@ public abstract class AbstractMenuScreenImpl<T extends AbstractContainerMenu> ex
     }
 
     public void renderInView(UIView view, int zLevel, int mouseX, int mouseY, float partialTicks, CGGraphicsContext context) {
-        GuiGraphics graphics = AbstractGraphicsRenderer.of(context);
+        var graphics = AbstractGraphicsRenderer.of(context);
         super.render(graphics, mouseX, mouseY, partialTicks);
         super.renderTooltip(graphics, mouseX, mouseY);
     }

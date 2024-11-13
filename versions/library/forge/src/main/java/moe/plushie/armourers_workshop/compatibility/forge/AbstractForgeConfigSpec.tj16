@@ -23,7 +23,7 @@ public class AbstractForgeConfigSpec extends AbstractConfigSpec {
 
     public static <B extends IConfigBuilder> IConfigSpec create(Type type, Function<IConfigBuilder, B> applier) {
         // create a builder from loader.
-        Pair<B, ForgeConfigSpec> pair = new ForgeConfigSpec.Builder().configure(builder -> applier.apply(new Builder() {
+        var pair = new ForgeConfigSpec.Builder().configure(builder -> applier.apply(new Builder() {
 
             @Override
             public IConfigSpec build() {
@@ -79,11 +79,11 @@ public class AbstractForgeConfigSpec extends AbstractConfigSpec {
         }));
 
         // bind the config to spec.
-        AbstractForgeConfigSpec spec = (AbstractForgeConfigSpec) pair.getKey().build();
+        var spec = (AbstractForgeConfigSpec) pair.getKey().build();
         spec.bind(pair.getValue(), ForgeConfigSpec::save);
 
         // registry the config into loader.
-        ForgeConfigSpec config = pair.getValue();
+        var config = pair.getValue();
         ModLoadingContext.get().registerConfig(ModConfig.Type.valueOf(type.name()), config);
 
         return spec;

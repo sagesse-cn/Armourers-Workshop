@@ -118,7 +118,7 @@ public class AbstractFabricNetwork {
 
         @Override
         public IPacketDistributor add(IResourceLocation channel, IFriendlyByteBuf buf) {
-            Packet<?> packet1 = direction.buildPacket(buf, channel);
+            var packet1 = direction.buildPacket(buf, channel);
             return new Distributor(direction, target, packet1);
         }
 

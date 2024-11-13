@@ -1,6 +1,5 @@
 package moe.plushie.armourers_workshop.compatibility.extensions.net.minecraft.client.resources.model.BakedModel;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import moe.plushie.armourers_workshop.api.core.math.IPoseStack;
 import moe.plushie.armourers_workshop.compatibility.api.AbstractItemTransformType;
 import moe.plushie.armourers_workshop.compatibility.client.AbstractPoseStack;
@@ -20,9 +19,9 @@ public class ABI {
     }
 
     public static void applyTransform(@This BakedModel bakedModel, IPoseStack poseStack, boolean leftHandHackery, AbstractItemTransformType transformType) {
-        PoseStack poseStack1 = AbstractPoseStack.unwrap(poseStack);
+        var poseStack1 = AbstractPoseStack.unwrap(poseStack);
         TransformationProvider.handleTransforms(poseStack1, bakedModel, transformType, leftHandHackery);
-        IPoseStack resultStack = AbstractPoseStack.wrap(poseStack1);
+        var resultStack = AbstractPoseStack.wrap(poseStack1);
         // fallback when pose stack is non-vanilla stack.
         if (resultStack != poseStack) {
             poseStack.last().set(resultStack.last());

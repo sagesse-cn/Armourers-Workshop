@@ -11,7 +11,7 @@ import net.fabricmc.fabric.api.command.v2.ArgumentTypeRegistry;
 public class AbstractFabricArgumentType {
 
     public static <T extends IArgumentType<?>> AbstractArgumentTypeInfo<T> register(IResourceLocation registryName, Class<T> argumentType, IArgumentSerializer<T> argumentSerializer) {
-        AbstractArgumentTypeInfo<T> info = new AbstractArgumentTypeInfo<>(argumentSerializer);
+        var info = new AbstractArgumentTypeInfo<>(argumentSerializer);
         ArgumentTypeRegistry.registerArgumentType(registryName.toLocation(), argumentType, info);
         return info;
     }

@@ -80,7 +80,7 @@ public class AbstractForgeBlockEvent {
 
             @Override
             public IBlockSnapshot getSnapshot() {
-                LevelAccessor level = event.getWorld();
+                var level = event.getWorld();
                 return new IBlockSnapshot() {
                     @Override
                     public BlockState getState() {
@@ -89,7 +89,7 @@ public class AbstractForgeBlockEvent {
 
                     @Override
                     public CompoundTag getTag() {
-                        BlockEntity blockEntity = level.getBlockEntity(event.getPos());
+                        var blockEntity = level.getBlockEntity(event.getPos());
                         if (blockEntity != null) {
                             return blockEntity.saveFullData(level.registryAccess());
                         }

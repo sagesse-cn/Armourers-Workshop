@@ -44,7 +44,7 @@ public abstract class AbstractBlockEntity extends BlockEntity implements IBlockE
 
     @Override
     public CompoundTag getUpdateTag(HolderLookup.Provider provider) {
-        CompoundTag tag = new CompoundTag();
+        var tag = new CompoundTag();
         this.writeAdditionalData(AbstractDataSerializer.wrap(tag, provider));
         return tag;
     }

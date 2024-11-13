@@ -212,7 +212,7 @@ public class ArmourerBlockRenderer<T extends ArmourerBlockEntity> extends Abstra
         }
 
         public static String identifier(ArmourerBlockEntity blockEntity) {
-            BlockPos pos = blockEntity.getBlockPos();
+            var pos = blockEntity.getBlockPos();
             return String.format("aw-armourer-%d-%d-%d", pos.getX(), pos.getY(), pos.getZ());
         }
 

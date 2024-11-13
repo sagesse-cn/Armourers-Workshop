@@ -114,16 +114,16 @@ public class AdvancedCameraPanel extends UIView {
     }
 
     private void move(Vector3f delta) {
-        CGRect window = bounds();
-        OpenNearPlane plane = cameraEntity.getNearPlane();
+        var window = bounds();
+        var plane = cameraEntity.getNearPlane();
         float near = options.getCameraNear();
 
         float deltaX = -delta.getX() / (window.width / 2f);
         float deltaY = delta.getY() / (window.height / 2f);
         float deltaZ = near + delta.getZ();
 
-        Vector3f d1 = plane.at(0, 0, -near);
-        Vector3f d2 = plane.at(deltaX, deltaY, deltaZ);
+        var d1 = plane.at(0, 0, -near);
+        var d2 = plane.at(deltaX, deltaY, deltaZ);
 
         float x = oldTranslate.getX() + d1.getX() + d2.getX();
         float y = oldTranslate.getY() + d1.getY() + d2.getY();
@@ -133,7 +133,7 @@ public class AdvancedCameraPanel extends UIView {
     }
 
     private void rotation(CGPoint mousePos) {
-        CGRect window = bounds();
+        var window = bounds();
 
         float dx = (mousePos.y - startMousePos.y) / window.height;
         float dy = (mousePos.x - startMousePos.x) / window.width;

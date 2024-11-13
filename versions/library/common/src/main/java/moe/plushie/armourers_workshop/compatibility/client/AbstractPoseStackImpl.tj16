@@ -33,7 +33,7 @@ public abstract class AbstractPoseStackImpl {
     private static final FloatBuffer BUFFER4x4 = MatrixUtils.createFloatBuffer(16);
 
     public static Matrix3f convertMatrix(IMatrix3f mat) {
-        AbstractMatrix3f newValue = Objects.safeCast(mat, AbstractMatrix3f.class);
+        var newValue = Objects.safeCast(mat, AbstractMatrix3f.class);
         if (newValue != null) {
             return newValue.mat;
         }
@@ -43,7 +43,7 @@ public abstract class AbstractPoseStackImpl {
     }
 
     public static Matrix4f convertMatrix(IMatrix4f mat) {
-        AbstractMatrix4f newValue = Objects.safeCast(mat, AbstractMatrix4f.class);
+        var newValue = Objects.safeCast(mat, AbstractMatrix4f.class);
         if (newValue != null) {
             return newValue.mat;
         }
@@ -112,7 +112,7 @@ public abstract class AbstractPoseStackImpl {
         }
 
         public void set(IMatrix4f matrix) {
-            FloatBuffer buffer = BUFFER4x4;
+            var buffer = BUFFER4x4;
             matrix.store(buffer);
             mat.m00 = buffer.get(bufferIndex4(0, 0));
             mat.m01 = buffer.get(bufferIndex4(0, 1));
@@ -132,7 +132,7 @@ public abstract class AbstractPoseStackImpl {
 
         @Override
         public void multiply(float[] values) {
-            Vector3f vec = new Vector3f(values[0], values[1], values[2]);
+            var vec = new Vector3f(values[0], values[1], values[2]);
             vec.transform(mat);
             values[0] = vec.x();
             values[1] = vec.y();
@@ -246,7 +246,7 @@ public abstract class AbstractPoseStackImpl {
 
         @Override
         public void multiply(float[] values) {
-            Vector4f vec = new Vector4f(values[0], values[1], values[2], values[3]);
+            var vec = new Vector4f(values[0], values[1], values[2], values[3]);
             vec.transform(mat);
             values[0] = vec.x();
             values[1] = vec.y();

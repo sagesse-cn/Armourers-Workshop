@@ -25,7 +25,7 @@ public class CGSize implements InterpolableImpl<CGSize> {
     }
 
     public CGSize applying(CGAffineTransform t) {
-        CGSize size = copy();
+        var size = copy();
         size.apply(t);
         return size;
     }

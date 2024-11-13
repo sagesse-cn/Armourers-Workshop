@@ -130,7 +130,7 @@ public class ClipContextImpl {
         private final Stack<Group> allGroups = new Stack<>();
 
         public void push(@Nullable List<CGRect> rects) {
-            Group group = appendList(rects);
+            var group = appendList(rects);
             if (group == null) {
                 return;
             }
@@ -146,7 +146,7 @@ public class ClipContextImpl {
         }
 
         public void pop() {
-            Group group = removeLast();
+            var group = removeLast();
             if (group == null) {
                 return;
             }

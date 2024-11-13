@@ -126,7 +126,7 @@ public class AdvancedRightCardPanel extends UIView implements TreeViewDelegate {
 
     @Override
     public Collection<UIMenuItem> treeViewShouldShowMenuForNode(TreeView treeView, TreeNode nodeView) {
-        SkinDocumentNode node = (SkinDocumentNode) nodeView.getContents();
+        var node = (SkinDocumentNode) nodeView.getContents();
         return editor.getNodeMenuItems(node, treeView);
     }
 

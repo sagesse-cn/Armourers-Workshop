@@ -21,7 +21,6 @@ import net.neoforged.neoforge.common.util.LogicalSidedProvider;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
-import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -38,7 +37,7 @@ public class AbstractForgeNetwork {
         @Override
         public void register() {
             AbstractForgeEventBus.observer(RegisterPayloadHandlersEvent.class, event -> {
-                PayloadRegistrar registrar = event.registrar(ModConstants.MOD_ID).versioned(channelVersion);
+                var registrar = event.registrar(ModConstants.MOD_ID).versioned(channelVersion);
                 Proxy.TYPE = new CustomPacketPayload.Type<>(channelName.toLocation());
                 registrar.playBidirectional(Proxy.TYPE, Proxy.CODEC, this::handBidirectionalData);
             });
@@ -53,7 +52,7 @@ public class AbstractForgeNetwork {
         }
 
         public void handleServerboundData(Proxy proxy, IPayloadContext context) {
-            ServerPlayer player = (ServerPlayer) context.player();
+            var player = (ServerPlayer) context.player();
             IServerPacketHandler packetHandler = context::enqueueWork;
             didReceivePacket(packetHandler, proxy.payload, player);
         }
@@ -86,7 +85,7 @@ public class AbstractForgeNetwork {
             if (packet == null) {
                 return;
             }
-            BlockableEventLoop<?> executor = LogicalSidedProvider.WORKQUEUE.get(sender);
+            var executor = LogicalSidedProvider.WORKQUEUE.get(sender);
             executor.submitAsync(() -> target.accept(packet));
         }
 

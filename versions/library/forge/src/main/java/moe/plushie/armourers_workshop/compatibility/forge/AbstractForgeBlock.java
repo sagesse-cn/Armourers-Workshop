@@ -29,7 +29,7 @@ public interface AbstractForgeBlock extends IBlockExtension {
     @Override
     default boolean onDestroyedByPlayer(BlockState state, Level level, BlockPos pos, Player player, boolean willHarvest, FluidState fluid) {
         IBlockHandler handler = Objects.unsafeCast(this);
-        InteractionResult result = handler.attackBlock(level, pos, state, Direction.NORTH, player, InteractionHand.MAIN_HAND);
+        var result = handler.attackBlock(level, pos, state, Direction.NORTH, player, InteractionHand.MAIN_HAND);
         if (result == InteractionResult.PASS) {
             return IBlockExtension.super.onDestroyedByPlayer(state, level, pos, player, willHarvest, fluid);
         }

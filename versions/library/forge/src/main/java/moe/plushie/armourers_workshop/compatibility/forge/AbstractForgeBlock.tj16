@@ -29,14 +29,14 @@ public interface AbstractForgeBlock extends IForgeBlock {
 
     @Override
     default boolean isBed(BlockState state, BlockGetter level, BlockPos pos, @Nullable Entity entity) {
-        LivingEntity livingEntity = Objects.safeCast(entity, LivingEntity.class);
+        var livingEntity = Objects.safeCast(entity, LivingEntity.class);
         return isBed(state, level, pos, livingEntity);
     }
 
     @Override
     default boolean removedByPlayer(BlockState state, Level world, BlockPos pos, Player player, boolean willHarvest, FluidState fluid) {
         IBlockHandler handler = Objects.unsafeCast(this);
-        InteractionResult result = handler.attackBlock(world, pos, state, Direction.NORTH, player, InteractionHand.MAIN_HAND);
+        var result = handler.attackBlock(world, pos, state, Direction.NORTH, player, InteractionHand.MAIN_HAND);
         if (result == InteractionResult.PASS) {
             return IForgeBlock.super.removedByPlayer(state, world, pos, player, willHarvest, fluid);
         }

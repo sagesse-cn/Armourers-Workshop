@@ -23,7 +23,7 @@ public abstract class AbstractItem extends Item {
     }
 
     public static EquipmentSlot getEquipmentSlotForItem(ItemStack itemStack) {
-        Equipable equipable = Equipable.get(itemStack);
+        var equipable = Equipable.get(itemStack);
         if (equipable != null) {
             return equipable.getEquipmentSlot();
         }

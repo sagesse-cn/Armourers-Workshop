@@ -34,7 +34,7 @@ public class AbstractForgeEventBus {
     public static <E extends Event, T> void observer(Class<E> eventType, EventPriority priority, boolean receiveCancelled, Consumer<T> handler, Function<E, T> transform) {
         var key = Collections.newList(eventType, priority, receiveCancelled);
         var handlers = LISTENERS.computeIfAbsent(key, key1 -> {
-            ArrayList<Consumer<T>> queue = new ArrayList<>();
+            var queue = new ArrayList<Consumer<T>>();
             Consumer<E> listener = event -> queue.forEach(element -> element.accept(transform.apply(event)));
             if (IModBusEvent.class.isAssignableFrom(eventType)) {
                 AbstractForgeInitializer.getModEventBus().addListener(priority, receiveCancelled, eventType, listener);

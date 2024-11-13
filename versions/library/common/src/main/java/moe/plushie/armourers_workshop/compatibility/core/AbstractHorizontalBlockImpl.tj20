@@ -67,7 +67,7 @@ public abstract class AbstractHorizontalBlockImpl extends HorizontalDirectionalB
 
     protected InteractionResult useWithoutItem(BlockState blockState, Level level, BlockPos blockPos, Player player, BlockHitResult blockHitResult) {
         // If user is rewritten, forward it.
-        InteractionHand interactionHand = InteractionHand.MAIN_HAND;
+        var interactionHand = InteractionHand.MAIN_HAND;
         if (blockState.getBlock() != this) {
             return blockState.getBlock().use(blockState, level, blockPos, player, interactionHand, blockHitResult.withPosition(blockPos));
         }
@@ -127,7 +127,7 @@ public abstract class AbstractHorizontalBlockImpl extends HorizontalDirectionalB
         }
 
         private Object convert(Object value) {
-            Vec3 pos = Objects.safeCast(value, Vec3.class);
+            var pos = Objects.safeCast(value, Vec3.class);
             if (pos != null) {
                 return new Vector3f((float) pos.x, (float) pos.y, (float) pos.z);
             }

@@ -3,7 +3,6 @@ package com.apple.library.quartzcore;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Stack;
 
 @SuppressWarnings("unused")
@@ -70,9 +69,9 @@ public class CATransaction {
         if (runningAnimations.isEmpty()) {
             return;
         }
-        Iterator<PassData> iterator = runningAnimations.iterator();
+        var iterator = runningAnimations.iterator();
         while (iterator.hasNext()) {
-            PassData passData = iterator.next();
+            var passData = iterator.next();
             passData.update(tp);
             if (passData.isEmpty()) {
                 iterator.remove();
@@ -97,7 +96,7 @@ public class CATransaction {
         public void commit() {
             double tp = CATransaction.currentMediaTime();
             animations.forEach(it -> {
-                CAAnimation ani = it.getKey();
+                var ani = it.getKey();
                 if (ani.beginTime() == 0) {
                     ani.setBeginTime(tp);
                 }
@@ -108,10 +107,10 @@ public class CATransaction {
         }
 
         public void update(double tp) {
-            Iterator<Pair<CAAnimation, Runnable>> iterator = animations.iterator();
+            var iterator = animations.iterator();
             while (iterator.hasNext()) {
-                Pair<CAAnimation, Runnable> it = iterator.next();
-                CAAnimation animation = it.getKey();
+                var it = iterator.next();
+                var animation = it.getKey();
                 double t = animation._currentTime(tp);
                 double dur = animation.duration();
                 if (t >= dur) {
@@ -140,7 +139,7 @@ public class CATransaction {
         }
 
         public PassData copy() {
-            PassData data = new PassData();
+            var data = new PassData();
             data.duration = duration;
             data.timingFunction = timingFunction;
             return data;

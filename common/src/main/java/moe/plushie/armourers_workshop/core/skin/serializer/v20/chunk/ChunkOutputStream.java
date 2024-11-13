@@ -70,7 +70,7 @@ public class ChunkOutputStream implements IOutputStream {
         node = headNode;
         while (node != null) {
             node.write(bytes, finalStream);
-            ChunkNode next = node.next;
+            var next = node.next;
             node.next = null;
             node = next;
         }

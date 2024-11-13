@@ -43,8 +43,8 @@ public abstract class AdvancedPanel extends UIView {
 
     @Override
     public void sizeToFit() {
-        CGRect bounds = bounds();
-        UIEdgeInsets edge = new UIEdgeInsets(8, 8, 8, 8);
+        var bounds = bounds();
+        var edge = new UIEdgeInsets(8, 8, 8, 8);
         float width = bounds.width - edge.left - edge.right;
         float top = edge.top;
         float left = bounds.width * 0.4f;
@@ -111,7 +111,7 @@ public abstract class AdvancedPanel extends UIView {
                 var leftView = it.getLeft();
                 float height = rightFrame.getHeight();
                 if (leftView != null) {
-                    CGRect leftFrame = leftView.frame().copy();
+                    var leftFrame = leftView.frame().copy();
                     height = Math.max(height, leftFrame.getHeight());
                     leftFrame.x = x0;
                     leftFrame.y = top + (height - leftFrame.getHeight()) / 2;
@@ -137,7 +137,7 @@ public abstract class AdvancedPanel extends UIView {
 
         // [x] name
         public void bool(@Nullable NSString name, @Nullable NSString desc, IDataProperty<Boolean> property) {
-            UICheckBox box = new UICheckBox(new CGRect(0, 0, 80, 16));
+            var box = new UICheckBox(new CGRect(0, 0, 80, 16));
             box.setTitle(desc);
             box.addTarget(property, UIControl.Event.VALUE_CHANGED, (pro, ctrl) -> {
                 UICheckBox checkBox = (UICheckBox) ctrl;
@@ -149,7 +149,7 @@ public abstract class AdvancedPanel extends UIView {
 
         // name [ --- ]
         public void slider(@Nullable NSString name, IDataProperty<Float> property, Unit unit) {
-            NewSlider view = new NewSlider(new CGRect(0, 0, 80, 16));
+            var view = new NewSlider(new CGRect(0, 0, 80, 16));
             view.setFormatter(unit);
             view.setStepValue(unit.stepValue);
             view.setValue(unit.defaultValue);

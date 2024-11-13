@@ -34,7 +34,7 @@ public class SlotListView<M extends AbstractContainerMenu> extends UIView {
     @Override
     public void layoutSubviews() {
         super.layoutSubviews();
-        UIWindow window = window();
+        var window = window();
         if (window != null) {
             screen.setup(convertRectToView(bounds(), null), window.bounds());
             isReady = true;
@@ -49,7 +49,7 @@ public class SlotListView<M extends AbstractContainerMenu> extends UIView {
         }
         int mouseX = (int) context.state().mousePos().getX();
         int mouseY = (int) context.state().mousePos().getY();
-        CGPoint offset = screen.getContentOffset();
+        var offset = screen.getContentOffset();
         context.saveGraphicsState();
         context.translateCTM(-offset.getX(), -offset.getY(), 0);
         screen.renderInView(this, 400, mouseX, mouseY, context.state().partialTicks(), context);
@@ -58,13 +58,13 @@ public class SlotListView<M extends AbstractContainerMenu> extends UIView {
 
     @Override
     public void mouseDown(UIEvent event) {
-        CGPoint pt = locationInScreen(event);
+        var pt = locationInScreen(event);
         screen.mouseClicked(pt.x, pt.y, event.key());
     }
 
     @Override
     public void mouseUp(UIEvent event) {
-        CGPoint pt = locationInScreen(event);
+        var pt = locationInScreen(event);
         screen.mouseReleased(pt.x, pt.y, event.key());
     }
 
@@ -79,10 +79,10 @@ public class SlotListView<M extends AbstractContainerMenu> extends UIView {
     }
 
     private CGPoint locationInScreen(UIEvent event) {
-        CGPoint point = event.locationInWindow();
-        UIWindow window = window();
+        var point = event.locationInWindow();
+        var window = window();
         if (window != null) {
-            CGRect frame = window.frame();
+            var frame = window.frame();
             return new CGPoint(point.x + frame.x, point.y + frame.y);
         }
         return point;

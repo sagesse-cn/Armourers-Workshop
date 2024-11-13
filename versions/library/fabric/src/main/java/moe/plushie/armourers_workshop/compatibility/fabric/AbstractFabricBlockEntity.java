@@ -19,7 +19,7 @@ public interface AbstractFabricBlockEntity {
 
     static <T extends BlockEntity> BlockEntityType<T> createType(IBlockEntityType.Serializer<T> supplier, Block... blocks) {
         BlockEntityType<?>[] entityTypes = {null};
-        BlockEntityType<T> entityType = FabricBlockEntityTypeBuilder.create((blockPos, blockState) -> supplier.create(entityTypes[0], blockPos, blockState), blocks).build();
+        var entityType = FabricBlockEntityTypeBuilder.create((blockPos, blockState) -> supplier.create(entityTypes[0], blockPos, blockState), blocks).build();
         entityTypes[0] = entityType;
         return entityType;
     }

@@ -41,8 +41,8 @@ public class ChunkWriter {
         if (blobs instanceof Collection<?>) {
             for (Object blob : (Collection<?>) blobs) {
                 if (blob instanceof Chunk chunk) {
-                    String name = chunk.getName();
-                    ChunkFlags flags = chunk.getFlags();
+                    var name = chunk.getName();
+                    var flags = chunk.getFlags();
                     stream.writeInt(chunk.getLength());
                     writeHeader(name, flags);
                     chunk.writeToStream(stream);

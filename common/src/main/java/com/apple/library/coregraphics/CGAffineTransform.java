@@ -98,7 +98,7 @@ public class CGAffineTransform implements InterpolableImpl<CGAffineTransform> {
     }
 
     public CGAffineTransform inverted() {
-        CGAffineTransform t = copy();
+        var t = copy();
         t.invert();
         return t;
     }

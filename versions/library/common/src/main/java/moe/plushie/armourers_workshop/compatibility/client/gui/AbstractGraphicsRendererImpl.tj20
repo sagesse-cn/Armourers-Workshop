@@ -53,14 +53,14 @@ public class AbstractGraphicsRendererImpl {
         entity.setXRot(-q * 20.0f);
         //livingEntity.yHeadRot = livingEntity.getYRot();
         //livingEntity.yHeadRotO = livingEntity.getYRot();
-        GuiGraphics guiGraphics = AbstractGraphicsRenderer.of(context);
-        PoseStack poseStack = guiGraphics.pose();
+        var guiGraphics = AbstractGraphicsRenderer.of(context);
+        var poseStack = guiGraphics.pose();
         poseStack.pushPose();
         poseStack.translate(0, 0, 50.0);
         poseStack.mulPoseMatrix(new Matrix4f().scaling(scale, scale, -scale));
         poseStack.mulPose(quaternion);
         Lighting.setupForEntityInInventory();
-        EntityRenderDispatcher renderDispatcher = Minecraft.getInstance().getEntityRenderDispatcher();
+        var renderDispatcher = Minecraft.getInstance().getEntityRenderDispatcher();
         quaternion2.conjugate();
         renderDispatcher.overrideCameraOrientation(AbstractPoseStack.copyQuaternion(quaternion2));
         renderDispatcher.setRenderShadow(false);

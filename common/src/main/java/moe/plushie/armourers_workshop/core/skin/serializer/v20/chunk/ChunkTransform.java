@@ -63,8 +63,8 @@ public class ChunkTransform {
     }
 
     public static ChunkTransform flat(ITransform transform) {
-        FloatBuffer buffer = FloatBuffer.allocate(16);
-        OpenPoseStack poseStack = new OpenPoseStack();
+        var buffer = FloatBuffer.allocate(16);
+        var poseStack = new OpenPoseStack();
         transform.apply(poseStack);
         poseStack.last().pose().store(buffer);
         return new ChunkTransform(buffer);

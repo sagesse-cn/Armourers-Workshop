@@ -47,7 +47,7 @@ public interface CGGraphicsState {
     }
 
     default void concatenate(CGAffineTransform transform) {
-        IPoseStack ctm = ctm();
+        var ctm = ctm();
         ctm.multiply(ObjectUtilsImpl.convertToMatrix3x3(transform));
         ctm.multiply(ObjectUtilsImpl.convertToMatrix4x4(transform));
     }

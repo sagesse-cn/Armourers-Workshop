@@ -24,7 +24,7 @@ public abstract class AbstractFriendlyByteBufImpl implements IFriendlyByteBuf {
     }
 
     protected static FriendlyByteBuf cast(ByteBuf buf) {
-        FriendlyByteBuf source = Objects.safeCast(buf, FriendlyByteBuf.class);
+        var source = Objects.safeCast(buf, FriendlyByteBuf.class);
         if (source == null) {
             source = new FriendlyByteBuf(buf);
         }

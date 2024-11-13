@@ -50,7 +50,7 @@ public class CGRect implements InterpolableImpl<CGRect> {
     }
 
     public CGRect applying(CGAffineTransform t) {
-        CGRect rect = copy();
+        var rect = copy();
         rect.apply(t);
         return rect;
     }

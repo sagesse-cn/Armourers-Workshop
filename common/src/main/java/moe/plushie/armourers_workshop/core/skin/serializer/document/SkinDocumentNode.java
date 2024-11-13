@@ -70,6 +70,8 @@ public class SkinDocumentNode implements IDataSerializable.Immutable {
         this.children.addAll(serializer.read(CodingKeys.CHILDREN));
         this.isEnabled = serializer.read(CodingKeys.ENABLED);
         this.isMirror = serializer.read(CodingKeys.MIRROR);
+        // restore node hierarchy depend.
+        this.children.forEach(it -> it.parent = this);
     }
 
     @Override
