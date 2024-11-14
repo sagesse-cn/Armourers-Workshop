@@ -27,12 +27,12 @@ public class ItemRendererMixin {
         var bakedModel = cir.getReturnValue();
         var embeddedStack = ClientWardrobeHandler.getEmbeddedSkinStack(entity, level, itemStack, null, bakedModel);
         if (embeddedStack != null) {
-            cir.setReturnValue(BakedModelStorage.wrap(bakedModel, itemStack, embeddedStack, entity, level));
+            cir.setReturnValue(BakedModelStorage.wrap(bakedModel, itemStack, embeddedStack, null, entity, level));
         }
     }
 
     @Inject(method = "render", at = @At("HEAD"), cancellable = true)
-    private void aw2$render(ItemStack itemStack, ItemDisplayContext transformType, boolean p_229111_3_, PoseStack poseStack, MultiBufferSource buffers, int packedLight, int overlay, BakedModel bakedModel, CallbackInfo ci) {
+    private void aw2$render(ItemStack itemStack, ItemDisplayContext transformType, boolean leftHandHackery, PoseStack poseStack, MultiBufferSource buffers, int packedLight, int overlay, BakedModel bakedModel, CallbackInfo ci) {
         var storage = BakedModelStorage.unwrap(bakedModel);
         if (storage == null) {
             return;
@@ -41,6 +41,7 @@ public class ItemRendererMixin {
         var entity = storage.getEntity();
         var level = storage.getLevel();
         var embeddedStack = storage.getEmbeddedStack();
-        ClientWardrobeHandler.renderEmbeddedSkin(entity, level, itemStack, embeddedStack, ItemTransforms.ofType(transformType), p_229111_3_, poseStack, buffers, resolvedModel, packedLight, overlay, ci);
+        var embeddedProperties = storage.getEmbeddedProperties();
+        ClientWardrobeHandler.renderEmbeddedSkin(entity, level, itemStack, embeddedStack, embeddedProperties, ItemTransforms.ofType(transformType), leftHandHackery, poseStack, buffers, resolvedModel, packedLight, overlay, ci);
     }
 }

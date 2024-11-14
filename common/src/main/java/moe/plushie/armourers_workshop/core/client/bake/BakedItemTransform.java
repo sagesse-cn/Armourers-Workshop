@@ -4,6 +4,7 @@ import moe.plushie.armourers_workshop.api.core.math.IPoseStack;
 import moe.plushie.armourers_workshop.api.core.math.ITransform;
 import moe.plushie.armourers_workshop.api.skin.part.ISkinPartType;
 import moe.plushie.armourers_workshop.compatibility.api.AbstractItemTransformType;
+import moe.plushie.armourers_workshop.core.client.other.SkinItemProperties;
 import moe.plushie.armourers_workshop.core.client.other.SkinItemSource;
 import moe.plushie.armourers_workshop.core.client.other.SkinModelManager;
 import net.minecraft.world.entity.Entity;
@@ -14,6 +15,7 @@ public class BakedItemTransform implements ITransform {
 
     private Entity entity;
     private ItemStack itemStack = ItemStack.EMPTY;
+    private SkinItemProperties itemProperties;
     private AbstractItemTransformType transformType = AbstractItemTransformType.NONE;
 
     private final ISkinPartType partType;
@@ -28,6 +30,7 @@ public class BakedItemTransform implements ITransform {
         this.entity = entity;
         this.transformType = itemSource.getTransformType();
         this.itemStack = itemSource.getItem();
+        this.itemProperties = itemSource.getItemProperties();
     }
 
     @Override
@@ -35,7 +38,7 @@ public class BakedItemTransform implements ITransform {
         if (entity == null) {
             return;
         }
-        var model = SkinModelManager.getInstance().getModel(partType, itemModel, itemStack, entity);
+        var model = SkinModelManager.getInstance().getModel(partType, itemModel, itemStack, itemProperties, entity);
         var f1 = 16f;
         var f2 = 1 / 16f;
         var flag = transformType.isLeftHand();

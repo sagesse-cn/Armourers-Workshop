@@ -23,12 +23,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class ItemRendererMixin {
 
     @Inject(method = "getModel", at = @At("RETURN"), cancellable = true)
-    private void aw2$getModel(ItemStack itemStack, Level level, LivingEntity entity, CallbackInfoReturnable<BakedModel> cir)
-    {
+    private void aw2$getModel(ItemStack itemStack, Level level, LivingEntity entity, CallbackInfoReturnable<BakedModel> cir) {
         var bakedModel = cir.getReturnValue();
         var embeddedStack = ClientWardrobeHandler.getEmbeddedSkinStack(entity, level, itemStack, null, bakedModel);
         if (embeddedStack != null) {
-            cir.setReturnValue(BakedModelStorage.wrap(bakedModel, itemStack, embeddedStack, entity, level));
+            cir.setReturnValue(BakedModelStorage.wrap(bakedModel, itemStack, embeddedStack, null, entity, level));
         }
     }
 
@@ -42,7 +41,8 @@ public class ItemRendererMixin {
         var entity = storage.getEntity();
         var level = storage.getLevel();
         var embeddedStack = storage.getEmbeddedStack();
-        ClientWardrobeHandler.renderEmbeddedSkin(entity, level, itemStack, embeddedStack, ItemTransforms.ofType(transformType), p_229111_3_, poseStack, buffers, resolvedModel, packedLight, overlay, ci);
+        var embeddedProperties = storage.getEmbeddedProperties();
+        ClientWardrobeHandler.renderEmbeddedSkin(entity, level, itemStack, embeddedStack, embeddedProperties, ItemTransforms.ofType(transformType), p_229111_3_, poseStack, buffers, resolvedModel, packedLight, overlay, ci);
     }
 
 

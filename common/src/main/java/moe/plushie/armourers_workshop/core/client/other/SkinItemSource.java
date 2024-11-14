@@ -2,7 +2,9 @@ package moe.plushie.armourers_workshop.core.client.other;
 
 import moe.plushie.armourers_workshop.compatibility.api.AbstractItemTransformType;
 import moe.plushie.armourers_workshop.core.math.Vector3f;
+import moe.plushie.armourers_workshop.core.skin.property.SkinProperties;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 public class SkinItemSource {
 
@@ -10,6 +12,7 @@ public class SkinItemSource {
 
     private float renderPriority;
     private ItemStack itemStack;
+    private SkinItemProperties itemProperties;
 
     private Vector3f itemScale;
     private Vector3f itemRotation;
@@ -26,24 +29,29 @@ public class SkinItemSource {
     }
 
     public static SkinItemSource create(ItemStack itemStack) {
-        return create(0, itemStack, AbstractItemTransformType.NONE);
+        return create(0, itemStack, AbstractItemTransformType.NONE, null);
     }
 
     public static SkinItemSource create(ItemStack itemStack, AbstractItemTransformType transformType) {
-        return create(0, itemStack, transformType);
+        return create(0, itemStack, transformType, null);
     }
 
     public static SkinItemSource create(float renderPriority, ItemStack itemStack) {
-        return create(renderPriority, itemStack, AbstractItemTransformType.NONE);
+        return create(renderPriority, itemStack, AbstractItemTransformType.NONE, null);
     }
 
     public static SkinItemSource create(float renderPriority, ItemStack itemStack, AbstractItemTransformType transformType) {
-        SkinItemSource itemSource = new SkinItemSource();
+        return create(renderPriority, itemStack, transformType, null);
+    }
+
+    public static SkinItemSource create(float renderPriority, ItemStack itemStack, AbstractItemTransformType transformType, @Nullable SkinItemProperties itemProperties) {
+        var itemSource = new SkinItemSource();
         itemSource.setItem(itemStack);
         itemSource.setRenderPriority(renderPriority);
         itemSource.setTransformType(transformType);
         itemSource.setScale(null);
         itemSource.setRotation(null);
+        itemSource.setItemProperties(itemProperties);
         return itemSource;
     }
 
@@ -85,5 +93,13 @@ public class SkinItemSource {
 
     public AbstractItemTransformType getTransformType() {
         return transformType;
+    }
+
+    public void setItemProperties(SkinItemProperties itemProperties) {
+        this.itemProperties = itemProperties;
+    }
+
+    public SkinItemProperties getItemProperties() {
+        return itemProperties;
     }
 }

@@ -38,19 +38,18 @@ public class SkinModelManager {
         return INSTANCE;
     }
 
-    public BakedModel getModel(ISkinPartType partType, @Nullable BakedItemModel itemModel, ItemStack itemStack, Entity entity) {
-        return getModel(partType, itemModel, itemStack, entity.getLevel(), entity);
+    public BakedModel getModel(ISkinPartType partType, @Nullable BakedItemModel itemModel, ItemStack itemStack, @Nullable SkinItemProperties itemProperties, Entity entity) {
+        return getModel(partType, itemModel, itemStack, itemProperties, entity.getLevel(), entity);
     }
 
-    public BakedModel getModel(ISkinPartType partType, @Nullable BakedItemModel itemModel, ItemStack itemStack, @Nullable Level level, @Nullable Entity entity) {
+    public BakedModel getModel(ISkinPartType partType, @Nullable BakedItemModel itemModel, ItemStack itemStack, @Nullable SkinItemProperties itemProperties, @Nullable Level level, @Nullable Entity entity) {
         var clientWorld = Objects.safeCast(level, ClientLevel.class);
         var livingEntity = Objects.safeCast(entity, LivingEntity.class);
         // we prefer to use the overridden item model.
         if (itemModel != null) {
-            return itemModel.resolve(itemModel, itemStack, clientWorld, livingEntity, 0);
+            return resolveModel(itemModel, itemStack, itemProperties, clientWorld, livingEntity, 0);
         }
-        var bakedModel = loadModel(partType);
-        return bakedModel.getOverrides().resolve(bakedModel, itemStack, clientWorld, livingEntity, 0);
+        return resolveModel(loadModel(partType), itemStack, itemProperties, clientWorld, livingEntity, 0);
     }
 
     public BakedModel getMissingModel() {
@@ -69,5 +68,18 @@ public class SkinModelManager {
         }
         cachedModels.put(partType, bakedModel);
         return bakedModel;
+    }
+
+    private BakedModel resolveModel(BakedModel bakedModel, ItemStack itemStack, @Nullable SkinItemProperties itemProperties, @Nullable ClientLevel level, @Nullable LivingEntity entity, int i) {
+        // in some cases we need to disable item overrides, users:
+        //  Epic Fight Mod (Shield Render)
+        if (itemProperties != null && !itemProperties.isAllowOverrides()) {
+            return bakedModel;
+        }
+        // requires custom item overrides?
+        if (bakedModel instanceof BakedItemModel itemModel) {
+            return itemModel.resolve(itemModel, itemStack, level, entity, i);
+        }
+        return bakedModel.getOverrides().resolve(bakedModel, itemStack, level, entity, i);
     }
 }

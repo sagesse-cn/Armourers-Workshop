@@ -26,7 +26,7 @@ public class ItemRendererMixin {
         var bakedModel = cir.getReturnValue();
         var embeddedStack = ClientWardrobeHandler.getEmbeddedSkinStack(entity, level, itemStack, null, bakedModel);
         if (embeddedStack != null) {
-            cir.setReturnValue(BakedModelStorage.wrap(bakedModel, itemStack, embeddedStack, entity, level));
+            cir.setReturnValue(BakedModelStorage.wrap(bakedModel, itemStack, embeddedStack, null, entity, level));
         }
     }
 
@@ -40,7 +40,8 @@ public class ItemRendererMixin {
         var entity = storage.getEntity();
         var level = storage.getLevel();
         var embeddedStack = storage.getEmbeddedStack();
-        ClientWardrobeHandler.renderEmbeddedSkin(entity, level, itemStack, embeddedStack, ItemTransforms.ofType(transformType), p_229111_3_, poseStack, buffers, resolvedModel, packedLight, overlay, ci);
+        var embeddedProperties = storage.getEmbeddedProperties();
+        ClientWardrobeHandler.renderEmbeddedSkin(entity, level, itemStack, embeddedStack, embeddedProperties, ItemTransforms.ofType(transformType), p_229111_3_, poseStack, buffers, resolvedModel, packedLight, overlay, ci);
     }
 
     @Inject(method = "renderGuiItem(Lnet/minecraft/world/item/ItemStack;II)V", at = @At("HEAD"))

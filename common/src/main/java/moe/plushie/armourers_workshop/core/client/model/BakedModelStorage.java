@@ -1,6 +1,7 @@
 package moe.plushie.armourers_workshop.core.client.model;
 
 import moe.plushie.armourers_workshop.api.data.IAssociatedContainerProvider;
+import moe.plushie.armourers_workshop.core.client.other.SkinItemProperties;
 import moe.plushie.armourers_workshop.utils.EmbeddedSkinStack;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -17,13 +18,15 @@ public class BakedModelStorage {
 
     final ItemStack itemStack;
     final EmbeddedSkinStack embeddedStack;
+    final SkinItemProperties embeddedProperties;
     final Level level;
     final LivingEntity entity;
     final BakedModel bakedModel;
 
-    public BakedModelStorage(ItemStack itemStack, EmbeddedSkinStack embeddedStack, LivingEntity entity, @Nullable Level level, BakedModel bakedModel) {
+    public BakedModelStorage(ItemStack itemStack, EmbeddedSkinStack embeddedStack, @Nullable SkinItemProperties embeddedProperties, LivingEntity entity, @Nullable Level level, BakedModel bakedModel) {
         this.itemStack = itemStack;
         this.embeddedStack = embeddedStack;
+        this.embeddedProperties = embeddedProperties;
         this.level = level;
         this.entity = entity;
         this.bakedModel = bakedModel;
@@ -37,10 +40,10 @@ public class BakedModelStorage {
         return null;
     }
 
-    public static BakedModel wrap(BakedModel bakedModel, ItemStack itemStack, EmbeddedSkinStack embeddedStack, LivingEntity entity, @Nullable Level level) {
+    public static BakedModel wrap(BakedModel bakedModel, ItemStack itemStack, EmbeddedSkinStack embeddedStack, @Nullable SkinItemProperties embeddedProperties, LivingEntity entity, @Nullable Level level) {
         // we use a java proxy, which will forward all methods back to the original baked model.
         var classes = new Class[]{BakedModel.class, IAssociatedContainerProvider.class};
-        var storage = new BakedModelStorage(itemStack, embeddedStack, entity, level, bakedModel);
+        var storage = new BakedModelStorage(itemStack, embeddedStack, embeddedProperties, entity, level, bakedModel);
         return (BakedModel) Proxy.newProxyInstance(BakedModel.class.getClassLoader(), classes, (proxy, method, methodArgs) -> {
             if (method.getDeclaringClass() == IAssociatedContainerProvider.class) {
                 return storage;
@@ -67,5 +70,9 @@ public class BakedModelStorage {
 
     public EmbeddedSkinStack getEmbeddedStack() {
         return embeddedStack;
+    }
+
+    public SkinItemProperties getEmbeddedProperties() {
+        return embeddedProperties;
     }
 }
