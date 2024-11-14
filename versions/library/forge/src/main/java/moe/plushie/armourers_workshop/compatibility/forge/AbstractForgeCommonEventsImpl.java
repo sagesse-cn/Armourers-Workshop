@@ -6,6 +6,7 @@ import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
+import net.neoforged.neoforge.event.OnDatapackSyncEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
@@ -53,6 +54,8 @@ public class AbstractForgeCommonEventsImpl {
     public static final auto PLAYER_LOGOUT = AbstractForgeEventBus.create(PlayerEvent.PlayerLoggedOutEvent.class);
     public static final auto PLAYER_CLONE = AbstractForgeEventBus.create(PlayerEvent.Clone.class);
     public static final auto PLAYER_TRACKING = AbstractForgeEventBus.create(PlayerEvent.StartTracking.class);
+
+    public static final auto DATA_PACK_SYNC = AbstractForgeEventBus.create(OnDatapackSyncEvent.class);
 
     public static final auto COMMAND_REGISTRY = AbstractForgeEventBus.create(RegisterCommandsEvent.class);
     public static final auto DATA_PACK_REGISTRY = AbstractForgeEventBus.create(AddReloadListenerEvent.class);

@@ -41,7 +41,7 @@ public class UpdateContextPacket extends CustomPacket {
         this.buffer.retain();
     }
 
-    public static UpdateContextPacket all(Player player) {
+    public static UpdateContextPacket sync(Player player) {
         int flags = 0x01;
         if (EnvironmentManager.isDedicatedServer()) {
             flags |= 0x02;

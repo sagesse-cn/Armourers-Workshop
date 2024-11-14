@@ -2,6 +2,7 @@ package moe.plushie.armourers_workshop.compatibility.forge;
 
 import moe.plushie.armourers_workshop.compatibility.forge.event.common.AbstractForgeBlockEvent;
 import moe.plushie.armourers_workshop.compatibility.forge.event.common.AbstractForgeConfigEvent;
+import moe.plushie.armourers_workshop.compatibility.forge.event.common.AbstractForgeDataPackEvent;
 import moe.plushie.armourers_workshop.compatibility.forge.event.common.AbstractForgeLauncherLifecycleEvent;
 import moe.plushie.armourers_workshop.compatibility.forge.event.common.AbstractForgePlayerEvent;
 import moe.plushie.armourers_workshop.compatibility.forge.event.common.AbstractForgeRegisterCommandsEvent;
@@ -12,6 +13,7 @@ import moe.plushie.armourers_workshop.compatibility.forge.event.common.AbstractF
 import moe.plushie.armourers_workshop.compatibility.forge.event.common.AbstractForgeServerTickEvent;
 import moe.plushie.armourers_workshop.init.platform.EventManager;
 import moe.plushie.armourers_workshop.init.platform.event.common.BlockEvent;
+import moe.plushie.armourers_workshop.init.platform.event.common.DataPackEvent;
 import moe.plushie.armourers_workshop.init.platform.event.common.LauncherClientSetupEvent;
 import moe.plushie.armourers_workshop.init.platform.event.common.LauncherCommonSetupEvent;
 import moe.plushie.armourers_workshop.init.platform.event.common.LauncherConfigSetupEvent;
@@ -59,6 +61,8 @@ public class AbstractForgeCommonEvents extends AbstractForgeCommonEventsImpl {
         EventManager.post(PlayerEvent.Clone.class, AbstractForgePlayerEvent.cloneFactory());
         EventManager.post(PlayerEvent.Attack.class, AbstractForgePlayerEvent.attackFactory());
         EventManager.post(PlayerEvent.StartTracking.class, AbstractForgePlayerEvent.startTrackingFactory());
+
+        EventManager.post(DataPackEvent.Sync.class, AbstractForgeDataPackEvent.syncFactory());
 
         EventManager.post(RegisterCommandsEvent.class, AbstractForgeRegisterCommandsEvent.registryFactory());
         EventManager.post(RegisterDataPackEvent.class, AbstractForgeRegisterDataPackEvent.registryFactory());

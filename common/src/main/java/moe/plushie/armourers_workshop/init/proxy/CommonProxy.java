@@ -24,6 +24,7 @@ import moe.plushie.armourers_workshop.init.platform.EventManager;
 import moe.plushie.armourers_workshop.init.platform.NetworkManager;
 import moe.plushie.armourers_workshop.init.platform.ReplayManager;
 import moe.plushie.armourers_workshop.init.platform.event.common.BlockEvent;
+import moe.plushie.armourers_workshop.init.platform.event.common.DataPackEvent;
 import moe.plushie.armourers_workshop.init.platform.event.common.PlayerEvent;
 import moe.plushie.armourers_workshop.init.platform.event.common.RegisterCommandsEvent;
 import moe.plushie.armourers_workshop.init.platform.event.common.RegisterDataPackEvent;
@@ -92,14 +93,20 @@ public class CommonProxy {
             ModContext.reset();
         });
 
+        EventManager.listen(DataPackEvent.Sync.class, event -> {
+            // when the data pack sync event, we will initialize context.
+            if (event.getPlayer() instanceof ServerPlayer player) {
+                ReplayManager.startRecording(event.getPlayer().getServer(), event.getPlayer());
+                NetworkManager.sendTo(UpdateContextPacket.sync(player), player);
+            }
+        });
+
         EventManager.listen(PlayerEvent.LoggingIn.class, event -> {
             // when the player login, check and give gifts for holiday
             ModLog.debug("welcome back {}", event.getPlayer().getScoreboardName());
             ModHolidays.welcome(event.getPlayer());
-            ReplayManager.startRecording(event.getPlayer().getServer(), event.getPlayer());
-            // When the player login, initialize context and wardrobe.
+            // when the player login, initialize wardrobe.
             if (event.getPlayer() instanceof ServerPlayer player) {
-                NetworkManager.sendTo(UpdateContextPacket.all(player), player);
                 NetworkManager.sendWardrobeTo(player, player);
             }
         });

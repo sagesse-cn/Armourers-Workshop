@@ -2,6 +2,7 @@ package moe.plushie.armourers_workshop.compatibility.forge;
 
 import moe.plushie.armourers_workshop.api.annotation.Available;
 import net.minecraftforge.event.AddReloadListenerEvent;
+import net.minecraftforge.event.OnDatapackSyncEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
@@ -52,6 +53,8 @@ public class AbstractForgeCommonEventsImpl {
     public static final auto PLAYER_DEATH = AbstractForgeEventBus.create(LivingDropsEvent.class);
     public static final auto PLAYER_ATTACK = AbstractForgeEventBus.create(AttackEntityEvent.class);
     public static final auto PLAYER_TRACKING = AbstractForgeEventBus.create(PlayerEvent.StartTracking.class);
+
+    public static final auto DATA_PACK_SYNC = AbstractForgeEventBus.create(OnDatapackSyncEvent.class);
 
     public static final auto COMMAND_REGISTRY = AbstractForgeEventBus.create(RegisterCommandsEvent.class);
     public static final auto DATA_PACK_REGISTRY = AbstractForgeEventBus.create(AddReloadListenerEvent.class);
