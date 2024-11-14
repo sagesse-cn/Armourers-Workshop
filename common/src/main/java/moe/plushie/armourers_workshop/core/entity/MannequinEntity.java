@@ -391,7 +391,7 @@ public class MannequinEntity extends AbstractLivingEntity.ArmorStand implements 
 
     public static class EntityData {
 
-        private static final IDataCodec<Rotations> ROTATIONS_CODEC = IDataCodec.FLOAT.listOf().xmap(it -> new Rotations(it.get(0), it.get(1), it.get(1)), it -> Collections.newList(it.getX(), it.getY(), it.getZ()));
+        private static final IDataCodec<Rotations> ROTATIONS_CODEC = IDataCodec.FLOAT.listOf().xmap(it -> new Rotations(it.get(0), it.get(1), it.get(2)), it -> Collections.newList(it.getX(), it.getY(), it.getZ()));
 
         private final TagSerializer serializer;
 
