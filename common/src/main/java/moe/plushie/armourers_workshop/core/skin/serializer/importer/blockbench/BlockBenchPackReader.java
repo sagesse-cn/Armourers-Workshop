@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
@@ -226,7 +227,7 @@ public class BlockBenchPackReader {
         object.at("uuid", it -> builder.uuid(it.stringValue()));
         object.at("type", it -> builder.type(it.stringValue()));
         object.each("keyframes", fo -> {
-            var fb = new BlockBenchKeyFrame.Builder();
+            var fb = new BlockBenchKeyframe.Builder();
             fo.at("uuid", it -> fb.uuid(it.stringValue()));
             fo.at("channel", it -> fb.name(it.stringValue()));
             fo.at("time", it -> fb.time(it.floatValue()));
@@ -249,9 +250,17 @@ public class BlockBenchPackReader {
                 }
             });
             fo.each("data_points", it -> {
-                fb.add(it.get("x"));
-                fb.add(it.get("y"));
-                fb.add(it.get("z"));
+                var point = new LinkedHashMap<String, Object>();
+                for (var entry : it.entrySet()) {
+                    var key = entry.getKey();
+                    var value = entry.getValue();
+                    switch (value.type()) {
+                        case NUMBER -> point.put(key, value.floatValue());
+                        case STRING -> point.put(key, value.stringValue());
+                        default -> throw new IOException("a unknown point type of " + value);
+                    }
+                }
+                fb.point(point);
             });
             builder.addFrame(fb.build());
         });

@@ -6,9 +6,9 @@ import java.util.List;
 public class BlockBenchAnimator extends BlockBenchObject {
 
     private final String type;
-    private final List<BlockBenchKeyFrame> keyframes;
+    private final List<BlockBenchKeyframe> keyframes;
 
-    public BlockBenchAnimator(String uuid, String name, String type, List<BlockBenchKeyFrame> keyframes) {
+    public BlockBenchAnimator(String uuid, String name, String type, List<BlockBenchKeyframe> keyframes) {
         super(uuid, name);
         this.type = type;
         this.keyframes = keyframes;
@@ -18,14 +18,14 @@ public class BlockBenchAnimator extends BlockBenchObject {
         return type;
     }
 
-    public List<BlockBenchKeyFrame> getKeyframes() {
+    public List<BlockBenchKeyframe> getKeyframes() {
         return keyframes;
     }
 
     public static class Builder extends BlockBenchObject.Builder {
 
         private String type = "bone";
-        private final List<BlockBenchKeyFrame> keyframes = new ArrayList<>();
+        private final List<BlockBenchKeyframe> keyframes = new ArrayList<>();
 
         public Builder(String uuid) {
             this.uuid = uuid;
@@ -40,7 +40,7 @@ public class BlockBenchAnimator extends BlockBenchObject {
             this.type = type;
         }
 
-        public void addFrame(BlockBenchKeyFrame frame) {
+        public void addFrame(BlockBenchKeyframe frame) {
             this.keyframes.add(frame);
         }
 

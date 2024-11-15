@@ -31,8 +31,7 @@ public final class ForEach extends Function implements FlowControllable {
     @Override
     public Expression getAsExpression() {
         controller.begin();
-        var entries = getEntries();
-        for (var entry : entries) {
+        for (var entry : getEntries()) {
             if (variable instanceof Property property) {
                 property.update(entry.getAsExpression());
             }

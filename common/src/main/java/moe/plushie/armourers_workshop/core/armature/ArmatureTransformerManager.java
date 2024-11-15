@@ -5,6 +5,7 @@ import moe.plushie.armourers_workshop.api.common.IEntityTypeProvider;
 import moe.plushie.armourers_workshop.api.core.IResourceLocation;
 import moe.plushie.armourers_workshop.core.entity.EntityProfile;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IODataObject;
+import moe.plushie.armourers_workshop.init.ModLog;
 import net.minecraft.world.entity.EntityType;
 
 import java.util.ArrayList;
@@ -42,6 +43,7 @@ public abstract class ArmatureTransformerManager {
             while (nextBuilder.getParent() != null) {
                 var parent = pendingBuilders.get(nextBuilder.getParent());
                 if (parent == null) {
+                    ModLog.warn("Can't found parent '{}'", nextBuilder.getParent());
                     break;
                 }
                 chain.add(parent);
@@ -61,10 +63,12 @@ public abstract class ArmatureTransformerManager {
             });
             // ...
             builder.getModels().forEach(model -> {
-                var clazz = ArmatureSerializers.getClass(model);
-                if (clazz != null) {
-                    modelBuilders.computeIfAbsent(clazz, k -> new ArrayList<>()).add(builder);
+                var modelClazz = ArmatureSerializers.getClass(model);
+                if (modelClazz == null) {
+                    ModLog.warn("Can't found model class '{}'", model);
+                    return;
                 }
+                modelBuilders.computeIfAbsent(modelClazz, k -> new ArrayList<>()).add(builder);
             });
 //            if (used == 0) {
 //                defaultBuilders.add(builder);
@@ -90,14 +94,18 @@ public abstract class ArmatureTransformerManager {
                 }
             });
         }
-        var resultBuilders = find(entityBuilders, entityType, IEntityTypeProvider::get);
-        if (resultBuilders != null) {
-            finalBuilders.addAll(resultBuilders);
+        if (entityType != null) {
+            var resultBuilders = find(entityBuilders, entityType, IEntityTypeProvider::get);
+            if (resultBuilders != null) {
+                finalBuilders.addAll(resultBuilders);
+            }
         }
-        for (var registryName : entityProfile.getTransformers()) {
-            var builder = namedBuilders.get(registryName);
-            if (builder != null) {
-                finalBuilders.add(builder);
+        if (entityProfile != null) {
+            for (var registryName : entityProfile.getTransformers()) {
+                var builder = namedBuilders.get(registryName);
+                if (builder != null) {
+                    finalBuilders.add(builder);
+                }
             }
         }
         if (!finalBuilders.isEmpty()) {

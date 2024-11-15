@@ -6,7 +6,7 @@ import moe.plushie.armourers_workshop.core.armature.core.DefaultArmaturePluginCo
 import moe.plushie.armourers_workshop.core.client.bake.BakedArmatureTransformer;
 import moe.plushie.armourers_workshop.core.client.other.EntityRenderData;
 import moe.plushie.armourers_workshop.core.client.other.SkinRenderContext;
-import moe.plushie.armourers_workshop.core.client.render.EntityRendererContext;
+import moe.plushie.armourers_workshop.core.client.other.EntityRendererContext;
 import moe.plushie.armourers_workshop.core.utils.Objects;
 import moe.plushie.armourers_workshop.utils.TickUtils;
 import net.minecraft.client.renderer.MultiBufferSource;

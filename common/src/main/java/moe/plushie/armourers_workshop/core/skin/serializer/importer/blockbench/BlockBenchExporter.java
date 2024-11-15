@@ -15,8 +15,9 @@ import moe.plushie.armourers_workshop.core.skin.Skin;
 import moe.plushie.armourers_workshop.core.skin.SkinTypes;
 import moe.plushie.armourers_workshop.core.skin.animation.SkinAnimation;
 import moe.plushie.armourers_workshop.core.skin.animation.SkinAnimationFunction;
+import moe.plushie.armourers_workshop.core.skin.animation.SkinAnimationKeyframe;
 import moe.plushie.armourers_workshop.core.skin.animation.SkinAnimationLoop;
-import moe.plushie.armourers_workshop.core.skin.animation.SkinAnimationValue;
+import moe.plushie.armourers_workshop.core.skin.animation.SkinAnimationPoint;
 import moe.plushie.armourers_workshop.core.skin.animation.molang.MolangVirtualMachine;
 import moe.plushie.armourers_workshop.core.skin.geometry.SkinGeometryVertex;
 import moe.plushie.armourers_workshop.core.skin.geometry.collection.SkinGeometrySetV2;
@@ -221,7 +222,7 @@ public class BlockBenchExporter {
             var name = animation.getName();
             var duration = animation.getDuration();
             var loop = Animator.toAnimationLoop(animation.getLoop());
-            var values = Animator.toAnimationValues(animation.getAnimators());
+            var values = Animator.toAnimationKeyframes(animation.getAnimators());
             if (values.isEmpty()) {
                 return;
             }
@@ -520,34 +521,59 @@ public class BlockBenchExporter {
 
     protected static class Animator {
 
-        public static Map<String, List<SkinAnimationValue>> toAnimationValues(List<BlockBenchAnimator> animators) {
-            var results = new LinkedHashMap<String, List<SkinAnimationValue>>();
+        public static Map<String, List<SkinAnimationKeyframe>> toAnimationKeyframes(List<BlockBenchAnimator> animators) {
+            var results = new LinkedHashMap<String, List<SkinAnimationKeyframe>>();
             for (var animator : animators) {
-                switch (animator.getType()) {
-                    case "bone" -> {
-                        var values = results.computeIfAbsent(animator.getName(), k -> new ArrayList<>());
-                        for (var keyframe : animator.getKeyframes()) {
-                            var time = keyframe.getTime();
-                            var channel = keyframe.getName();
-                            var function = toAnimationFunction(keyframe);
-                            var points = new ArrayList<>();
-                            for (var point : keyframe.getPoints()) {
-                                points.add(toAnimationValue(point));
-                            }
-                            if (channel.equals("position")) {
-                                fixAnimationPosition(points);
-                            }
-                            values.add(new SkinAnimationValue(time, channel, function, points));
-                        }
+                var keyframes = results.computeIfAbsent(animator.getName(), k -> new ArrayList<>());
+                for (var keyframe : animator.getKeyframes()) {
+                    var time = keyframe.getTime();
+                    var channel = keyframe.getName();
+                    var function = toAnimationFunction(keyframe);
+                    var points = toAnimationPoints(keyframe, animator);
+                    if (!points.isEmpty()) {
+                        keyframes.add(new SkinAnimationKeyframe(time, channel, function, points));
                     }
-                    case "effect" -> ModLog.warn("not supported yet of effect");
-                    default -> ModLog.warn("a unknown type of '{}'", animator.getType());
                 }
             }
             return results;
         }
 
-        public static Object toAnimationValue(Object value) {
+        public static List<SkinAnimationPoint> toAnimationPoints(BlockBenchKeyframe keyframe, BlockBenchAnimator animator) {
+            var points = new ArrayList<SkinAnimationPoint>();
+            var channel = keyframe.getName();
+            switch (animator.getType()) {
+                case "bone" -> {
+                    for (var point : keyframe.getPoints()) {
+                        var x = toAnimationPoint(point.getOrDefault("x", 0));
+                        var y = toAnimationPoint(point.getOrDefault("y", 0));
+                        var z = toAnimationPoint(point.getOrDefault("z", 0));
+                        if (channel.equals("position")) {
+                            y = toAnimationNegativePoint(y);
+                        }
+                        points.add(new SkinAnimationPoint.Bone(x, y, z));
+                    }
+                }
+                case "effect" -> {
+                    switch (channel) {
+                        case "timeline" -> {
+                            for (var point : keyframe.getPoints()) {
+                                var value = point.get("script");
+                                if (value instanceof String script) {
+                                    points.add(new SkinAnimationPoint.Instruction(script));
+                                }
+                            }
+                        }
+                        case "particle" -> ModLog.warn("a unknown effect channel of '{}'", "particle");
+                        case "sound" -> ModLog.warn("a unknown effect channel of '{}'", "sound");
+                        default -> ModLog.warn("a unknown effect channel of '{}'", channel);
+                    }
+                }
+                default -> ModLog.warn("a unknown type of '{}'", animator.getType());
+            }
+            return points;
+        }
+
+        public static Object toAnimationPoint(Object value) {
             if (value instanceof String script) {
                 try {
                     // for blank script, we assume it to be a 0
@@ -569,6 +595,15 @@ public class BlockBenchExporter {
             return 0f;
         }
 
+        public static Object toAnimationNegativePoint(Object point) {
+            if (point instanceof String script) {
+                point = "-(" + script + ")";
+            } else if (point instanceof Number number) {
+                point = -number.floatValue();
+            }
+            return point;
+        }
+
         public static SkinAnimationLoop toAnimationLoop(String value) {
             return switch (value) {
                 case "once" -> SkinAnimationLoop.NONE;
@@ -578,7 +613,7 @@ public class BlockBenchExporter {
             };
         }
 
-        public static SkinAnimationFunction toAnimationFunction(BlockBenchKeyFrame keyframe) {
+        public static SkinAnimationFunction toAnimationFunction(BlockBenchKeyframe keyframe) {
             return switch (keyframe.getInterpolation()) {
                 case "bezier" -> SkinAnimationFunction.bezier(keyframe.getParameters());
                 case "linear" -> SkinAnimationFunction.linear();
@@ -588,20 +623,6 @@ public class BlockBenchExporter {
             };
         }
 
-        private static void fixAnimationPosition(List<Object> values) {
-            int count = values.size();
-            for (int i = 0; i < count; i++) {
-                if (i % 3 == 1) { // y-axis.
-                    var value = values.get(i);
-                    if (value instanceof String script) {
-                        value = "-(" + script + ")";
-                    } else if (value instanceof Number number) {
-                        value = -number.floatValue();
-                    }
-                    values.set(i, value);
-                }
-            }
-        }
     }
 
     protected static class TextureSet {

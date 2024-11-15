@@ -13,13 +13,13 @@ public class SkinAnimation {
 
     private final float duration;
 
-    private final Map<String, List<SkinAnimationValue>> values;
+    private final Map<String, List<SkinAnimationKeyframe>> keyframes;
 
-    public SkinAnimation(String name, float duration, SkinAnimationLoop loop, Map<String, List<SkinAnimationValue>> values) {
+    public SkinAnimation(String name, float duration, SkinAnimationLoop loop, Map<String, List<SkinAnimationKeyframe>> keyframes) {
         this.name = name;
         this.duration = duration;
         this.loop = loop;
-        this.values = values;
+        this.keyframes = keyframes;
     }
 
     public String getName() {
@@ -34,12 +34,12 @@ public class SkinAnimation {
         return duration;
     }
 
-    public Map<String, List<SkinAnimationValue>> getValues() {
-        return values;
+    public Map<String, List<SkinAnimationKeyframe>> getKeyframes() {
+        return keyframes;
     }
 
     @Override
     public String toString() {
-        return Objects.toString(this, "name", name, "duration", duration, "loop", loop, "values", values);
+        return Objects.toString(this, "name", name, "duration", duration, "loop", loop, "keyframes", keyframes);
     }
 }

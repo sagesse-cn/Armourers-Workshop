@@ -1,19 +1,18 @@
 package moe.plushie.armourers_workshop.core.skin.serializer.importer.blockbench;
 
-import moe.plushie.armourers_workshop.core.skin.serializer.io.IODataObject;
-
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
-public class BlockBenchKeyFrame extends BlockBenchObject {
+public class BlockBenchKeyframe extends BlockBenchObject {
 
     private final float time;
 
     private final String interpolation;
     private final List<Float> parameters;
-    private final List<Object> points;
+    private final List<Map<String, Object>> points;
 
-    public BlockBenchKeyFrame(String uuid, String name, float time, String interpolation, List<Float> parameters, List<Object> points) {
+    public BlockBenchKeyframe(String uuid, String name, float time, String interpolation, List<Float> parameters, List<Map<String, Object>> points) {
         super(uuid, name);
         this.time = time;
         this.interpolation = interpolation;
@@ -33,7 +32,7 @@ public class BlockBenchKeyFrame extends BlockBenchObject {
         return parameters;
     }
 
-    public List<Object> getPoints() {
+    public List<Map<String, Object>> getPoints() {
         return points;
     }
 
@@ -44,7 +43,7 @@ public class BlockBenchKeyFrame extends BlockBenchObject {
         private String interpolation = "liner"; // liner,smooth,bezier,step
 
         private List<Float> parameters;
-        private final List<Object> points = new ArrayList<>();
+        private final List<Map<String, Object>> points = new ArrayList<>();
 
         public void time(float time) {
             this.time = time;
@@ -58,16 +57,12 @@ public class BlockBenchKeyFrame extends BlockBenchObject {
             this.parameters = parameters;
         }
 
-        public void add(IODataObject value) {
-            switch (value.type()) {
-                case NUMBER -> points.add(value.floatValue());
-                case STRING -> points.add(value.stringValue());
-                default -> points.add("");
-            }
+        public void point(Map<String, Object> point) {
+            this.points.add(point);
         }
 
-        public BlockBenchKeyFrame build() {
-            return new BlockBenchKeyFrame(uuid, name, time, interpolation, parameters, points);
+        public BlockBenchKeyframe build() {
+            return new BlockBenchKeyframe(uuid, name, time, interpolation, parameters, points);
         }
     }
 }

@@ -14,7 +14,7 @@ import moe.plushie.armourers_workshop.core.client.animation.AnimationEngine;
 import moe.plushie.armourers_workshop.core.client.bake.SkinBakery;
 import moe.plushie.armourers_workshop.core.client.bake.SkinPreloadManager;
 import moe.plushie.armourers_workshop.core.client.render.HighlightPlacementRenderer;
-import moe.plushie.armourers_workshop.core.client.skinrender.SkinRendererManager2;
+import moe.plushie.armourers_workshop.core.client.skinrender.SkinRendererManager;
 import moe.plushie.armourers_workshop.core.client.texture.TextureManager;
 import moe.plushie.armourers_workshop.core.data.DataPackType;
 import moe.plushie.armourers_workshop.core.data.cache.AutoreleasePool;
@@ -60,7 +60,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.packs.resources.ReloadableResourceManager;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 
@@ -70,10 +69,9 @@ import java.util.stream.Stream;
 public class ClientProxy {
 
     public static void init() {
-        //            SkinResourceManager.init();
         MinecraftAuth.init(() -> Minecraft.getInstance().getUser().getUuid(), () -> Minecraft.getInstance().getUser().getAccessToken());
         ClientWardrobeHandler.init();
-        SkinRendererManager2.init();
+        SkinRendererManager.init();
         ModKeyBindings.init();
         ModDebugger.init();
 

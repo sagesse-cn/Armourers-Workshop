@@ -8,7 +8,7 @@ import net.fabricmc.api.Environment;
 public class RendererManager {
 
     public static void init() {
-        SkinRendererManager.init();
+        SkinRendererManager.reload();
         //moe.plushie.armourers_workshop.core.skin.molang.impl.test.CompilerTest.main();
     }
 }

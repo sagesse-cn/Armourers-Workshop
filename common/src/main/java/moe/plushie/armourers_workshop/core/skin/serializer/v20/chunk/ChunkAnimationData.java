@@ -2,7 +2,7 @@ package moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk;
 
 import moe.plushie.armourers_workshop.core.skin.animation.SkinAnimation;
 import moe.plushie.armourers_workshop.core.skin.animation.SkinAnimationLoop;
-import moe.plushie.armourers_workshop.core.skin.animation.SkinAnimationValue;
+import moe.plushie.armourers_workshop.core.skin.animation.SkinAnimationKeyframe;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IInputStream;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IOutputStream;
 import org.apache.commons.lang3.tuple.Pair;
@@ -70,7 +70,7 @@ public class ChunkAnimationData {
         }
 
         void readFromStream(IInputStream stream) throws IOException {
-            var values = new LinkedHashMap<String, List<SkinAnimationValue>>();
+            var keyframes = new LinkedHashMap<String, List<SkinAnimationKeyframe>>();
             while (true) {
                 int count = stream.readVarInt();
                 if (count == 0) {
@@ -79,17 +79,17 @@ public class ChunkAnimationData {
                 var bone = stream.readString();
                 var channel = stream.readString();
                 for (int i = 0; i < count; i++) {
-                    var value = SkinAnimationValue.readFromStream(channel, stream);
-                    values.computeIfAbsent(bone, k -> new ArrayList<>()).add(value);
+                    var keyframe = SkinAnimationKeyframe.readFromStream(channel, stream);
+                    keyframes.computeIfAbsent(bone, k -> new ArrayList<>()).add(keyframe);
                 }
             }
-            animation = new SkinAnimation(id, duration, loop, values);
+            animation = new SkinAnimation(id, duration, loop, keyframes);
         }
 
         void writeToStream(IOutputStream stream) throws IOException {
             // merge similar channels.
-            var channels = new LinkedHashMap<Pair<String, String>, ArrayList<SkinAnimationValue>>();
-            animation.getValues().forEach((bone, values) -> values.forEach(value -> {
+            var channels = new LinkedHashMap<Pair<String, String>, ArrayList<SkinAnimationKeyframe>>();
+            animation.getKeyframes().forEach((bone, values) -> values.forEach(value -> {
                 var key = Pair.of(bone, value.getKey());
                 channels.computeIfAbsent(key, k -> new ArrayList<>()).add(value);
             }));
@@ -109,7 +109,7 @@ public class ChunkAnimationData {
         }
 
         public boolean isEmpty() {
-            return animation != null && animation.getValues().isEmpty();
+            return animation != null && animation.getKeyframes().isEmpty();
         }
     }
 }

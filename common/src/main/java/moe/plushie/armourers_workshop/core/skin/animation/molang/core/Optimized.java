@@ -13,11 +13,14 @@ import moe.plushie.armourers_workshop.core.skin.animation.molang.impl.Visitor;
  */
 public final class Optimized implements Expression {
 
-    private final double value;
+    private final double doubleValue;
+    private final String stringValue;
+
     private final Expression expression;
 
     public Optimized(Expression expression) {
-        this.value = expression.getAsDouble();
+        this.doubleValue = expression.getAsDouble();
+        this.stringValue = expression.getAsString();
         this.expression = expression;
     }
 
@@ -28,7 +31,12 @@ public final class Optimized implements Expression {
 
     @Override
     public double getAsDouble() {
-        return value;
+        return doubleValue;
+    }
+
+    @Override
+    public String getAsString() {
+        return stringValue;
     }
 
     @Override
@@ -38,7 +46,7 @@ public final class Optimized implements Expression {
 
     @Override
     public String toString() {
-        return value + "/*" + expression + "*/";
+        return stringValue + "/*" + expression + "*/";
     }
 
     public Expression expression() {

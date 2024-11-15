@@ -5,6 +5,7 @@ import moe.plushie.armourers_workshop.core.skin.animation.molang.core.Compound;
 import moe.plushie.armourers_workshop.core.skin.animation.molang.core.Constant;
 import moe.plushie.armourers_workshop.core.skin.animation.molang.core.Expression;
 import moe.plushie.armourers_workshop.core.skin.animation.molang.core.Function;
+import moe.plushie.armourers_workshop.core.skin.animation.molang.core.Literal;
 import moe.plushie.armourers_workshop.core.skin.animation.molang.core.Optimized;
 import moe.plushie.armourers_workshop.core.skin.animation.molang.core.Return;
 import moe.plushie.armourers_workshop.core.skin.animation.molang.core.Statement;
@@ -29,7 +30,7 @@ public final class Optimizer implements Visitor {
             return expression.visit(this);
         }
         // we don't need to wrap the constant expression.
-        if (expression instanceof Constant) {
+        if (expression instanceof Constant || expression instanceof Literal) {
             return expression;
         }
         // we can't optimize control flow statement, because should unexpect behavior.

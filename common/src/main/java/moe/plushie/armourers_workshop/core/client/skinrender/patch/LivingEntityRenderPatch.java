@@ -2,7 +2,7 @@ package moe.plushie.armourers_workshop.core.client.skinrender.patch;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import moe.plushie.armourers_workshop.core.client.other.EntityRenderData;
-import moe.plushie.armourers_workshop.core.client.render.EntityRendererContext;
+import moe.plushie.armourers_workshop.core.client.other.EntityRendererContext;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;

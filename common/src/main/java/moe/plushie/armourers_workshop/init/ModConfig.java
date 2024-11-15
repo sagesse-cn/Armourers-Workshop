@@ -17,8 +17,8 @@ public class ModConfig {
         public static int enableFirstPersonSkinRenderer = 0;
 
         // Performance
-        public static int renderDistanceSkin;
-        public static int renderDistanceBlockSkin = 64;
+        public static int renderDistanceSkin = 128;
+        public static int renderDistanceBlockSkin = 128;
         public static int renderDistanceMannequinEquipment;
         public static int modelBakingThreadCount = 4;
         public static int vertexCompileThreadCount = 2;

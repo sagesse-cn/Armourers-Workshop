@@ -55,7 +55,7 @@ public class AnimationEngine {
                 upload(source, adjustedTicks, playState.getBeginTime());
             }
             // check/switch frames of animation and write to applier.
-            animationController.process(adjustedTicks);
+            animationController.process(adjustedTicks, playState);
         }
         context.commit();
     }
@@ -94,6 +94,10 @@ public class AnimationEngine {
         HEALTH.set(livingEntity.getHealth());
         MAX_HEALTH.set(livingEntity.getMaxHealth());
         IS_ON_FIRE.set(livingEntity.isOnFire());
+
+//        float headPitch = Mth.lerp(partialTick, entity.xRotO, entity.getXRot());
+//        entityModelData.headPitch = -headPitch;
+//        entityModelData.netHeadYaw = -Mth.clamp(Mth.wrapDegrees(netHeadYaw), -85, 85);
 
         GROUND_SPEED.set(() -> {
             var velocity = livingEntity.getDeltaMovement();

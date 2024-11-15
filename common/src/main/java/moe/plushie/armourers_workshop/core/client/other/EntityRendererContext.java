@@ -1,10 +1,10 @@
-package moe.plushie.armourers_workshop.core.client.render;
+package moe.plushie.armourers_workshop.core.client.other;
 
 import moe.plushie.armourers_workshop.api.client.model.IModel;
 import moe.plushie.armourers_workshop.core.armature.ArmatureTransformerManager;
 import moe.plushie.armourers_workshop.core.client.bake.BakedArmatureTransformer;
 import moe.plushie.armourers_workshop.core.client.layer.SkinWardrobeLayer;
-import moe.plushie.armourers_workshop.core.client.skinrender.SkinRendererManager2;
+import moe.plushie.armourers_workshop.core.client.skinrender.SkinRendererManager;
 import moe.plushie.armourers_workshop.core.entity.EntityProfile;
 import moe.plushie.armourers_workshop.core.utils.Objects;
 import moe.plushie.armourers_workshop.utils.DataContainer;
@@ -66,7 +66,7 @@ public class EntityRendererContext {
         return cachedTransformers.computeIfAbsent(entityModel, entityModel1 -> {
             // if it can't transform this, it means we do not support this renderer.
             var model = ModelHolder.ofNullable(entityModel1);
-            return createTransformer(model, SkinRendererManager2.DEFAULT);
+            return createTransformer(model, SkinRendererManager.DEFAULT);
         });
     }
 

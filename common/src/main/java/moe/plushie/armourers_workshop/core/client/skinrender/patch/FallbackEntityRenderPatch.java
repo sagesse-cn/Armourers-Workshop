@@ -6,7 +6,7 @@ import moe.plushie.armourers_workshop.compatibility.client.AbstractPoseStack;
 import moe.plushie.armourers_workshop.core.client.bake.BakedArmature;
 import moe.plushie.armourers_workshop.core.client.bake.BakedArmatureTransformer;
 import moe.plushie.armourers_workshop.core.client.other.EntityRenderData;
-import moe.plushie.armourers_workshop.core.client.render.EntityRendererContext;
+import moe.plushie.armourers_workshop.core.client.other.EntityRendererContext;
 import moe.plushie.armourers_workshop.init.client.ClientWardrobeHandler;
 import moe.plushie.armourers_workshop.utils.RenderSystem;
 import net.minecraft.client.renderer.MultiBufferSource;

@@ -5,9 +5,9 @@ import moe.plushie.armourers_workshop.api.core.math.IPoseStack;
 import moe.plushie.armourers_workshop.core.armature.thirdparty.EpicFlightTransformProvider;
 import moe.plushie.armourers_workshop.core.client.bake.BakedArmatureTransformer;
 import moe.plushie.armourers_workshop.core.client.other.EntityRenderData;
+import moe.plushie.armourers_workshop.core.client.other.EntityRendererContext;
 import moe.plushie.armourers_workshop.core.client.other.thirdparty.EpicFlightModel;
-import moe.plushie.armourers_workshop.core.client.render.EntityRendererContext;
-import moe.plushie.armourers_workshop.core.client.skinrender.SkinRendererManager2;
+import moe.plushie.armourers_workshop.core.client.skinrender.SkinRendererManager;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -115,7 +115,7 @@ public class EpicFightEntityRendererPatch<T extends LivingEntity> extends Entity
 
     private BakedArmatureTransformer createTransformer(Entity entity, EpicFlightModel entityModel, LivingEntityRenderer<?, ?> entityRenderer) {
         if (entityModel != null) {
-            return EntityRendererContext.of(entityRenderer).createTransformer(entityModel, SkinRendererManager2.EPIC_FIGHT);
+            return EntityRendererContext.of(entityRenderer).createTransformer(entityModel, SkinRendererManager.EPIC_FIGHT);
         }
         return null;
     }
