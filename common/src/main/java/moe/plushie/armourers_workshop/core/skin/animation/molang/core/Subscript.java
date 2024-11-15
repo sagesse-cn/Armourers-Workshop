@@ -22,6 +22,7 @@ public final class Subscript implements Expression, Property {
 
     @Override
     public void update(Expression expression) {
+        // TODO: NO IMP
     }
 
     @Override
@@ -41,6 +42,7 @@ public final class Subscript implements Expression, Property {
 
     @Override
     public Expression getAsExpression() {
+        // TODO: NO IMP
         return Constant.ZERO;
     }
 

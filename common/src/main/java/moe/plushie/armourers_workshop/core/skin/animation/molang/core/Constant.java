@@ -37,6 +37,11 @@ public final class Constant implements Expression {
     }
 
     @Override
+    public Expression getAsExpression() {
+        return this;
+    }
+
+    @Override
     public String toString() {
         return String.valueOf(value);
     }

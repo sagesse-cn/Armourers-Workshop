@@ -29,7 +29,7 @@ public final class Loop extends Function implements FlowControllable {
         controller.begin();
         int total = count.getAsInt();
         for (int i = 0; i < total; i++) {
-            body.getAsDouble();
+            body.getAsExpression();
             if (controller.interrupt().isBreakOrReturn()) {
                 break;
             }

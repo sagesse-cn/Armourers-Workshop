@@ -30,6 +30,7 @@ public class AnimationEngine {
     private static final Variable IS_ON_FIRE = VM.isOnFire;
     private static final Variable GROUND_SPEED = VM.groundSpeed;
     private static final Variable YAW_SPEED = VM.yawSpeed;
+    private static final Variable HEAD_PITCH = VM.headPitch;
 
     public static void start() {
     }
@@ -41,7 +42,7 @@ public class AnimationEngine {
         });
     }
 
-    public static void apply(@Nullable Object source, BakedSkin skin, float animationTicks, AnimationContext context) {
+    public static void apply(@Nullable Object source, BakedSkin skin, float partialTick, float animationTicks, AnimationContext context) {
         context.begin(animationTicks);
         for (var animationController : skin.getAnimationControllers()) {
             // query the current play state of the animation controller.
@@ -52,7 +53,7 @@ public class AnimationEngine {
             // we only bind it when transformer use the molang environment.
             var adjustedTicks = playState.getAdjustedTicks(animationTicks);
             if (animationController.isRequiresVirtualMachine()) {
-                upload(source, adjustedTicks, playState.getBeginTime());
+                upload(source, adjustedTicks, playState.getBeginTime(), partialTick);
             }
             // check/switch frames of animation and write to applier.
             animationController.process(adjustedTicks, playState);
@@ -60,7 +61,7 @@ public class AnimationEngine {
         context.commit();
     }
 
-    public static void upload(@Nullable Object source, double animTime, double startAnimTime) {
+    public static void upload(@Nullable Object source, double animTime, double startAnimTime, float partialTick) {
         var mc = Minecraft.getInstance();
         var level = mc.level;
         if (level == null) {
@@ -75,29 +76,29 @@ public class AnimationEngine {
         MOON_PHASE.set(level.getMoonPhase());
 
         if (source instanceof Entity entity) {
-            uploadEntity(entity, animTime, startAnimTime);
+            uploadEntity(entity, animTime, startAnimTime, partialTick);
         }
         if (source instanceof LivingEntity livingEntity) {
             uploadLivingEntity(livingEntity, animTime, startAnimTime);
         }
     }
 
-    private static void uploadEntity(Entity entity, double animTime, double startAnimTime) {
+    private static void uploadEntity(Entity entity, double animTime, double startAnimTime, float partialTick) {
         DISTANCE_FROM_CAMERA.set(() -> Minecraft.getInstance().gameRenderer.getMainCamera().getPosition().distanceTo(entity.position()));
 
         IS_ON_GROUND.set(entity.onGround());
         IS_IN_WATER.set(entity.isInWater());
         IS_IN_WATER_OR_RAIN.set(entity.isInWaterRainOrBubble());
+
+        HEAD_PITCH.set(OpenMath.lerp(partialTick, entity.xRotO, entity.getXRot()));
+//        entityModelData.headPitch = -headPitch;
+//        entityModelData.netHeadYaw = -Mth.clamp(Mth.wrapDegrees(netHeadYaw), -85, 85);
     }
 
     private static void uploadLivingEntity(LivingEntity livingEntity, double animTime, double startAnimTime) {
         HEALTH.set(livingEntity.getHealth());
         MAX_HEALTH.set(livingEntity.getMaxHealth());
         IS_ON_FIRE.set(livingEntity.isOnFire());
-
-//        float headPitch = Mth.lerp(partialTick, entity.xRotO, entity.getXRot());
-//        entityModelData.headPitch = -headPitch;
-//        entityModelData.netHeadYaw = -Mth.clamp(Mth.wrapDegrees(netHeadYaw), -85, 85);
 
         GROUND_SPEED.set(() -> {
             var velocity = livingEntity.getDeltaMovement();

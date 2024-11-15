@@ -40,6 +40,11 @@ public final class Optimized implements Expression {
     }
 
     @Override
+    public Expression getAsExpression() {
+        return this;
+    }
+
+    @Override
     public boolean isMutable() {
         return false;
     }

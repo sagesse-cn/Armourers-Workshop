@@ -31,6 +31,11 @@ public final class Literal implements Expression {
     }
 
     @Override
+    public Expression getAsExpression() {
+        return this;
+    }
+
+    @Override
     public String toString() {
         return "'" + value + "'";
     }

@@ -34,8 +34,13 @@ public final class Statement implements Expression, FlowControllable {
 
     @Override
     public double getAsDouble() {
+        return getAsExpression().getAsDouble();
+    }
+
+    @Override
+    public Expression getAsExpression() {
         controller.setInterrupt(op.mode());
-        return 0;
+        return Constant.ZERO;
     }
 
     @Override

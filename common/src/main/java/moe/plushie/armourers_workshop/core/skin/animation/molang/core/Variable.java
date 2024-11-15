@@ -18,18 +18,26 @@ public final class Variable implements Expression, Property {
 
     private final String name;
 
-    private int type = 0;
+    private int type;
     private double value;
     private DoubleSupplier provider;
+
+    public Variable(String name) {
+        this.name = name;
+        this.value = 0;
+        this.type = 0;
+    }
 
     public Variable(String name, double value) {
         this.name = name;
         this.value = value;
+        this.type = 1;
     }
 
     public Variable(String name, DoubleSupplier provider) {
         this.name = name;
         this.provider = provider;
+        this.type = 2;
     }
 
     @Override

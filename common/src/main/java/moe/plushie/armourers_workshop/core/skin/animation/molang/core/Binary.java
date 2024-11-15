@@ -35,6 +35,11 @@ public final class Binary implements Expression {
 
     @Override
     public double getAsDouble() {
+        return getAsExpression().getAsDouble();
+    }
+
+    @Override
+    public Expression getAsExpression() {
         return op.compute(left, right);
     }
 
@@ -137,37 +142,6 @@ public final class Binary implements Expression {
                 return Math.pow(lhs, rhs);
             }
         },
-        ARROW("->", 2000) {
-            @Override
-            public double compute(Expression lhs, Expression rhs) {
-                // TODO: ?
-                return 0;
-            }
-        },
-        NULL_COALESCE("??", 2) {
-            @Override
-            public double compute(Expression lhs, Expression rhs) {
-                if (lhs instanceof Property property && property.isNull()) {
-                    property.update(rhs.getAsExpression());
-                }
-                return 0;
-            }
-        },
-        ASSIGN("=", 1) {
-            @Override
-            public double compute(Expression lhs, Expression rhs) {
-                if (lhs instanceof Property property) {
-                    property.update(rhs.getAsExpression());
-                }
-                return 0;
-            }
-        },
-        CONDITIONAL("?", 1) {
-            @Override
-            public double compute(Expression lhs, Expression rhs) {
-                return lhs.getAsBoolean() ? rhs.getAsDouble() : 0;
-            }
-        },
         EQ("==", 500) {
             @Override
             public double compute(double lhs, double rhs) {
@@ -178,6 +152,42 @@ public final class Binary implements Expression {
             @Override
             public double compute(double lhs, double rhs) {
                 return Math.abs(lhs - rhs) >= 0.00001 ? 1 : 0;
+            }
+        },
+        ARROW("->", 2000) {
+            @Override
+            public Expression compute(Expression lhs, Expression rhs) {
+                // TODO: NO IMPL?
+                return Constant.ZERO;
+            }
+        },
+        NULL_COALESCE("??", 2) {
+            @Override
+            public Expression compute(Expression lhs, Expression rhs) {
+                if (lhs instanceof Property property && property.isNull()) {
+                    return rhs.getAsExpression();
+                }
+                return lhs;
+            }
+        },
+        ASSIGN("=", 1) {
+            @Override
+            public Expression compute(Expression lhs, Expression rhs) {
+                if (lhs instanceof Property property) {
+                    var result = rhs.getAsExpression();
+                    property.update(result);
+                    return result;
+                }
+                return Constant.ZERO;
+            }
+        },
+        CONDITIONAL("?", 1) {
+            @Override
+            public Expression compute(Expression lhs, Expression rhs) {
+                if (lhs.getAsBoolean()) {
+                    return rhs.getAsExpression();
+                }
+                return Constant.ZERO;
             }
         };
 
@@ -215,8 +225,9 @@ public final class Binary implements Expression {
          * @param rhs The second input argument
          * @return The computed value of the two inputs
          */
-        public double compute(Expression lhs, Expression rhs) {
-            return compute(lhs.getAsDouble(), rhs.getAsDouble());
+        public Expression compute(Expression lhs, Expression rhs) {
+            var result = compute(lhs.getAsDouble(), rhs.getAsDouble());
+            return new Constant(result);
         }
     }
 }

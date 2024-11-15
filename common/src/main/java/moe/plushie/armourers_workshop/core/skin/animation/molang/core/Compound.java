@@ -50,7 +50,7 @@ public final class Compound implements Expression, FlowControllable {
     public Expression getAsExpression() {
         controller.begin();
         for (var expression : expressions) {
-            expression.getAsDouble();
+            expression.getAsExpression();
             if (controller.interrupt().isContinueOrBreakOrReturn()) {
                 break;
             }

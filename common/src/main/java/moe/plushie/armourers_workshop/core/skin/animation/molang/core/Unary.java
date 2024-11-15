@@ -32,6 +32,11 @@ public final class Unary implements Expression {
 
     @Override
     public double getAsDouble() {
+        return getAsExpression().getAsDouble();
+    }
+
+    @Override
+    public Expression getAsExpression() {
         return op.compute(value);
     }
 
@@ -55,14 +60,18 @@ public final class Unary implements Expression {
     public enum Op {
         LOGICAL_NEGATION("!") {
             @Override
-            public double compute(Expression expression) {
-                return expression.getAsBoolean() ? 0 : 1;
+            public Expression compute(Expression expression) {
+                if (expression.getAsBoolean()) {
+                    return Constant.ZERO;
+                }
+                return Constant.ONE;
             }
         },
         ARITHMETICAL_NEGATION("-") {
             @Override
-            public double compute(Expression expression) {
-                return -expression.getAsDouble();
+            public Expression compute(Expression expression) {
+                var result = -expression.getAsDouble();
+                return new Constant(result);
             }
         };
 
@@ -82,6 +91,6 @@ public final class Unary implements Expression {
          * @param value The first input argument
          * @return The computed value of the two inputs
          */
-        public abstract double compute(Expression value);
+        public abstract Expression compute(Expression value);
     }
 }

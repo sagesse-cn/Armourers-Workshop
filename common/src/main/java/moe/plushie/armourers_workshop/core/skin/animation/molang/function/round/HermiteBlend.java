@@ -24,7 +24,7 @@ public final class HermiteBlend extends Function {
 
     @Override
     public double getAsDouble() {
-        final double value = valueA.getAsDouble();
+        double value = valueA.getAsDouble();
         return (3 * value * value) - (2 * value * value * value);
     }
 }

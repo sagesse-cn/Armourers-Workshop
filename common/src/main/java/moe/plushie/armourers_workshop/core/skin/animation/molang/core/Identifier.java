@@ -42,6 +42,11 @@ public final class Identifier implements Expression, Supplier {
     }
 
     @Override
+    public Expression getAsExpression() {
+        return this;
+    }
+
+    @Override
     public String toString() {
         return name;
     }

@@ -168,7 +168,7 @@ public class Compiler {
      */
     public Variable getVariable(String name) {
         var key = parseName(name.toLowerCase());
-        return variables.computeIfAbsent(key, it -> new Variable(it.toString(), 0));
+        return variables.computeIfAbsent(key, it -> new Variable(it.toString()));
     }
 
     public Expression compile(String source) throws SyntaxException {

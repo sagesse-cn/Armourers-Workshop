@@ -61,5 +61,4 @@ public final class Random extends Function {
 
         return result;
     }
-
 }

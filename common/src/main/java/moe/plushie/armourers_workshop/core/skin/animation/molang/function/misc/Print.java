@@ -1,5 +1,6 @@
 package moe.plushie.armourers_workshop.core.skin.animation.molang.function.misc;
 
+import moe.plushie.armourers_workshop.core.skin.animation.molang.core.Constant;
 import moe.plushie.armourers_workshop.core.skin.animation.molang.core.Expression;
 import moe.plushie.armourers_workshop.core.skin.animation.molang.core.Function;
 import moe.plushie.armourers_workshop.init.ModLog;
@@ -28,11 +29,16 @@ public class Print extends Function {
 
     @Override
     public double getAsDouble() {
+        return getAsExpression().getAsDouble();
+    }
+
+    @Override
+    public Expression getAsExpression() {
         var contents = new StringJoiner(" ");
         for (var argument : arguments()) {
             contents.add(argument.getAsString());
         }
         ModLog.debug("{}", contents);
-        return 0;
+        return Constant.ZERO;
     }
 }

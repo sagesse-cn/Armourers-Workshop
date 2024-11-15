@@ -34,9 +34,14 @@ public final class Return implements Expression, FlowControllable {
 
     @Override
     public double getAsDouble() {
+        return getAsExpression().getAsDouble();
+    }
+
+    @Override
+    public Expression getAsExpression() {
         var result = value.getAsExpression();
         controller.setInterrupt(FlowController.State.RETURN, result);
-        return 0;
+        return Constant.ZERO;
     }
 
     @Override

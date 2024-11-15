@@ -35,7 +35,15 @@ public final class Ternary implements Expression {
 
     @Override
     public double getAsDouble() {
-        return condition.getAsBoolean() ? trueValue.getAsDouble() : falseValue.getAsDouble();
+        return getAsExpression().getAsDouble();
+    }
+
+    @Override
+    public Expression getAsExpression() {
+        if (condition.getAsBoolean()) {
+            return trueValue.getAsExpression();
+        }
+        return falseValue.getAsExpression();
     }
 
     @Override

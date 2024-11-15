@@ -35,7 +35,7 @@ public final class ForEach extends Function implements FlowControllable {
             if (variable instanceof Property property) {
                 property.update(entry.getAsExpression());
             }
-            body.getAsDouble();
+            body.getAsExpression();
             if (controller.interrupt().isBreakOrReturn()) {
                 break;
             }
