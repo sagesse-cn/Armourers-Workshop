@@ -96,7 +96,7 @@ public class BakedSkin implements IBakedSkin {
     public void setupAnim(Entity entity, BakedArmature bakedArmature, SkinRenderContext context) {
         cachedItemTransforms.forEach(it -> it.setup(entity, context.getItemSource()));
         cachedWingsTransforms.forEach(it -> it.setup(entity, context.getAnimationTicks()));
-        AnimationEngine.apply(entity, this, context.getPartialTicks(), context.getAnimationTicks(), context.getAnimationManager().getAnimationContext(this));
+        AnimationEngine.apply(entity, this, context);
         SkinRenderHelper.apply(entity, this, bakedArmature, context.getItemSource());
         cachedLocatorTransforms.forEach(it -> it.setup(entity, bakedArmature, context));
     }

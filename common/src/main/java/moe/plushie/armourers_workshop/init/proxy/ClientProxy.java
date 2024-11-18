@@ -10,7 +10,6 @@ import moe.plushie.armourers_workshop.compatibility.client.AbstractBufferSource;
 import moe.plushie.armourers_workshop.compatibility.client.AbstractPoseStack;
 import moe.plushie.armourers_workshop.compatibility.core.data.AbstractDataSerializer;
 import moe.plushie.armourers_workshop.core.capability.SkinWardrobe;
-import moe.plushie.armourers_workshop.core.client.animation.AnimationEngine;
 import moe.plushie.armourers_workshop.core.client.bake.SkinBakery;
 import moe.plushie.armourers_workshop.core.client.bake.SkinPreloadManager;
 import moe.plushie.armourers_workshop.core.client.render.HighlightPlacementRenderer;
@@ -129,14 +128,12 @@ public class ClientProxy {
             SkinBakery.start();
             SkinPreloadManager.start();
             TextureManager.getInstance().start();
-            AnimationEngine.start();
         });
         EventManager.listen(ClientPlayerEvent.LoggingOut.class, event -> {
             var player = event.getPlayer();
             if (player == null || !player.equals(EnvironmentManager.getPlayer())) {
                 return; // other players leave
             }
-            AnimationEngine.stop();
             SkinPreloadManager.stop();
             SkinBakery.stop();
             Tickets.invalidateAll();

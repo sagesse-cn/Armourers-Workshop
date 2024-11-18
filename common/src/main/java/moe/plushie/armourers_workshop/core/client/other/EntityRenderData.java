@@ -15,7 +15,7 @@ public class EntityRenderData extends EntitySlotsHandler<Entity> {
     private EntityRenderPatch<? super Entity> renderPatch;
 
     public EntityRenderData(Entity entity) {
-        super(new EntityProvider(), new WardrobeProvider());
+        super(entity, new EntityProvider(), new WardrobeProvider());
     }
 
     @Nullable

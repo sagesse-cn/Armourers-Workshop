@@ -1,8 +1,5 @@
 package moe.plushie.armourers_workshop.core.skin.animation.molang.core;
 
-import moe.plushie.armourers_workshop.core.skin.animation.molang.impl.Supplier;
-import moe.plushie.armourers_workshop.core.skin.animation.molang.impl.Visitor;
-
 /**
  * The expression interface. It's the super-interface for
  * all the expression types.
@@ -13,7 +10,36 @@ import moe.plushie.armourers_workshop.core.skin.animation.molang.impl.Visitor;
  * <p>In Molang, almost every expression evaluates to a numerical
  * value</p>
  */
-public interface Expression extends Supplier {
+public interface Expression {
+
+    /**
+     * Evaluates (interprets) the expressions and returns a single
+     * value, commonly, a double value.
+     *
+     * @param context The execution context
+     * @return The evaluates result
+     */
+    Result evaluate(final ExecutionContext context);
+
+    /**
+     * Evaluates (interprets) the expressions and test result.
+     *
+     * @param context The execution context
+     * @return The evaluates result
+     */
+    default boolean test(final ExecutionContext context) {
+        return evaluate(context).getAsBoolean();
+    }
+
+    /**
+     * Evaluates (interprets) the expressions and returns double.
+     *
+     * @param context The execution context
+     * @return The evaluates result
+     */
+    default double compute(final ExecutionContext context) {
+        return evaluate(context).getAsDouble();
+    }
 
     /**
      * Visits this expression with the given visitor.
@@ -21,7 +47,9 @@ public interface Expression extends Supplier {
      * @param visitor The expression visitor
      * @return The visit result
      */
-    Expression visit(final Visitor visitor);
+    default Expression visit(final Visitor visitor) {
+        return visitor.visit(this);
+    }
 
     /**
      * Return whether this type of MathValue should be considered mutable; its value could change.

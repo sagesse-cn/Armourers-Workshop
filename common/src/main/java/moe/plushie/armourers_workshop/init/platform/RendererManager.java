@@ -9,6 +9,6 @@ public class RendererManager {
 
     public static void init() {
         SkinRendererManager.reload();
-        //moe.plushie.armourers_workshop.core.skin.molang.impl.test.CompilerTest.main();
+        //moe.plushie.armourers_workshop.core.skin.animation.molang.runtime.test.CompilerTest.main();
     }
 }

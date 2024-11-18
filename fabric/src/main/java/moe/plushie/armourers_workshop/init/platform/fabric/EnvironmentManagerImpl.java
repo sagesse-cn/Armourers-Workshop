@@ -1,7 +1,8 @@
 package moe.plushie.armourers_workshop.init.platform.fabric;
 
 import moe.plushie.armourers_workshop.api.config.IConfigSpec;
-import moe.plushie.armourers_workshop.init.ModConstants;
+import moe.plushie.armourers_workshop.compatibility.core.AbstractRegistryManager;
+import moe.plushie.armourers_workshop.compatibility.fabric.AbstractFabricRegistryManager;
 import moe.plushie.armourers_workshop.init.environment.EnvironmentPlatformType;
 import moe.plushie.armourers_workshop.init.environment.EnvironmentType;
 import moe.plushie.armourers_workshop.init.platform.fabric.builder.ConfigBuilderImpl;
@@ -18,12 +19,9 @@ public class EnvironmentManagerImpl {
 
     private static MinecraftServer CURRENT_SERVER;
 
-    public static String getVersion() {
-        Optional<ModContainer> container = FabricLoader.getInstance().getModContainer(ModConstants.MOD_ID);
-        if (container.isPresent()) {
-            return container.get().getMetadata().getVersion().toString();
-        }
-        return "Unknown";
+    public static String getModVersion(String modId) {
+        Optional<ModContainer> container = FabricLoader.getInstance().getModContainer(modId);
+        return container.map(modContainer -> modContainer.getMetadata().getVersion().toString()).orElse(null);
     }
 
     public static EnvironmentType getEnvironmentType() {
@@ -67,5 +65,9 @@ public class EnvironmentManagerImpl {
 
     public static EnvironmentPlatformType getPlatformType() {
         return EnvironmentPlatformType.FABRIC;
+    }
+
+    public static AbstractRegistryManager getRegistryManager() {
+        return AbstractFabricRegistryManager.INSTANCE;
     }
 }

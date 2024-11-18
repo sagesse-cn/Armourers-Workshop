@@ -13,10 +13,10 @@ import moe.plushie.armourers_workshop.core.capability.SkinWardrobe;
 import moe.plushie.armourers_workshop.core.client.animation.AnimationManager;
 import moe.plushie.armourers_workshop.core.client.bake.BakedSkin;
 import moe.plushie.armourers_workshop.core.client.bake.SkinBakery;
-import moe.plushie.armourers_workshop.core.menu.SkinSlotType;
 import moe.plushie.armourers_workshop.core.data.ticket.Ticket;
 import moe.plushie.armourers_workshop.core.entity.EntityProfile;
 import moe.plushie.armourers_workshop.core.entity.MannequinEntity;
+import moe.plushie.armourers_workshop.core.menu.SkinSlotType;
 import moe.plushie.armourers_workshop.core.skin.SkinDescriptor;
 import moe.plushie.armourers_workshop.core.skin.SkinLocatorType;
 import moe.plushie.armourers_workshop.core.skin.SkinTypes;
@@ -64,8 +64,8 @@ public class EntitySlotsHandler<T> implements IAssociatedContainerProvider, Skin
     private final HashMap<SkinLocatorType, IPoseStack> locatorPoses = new HashMap<>();
 
     private final Ticket loadTicket = Ticket.wardrobe();
-    private final AnimationManager animationManager = new AnimationManager();
-    private final SkinOverriddenManager overriddenManager = new SkinOverriddenManager();
+    private final AnimationManager animationManager;
+    private final SkinOverriddenManager overriddenManager;
 
     private final DataContainer dataStorage = new DataContainer();
 
@@ -75,9 +75,12 @@ public class EntitySlotsHandler<T> implements IAssociatedContainerProvider, Skin
     private boolean isLimitLimbs = false;
     private boolean isListening = false;
 
-    protected EntitySlotsHandler(SlotProvider<T> entityProvider, WardrobeProvider wardrobeProvider) {
+    protected EntitySlotsHandler(T entity, SlotProvider<T> entityProvider, WardrobeProvider wardrobeProvider) {
         this.entityProvider = entityProvider;
         this.wardrobeProvider = wardrobeProvider;
+        // initialize the animation manager and overridden manager.
+        this.animationManager = new AnimationManager(entity);
+        this.overriddenManager = new SkinOverriddenManager();
     }
 
     protected void tick(T source, @Nullable SkinWardrobe wardrobe) {

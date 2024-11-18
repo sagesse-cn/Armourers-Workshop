@@ -1,9 +1,9 @@
 package moe.plushie.armourers_workshop.init.platform;
 
-import com.mojang.authlib.GameProfile;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import moe.plushie.armourers_workshop.api.config.IConfigSpec;
 import moe.plushie.armourers_workshop.api.core.IResourceManager;
+import moe.plushie.armourers_workshop.compatibility.core.AbstractRegistryManager;
 import moe.plushie.armourers_workshop.core.skin.serializer.SkinServerType;
 import moe.plushie.armourers_workshop.core.utils.Constants;
 import moe.plushie.armourers_workshop.init.environment.EnvironmentPlatformType;
@@ -20,7 +20,7 @@ import java.io.File;
 public class EnvironmentManager {
 
     @ExpectPlatform
-    public static String getVersion() {
+    public static String getModVersion(String modId) {
         throw new AssertionError();
     }
 
@@ -97,6 +97,11 @@ public class EnvironmentManager {
 
     @ExpectPlatform
     public static IConfigSpec getCommonConfigSpec() {
+        throw new AssertionError();
+    }
+
+    @ExpectPlatform
+    public static AbstractRegistryManager getRegistryManager() {
         throw new AssertionError();
     }
 }

@@ -38,6 +38,7 @@ public class DocumentImporter {
         this.inputFile = inputFile;
         this.targetType = targetType;
         this.boneMapper = DocumentBoneMapper.of(targetType);
+        //this.boneMapper = DocumentBoneMapper.of(SkinTypes.ADVANCED);
     }
 
     public boolean isKeepItemTransforms() {

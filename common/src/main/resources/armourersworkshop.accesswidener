@@ -78,3 +78,7 @@ accessible method net/minecraft/client/renderer/RenderType create (Ljava/lang/St
 ### accessible field com/mojang/math/Matrix4f m32 F
 ### accessible field com/mojang/math/Matrix4f m33 F
 ##endif
+
+##if MC < 12000
+### accessible field net/minecraft/client/Minecraft fps I
+##endif

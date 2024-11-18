@@ -43,7 +43,7 @@ public class EntityActionTarget {
 
         private ArrayList<EntityAction> actions = new ArrayList<>();
         private float priority = 0;
-        private float transitionDuration = 0.25f;
+        private float transitionDuration = 0.1f;
         private int playCount = 0;
 
         public Builder action(EntityAction action) {

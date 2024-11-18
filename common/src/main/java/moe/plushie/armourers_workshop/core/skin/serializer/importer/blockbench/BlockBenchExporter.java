@@ -19,6 +19,7 @@ import moe.plushie.armourers_workshop.core.skin.animation.SkinAnimationKeyframe;
 import moe.plushie.armourers_workshop.core.skin.animation.SkinAnimationLoop;
 import moe.plushie.armourers_workshop.core.skin.animation.SkinAnimationPoint;
 import moe.plushie.armourers_workshop.core.skin.animation.molang.MolangVirtualMachine;
+import moe.plushie.armourers_workshop.core.skin.animation.molang.runtime.OptimizeContext;
 import moe.plushie.armourers_workshop.core.skin.geometry.SkinGeometryVertex;
 import moe.plushie.armourers_workshop.core.skin.geometry.collection.SkinGeometrySetV2;
 import moe.plushie.armourers_workshop.core.skin.geometry.mesh.SkinMeshFace;
@@ -61,6 +62,7 @@ public class BlockBenchExporter {
     protected SkinProperties properties = new SkinProperties();
 
     protected Vector3f offset = Vector3f.ZERO;
+    protected MolangVirtualMachine virtualMachine = new MolangVirtualMachine();
 
     protected final BlockBenchPack pack;
 
@@ -218,11 +220,12 @@ public class BlockBenchExporter {
 
     protected List<SkinAnimation> exportAnimations(List<BlockBenchAnimation> allAnimations) {
         var results = new ArrayList<SkinAnimation>();
+        var animator = new Animator(getVirtualMachine());
         allAnimations.forEach(animation -> {
             var name = animation.getName();
             var duration = animation.getDuration();
-            var loop = Animator.toAnimationLoop(animation.getLoop());
-            var values = Animator.toAnimationKeyframes(animation.getAnimators());
+            var loop = animator.toAnimationLoop(animation.getLoop());
+            var values = animator.toAnimationKeyframes(animation.getAnimators());
             if (values.isEmpty()) {
                 return;
             }
@@ -246,6 +249,14 @@ public class BlockBenchExporter {
 
     public SkinProperties getProperties() {
         return properties;
+    }
+
+    public void setVirtualMachine(MolangVirtualMachine virtualMachine) {
+        this.virtualMachine = virtualMachine;
+    }
+
+    public MolangVirtualMachine getVirtualMachine() {
+        return virtualMachine;
     }
 
     protected static class Bone {
@@ -521,7 +532,13 @@ public class BlockBenchExporter {
 
     protected static class Animator {
 
-        public static Map<String, List<SkinAnimationKeyframe>> toAnimationKeyframes(List<BlockBenchAnimator> animators) {
+        private final MolangVirtualMachine virtualMachine;
+
+        public Animator(MolangVirtualMachine virtualMachine) {
+            this.virtualMachine = virtualMachine;
+        }
+
+        public Map<String, List<SkinAnimationKeyframe>> toAnimationKeyframes(List<BlockBenchAnimator> animators) {
             var results = new LinkedHashMap<String, List<SkinAnimationKeyframe>>();
             for (var animator : animators) {
                 var keyframes = results.computeIfAbsent(animator.getName(), k -> new ArrayList<>());
@@ -538,7 +555,7 @@ public class BlockBenchExporter {
             return results;
         }
 
-        public static List<SkinAnimationPoint> toAnimationPoints(BlockBenchKeyframe keyframe, BlockBenchAnimator animator) {
+        public List<SkinAnimationPoint> toAnimationPoints(BlockBenchKeyframe keyframe, BlockBenchAnimator animator) {
             var points = new ArrayList<SkinAnimationPoint>();
             var channel = keyframe.getName();
             switch (animator.getType()) {
@@ -573,18 +590,18 @@ public class BlockBenchExporter {
             return points;
         }
 
-        public static Object toAnimationPoint(Object value) {
+        public Object toAnimationPoint(Object value) {
             if (value instanceof String script) {
                 try {
                     // for blank script, we assume it to be a 0
                     if (script.isEmpty()) {
                         return 0f;
                     }
-                    var expr = MolangVirtualMachine.get().eval(script);
+                    var expr = virtualMachine.compile(script);
                     if (expr.isMutable()) {
                         return script;
                     }
-                    return expr.getAsFloat();
+                    return (float) expr.compute(OptimizeContext.DEFAULT);
                 } catch (Exception exception) {
                     throw new RuntimeException("can't parse \"" + script + "\" in model!", exception);
                 }
@@ -595,7 +612,7 @@ public class BlockBenchExporter {
             return 0f;
         }
 
-        public static Object toAnimationNegativePoint(Object point) {
+        public Object toAnimationNegativePoint(Object point) {
             if (point instanceof String script) {
                 point = "-(" + script + ")";
             } else if (point instanceof Number number) {
@@ -604,7 +621,7 @@ public class BlockBenchExporter {
             return point;
         }
 
-        public static SkinAnimationLoop toAnimationLoop(String value) {
+        public SkinAnimationLoop toAnimationLoop(String value) {
             return switch (value) {
                 case "once" -> SkinAnimationLoop.NONE;
                 case "hold" -> SkinAnimationLoop.LAST_FRAME;

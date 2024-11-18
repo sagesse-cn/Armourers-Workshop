@@ -10,6 +10,10 @@ public class AnimatedPoint {
 
     protected int dirty = 0;
 
+    public void setTranslate(Vector3f value) {
+        setTranslate(value.getX(), value.getY(), value.getZ());
+    }
+
     public void setTranslate(float x, float y, float z) {
         if (x != 0 || y != 0 || z != 0) {
             translate.set(x, y, z);
@@ -24,7 +28,11 @@ public class AnimatedPoint {
         return Vector3f.ZERO;
     }
 
-    public void setRotate(float x, float y, float z) {
+    public void setRotation(Vector3f value) {
+        setRotation(value.getX(), value.getY(), value.getZ());
+    }
+
+    public void setRotation(float x, float y, float z) {
         if (x != 0 || y != 0 || z != 0) {
             rotation.set(x, y, z);
             setDirty(0x20);
@@ -36,6 +44,10 @@ public class AnimatedPoint {
             return rotation;
         }
         return Vector3f.ZERO;
+    }
+
+    public void setScale(Vector3f value) {
+        setScale(value.getX(), value.getY(), value.getZ());
     }
 
     public void setScale(float x, float y, float z) {
@@ -50,18 +62,6 @@ public class AnimatedPoint {
             return scale;
         }
         return Vector3f.ONE;
-    }
-
-    public void setTranslate(Vector3f value) {
-        setTranslate(value.getX(), value.getY(), value.getZ());
-    }
-
-    public void setRotate(Vector3f value) {
-        setRotate(value.getX(), value.getY(), value.getZ());
-    }
-
-    public void setScale(Vector3f value) {
-        setScale(value.getX(), value.getY(), value.getZ());
     }
 
     public void clear() {

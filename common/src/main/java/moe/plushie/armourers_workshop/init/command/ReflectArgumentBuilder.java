@@ -16,7 +16,6 @@ import moe.plushie.armourers_workshop.init.network.ExecuteCommandPacket;
 import moe.plushie.armourers_workshop.init.platform.NetworkManager;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.server.level.ServerPlayer;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.lang.reflect.Field;
@@ -50,17 +49,17 @@ public class ReflectArgumentBuilder<S> extends LiteralArgumentBuilder<S> {
     public static <R> ArgumentBuilder<CommandSourceStack, ?> argument(Pair<Object, Field> pair, ArgumentType<R> argumentType, BiFunction<CommandContext<?>, String, R> argumentParser) {
         return Commands.literal(pair.getValue().getName())
                 .then(Commands.argument("value", argumentType).executes(context -> {
-                    R value = argumentParser.apply(context, "value");
-                    String name = pair.getValue().getName();
-                    Class<?> object = (Class<?>) pair.getKey();
-                    ServerPlayer player = context.getSource().getPlayerOrException();
+                    var value = argumentParser.apply(context, "value");
+                    var name = pair.getValue().getName();
+                    var object = (Class<?>) pair.getKey();
+                    var player = context.getSource().getPlayerOrException();
                     NetworkManager.sendTo(ExecuteCommandPacket.set(object, name, value), player);
                     return 0;
                 }))
                 .executes(context -> {
-                    String name = pair.getValue().getName();
-                    Class<?> object = (Class<?>) pair.getKey();
-                    ServerPlayer player = context.getSource().getPlayerOrException();
+                    var name = pair.getValue().getName();
+                    var object = (Class<?>) pair.getKey();
+                    var player = context.getSource().getPlayerOrException();
                     NetworkManager.sendTo(ExecuteCommandPacket.get(object, name), player);
                     return 0;
                 });
@@ -79,9 +78,9 @@ public class ReflectArgumentBuilder<S> extends LiteralArgumentBuilder<S> {
 
     @Override
     public Collection<CommandNode<S>> getArguments() {
-        ArrayList<CommandNode<S>> nodes = new ArrayList<>(super.getArguments());
-        for (Field field : object.getDeclaredFields()) {
-            Function<Pair<Object, Field>, ArgumentBuilder<CommandSourceStack, ?>> function = FIELD_BUILDERS.get(field.getType());
+        var nodes = new ArrayList<>(super.getArguments());
+        for (var field : object.getDeclaredFields()) {
+            var function = FIELD_BUILDERS.get(field.getType());
             if (function != null) {
                 nodes.add(Objects.unsafeCast(function.apply(Pair.of(object, field)).build()));
             }

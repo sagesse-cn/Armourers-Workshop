@@ -10,6 +10,7 @@ import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -112,7 +113,7 @@ public class TypedRegistry<T> implements IRegistry<T> {
 
     @Override
     public <I extends T> IRegistryHolder<I> register(String name, Supplier<? extends I> provider) {
-        IResourceLocation registryName = ModConstants.key(name);
+        var registryName = ModConstants.key(name);
         Supplier<I> object = registerProvider.register(registryName, provider);
         IRegistryHolder<I> entry = Entry.of(registryName, object);
         entries.add(entry);
@@ -131,7 +132,7 @@ public class TypedRegistry<T> implements IRegistry<T> {
     }
 
     @Override
-    public ArrayList<IRegistryHolder<? extends T>> getEntries() {
+    public List<IRegistryHolder<? extends T>> getEntries() {
         return entries;
     }
 

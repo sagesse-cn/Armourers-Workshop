@@ -6,8 +6,8 @@ import net.minecraft.world.entity.Entity;
 import manifold.ext.rt.api.Extension;
 import manifold.ext.rt.api.This;
 
-@Extension
 @Available("[1.16, 1.20)")
+@Extension
 public class Fix1619 {
 
     public static boolean onGround(@This Entity entity) {

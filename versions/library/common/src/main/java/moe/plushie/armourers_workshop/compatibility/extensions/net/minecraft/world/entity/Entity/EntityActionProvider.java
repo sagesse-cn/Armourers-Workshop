@@ -1,5 +1,6 @@
 package moe.plushie.armourers_workshop.compatibility.extensions.net.minecraft.world.entity.Entity;
 
+import moe.plushie.armourers_workshop.api.annotation.Available;
 import moe.plushie.armourers_workshop.core.data.EntityActionSet;
 import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.Nullable;
@@ -7,6 +8,7 @@ import org.jetbrains.annotations.Nullable;
 import manifold.ext.rt.api.Extension;
 import manifold.ext.rt.api.This;
 
+@Available("[1.16, )")
 @Extension
 public class EntityActionProvider {
 

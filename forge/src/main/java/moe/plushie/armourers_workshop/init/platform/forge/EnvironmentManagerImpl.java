@@ -1,8 +1,9 @@
 package moe.plushie.armourers_workshop.init.platform.forge;
 
 import moe.plushie.armourers_workshop.api.config.IConfigSpec;
+import moe.plushie.armourers_workshop.compatibility.core.AbstractRegistryManager;
 import moe.plushie.armourers_workshop.compatibility.forge.AbstractForgeEnvironment;
-import moe.plushie.armourers_workshop.init.ModConstants;
+import moe.plushie.armourers_workshop.compatibility.forge.AbstractForgeRegistryManager;
 import moe.plushie.armourers_workshop.init.environment.EnvironmentPlatformType;
 import moe.plushie.armourers_workshop.init.environment.EnvironmentType;
 import moe.plushie.armourers_workshop.init.platform.forge.builder.ConfigBuilderImpl;
@@ -16,13 +17,13 @@ public class EnvironmentManagerImpl {
 
     private static MinecraftServer CURRENT_SERVER;
 
-    public static String getVersion() {
-        var fileInfo = AbstractForgeEnvironment.getModFileById(ModConstants.MOD_ID);
+    public static String getModVersion(String modId) {
+        var fileInfo = AbstractForgeEnvironment.getModFileById(modId);
         if (fileInfo != null && !fileInfo.getMods().isEmpty()) {
             ArtifactVersion version = fileInfo.getMods().get(0).getVersion();
             return version.toString();
         }
-        return "Unknown";
+        return null;
     }
 
     public static EnvironmentPlatformType getPlatformType() {
@@ -66,5 +67,9 @@ public class EnvironmentManagerImpl {
 
     public static boolean isInstalled(String modId) {
         return AbstractForgeEnvironment.getModFileById(modId) != null;
+    }
+
+    public static AbstractRegistryManager getRegistryManager() {
+        return AbstractForgeRegistryManager.INSTANCE;
     }
 }

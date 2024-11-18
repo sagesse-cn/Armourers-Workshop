@@ -13,6 +13,8 @@ import moe.plushie.armourers_workshop.core.data.EntityActionTarget;
 import moe.plushie.armourers_workshop.core.data.EntityActions;
 import moe.plushie.armourers_workshop.core.math.OpenMath;
 import moe.plushie.armourers_workshop.core.skin.SkinDescriptor;
+import moe.plushie.armourers_workshop.core.skin.animation.engine.bind.ExecutionContextImpl;
+import moe.plushie.armourers_workshop.core.client.animation.bind.ClientExecutionContextImpl;
 import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.core.utils.Objects;
 import moe.plushie.armourers_workshop.core.utils.TagSerializer;
@@ -36,16 +38,22 @@ import java.util.Map;
 @Environment(EnvType.CLIENT)
 public class AnimationManager {
 
-    public static final AnimationManager NONE = new AnimationManager();
+    public static final AnimationManager NONE = new AnimationManager(null);
 
     private final HashMap<BakedSkin, Entry> allEntries = new HashMap<>();
     private final HashMap<BakedSkin, Entry> activeEntries = new HashMap<>();
 
     private final ArrayList<Entry> triggerableEntries = new ArrayList<>();
 
-    private final ArrayList<Pair<AnimationController.PlayState, Runnable>> removeOnCompletion = new ArrayList<>();
+    private final ArrayList<Pair<AnimationPlayState, Runnable>> removeOnCompletion = new ArrayList<>();
 
     private EntityActionSet lastActionSet;
+
+    private final ClientExecutionContextImpl executionContext;
+
+    public AnimationManager(Object entity) {
+        this.executionContext = new ClientExecutionContextImpl(entity);
+    }
 
     public static AnimationManager of(Entity entity) {
         var renderData = EntityRenderData.of(entity);
@@ -160,6 +168,9 @@ public class AnimationManager {
         return skin.getAnimationContext();
     }
 
+    public ExecutionContextImpl getExecutionContext() {
+        return executionContext;
+    }
 
     private void rebuildTriggerableEntities() {
         triggerableEntries.clear();
@@ -231,7 +242,7 @@ public class AnimationManager {
         }
 
         public void stop(AnimationController animationController) {
-            var playState = playStates.get(animationController);
+            var playState = getPlayState(animationController);
             if (playState == null) {
                 return; // ignore non-playing animation.
             }
@@ -285,16 +296,16 @@ public class AnimationManager {
 
         private void startPlay(AnimationController animationController, float time, float speed, int playCount) {
             stopPlayIfNeeded(animationController);
-            var newPlayState = new AnimationController.PlayState(animationController, time, speed, playCount);
-            playStates.put(animationController, newPlayState);
+            var newPlayState = AnimationPlayState.create(time, playCount, speed, animationController);
+            addPlayState(animationController, newPlayState);
             debugLog("start play {}", animationController);
-            if (newPlayState.getPlayCount() > 0) {
+            if (newPlayState.getLoopCount() > 0) {
                 removeOnCompletion.add(Pair.of(newPlayState, () -> stop(animationController)));
             }
         }
 
         private void stopPlayIfNeeded(AnimationController animationController) {
-            var oldPlayState = playStates.remove(animationController);
+            var oldPlayState = removePlayState(animationController);
             if (oldPlayState != null) {
                 debugLog("stop play {}", animationController);
                 removeOnCompletion.removeIf(it -> it.getLeft() == oldPlayState);
@@ -308,9 +319,9 @@ public class AnimationManager {
                 return;
             }
             // delay the animation start time.
-            var playState = playStates.get(toAnimationController);
+            var playState = getPlayState(toAnimationController);
             if (playState != null) {
-                playState.setBeginTime(playState.getBeginTime() + duration);
+                playState.setTime(playState.getTime() + duration);
             }
             addAnimation(fromAnimationController, toAnimationController, time, speed, duration);
         }

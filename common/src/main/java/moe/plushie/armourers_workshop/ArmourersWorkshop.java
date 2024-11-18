@@ -6,6 +6,7 @@ import moe.plushie.armourers_workshop.core.armature.Armatures;
 import moe.plushie.armourers_workshop.core.crafting.recipe.SkinningRecipes;
 import moe.plushie.armourers_workshop.core.data.EntityActions;
 import moe.plushie.armourers_workshop.core.skin.SkinTypes;
+import moe.plushie.armourers_workshop.core.skin.animation.SkinAnimationBindings;
 import moe.plushie.armourers_workshop.init.ModArgumentTypes;
 import moe.plushie.armourers_workshop.init.ModBlockEntityTypes;
 import moe.plushie.armourers_workshop.init.ModBlocks;
@@ -60,6 +61,7 @@ public class ArmourersWorkshop {
             ModHolidays.init();
             ModPermissions.init();
             SkinningRecipes.init();
+            SkinAnimationBindings.init();
             Armatures.init();
             EntityActions.init();
 

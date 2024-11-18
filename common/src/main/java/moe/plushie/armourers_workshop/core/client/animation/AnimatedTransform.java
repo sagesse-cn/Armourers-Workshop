@@ -2,31 +2,34 @@ package moe.plushie.armourers_workshop.core.client.animation;
 
 import moe.plushie.armourers_workshop.api.core.math.IPoseStack;
 import moe.plushie.armourers_workshop.api.core.math.ITransform;
+import moe.plushie.armourers_workshop.core.math.OpenMath;
 import moe.plushie.armourers_workshop.core.math.OpenQuaternion3f;
 import moe.plushie.armourers_workshop.core.math.OpenTransform3f;
 import moe.plushie.armourers_workshop.core.math.Vector3f;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 
 public class AnimatedTransform implements ITransform {
-
-    protected final Vector3f pivot;
-    protected final Vector3f afterTranslate;
-
-    protected final OpenTransform3f parent;
-    protected final ArrayList<AnimatedPoint> points = new ArrayList<>();
 
     protected AnimatedPoint snapshot;
     protected int dirty = 0;
 
-    public AnimatedTransform(OpenTransform3f parent) {
-        this.parent = parent;
-        this.pivot = parent.getPivot();
-        this.afterTranslate = parent.getAfterTranslate();
+    private final Vector3f pivot;
+    private final Vector3f afterTranslate;
+
+    private final OpenTransform3f original;
+    private final ArrayList<PointRef> points = new ArrayList<>();
+
+    public AnimatedTransform(OpenTransform3f original) {
+        this.original = original;
+        this.pivot = original.getPivot();
+        this.afterTranslate = original.getAfterTranslate();
     }
 
-    public void link(AnimatedPoint point) {
-        points.add(point);
+    public void link(AnimatedPoint point, int priority, boolean isMixMode) {
+        this.points.add(new PointRef(point, priority, isMixMode));
+        this.points.sort(Comparator.comparingInt(it -> it.priority));
     }
 
 
@@ -34,7 +37,7 @@ public class AnimatedTransform implements ITransform {
     public void apply(IPoseStack poseStack) {
         // no snapshot or no changes?
         if (snapshot == null) {
-            parent.apply(poseStack);
+            original.apply(poseStack);
             return;
         }
         // the translation have changes?
@@ -78,49 +81,60 @@ public class AnimatedTransform implements ITransform {
     }
 
     private void exportTranslate(AnimatedPoint result) {
-        var base = parent.getTranslate();
-        float x = base.getX();
-        float y = base.getY();
-        float z = base.getZ();
+        var init = original.getTranslate();
+        var delta = Vector3f.ZERO;
         for (var point : points) {
-            var value = point.getTranslate();
-            x += value.getX();
-            y += value.getY();
-            z += value.getZ();
+            var value = point.value.getTranslate();
+            if (value != Vector3f.ZERO) { // has any animation change this point?
+                delta = value;
+            }
         }
-        result.setTranslate(x, y, z);
+        result.setTranslate(init.getX() + delta.getX(), init.getY() + delta.getY(), init.getZ() + delta.getZ());
     }
 
     private void exportRotation(AnimatedPoint result) {
-        var base = parent.getRotation();
-        float x = base.getX();
-        float y = base.getY();
-        float z = base.getZ();
+        var init = original.getRotation();
+        var delta = Vector3f.ZERO;
+        float x = 0;
+        float y = 0;
+        float z = 0;
         for (var point : points) {
-            var value = point.getRotation();
-            x += value.getX();
-            y += value.getY();
-            z += value.getZ();
+            var value = point.value.getRotation();
+            if (value != Vector3f.ZERO) { // has any animation change this point?
+                delta = value;
+                // in mixed mode we need to merge all rotation.
+                x += value.getX();
+                y += value.getY();
+                z += value.getZ();
+                // mark mixed mode into last value.
+                if (point.isMixMode) {
+                    delta = null;
+                }
+            }
         }
-        result.setRotate(x % 360, y % 360, z % 360);
+        // in default mode we only use the last value.
+        if (delta != null) {
+            x = delta.getX();
+            y = delta.getY();
+            z = delta.getZ();
+        }
+        result.setRotation(OpenMath.wrapDegrees(init.getX() + x), OpenMath.wrapDegrees(init.getY() + y), OpenMath.wrapDegrees(init.getZ() + z));
     }
 
     private void exportScale(AnimatedPoint result) {
-        var base = parent.getScale();
-        float x = base.getX();
-        float y = base.getY();
-        float z = base.getZ();
+        var init = original.getScale();
+        var delta = Vector3f.ONE;
         for (var point : points) {
-            var value = point.getScale();
-            x *= value.getX();
-            y *= value.getY();
-            z *= value.getZ();
+            var value = point.value.getScale();
+            if (value != Vector3f.ONE) { // has any animation change this point?
+                delta = value;
+            }
         }
-        result.setScale(x, y, z);
+        result.setScale(init.getX() * delta.getX(), init.getY() * delta.getY(), init.getZ() * delta.getZ());
     }
 
     public void clear() {
-        points.forEach(AnimatedPoint::clear);
+        points.forEach(it -> it.value.clear());
         dirty = 0;
     }
 
@@ -128,8 +142,24 @@ public class AnimatedTransform implements ITransform {
         dirty |= flags;
     }
 
-    public OpenTransform3f getParent() {
-        return parent;
+    public OpenTransform3f getOriginal() {
+        return original;
+    }
+
+
+    private static class PointRef {
+
+        public final AnimatedPoint value;
+
+        public final boolean isMixMode;
+
+        public final int priority;
+
+        public PointRef(AnimatedPoint value, int priority, boolean isMixMode) {
+            this.value = value;
+            this.priority = priority;
+            this.isMixMode = isMixMode;
+        }
     }
 }
 
