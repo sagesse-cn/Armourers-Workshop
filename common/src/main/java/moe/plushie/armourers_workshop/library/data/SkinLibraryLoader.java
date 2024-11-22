@@ -76,7 +76,7 @@ public class SkinLibraryLoader implements Runnable {
     private SkinFileHeader getSkinFileHeader(File file) {
         var key = file.getAbsolutePath();
         var cache = CACHED_FILE_HEADERS.get(key);
-        var modifiedTime = file.lastModified();
+        var modifiedTime = FileUtils.getLastModifiedTime(file);
         if (cache != null && cache.isValid(modifiedTime)) {
             return cache.getHeader();
         }

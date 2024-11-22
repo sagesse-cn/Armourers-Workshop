@@ -144,4 +144,13 @@ public class FileUtils {
     public static String getRelativePath(final File path, final File rootPath, final boolean unixSeparator) {
         return normalize(getRelativePath(path, rootPath), unixSeparator);
     }
+
+
+    public static void setLastModifiedTime(File path, long time) {
+        boolean ignored = path.setLastModified(time);
+    }
+
+    public static long getLastModifiedTime(File path) {
+        return path.lastModified();
+    }
 }

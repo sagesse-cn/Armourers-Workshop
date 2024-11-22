@@ -14,6 +14,7 @@ import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.core.utils.Constants;
 import moe.plushie.armourers_workshop.core.utils.Executors;
 import moe.plushie.armourers_workshop.core.utils.FileUtils;
+import moe.plushie.armourers_workshop.core.utils.Objects;
 import moe.plushie.armourers_workshop.core.utils.OpenCipher;
 import moe.plushie.armourers_workshop.core.utils.OpenResourceLocation;
 import moe.plushie.armourers_workshop.core.utils.StreamUtils;
@@ -40,6 +41,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
@@ -70,9 +72,13 @@ public class SkinLoader {
         return LOADER;
     }
 
-    public void setup(SkinServerType type) {
-        taskManager.values().forEach(Session::shutdown);
-        taskManager.clear();
+    private void setup(SkinServerType type) {
+        // we need shutdown all old sessions (only shutdown once).
+        if (!taskManager.isEmpty()) {
+            var shutdownQueue = new LinkedHashSet<>(taskManager.values());
+            shutdownQueue.forEach(Session::shutdown);
+            taskManager.clear();
+        }
         var local = new LocalDataSession();
         var pack = new ResourcePackSession();
         var download = new DownloadSession();
@@ -648,6 +654,7 @@ public class SkinLoader {
         @Override
         public void shutdown() {
             super.shutdown();
+            this.caching.clean();
             this.caching.shutdown();
         }
 
@@ -860,12 +867,36 @@ public class SkinLoader {
             var key = new SecretKeySpec(x1, "AES");
             var aes = Cipher.getInstance("AES/ECB/PKCS5Padding");
             aes.init(Cipher.DECRYPT_MODE, key);
+            FileUtils.setLastModifiedTime(cacheFile, System.currentTimeMillis());
             return new CipherInputStream(inputStream, aes);
         }
 
         @Override
         public void loadDidFinish(Request request, Skin skin, long loadTime) {
             ModLog.debug("'{}' => did load skin from cache session, time: {}ms", request.identifier, loadTime);
+        }
+
+        public void clean() {
+            var t0 = ModContext.t0();
+            if (t0 == null) {
+                return;
+            }
+            // we need to clean it when the cache files haven’t been used for a long time.
+            var expireTime = ModConfig.Common.skinCacheExpireTime;
+            if (expireTime == 0) {
+                return; // the user disable this features.
+            }
+            var expiredModifiedTime = System.currentTimeMillis() - (expireTime * 1000L);
+            var rootPath = new File(EnvironmentManager.getSkinCacheDirectory(), t0.toString());
+            ModLog.debug("clean skin cache");
+            for (var cacheFile : FileUtils.listFilesRecursive(rootPath)) {
+                if (cacheFile.isFile()) {
+                    var lastModified = FileUtils.getLastModifiedTime(cacheFile);
+                    if (lastModified < expiredModifiedTime) {
+                        FileUtils.deleteQuietly(cacheFile);
+                    }
+                }
+            }
         }
 
         private File cachingFile(String identifier) {
@@ -883,7 +914,7 @@ public class SkinLoader {
                 }
             } else if (t0 != null) {
                 var path = DataDomain.getPath(identifier);
-                cacheFile = cachingFile(t0.toString(), namespace, path);
+                cacheFile = cachingFile(t0.toString(), namespace, Objects.md5(path));
             }
             return cacheFile;
         }

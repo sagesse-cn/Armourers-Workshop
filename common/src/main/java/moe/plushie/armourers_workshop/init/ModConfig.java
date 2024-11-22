@@ -144,7 +144,7 @@ public class ModConfig {
         public static boolean disableAllHolidayEvents = false;
 
         // Cache
-        public static int skinCacheExpireTime = 600;
+        public static int skinCacheExpireTime = 86400;
         public static int skinCacheMaxSize = 2000;
 
         // Global Skin Library

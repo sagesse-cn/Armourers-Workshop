@@ -126,6 +126,10 @@ public class Collections {
         return Sets.newHashSet(elements);
     }
 
+    public static <T> HashSet<T> newSet(Iterable<? extends T> elements) {
+        return Sets.newHashSet(elements);
+    }
+
     @SafeVarargs
     public static <T> ArrayList<T> newList(T... elements) {
         return Lists.newArrayList(elements);

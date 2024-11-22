@@ -2,8 +2,8 @@ package moe.plushie.armourers_workshop.init;
 
 import moe.plushie.armourers_workshop.api.config.IConfigBuilder;
 import moe.plushie.armourers_workshop.api.config.IConfigSpec;
-import moe.plushie.armourers_workshop.core.menu.SkinSlotType;
 import moe.plushie.armourers_workshop.core.math.OpenMath;
+import moe.plushie.armourers_workshop.core.menu.SkinSlotType;
 import moe.plushie.armourers_workshop.init.environment.EnvironmentExecutor;
 import moe.plushie.armourers_workshop.init.environment.EnvironmentType;
 import moe.plushie.armourers_workshop.init.network.UpdateContextPacket;
@@ -132,50 +132,10 @@ public class ModConfigSpec {
 
             defineCategory("holiday-events", "Enable/disable holiday events.", () -> {
                 define("disableAllHolidayEvents", false, "Setting to true will disable all holiday events. What's wrong with you!").bind(v -> disableAllHolidayEvents = v, () -> disableAllHolidayEvents);
-//                SimpleDateFormat sdf = new SimpleDateFormat("MM:dd:HH", Locale.ENGLISH);
-//                for (Holiday holiday : ModHolidays.getHolidays()) {
-//                    boolean holidayEnabled = builder.define("holiday-" + holiday.getName() + "-enabled", true,
-//                            "Enable holiday.");
-//
-//                    Calendar startDate = holiday.getStartDate();
-//                    Calendar endDate = holiday.getEndDate();
-//
-//                    String dates = config.getString("holiday-" + holiday.getName() + "-range",
-//                            sdf.format(startDate.getTime()) + "-" + sdf.format(endDate.getTime()),
-//                            "Holiday date range. Format (Start Date-End Date) (MONTH:DAY:HOUR-MONTH:DAY:HOUR)");
-//
-//                    String startDateStr = sdf.format(startDate.getTime());
-//                    String endDateStr = sdf.format(endDate.getTime());
-//
-//                    if (dates.contains("-")) {
-//                        String[] split = dates.split("-");
-//                        startDateStr = split[0];
-//                        endDateStr = split[1];
-//                    }
-//
-//                    try {
-//                        Date date = sdf.parse(startDateStr);
-//                        startDate.setTime(date);
-//                        startDate.set(Calendar.YEAR, Calendar.getInstance().get(Calendar.YEAR));
-//                    } catch (ParseException e) {
-//                        e.printStackTrace();
-//                    }
-//                    try {
-//                        Date date = sdf.parse(endDateStr);
-//                        endDate.setTime(date);
-//                        endDate.set(Calendar.YEAR, Calendar.getInstance().get(Calendar.YEAR));
-//                    } catch (ParseException e) {
-//                        e.printStackTrace();
-//                    }
-//
-//                    holiday.setEnabled(holidayEnabled);
-//                    holiday.setStartDate(startDate);
-//                    holiday.setEndDate(endDate);
-//                }
             });
 
             defineCategory("cache", "Change (memory use/IO access) ratio by category setting in this category.", () -> {
-                defineInRange("expireTime", 6000, 0, 36000, "How long in seconds the server will keep skins in it's cache.", "Default 600 seconds is 10 minutes.", "Setting to 0 turns off this option.").bind(v -> skinCacheExpireTime = v, () -> skinCacheExpireTime);
+                defineInRange("expireTime", 86400, 0, 86400 * 365, "How long in seconds the server will keep skins in it's cache.", "Setting to 0 turns off this option.").bind(v -> skinCacheExpireTime = v, () -> skinCacheExpireTime);
                 defineInRange("maxSize", 2000, 0, 10000, "Max size the skin cache can reach before skins are removed.", "Setting to 0 turns off this option.").bind(v -> skinCacheMaxSize = v, () -> skinCacheMaxSize);
             });
 
