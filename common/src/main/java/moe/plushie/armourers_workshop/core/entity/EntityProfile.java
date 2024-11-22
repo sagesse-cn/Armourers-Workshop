@@ -1,6 +1,5 @@
 package moe.plushie.armourers_workshop.core.entity;
 
-import moe.plushie.armourers_workshop.api.common.IEntityTypeProvider;
 import moe.plushie.armourers_workshop.api.core.IDataCodec;
 import moe.plushie.armourers_workshop.api.core.IDataSerializable;
 import moe.plushie.armourers_workshop.api.core.IDataSerializer;
@@ -11,7 +10,6 @@ import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.core.utils.Objects;
 import moe.plushie.armourers_workshop.init.ModConfig;
 import moe.plushie.armourers_workshop.utils.DataSerializers;
-import net.minecraft.world.entity.Entity;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -26,14 +24,12 @@ public class EntityProfile implements IDataSerializable.Immutable {
     private final IResourceLocation registryName;
     private final SupportMap supports;
     private final List<IResourceLocation> transformers;
-    private final List<IEntityTypeProvider<Entity>> entities;
     private final boolean locked;
 
-    public EntityProfile(IResourceLocation registryName, Map<SkinSlotType, String> supports, List<IResourceLocation> transformers, List<IEntityTypeProvider<Entity>> entities, boolean locked) {
+    public EntityProfile(IResourceLocation registryName, Map<SkinSlotType, String> supports, List<IResourceLocation> transformers, boolean locked) {
         this.registryName = registryName;
         this.supports = new SupportMap(supports);
         this.transformers = transformers;
-        this.entities = entities;
         this.locked = locked;
     }
 
@@ -41,7 +37,6 @@ public class EntityProfile implements IDataSerializable.Immutable {
         this.registryName = serializer.read(CodingKeys.NAME);
         this.supports = serializer.read(CodingKeys.SLOTS);
         this.transformers = serializer.read(CodingKeys.TRANSFORMERS);
-        this.entities = serializer.read(CodingKeys.ENTITIES);
         this.locked = serializer.read(CodingKeys.LOCKED);
     }
 
@@ -50,7 +45,6 @@ public class EntityProfile implements IDataSerializable.Immutable {
         serializer.write(CodingKeys.NAME, registryName);
         serializer.write(CodingKeys.SLOTS, supports);
         serializer.write(CodingKeys.TRANSFORMERS, transformers);
-        serializer.write(CodingKeys.ENTITIES, entities);
         serializer.write(CodingKeys.LOCKED, locked);
     }
 
@@ -81,10 +75,6 @@ public class EntityProfile implements IDataSerializable.Immutable {
         return transformers;
     }
 
-    public List<IEntityTypeProvider<Entity>> getEntities() {
-        return entities;
-    }
-
     public IResourceLocation getRegistryName() {
         return registryName;
     }
@@ -93,17 +83,21 @@ public class EntityProfile implements IDataSerializable.Immutable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof EntityProfile that)) return false;
-        return locked == that.locked && Objects.equals(registryName, that.registryName) && Objects.equals(supports, that.supports) && Objects.equals(transformers, that.transformers) && Objects.equals(entities, that.entities);
+        return Objects.equals(registryName, that.registryName) && locked == that.locked && Objects.equals(supports, that.supports) && Objects.equals(transformers, that.transformers);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(registryName, supports, transformers, entities, locked);
+        return registryName.hashCode();
     }
 
     @Override
     public String toString() {
-        return Objects.toString(this, "name", registryName, "entities", entities, "locked", locked, "transformers", transformers);
+        return Objects.toString(this, "name", registryName, "locked", locked, "transformers", transformers);
+    }
+
+    public static boolean same(EntityProfile lhs, EntityProfile rhs) {
+        return lhs.locked == rhs.locked && Objects.equals(lhs.supports, rhs.supports) && Objects.equals(lhs.transformers, rhs.transformers);
     }
 
     private static class CodingKeys {
@@ -111,7 +105,6 @@ public class EntityProfile implements IDataSerializable.Immutable {
         public static final IDataSerializerKey<IResourceLocation> NAME = IDataSerializerKey.create("Name", DataSerializers.RESOURCE_LOCATION, null);
         public static final IDataSerializerKey<Boolean> LOCKED = IDataSerializerKey.create("Locked", IDataCodec.BOOL, false);
         public static final IDataSerializerKey<List<IResourceLocation>> TRANSFORMERS = IDataSerializerKey.create("Transformers", DataSerializers.RESOURCE_LOCATION.listOf(), Collections.emptyList());
-        public static final IDataSerializerKey<List<IEntityTypeProvider<Entity>>> ENTITIES = IDataSerializerKey.create("Entities", IDataCodec.STRING.xmap(IEntityTypeProvider::of, IEntityTypeProvider::getRegistryName).listOf(), Collections.emptyList());
 
         public static final IDataSerializerKey<SupportMap> SLOTS = IDataSerializerKey.create("Slots", SupportMap.CODEC, new SupportMap(new HashMap<>()));
 

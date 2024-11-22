@@ -17,9 +17,9 @@ public interface AnimatedPointValue {
     static AnimatedPointValue of(Expression x, Expression y, Expression z) {
         var variable = new Vector3f();
         var optimizeContext = OptimizeContext.DEFAULT;
-        if (x.isMutable()) {
+        if (z.isMutable()) {
             if (y.isMutable()) {
-                if (z.isMutable()) {
+                if (x.isMutable()) {
                     return context -> {
                         variable.setX((float) x.compute(context));
                         variable.setY((float) y.compute(context));
@@ -27,41 +27,40 @@ public interface AnimatedPointValue {
                         return variable;
                     };
                 } else {
-                    variable.setZ((float) z.compute(optimizeContext));
+                    variable.setX((float) x.compute(optimizeContext));
                     return context -> {
-                        variable.setX((float) x.compute(context));
                         variable.setY((float) y.compute(context));
+                        variable.setZ((float) z.compute(context));
                         return variable;
                     };
                 }
             } else {
                 variable.setY((float) y.compute(optimizeContext));
-                if (z.isMutable()) {
+                if (x.isMutable()) {
                     return context -> {
                         variable.setX((float) x.compute(context));
                         variable.setZ((float) z.compute(context));
                         return variable;
                     };
                 } else {
-                    variable.setZ((float) z.compute(optimizeContext));
+                    variable.setX((float) x.compute(optimizeContext));
                     return context -> {
-                        variable.setX((float) x.compute(context));
+                        variable.setZ((float) z.compute(context));
                         return variable;
                     };
                 }
             }
         } else {
-            variable.setX((float) x.compute(optimizeContext));
+            variable.setZ((float) z.compute(optimizeContext));
             if (y.isMutable()) {
-                if (z.isMutable()) {
+                if (x.isMutable()) {
                     return context -> {
+                        variable.setX((float) x.compute(context));
                         variable.setY((float) y.compute(context));
-                        variable.setZ((float) z.compute(context));
                         return variable;
                     };
-
                 } else {
-                    variable.setZ((float) z.compute(optimizeContext));
+                    variable.setX((float) x.compute(optimizeContext));
                     return context -> {
                         variable.setY((float) y.compute(context));
                         return variable;
@@ -69,13 +68,13 @@ public interface AnimatedPointValue {
                 }
             } else {
                 variable.setY((float) y.compute(optimizeContext));
-                if (z.isMutable()) {
+                if (x.isMutable()) {
                     return context -> {
-                        variable.setZ((float) z.compute(context));
+                        variable.setX((float) x.compute(context));
                         return variable;
                     };
                 } else {
-                    variable.setZ((float) z.compute(optimizeContext));
+                    variable.setX((float) x.compute(optimizeContext));
                     return new AnimatedPointValue() {
                         @Override
                         public Vector3f get(ExecutionContext context) {

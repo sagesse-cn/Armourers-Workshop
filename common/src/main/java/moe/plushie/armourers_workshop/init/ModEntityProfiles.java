@@ -7,7 +7,6 @@ import moe.plushie.armourers_workshop.core.data.DataPackType;
 import moe.plushie.armourers_workshop.core.entity.EntityProfile;
 import moe.plushie.armourers_workshop.core.menu.SkinSlotType;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IODataObject;
-import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.core.utils.FileUtils;
 import moe.plushie.armourers_workshop.core.utils.OpenResourceLocation;
 import moe.plushie.armourers_workshop.init.platform.DataPackManager;
@@ -28,10 +27,14 @@ public class ModEntityProfiles {
     private static final ArrayList<BiConsumer<IEntityTypeProvider<?>, EntityProfile>> REMOVE_HANDLERS = new ArrayList<>();
     private static final ArrayList<BiConsumer<IEntityTypeProvider<?>, EntityProfile>> UPDATE_HANDLERS = new ArrayList<>();
 
-    private static final Map<IEntityTypeProvider<?>, EntityProfile> ALL_ENTITIES = new LinkedHashMap<>();
+    private static final Map<IResourceLocation, EntityProfile> USING_PROFILES = new LinkedHashMap<>();
+    private static final Map<IResourceLocation, EntityProfile> CUSTOM_PROFILES = new LinkedHashMap<>();
+    private static final Map<IResourceLocation, EntityProfile> BUILTIN_PROFILES = new LinkedHashMap<>();
 
-    private static final Map<IResourceLocation, EntityProfile> ALL_BUILTIN_PROFILES = new LinkedHashMap<>();
-    private static final Map<IResourceLocation, EntityProfile> ALL_CUSTOM_PROFILES = new LinkedHashMap<>();
+    private static final Map<IEntityTypeProvider<?>, EntityProfile> USING_ENTITIES = new LinkedHashMap<>();
+    private static final Map<IEntityTypeProvider<?>, EntityProfile> CUSTOM_ENTITIES = new LinkedHashMap<>();
+    private static final Map<IEntityTypeProvider<?>, EntityProfile> BUILTIN_ENTITIES = new LinkedHashMap<>();
+    private static final Map<IEntityTypeProvider<?>, EntityProfile> SERVER_ENTITIES = new LinkedHashMap<>();
 
     public static void init() {
         DataPackManager.register(DataPackType.SERVER_DATA, "skin/profiles", SimpleLoader::custom, null, SimpleLoader::freezeCustom, 1);
@@ -43,7 +46,7 @@ public class ModEntityProfiles {
         INSERT_HANDLERS.add(changeHandler);
         UPDATE_HANDLERS.add(changeHandler);
         // if it add listener after the loading, we need manual send a notification.
-        ALL_ENTITIES.forEach(changeHandler);
+        USING_ENTITIES.forEach(changeHandler);
     }
 
     @Nullable
@@ -54,7 +57,7 @@ public class ModEntityProfiles {
     @Nullable
     public static <T extends Entity> EntityProfile getProfile(EntityType<T> entityType) {
         //
-        for (var entry : ALL_ENTITIES.entrySet()) {
+        for (var entry : USING_ENTITIES.entrySet()) {
             if (entityType.equals(entry.getKey().get())) {
                 return entry.getValue();
             }
@@ -64,136 +67,145 @@ public class ModEntityProfiles {
 
     @Nullable
     public static EntityProfile getProfile(IResourceLocation registryName) {
-        return ALL_BUILTIN_PROFILES.get(registryName);
+        return USING_PROFILES.get(registryName);
     }
 
-    public static void setCustomProfiles(List<EntityProfile> snapshot) {
-        ModLog.debug("apply custom profile changes");
-        SimpleLoader.freezeCustom(Collections.immutableMap(builder -> {
-            if (snapshot != null) {
-                snapshot.forEach(it -> builder.put(it.getRegistryName(), it));
-            }
-        }));
+    public static void setCustomProfiles(Map<IEntityTypeProvider<?>, EntityProfile> snapshot) {
+        // ignore when no changes.
+        if (SERVER_ENTITIES.equals(snapshot)) {
+            return;
+        }
+        ModLog.debug("apply entity profile changes from server");
+        SERVER_ENTITIES.clear();
+        SERVER_ENTITIES.putAll(snapshot);
+        SimpleLoader.freeze();
     }
 
-    public static List<EntityProfile> getCustomProfiles() {
-        return Collections.newList(ALL_CUSTOM_PROFILES.values());
+    public static Map<IEntityTypeProvider<?>, EntityProfile> getCustomProfiles() {
+        return CUSTOM_ENTITIES;
     }
 
     private static class SimpleLoader implements IDataPackBuilder {
 
-        private static final Map<IResourceLocation, EntityProfile> PENDING_BUILTIN_PROFILES = new LinkedHashMap<>();
-        private static final Map<IResourceLocation, EntityProfile> PENDING_CUSTOM_PROFILES = new LinkedHashMap<>();
+        private static final Map<IResourceLocation, SimpleBuilder> CUSTOM_PROFILE_BUILDERS = new LinkedHashMap<>();
+        private static final Map<IResourceLocation, SimpleBuilder> BUILTIN_PROFILE_BUILDERS = new LinkedHashMap<>();
 
-        private boolean isLocked = false;
+        private final SimpleBuilder builder;
 
-        private final OpenResourceLocation registryName;
-
-        private final List<IEntityTypeProvider<Entity>> entities = new ArrayList<>();
-        private final List<IResourceLocation> transformers = new ArrayList<>();
-        private final Map<SkinSlotType, String> supports = new LinkedHashMap<>();
-
-        private final Map<IResourceLocation, EntityProfile> container;
-
-        public SimpleLoader(IResourceLocation location, Map<IResourceLocation, EntityProfile> container) {
-            var path = FileUtils.getRegistryName(location.getPath(), "skin/profiles/");
-            this.container = container;
-            this.registryName = OpenResourceLocation.create(location.getNamespace(), path);
+        public SimpleLoader(SimpleBuilder builder) {
+            this.builder = builder;
         }
 
         public static SimpleLoader builtin(IResourceLocation registryName) {
-            return new SimpleLoader(registryName, PENDING_BUILTIN_PROFILES);
+            return new SimpleLoader(BUILTIN_PROFILE_BUILDERS.computeIfAbsent(registryName, SimpleBuilder::builtin));
         }
 
         public static SimpleLoader custom(IResourceLocation registryName) {
-            return new SimpleLoader(registryName, PENDING_CUSTOM_PROFILES);
+            return new SimpleLoader(CUSTOM_PROFILE_BUILDERS.computeIfAbsent(registryName, SimpleBuilder::custom));
         }
 
         @Override
         public void append(IODataObject object, IResourceLocation location) {
             if (object.get("replace").boolValue()) {
-                isLocked = false;
-                supports.clear();
-                entities.clear();
+                builder.isLocked = false;
+                builder.supports.clear();
+                builder.transformers.clear();
+                builder.entities.clear();
             }
             object.get("locked").ifPresent(o -> {
-                isLocked = o.boolValue();
+                builder.isLocked = o.boolValue();
             });
             object.get("slots").entrySet().forEach(it -> {
                 var type = SkinSlotType.byName(it.getKey());
                 var name = it.getValue().stringValue();
                 if (type != null) {
-                    supports.put(type, name);
+                    builder.supports.put(type, name);
                 }
             });
             object.get("transformers").allValues().forEach(o -> {
-                transformers.add(OpenResourceLocation.parse(o.stringValue()));
+                builder.transformers.add(OpenResourceLocation.parse(o.stringValue()));
             });
             object.get("entities").allValues().forEach(o -> {
-                entities.add(IEntityTypeProvider.of(o.stringValue()));
+                builder.entities.add(IEntityTypeProvider.of(o.stringValue()));
             });
         }
 
         @Override
         public void build() {
-            var profile = new EntityProfile(registryName, supports, transformers, entities, isLocked);
-            container.put(registryName, profile);
+            // ignore.
         }
-
 
         private static void freezeCustom() {
-            // remove all builtin
-            ALL_BUILTIN_PROFILES.forEach((registryName, entityProfile) -> {
-                var entityProfile1 = PENDING_CUSTOM_PROFILES.get(registryName);
-                if (entityProfile1 != null && entityProfile1.equals(entityProfile)) {
-                    PENDING_CUSTOM_PROFILES.remove(registryName); // ignore duplicate entry.
-                }
+            // regenerate all entity profile.
+            var newEntities = new LinkedHashMap<IEntityTypeProvider<?>, EntityProfile>();
+            CUSTOM_ENTITIES.clear();
+            CUSTOM_PROFILE_BUILDERS.forEach((key, builder) -> {
+                var profile = builder.build();
+                builder.entities.forEach(entityType -> newEntities.put(entityType, profile));
             });
-            freezeCustom(PENDING_CUSTOM_PROFILES);
-            PENDING_CUSTOM_PROFILES.clear();
-        }
-
-        private static void freezeCustom(Map<IResourceLocation, EntityProfile> pending) {
+            CUSTOM_PROFILE_BUILDERS.clear();
+            // only use when custom profile changed.
+            var usedProfiles = new LinkedHashMap<IResourceLocation, EntityProfile>();
+            newEntities.forEach((entityType, profile) -> {
+                var oldProfile = BUILTIN_ENTITIES.get(entityType);
+                if (oldProfile != null && EntityProfile.same(oldProfile, profile)) {
+                    return; // not any change.
+                }
+                CUSTOM_ENTITIES.put(entityType, profile);
+                usedProfiles.put(profile.getRegistryName(), profile);
+            });
             // apply the patch
-            difference(ALL_CUSTOM_PROFILES, pending, (registryName, entityProfile) -> {
-                ALL_CUSTOM_PROFILES.remove(registryName);
-                ModLog.debug("Unregistering Custom Entity Profile '{}'", registryName);
+            difference(CUSTOM_PROFILES, usedProfiles, (registryName, entityProfile) -> {
+                CUSTOM_PROFILES.remove(registryName);
+                ModLog.debug("Unregistering Entity Profile '{}'", registryName);
             }, (registryName, entityProfile) -> {
-                ModLog.debug("Registering Custom Entity Profile '{}'", registryName);
-                ALL_CUSTOM_PROFILES.put(registryName, entityProfile);
+                ModLog.debug("Registering Entity Profile '{}'", registryName);
+                CUSTOM_PROFILES.put(registryName, entityProfile);
             }, null);
+            // freeze all data.
             freeze();
         }
 
         private static void freezeBuiltin() {
+            // regenerate all entity profile.
+            var newProfiles = new LinkedHashMap<IResourceLocation, EntityProfile>();
+            BUILTIN_ENTITIES.clear();
+            BUILTIN_PROFILE_BUILDERS.forEach((key, builder) -> {
+                var profile = builder.build();
+                newProfiles.put(builder.registryName, profile);
+                builder.entities.forEach(entityType -> BUILTIN_ENTITIES.put(entityType, profile));
+            });
+            BUILTIN_PROFILE_BUILDERS.clear();
             // apply the patch
-            difference(ALL_BUILTIN_PROFILES, PENDING_BUILTIN_PROFILES, (registryName, entityProfile) -> {
-                ALL_BUILTIN_PROFILES.remove(registryName);
+            difference(BUILTIN_PROFILES, newProfiles, (registryName, entityProfile) -> {
+                BUILTIN_PROFILES.remove(registryName);
                 ModLog.debug("Unregistering Entity Profile '{}'", registryName);
             }, (registryName, entityProfile) -> {
                 ModLog.debug("Registering Entity Profile '{}'", registryName);
-                ALL_BUILTIN_PROFILES.put(registryName, entityProfile);
+                BUILTIN_PROFILES.put(registryName, entityProfile);
             }, null);
-            PENDING_BUILTIN_PROFILES.clear();
+            // freeze all data.
             freeze();
         }
 
         private static void freeze() {
-            // generate the entity profile.
-            var entities = new LinkedHashMap<IEntityTypeProvider<?>, EntityProfile>();
-            ALL_BUILTIN_PROFILES.forEach((registryName, profile) -> profile.getEntities().forEach(entityType -> entities.put(entityType, profile)));
-            ALL_CUSTOM_PROFILES.forEach((registryName, profile) -> profile.getEntities().forEach(entityType -> entities.put(entityType, profile)));
             // apply the patch.
-            difference(ALL_ENTITIES, entities, (entityType, entityProfile) -> {
-                ALL_ENTITIES.remove(entityType);
+            var entities = new LinkedHashMap<IEntityTypeProvider<?>, EntityProfile>();
+            entities.putAll(BUILTIN_ENTITIES);
+            entities.putAll(CUSTOM_ENTITIES);
+            entities.putAll(SERVER_ENTITIES);
+            difference(USING_ENTITIES, entities, (entityType, entityProfile) -> {
+                USING_ENTITIES.remove(entityType);
                 REMOVE_HANDLERS.forEach(handler -> handler.accept(entityType, entityProfile));
             }, (entityType, entityProfile) -> {
-                ALL_ENTITIES.put(entityType, entityProfile);
+                USING_ENTITIES.put(entityType, entityProfile);
                 INSERT_HANDLERS.forEach(handler -> handler.accept(entityType, entityProfile));
             }, (entityType, entityProfile) -> {
-                ALL_ENTITIES.put(entityType, entityProfile);
+                USING_ENTITIES.put(entityType, entityProfile);
                 UPDATE_HANDLERS.forEach(handler -> handler.accept(entityType, entityProfile));
             });
+            USING_PROFILES.clear();
+            entities.values().forEach(profile -> USING_PROFILES.put(profile.getRegistryName(), profile));
         }
 
         private static <K, V> void difference(Map<K, V> oldValue, Map<K, V> newValue, BiConsumer<K, V> removeHandler, BiConsumer<K, V> insertHandler, BiConsumer<K, V> updateHandler) {
@@ -213,6 +225,36 @@ public class ModEntityProfiles {
             if (removeHandler != null) {
                 removedEntities.forEach(removeHandler);
             }
+        }
+    }
+
+    private static class SimpleBuilder {
+
+        private final IResourceLocation registryName;
+
+        private final List<IEntityTypeProvider<?>> entities = new ArrayList<>();
+        private final List<IResourceLocation> transformers = new ArrayList<>();
+
+        private final Map<SkinSlotType, String> supports = new LinkedHashMap<>();
+
+        private boolean isLocked = false;
+
+        public SimpleBuilder(IResourceLocation registryName) {
+            this.registryName = registryName;
+        }
+
+        public static SimpleBuilder builtin(IResourceLocation location) {
+            var path = FileUtils.getRegistryName(location.getPath(), "skin/profiles/");
+            return new SimpleBuilder(OpenResourceLocation.create(location.getNamespace(), "builtin/" + path));
+        }
+
+        public static SimpleBuilder custom(IResourceLocation location) {
+            var path = FileUtils.getRegistryName(location.getPath(), "skin/profiles/");
+            return new SimpleBuilder(OpenResourceLocation.create(location.getNamespace(), path));
+        }
+
+        public EntityProfile build() {
+            return new EntityProfile(registryName, supports, transformers, isLocked);
         }
     }
 }

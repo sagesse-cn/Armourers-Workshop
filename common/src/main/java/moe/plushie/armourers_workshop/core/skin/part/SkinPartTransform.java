@@ -12,22 +12,26 @@ import java.util.List;
 public class SkinPartTransform implements ITransform {
 
     public static final SkinPartTransform IDENTITY = new SkinPartTransform();
+
+    private final ITransform parent;
     private final ArrayList<ITransform> children = new ArrayList<>();
 
     public SkinPartTransform() {
+        this.parent = SkinPartTransform.IDENTITY;
     }
 
     public SkinPartTransform(SkinPart part, ITransform quadsTransform) {
+        this.parent = part.getTransform();
         if (quadsTransform != null) {
-            children.add(quadsTransform);
+            this.children.add(quadsTransform);
         }
         var wingsTransform = getWingsTransform(part);
         if (wingsTransform != null) {
-            children.add(wingsTransform);
+            this.children.add(wingsTransform);
         }
         var partTransform = part.getTransform();
         if (partTransform != null) {
-            children.add(partTransform);
+            this.children.add(partTransform);
         }
     }
 
@@ -71,6 +75,10 @@ public class SkinPartTransform implements ITransform {
 
     public List<ITransform> getChildren() {
         return children;
+    }
+
+    public ITransform getParent() {
+        return parent;
     }
 
     public boolean isIdentity() {

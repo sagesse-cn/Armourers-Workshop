@@ -7,7 +7,6 @@ import moe.plushie.armourers_workshop.api.client.IBakedSkin;
 import moe.plushie.armourers_workshop.api.skin.ISkinType;
 import moe.plushie.armourers_workshop.api.skin.part.features.ICanHeld;
 import moe.plushie.armourers_workshop.api.skin.part.features.ICanUse;
-import moe.plushie.armourers_workshop.api.skin.property.ISkinProperties;
 import moe.plushie.armourers_workshop.core.client.animation.AnimationContext;
 import moe.plushie.armourers_workshop.core.client.animation.AnimationController;
 import moe.plushie.armourers_workshop.core.client.animation.AnimationEngine;
@@ -20,7 +19,6 @@ import moe.plushie.armourers_workshop.core.client.texture.PlayerTextureLoader;
 import moe.plushie.armourers_workshop.core.data.cache.PrimaryKey;
 import moe.plushie.armourers_workshop.core.data.color.ColorDescriptor;
 import moe.plushie.armourers_workshop.core.math.OpenItemTransforms;
-import moe.plushie.armourers_workshop.core.skin.part.wings.WingPartTransform;
 import moe.plushie.armourers_workshop.core.math.OpenMatrix4f;
 import moe.plushie.armourers_workshop.core.math.OpenQuaternion3f;
 import moe.plushie.armourers_workshop.core.math.OpenVoxelShape;
@@ -31,10 +29,13 @@ import moe.plushie.armourers_workshop.core.skin.Skin;
 import moe.plushie.armourers_workshop.core.skin.SkinTypes;
 import moe.plushie.armourers_workshop.core.skin.animation.SkinAnimation;
 import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintScheme;
+import moe.plushie.armourers_workshop.core.skin.part.SkinPartTransform;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPartTypes;
+import moe.plushie.armourers_workshop.core.skin.part.wings.WingPartTransform;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperties;
 import moe.plushie.armourers_workshop.core.skin.serializer.SkinUsedCounter;
 import moe.plushie.armourers_workshop.core.utils.Collections;
+import moe.plushie.armourers_workshop.core.utils.Objects;
 import moe.plushie.armourers_workshop.core.utils.OpenSequenceSource;
 import moe.plushie.armourers_workshop.utils.SkinUtils;
 import net.fabricmc.api.EnvType;
@@ -47,7 +48,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 @Environment(EnvType.CLIENT)
 public class BakedSkin implements IBakedSkin {
@@ -67,8 +67,8 @@ public class BakedSkin implements IBakedSkin {
     private final Range<Integer> useTickRange;
     private final List<BakedSkinPart> skinParts;
 
-    private final AnimationContext skinAnimationContext;
-    private final List<AnimationController> skinAnimationControllers;
+    private final AnimationContext animationContext;
+    private final List<AnimationController> animationControllers;
 
     private final ColorDescriptor colorDescriptor;
     private final SkinUsedCounter usedCounter;
@@ -81,8 +81,8 @@ public class BakedSkin implements IBakedSkin {
         this.identifier = identifier;
         this.skin = skin;
         this.skinType = skinType;
-        this.skinAnimationControllers = resolveAnimationControllers(bakedParts, skin.getAnimations(), skin.getProperties());
-        this.skinAnimationContext = AnimationContext.from(bakedParts);
+        this.animationControllers = resolveAnimationControllers(bakedParts, skin.getAnimations(), skin.getProperties());
+        this.animationContext = resolveAnimationContext(bakedParts);
         this.skinParts = BakedSkinPartCombiner.apply(bakedParts); // depends `resolveAnimationControllers`
         this.colorScheme = colorScheme;
         this.colorDescriptor = colorDescriptor;
@@ -144,11 +144,11 @@ public class BakedSkin implements IBakedSkin {
     }
 
     public AnimationContext getAnimationContext() {
-        return skinAnimationContext;
+        return animationContext;
     }
 
     public List<AnimationController> getAnimationControllers() {
-        return skinAnimationControllers;
+        return animationControllers;
     }
 
     public SkinPaintScheme getColorScheme() {
@@ -284,28 +284,34 @@ public class BakedSkin implements IBakedSkin {
         return overrides;
     }
 
-    private List<AnimationController> resolveAnimationControllers(List<BakedSkinPart> skinParts, Collection<SkinAnimation> animations, ISkinProperties properties) {
+    private List<AnimationController> resolveAnimationControllers(List<BakedSkinPart> skinParts, Collection<SkinAnimation> animations, SkinProperties properties) {
         var results = new ArrayList<AnimationController>();
         if (animations.isEmpty()) {
             return results;
         }
-        var namedParts = new HashMap<String, BakedSkinPart>();
+        var namedParts = new HashMap<String, SkinPartTransform>();
         Collections.eachTree(skinParts, BakedSkinPart::getChildren, part -> {
             var partType = part.getType();
             var partName = partType.getName();
             if (partType == SkinPartTypes.ADVANCED) {
                 partName = part.getName();
             }
-            namedParts.put(partName, part);
+            namedParts.put(partName, part.getTransform());
         });
         animations.forEach(animation -> {
-            var controller = new AnimationController(animation, namedParts, properties);
+            var controller = new AnimationController(animation, namedParts);
             results.add(controller);
         });
         results.removeIf(AnimationController::isEmpty);
         return results;
     }
 
+    private AnimationContext resolveAnimationContext(List<BakedSkinPart> skinParts) {
+        // find all animated transform and add into context.
+        var builder = new AnimationContext.Builder();
+        Collections.eachTree(skinParts, BakedSkinPart::getChildren, it -> builder.add(it.getTransform()));
+        return builder.build();
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -317,5 +323,10 @@ public class BakedSkin implements IBakedSkin {
     @Override
     public int hashCode() {
         return id;
+    }
+
+    @Override
+    public String toString() {
+        return Objects.toString(this, "id", id, "skin", identifier, "type", skinType);
     }
 }

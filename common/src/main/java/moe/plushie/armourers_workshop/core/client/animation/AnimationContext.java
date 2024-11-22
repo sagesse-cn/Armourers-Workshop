@@ -1,7 +1,7 @@
 package moe.plushie.armourers_workshop.core.client.animation;
 
-import moe.plushie.armourers_workshop.core.client.bake.BakedSkinPart;
 import moe.plushie.armourers_workshop.core.math.OpenMath;
+import moe.plushie.armourers_workshop.core.skin.part.SkinPartTransform;
 import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.core.utils.Objects;
 import org.jetbrains.annotations.Nullable;
@@ -9,11 +9,12 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class AnimationContext {
 
-    private final ArrayList<Snapshot> snapshots = new ArrayList<>();
-    private final HashMap<AnimationController, AnimationPlayState> playStates = new HashMap<>();
+    private final List<Snapshot> snapshots = new ArrayList<>();
+    private final Map<AnimationController, AnimationPlayState> playStates = new HashMap<>();
 
     public AnimationContext() {
     }
@@ -22,20 +23,6 @@ public class AnimationContext {
         context.snapshots.forEach(snapshot -> {
             snapshots.add(new VariantSnapshot(snapshot));
         });
-    }
-
-
-    public static AnimationContext from(List<BakedSkinPart> skinParts) {
-        // find all animated transform and convert to snapshot.
-        var context = new AnimationContext();
-        Collections.eachTree(skinParts, BakedSkinPart::getChildren, part -> {
-            for (var transform : part.getTransform().getChildren()) {
-                if (transform instanceof AnimatedTransform transform1) {
-                    context.snapshots.add(new Snapshot(part, transform1));
-                }
-            }
-        });
-        return context;
     }
 
     public void beginUpdates(float animationTime) {
@@ -51,12 +38,12 @@ public class AnimationContext {
     }
 
     public void addAnimation(@Nullable AnimationController fromAnimationController, @Nullable AnimationController toAnimationController, float time, float speed, float duration) {
-        // Find affected parts by from/to animation.
-        var affectedParts = new ArrayList<BakedSkinPart>();
-        affectedParts.addAll(Objects.flatMap(fromAnimationController, AnimationController::getAffectedParts, Collections.emptyList()));
-        affectedParts.addAll(Objects.flatMap(toAnimationController, AnimationController::getAffectedParts, Collections.emptyList()));
+        // Find affected transform by from/to animation.
+        var affectedTransforms = new ArrayList<AnimatedTransform>();
+        affectedTransforms.addAll(Objects.flatMap(fromAnimationController, AnimationController::getAffectedTransforms, Collections.emptyList()));
+        affectedTransforms.addAll(Objects.flatMap(toAnimationController, AnimationController::getAffectedTransforms, Collections.emptyList()));
         for (var snapshot : snapshots) {
-            if (snapshot instanceof VariantSnapshot variant && affectedParts.contains(snapshot.part)) {
+            if (snapshot instanceof VariantSnapshot variant && affectedTransforms.contains(snapshot.transform)) {
                 variant.addTransitingAnimation(time, speed, duration);
             }
         }
@@ -83,11 +70,9 @@ public class AnimationContext {
 
     private static class Snapshot {
 
-        protected final BakedSkinPart part;
         protected final AnimatedTransform transform;
 
-        public Snapshot(BakedSkinPart part, AnimatedTransform transform) {
-            this.part = part;
+        public Snapshot(AnimatedTransform transform) {
             this.transform = transform;
         }
 
@@ -102,7 +87,7 @@ public class AnimationContext {
 
         @Override
         public String toString() {
-            return Objects.toString(this, "name", part.getName());
+            return Objects.toString(this);
         }
     }
 
@@ -115,7 +100,7 @@ public class AnimationContext {
         protected boolean isExported = false;
 
         public VariantSnapshot(Snapshot snapshot) {
-            super(snapshot.part, snapshot.transform);
+            super(snapshot.transform);
         }
 
         @Override
@@ -157,7 +142,7 @@ public class AnimationContext {
                 snapshotValue.setRotation(currentValue.getRotation());
                 snapshotValue.setScale(currentValue.getScale());
             } else {
-                var original = transform.getOriginal();
+                var original = transform.getParent();
                 snapshotValue.setTranslate(original.getTranslate());
                 snapshotValue.setRotation(original.getRotation());
                 snapshotValue.setScale(original.getScale());
@@ -224,6 +209,26 @@ public class AnimationContext {
 
         public boolean isCompleted() {
             return isCompleted;
+        }
+    }
+
+    public static class Builder {
+
+        private final ArrayList<Snapshot> snapshots = new ArrayList<>();
+
+        public void add(SkinPartTransform partTransform) {
+            // convert animated transform to snapshot if exists.
+            for (var transform : partTransform.getChildren()) {
+                if (transform instanceof AnimatedTransform animatedTransform) {
+                    snapshots.add(new Snapshot(animatedTransform));
+                }
+            }
+        }
+
+        public AnimationContext build() {
+            var context = new AnimationContext();
+            context.snapshots.addAll(snapshots);
+            return context;
         }
     }
 }

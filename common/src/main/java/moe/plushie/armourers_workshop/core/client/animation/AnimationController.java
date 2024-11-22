@@ -1,7 +1,5 @@
 package moe.plushie.armourers_workshop.core.client.animation;
 
-import moe.plushie.armourers_workshop.api.skin.property.ISkinProperties;
-import moe.plushie.armourers_workshop.core.client.bake.BakedSkinPart;
 import moe.plushie.armourers_workshop.core.math.OpenMath;
 import moe.plushie.armourers_workshop.core.math.OpenTransform3f;
 import moe.plushie.armourers_workshop.core.math.Vector3f;
@@ -13,6 +11,7 @@ import moe.plushie.armourers_workshop.core.skin.animation.SkinAnimationPoint;
 import moe.plushie.armourers_workshop.core.skin.animation.molang.ast.Constant;
 import moe.plushie.armourers_workshop.core.skin.animation.molang.core.ExecutionContext;
 import moe.plushie.armourers_workshop.core.skin.animation.molang.core.Expression;
+import moe.plushie.armourers_workshop.core.skin.part.SkinPartTransform;
 import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.core.utils.Objects;
 import moe.plushie.armourers_workshop.core.utils.OpenSequenceSource;
@@ -41,20 +40,20 @@ public class AnimationController {
     private final AnimatedMixMode mode;
     private final boolean isRequiresVirtualMachine;
 
-    public AnimationController(SkinAnimation animation, Map<String, BakedSkinPart> parts, ISkinProperties properties) {
+    public AnimationController(SkinAnimation animation, Map<String, SkinPartTransform> partTransforms) {
         this.name = animation.getName();
         this.animation = animation;
 
         this.loop = animation.getLoop();
         this.duration = animation.getDuration();
 
-        this.mode = AnimatedMixMode.byName(name);
+        this.mode = calcMixMode(name);
 
         // create all animation.
         animation.getKeyframes().forEach((partName, linkedValues) -> {
-            var part = parts.get(partName);
-            if (part != null) {
-                this.animators.add(new Bone(AnimationController.toTime(duration), mode, linkedValues, part));
+            var partTransform = partTransforms.get(partName);
+            if (partTransform != null) {
+                this.animators.add(new Bone(AnimationController.toTime(duration), mode, linkedValues, resolveAnimatedTransform(partTransform)));
             }
             if (partName.equals("Effects")) {
                 this.animators.add(new Effect(AnimationController.toTime(duration), mode, linkedValues));
@@ -95,10 +94,10 @@ public class AnimationController {
         return Objects.toString(this, "name", name, "duration", duration, "loop", loop);
     }
 
-    public Collection<BakedSkinPart> getAffectedParts() {
+    public Collection<AnimatedTransform> getAffectedTransforms() {
         return Collections.compactMap(animators, it -> {
             if (it instanceof Bone bone) {
-                return bone.part;
+                return bone.transform;
             }
             return null;
         });
@@ -128,6 +127,17 @@ public class AnimationController {
         return animators.isEmpty();
     }
 
+    public static AnimatedMixMode calcMixMode(String name) {
+        name = name.toLowerCase();
+        if (name.matches("^(.+\\.)?pre_parallel(\\d+)$")) {
+            return AnimatedMixMode.PRE_MAIN;
+        }
+        if (name.matches("^(.+\\.)?parallel(\\d+)$")) {
+            return AnimatedMixMode.POST_MAIN;
+        }
+        return AnimatedMixMode.MAIN;
+    }
+
     private boolean calcRequiresVirtualMachine() {
         for (var animator : animators) {
             for (var channel : animator.channels) {
@@ -139,6 +149,24 @@ public class AnimationController {
             }
         }
         return false;
+    }
+
+    private AnimatedTransform resolveAnimatedTransform(SkinPartTransform partTransform) {
+        // when animation transform already been created, we just use it directly.
+        for (var childTransform : partTransform.getChildren()) {
+            if (childTransform instanceof AnimatedTransform animatedTransform) {
+                return animatedTransform;
+            }
+        }
+        // if part have a non-standard transform (preview mode),
+        // we wil think this part can't be support animation.
+        if (!(partTransform.getParent() instanceof OpenTransform3f parent)) {
+            return null;
+        }
+        // we will replace the standard transform to animated transform.
+        var animatedTransform = new AnimatedTransform(parent);
+        partTransform.replaceChild(parent, animatedTransform);
+        return animatedTransform;
     }
 
     private static abstract class Animator {
@@ -172,11 +200,11 @@ public class AnimationController {
 
     private static class Bone extends Animator {
 
-        private final BakedSkinPart part;
+        private final AnimatedTransform transform;
 
-        public Bone(int duration, AnimatedMixMode mode, List<SkinAnimationKeyframe> linkedKeyframes, BakedSkinPart part) {
-            super(duration, linkedKeyframes, linkTo(part, mode));
-            this.part = part;
+        public Bone(int duration, AnimatedMixMode mode, List<SkinAnimationKeyframe> linkedKeyframes, AnimatedTransform transform) {
+            super(duration, linkedKeyframes, new LinkedOutput(transform, mode));
+            this.transform = transform;
         }
 
         @Override
@@ -194,24 +222,6 @@ public class AnimationController {
                 case "scale" -> new Selector.Scale();
                 default -> null;
             };
-        }
-
-        protected static OutputPoint linkTo(BakedSkinPart bone, AnimatedMixMode mode) {
-            // when animation transform already been created, we just link it directly.
-            for (var transform : bone.getTransform().getChildren()) {
-                if (transform instanceof AnimatedTransform animatedTransform) {
-                    return new OutputPoint(animatedTransform, mode);
-                }
-            }
-            // if part have a non-standard transform (preview mode),
-            // we wil think this part can't be support animation.
-            if (!(bone.getPart().getTransform() instanceof OpenTransform3f parent)) {
-                return new OutputPoint(null, mode);
-            }
-            // we will replace the standard transform to animated transform.
-            var animatedTransform = new AnimatedTransform(parent);
-            bone.getTransform().replaceChild(parent, animatedTransform);
-            return new OutputPoint(animatedTransform, mode);
         }
     }
 
@@ -474,11 +484,11 @@ public class AnimationController {
         }
     }
 
-    private static class OutputPoint extends AnimatedPoint {
+    private static class LinkedOutput extends AnimatedPoint {
 
         private final AnimatedTransform transform;
 
-        public OutputPoint(AnimatedTransform transform, AnimatedMixMode mode) {
+        public LinkedOutput(AnimatedTransform transform, AnimatedMixMode mode) {
             this.transform = transform;
             if (transform != null) {
                 transform.link(this, mode.ordinal(), mode == AnimatedMixMode.POST_MAIN);

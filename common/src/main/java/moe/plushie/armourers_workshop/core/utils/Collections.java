@@ -14,6 +14,7 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -114,6 +115,10 @@ public class Collections {
 
     public static <T> List<T> emptyList() {
         return java.util.Collections.emptyList();
+    }
+
+    public static <K,V> Map<K,V> emptyMap() {
+        return java.util.Collections.emptyMap();
     }
 
     @SafeVarargs

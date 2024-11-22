@@ -21,6 +21,7 @@ import moe.plushie.armourers_workshop.core.data.ticket.Tickets;
 import moe.plushie.armourers_workshop.core.menu.SkinSlotType;
 import moe.plushie.armourers_workshop.core.skin.SkinLoader;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPartTypes;
+import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.core.utils.OpenResourceLocation;
 import moe.plushie.armourers_workshop.core.utils.TypedRegistry;
 import moe.plushie.armourers_workshop.init.ModConfig;
@@ -143,7 +144,7 @@ public class ClientProxy {
             SkinLibraryManager.getClient().getPublicSkinLibrary().reset();
             SkinLibraryManager.getClient().getPrivateSkinLibrary().reset();
             ModContext.reset();
-            ModEntityProfiles.setCustomProfiles(null);
+            ModEntityProfiles.setCustomProfiles(Collections.emptyMap());
             ModConfigSpec.COMMON.apply(null);
         });
 
