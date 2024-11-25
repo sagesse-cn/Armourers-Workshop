@@ -120,7 +120,7 @@ public class DyeTableMenu extends AbstractBlockEntityMenu<DyeTableBlockEntity> {
             return;
         }
         var descriptor = SkinDescriptor.of(itemStack);
-        var scheme = descriptor.getColorScheme();
+        var scheme = descriptor.getPaintScheme();
         for (int i = 0; i < paintTypes.length; ++i) {
             var colorStack = ItemStack.EMPTY;
             var paintColor = scheme.getColor(paintTypes[i]);
@@ -146,7 +146,7 @@ public class DyeTableMenu extends AbstractBlockEntityMenu<DyeTableBlockEntity> {
             }
         }
         var descriptor = SkinDescriptor.of(itemStack);
-        if (newScheme.equals(descriptor.getColorScheme())) {
+        if (newScheme.equals(descriptor.getPaintScheme())) {
             return; // not any changes.
         }
         descriptor = new SkinDescriptor(descriptor, newScheme);

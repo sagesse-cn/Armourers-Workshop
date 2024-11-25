@@ -1,16 +1,16 @@
-package moe.plushie.armourers_workshop.core.math;
+package moe.plushie.armourers_workshop.core.utils;
 
 import moe.plushie.armourers_workshop.api.core.IDataCodec;
-import moe.plushie.armourers_workshop.api.core.math.ITransform3f;
-import moe.plushie.armourers_workshop.compatibility.api.AbstractItemTransformType;
-import moe.plushie.armourers_workshop.core.utils.Constants;
+import moe.plushie.armourers_workshop.core.math.OpenTransform3f;
+import moe.plushie.armourers_workshop.core.math.Vector3f;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.FloatTag;
 import net.minecraft.nbt.ListTag;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.LinkedHashMap;
 
-public class OpenItemTransforms extends LinkedHashMap<String, ITransform3f> {
+public class OpenItemTransforms extends LinkedHashMap<String, OpenTransform3f> {
 
     public static IDataCodec<OpenItemTransforms> CODEC = IDataCodec.COMPOUND_TAG.xmap(OpenItemTransforms::new, OpenItemTransforms::serializeNBT);
 
@@ -23,13 +23,24 @@ public class OpenItemTransforms extends LinkedHashMap<String, ITransform3f> {
         }
     }
 
-    public void put(AbstractItemTransformType key, ITransform3f value) {
+    public void put(OpenItemDisplayContext key, OpenTransform3f value) {
         put(key.getName(), value);
     }
 
-    public ITransform3f get(AbstractItemTransformType key) {
-        return super.get(key.getName());
+    public OpenTransform3f get(OpenItemDisplayContext key) {
+        return get(key.getName());
     }
+
+
+    public void setOffset(OpenTransform3f offset) {
+        put("offset", offset);
+    }
+
+    @Nullable
+    public OpenTransform3f getOffset() {
+        return get("offset");
+    }
+
 
     public CompoundTag serializeNBT() {
         var nbt = new CompoundTag();
@@ -37,7 +48,7 @@ public class OpenItemTransforms extends LinkedHashMap<String, ITransform3f> {
         return nbt;
     }
 
-    private ListTag serializeTransform(ITransform3f transform) {
+    private ListTag serializeTransform(OpenTransform3f transform) {
         var tag = new ListTag();
         if (transform.isIdentity()) {
             return tag;
@@ -60,7 +71,7 @@ public class OpenItemTransforms extends LinkedHashMap<String, ITransform3f> {
         return tag;
     }
 
-    private ITransform3f deserializeTransform(ListTag tag) {
+    private OpenTransform3f deserializeTransform(ListTag tag) {
         if (tag.isEmpty() || tag.size() < 9) {
             return OpenTransform3f.IDENTITY;
         }

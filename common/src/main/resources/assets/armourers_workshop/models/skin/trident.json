@@ -1,0 +1,7 @@
+{
+  "parent": "armourers_workshop:skin/legacy/trident",
+  "overrides": [
+    { "predicate": { "is_skin": 1 }, "model": "armourers_workshop:skin/unknown_item" },
+    { "predicate": { "is_throwing": 1 }, "model": "armourers_workshop:skin/legacy/trident_throwing" }
+  ]
+}

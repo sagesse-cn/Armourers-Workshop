@@ -97,6 +97,7 @@ public class BlockBenchPack {
         return animations;
     }
 
+    @Nullable
     public Map<String, BlockBenchDisplay> getItemTransforms() {
         return transforms;
     }
@@ -116,6 +117,8 @@ public class BlockBenchPack {
 
         private Size2f resolution = new Size2f(64, 64);
         private Size3f visibleBox = new Size3f(8, 7, 1.5f);
+
+        private boolean useItemTransforms = false;
 
         private final List<BlockBenchElement> elements = new ArrayList<>();
         private final List<BlockBenchTexture> textures = new ArrayList<>();
@@ -153,6 +156,10 @@ public class BlockBenchPack {
             this.visibleBox = visibleBox;
         }
 
+        public void setUseItemTransforms(boolean useItemTransforms) {
+            this.useItemTransforms = useItemTransforms;
+        }
+
         public void addElement(BlockBenchElement element) {
             this.elements.add(element);
         }
@@ -174,7 +181,11 @@ public class BlockBenchPack {
         }
 
         public BlockBenchPack build() {
-            return new BlockBenchPack(name, description, version, format, authors, resolution, visibleBox, rootOutliner.build(), elements, textures, animations, transforms);
+            var itemTransforms = transforms;
+            if (!useItemTransforms) {
+                itemTransforms = null;
+            }
+            return new BlockBenchPack(name, description, version, format, authors, resolution, visibleBox, rootOutliner.build(), elements, textures, animations, itemTransforms);
         }
     }
 }

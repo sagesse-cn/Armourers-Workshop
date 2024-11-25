@@ -89,10 +89,10 @@ public class SkinWardrobeLayer<T extends Entity, V extends EntityModel<T>, M ext
         for (var entry : renderingTasks) {
             renderingContext.setOverlay(entry.getOverrideOverlay(entity));
             renderingContext.setItemSource(SkinItemSource.create(entry.getRenderPriority(), entry.getItemStack()));
-            var bakedSkin = entry.getBakedSkin();
+            var bakedSkin = entry.getSkin();
             bakedSkin.setupAnim(entity, armature, renderingContext);
-            var colorScheme = bakedSkin.resolve(entity, entry.getBakedScheme());
-            SkinRenderer.render(entity, armature, bakedSkin, colorScheme, renderingContext);
+            var paintScheme = bakedSkin.resolve(entity, entry.getPaintScheme());
+            SkinRenderer.render(entity, armature, bakedSkin, paintScheme, renderingContext);
         }
 
         poseStack.popPose();

@@ -1,11 +1,9 @@
 package moe.plushie.armourers_workshop.init.proxy;
 
-import moe.plushie.armourers_workshop.ArmourersWorkshop;
 import moe.plushie.armourers_workshop.api.common.IBlockTintColorProvider;
 import moe.plushie.armourers_workshop.api.common.IItemPropertiesProvider;
 import moe.plushie.armourers_workshop.api.common.IItemTintColorProvider;
 import moe.plushie.armourers_workshop.builder.client.render.PaintingHighlightPlacementRenderer;
-import moe.plushie.armourers_workshop.compatibility.api.AbstractItemTransformType;
 import moe.plushie.armourers_workshop.compatibility.client.AbstractBufferSource;
 import moe.plushie.armourers_workshop.compatibility.client.AbstractPoseStack;
 import moe.plushie.armourers_workshop.compatibility.core.data.AbstractDataSerializer;
@@ -20,9 +18,8 @@ import moe.plushie.armourers_workshop.core.data.cache.AutoreleasePool;
 import moe.plushie.armourers_workshop.core.data.ticket.Tickets;
 import moe.plushie.armourers_workshop.core.menu.SkinSlotType;
 import moe.plushie.armourers_workshop.core.skin.SkinLoader;
-import moe.plushie.armourers_workshop.core.skin.part.SkinPartTypes;
 import moe.plushie.armourers_workshop.core.utils.Collections;
-import moe.plushie.armourers_workshop.core.utils.OpenResourceLocation;
+import moe.plushie.armourers_workshop.core.utils.OpenItemDisplayContext;
 import moe.plushie.armourers_workshop.core.utils.TypedRegistry;
 import moe.plushie.armourers_workshop.init.ModConfig;
 import moe.plushie.armourers_workshop.init.ModConfigSpec;
@@ -43,7 +40,6 @@ import moe.plushie.armourers_workshop.init.platform.event.client.ClientPlayerEve
 import moe.plushie.armourers_workshop.init.platform.event.client.ItemTooltipEvent;
 import moe.plushie.armourers_workshop.init.platform.event.client.RegisterColorHandlersEvent;
 import moe.plushie.armourers_workshop.init.platform.event.client.RegisterItemPropertyEvent;
-import moe.plushie.armourers_workshop.init.platform.event.client.RegisterModelEvent;
 import moe.plushie.armourers_workshop.init.platform.event.client.RegisterTextureEvent;
 import moe.plushie.armourers_workshop.init.platform.event.client.RenderFrameEvent;
 import moe.plushie.armourers_workshop.init.platform.event.client.RenderHighlightEvent;
@@ -91,7 +87,8 @@ public class ClientProxy {
             if (item instanceof IItemPropertiesProvider provider) {
                 provider.createModelProperties((key, property) -> event.register(key, item, property));
             }
-            event.register(ModConstants.key("type"), Items.CROSSBOW, ((itemStack, level, entity, id) -> 1));
+            event.register(ModConstants.key("is_skin"), ModItems.SKIN.get(), ((itemStack, level, entity, id) -> 1));
+            event.register(ModConstants.key("is_crossbow"), Items.CROSSBOW, ((itemStack, level, entity, id) -> 1));
         }));
 
         // register item/block color handler.
@@ -108,14 +105,6 @@ public class ClientProxy {
             }
         }));
 
-        // register custom model.
-        EventManager.listen(RegisterModelEvent.class, event -> SkinPartTypes.registeredTypes().forEach(partType -> {
-            var rl = ArmourersWorkshop.getCustomModel(partType.getRegistryName());
-            var resourceManager = EnvironmentManager.getResourceManager();
-            if (resourceManager.hasResource(OpenResourceLocation.create(rl.getNamespace(), "models/item/" + rl.getPath() + ".json"))) {
-                event.register(rl);
-            }
-        }));
         // register custom sprite
         EventManager.listen(RegisterTextureEvent.class, event -> Stream.of(SkinSlotType.values()).forEach(slotType -> {
             event.register(slotType.getIconSprite());
@@ -211,11 +200,11 @@ public class ClientProxy {
             if (!ModConfig.enableFirstPersonSkinRenderer()) {
                 return;
             }
-            var transformType = AbstractItemTransformType.FIRST_PERSON_LEFT_HAND;
+            var itemDisplayContext = OpenItemDisplayContext.FIRST_PERSON_LEFT_HAND;
             if (event.getHand() == InteractionHand.MAIN_HAND) {
-                transformType = AbstractItemTransformType.FIRST_PERSON_RIGHT_HAND;
+                itemDisplayContext = OpenItemDisplayContext.FIRST_PERSON_RIGHT_HAND;
             }
-            ClientWardrobeHandler.onRenderSpecificHand(event.getPlayer(), 0, event.getPackedLight(), transformType, event.getPoseStack(), event.getMultiBufferSource(), () -> {
+            ClientWardrobeHandler.onRenderSpecificHand(event.getPlayer(), 0, event.getPackedLight(), itemDisplayContext, event.getPoseStack(), event.getMultiBufferSource(), () -> {
                 event.setCancelled(true);
             });
         });

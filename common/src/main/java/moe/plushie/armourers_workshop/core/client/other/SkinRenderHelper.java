@@ -1,12 +1,12 @@
 package moe.plushie.armourers_workshop.core.client.other;
 
 import moe.plushie.armourers_workshop.api.skin.part.features.ICanUse;
-import moe.plushie.armourers_workshop.compatibility.api.AbstractItemTransformType;
 import moe.plushie.armourers_workshop.core.client.bake.BakedArmature;
 import moe.plushie.armourers_workshop.core.client.bake.BakedSkin;
 import moe.plushie.armourers_workshop.core.client.bake.BakedSkinPart;
 import moe.plushie.armourers_workshop.core.math.OpenMath;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPartTypes;
+import moe.plushie.armourers_workshop.core.utils.OpenItemDisplayContext;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -65,7 +65,7 @@ public class SkinRenderHelper {
             // we have some old skin that only contain arrow part,
             // so when it happens, we need to be compatible rendering it.
             // we use `NONE` to rendering the GUI/Ground/ItemFrame.
-            if (itemSource.getTransformType() == AbstractItemTransformType.NONE) {
+            if (itemSource.getDisplayContext() == OpenItemDisplayContext.NONE) {
                 return bakedPart.getChildren().size() == 1;
             }
             return false;

@@ -82,11 +82,4 @@ public class ArmourersWorkshop {
         }
         return ModConstants.key("textures/item/template/" + skinType.getRegistryName().getPath() + ".png");
     }
-
-    public static IResourceLocation getCustomModel(IResourceLocation location) {
-        var name = location.getPath().toLowerCase();
-        name = name.replaceAll("\\.base", "");
-        name = name.replaceAll("\\.", "_");
-        return ModConstants.key("skin/" + name);
-    }
 }

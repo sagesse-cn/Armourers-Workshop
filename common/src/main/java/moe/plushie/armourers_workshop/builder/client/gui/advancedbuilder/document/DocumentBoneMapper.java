@@ -11,9 +11,27 @@ import moe.plushie.armourers_workshop.core.skin.part.SkinPartTypes;
 import moe.plushie.armourers_workshop.core.utils.Collections;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 
 public class DocumentBoneMapper {
+
+    private static final Set<ISkinType> SINGLE_TYPES = Collections.immutableSet(builder -> {
+        builder.add(SkinTypes.ITEM_SWORD);
+        builder.add(SkinTypes.ITEM_SHIELD);
+        //builder.add(SkinTypes.ITEM_BOW);
+        builder.add(SkinTypes.ITEM_TRIDENT);
+
+        builder.add(SkinTypes.ITEM_PICKAXE);
+        builder.add(SkinTypes.ITEM_AXE);
+        builder.add(SkinTypes.ITEM_SHOVEL);
+        builder.add(SkinTypes.ITEM_HOE);
+
+        builder.add(SkinTypes.ITEM_FISHING);
+
+        builder.add(SkinTypes.ITEM);
+        builder.add(SkinTypes.BLOCK);
+    });
 
     private static final Map<String, ISkinPartType> BOW_PARTS = Collections.immutableMap(builder -> {
         builder.put("Arrow", SkinPartTypes.ITEM_ARROW);
@@ -29,27 +47,29 @@ public class DocumentBoneMapper {
         builder.put("Frame1", SkinPartTypes.ITEM_FISHING_ROD1);
     });
 
+    private final ISkinType type;
     private final Function<String, Entry> provider;
 
-    public DocumentBoneMapper(Function<String, Entry> provider) {
+    public DocumentBoneMapper(ISkinType type, Function<String, Entry> provider) {
+        this.type = type;
         this.provider = provider;
     }
 
-    public static DocumentBoneMapper of(ISkinType skinType) {
+    public static DocumentBoneMapper of(ISkinType type) {
         // read bow item
-        if (skinType == SkinTypes.ITEM_BOW) {
-            return of(BOW_PARTS);
+        if (type == SkinTypes.ITEM_BOW) {
+            return of(type, BOW_PARTS);
         }
         // read fishing item
-        if (skinType == SkinTypes.ITEM_FISHING) {
-            return of(FINISHING_PARTS);
+        if (type == SkinTypes.ITEM_FISHING) {
+            return of(type, FINISHING_PARTS);
         }
         // read from armature
-        return of(Armatures.byType(skinType));
+        return of(type, Armatures.byType(type));
     }
 
-    public static DocumentBoneMapper of(Armature armature) {
-        return new DocumentBoneMapper(name -> {
+    private static DocumentBoneMapper of(ISkinType type, Armature armature) {
+        return new DocumentBoneMapper(type, name -> {
             var joint = armature.getJoint(name);
             if (joint != null) {
                 var partType = armature.getPartType(joint);
@@ -61,8 +81,8 @@ public class DocumentBoneMapper {
         });
     }
 
-    public static DocumentBoneMapper of(Map<String, ISkinPartType> map) {
-        return new DocumentBoneMapper(name -> {
+    private static DocumentBoneMapper of(ISkinType type, Map<String, ISkinPartType> map) {
+        return new DocumentBoneMapper(type, name -> {
             var partType = map.get(name);
             if (partType != null) {
                 return new Entry(null, partType);
@@ -77,6 +97,16 @@ public class DocumentBoneMapper {
             return entry;
         }
         return Entry.NONE;
+    }
+
+
+    public Entry getRoot() {
+        if (SINGLE_TYPES.contains(type)) {
+            for (var partType : type.getParts()) {
+                return new Entry(null, partType);
+            }
+        }
+        return null;
     }
 
     public boolean isEmpty() {

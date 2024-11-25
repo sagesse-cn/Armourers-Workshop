@@ -4,6 +4,7 @@ import com.apple.library.uikit.UIColor;
 import com.mojang.blaze3d.vertex.PoseStack;
 import moe.plushie.armourers_workshop.api.client.IBufferSource;
 import moe.plushie.armourers_workshop.api.core.math.IPoseStack;
+import moe.plushie.armourers_workshop.api.skin.ISkinType;
 import moe.plushie.armourers_workshop.api.skin.part.ISkinPartType;
 import moe.plushie.armourers_workshop.builder.blockentity.AdvancedBuilderBlockEntity;
 import moe.plushie.armourers_workshop.builder.client.gui.advancedbuilder.guide.AbstractAdvancedGuideRenderer;
@@ -13,30 +14,30 @@ import moe.plushie.armourers_workshop.builder.client.gui.advancedbuilder.guide.A
 import moe.plushie.armourers_workshop.builder.client.gui.advancedbuilder.guide.AdvancedHumanGuideRenderer;
 import moe.plushie.armourers_workshop.builder.client.gui.advancedbuilder.guide.AdvancedItemGuideRenderer;
 import moe.plushie.armourers_workshop.builder.client.gui.advancedbuilder.guide.AdvancedMinecartGuideRenderer;
-import moe.plushie.armourers_workshop.compatibility.api.AbstractItemTransformType;
 import moe.plushie.armourers_workshop.compatibility.client.AbstractPoseStack;
 import moe.plushie.armourers_workshop.compatibility.client.renderer.AbstractBlockEntityRenderer;
 import moe.plushie.armourers_workshop.core.client.bake.BakedArmature;
 import moe.plushie.armourers_workshop.core.client.bake.BakedSkinPart;
+import moe.plushie.armourers_workshop.core.client.model.ItemModelManager;
 import moe.plushie.armourers_workshop.core.client.other.PlaceholderManager;
-import moe.plushie.armourers_workshop.core.client.other.SkinModelManager;
 import moe.plushie.armourers_workshop.core.client.other.SkinRenderTesselator;
 import moe.plushie.armourers_workshop.core.data.ticket.Tickets;
-import moe.plushie.armourers_workshop.core.math.OpenItemTransforms;
 import moe.plushie.armourers_workshop.core.math.Vector3f;
+import moe.plushie.armourers_workshop.core.skin.SkinTypes;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPartTypes;
 import moe.plushie.armourers_workshop.core.skin.serializer.document.SkinDocument;
 import moe.plushie.armourers_workshop.core.skin.serializer.document.SkinDocumentNode;
 import moe.plushie.armourers_workshop.core.skin.serializer.document.SkinDocumentType;
 import moe.plushie.armourers_workshop.core.skin.serializer.document.SkinDocumentTypes;
 import moe.plushie.armourers_workshop.core.utils.Collections;
+import moe.plushie.armourers_workshop.core.utils.OpenItemDisplayContext;
+import moe.plushie.armourers_workshop.core.utils.OpenItemTransforms;
 import moe.plushie.armourers_workshop.init.ModDebugger;
 import moe.plushie.armourers_workshop.utils.RenderSystem;
 import moe.plushie.armourers_workshop.utils.ShapeTesselator;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -77,19 +78,16 @@ public class AdvancedBuilderBlockRenderer<T extends AdvancedBuilderBlockEntity> 
     });
 
 
-    private static final Set<ISkinPartType> USE_ITEM_TRANSFORMERS = Collections.immutableSet(builder -> {
-        builder.add(SkinPartTypes.ITEM);
-        builder.add(SkinPartTypes.ITEM_AXE);
-        builder.add(SkinPartTypes.ITEM_HOE);
-        builder.add(SkinPartTypes.ITEM_SHOVEL);
-        builder.add(SkinPartTypes.ITEM_PICKAXE);
-        builder.add(SkinPartTypes.ITEM_SWORD);
-        builder.add(SkinPartTypes.ITEM_SHIELD);
-        builder.add(SkinPartTypes.ITEM_BOW0);
-        builder.add(SkinPartTypes.ITEM_BOW1);
-        builder.add(SkinPartTypes.ITEM_BOW2);
-        builder.add(SkinPartTypes.ITEM_BOW3);
-        builder.add(SkinPartTypes.ITEM_TRIDENT);
+    private static final Set<ISkinType> USE_ITEM_TRANSFORMERS = Collections.immutableSet(builder -> {
+        builder.add(SkinTypes.ITEM);
+        builder.add(SkinTypes.ITEM_AXE);
+        builder.add(SkinTypes.ITEM_HOE);
+        builder.add(SkinTypes.ITEM_SHOVEL);
+        builder.add(SkinTypes.ITEM_PICKAXE);
+        builder.add(SkinTypes.ITEM_SWORD);
+        builder.add(SkinTypes.ITEM_SHIELD);
+        builder.add(SkinTypes.ITEM_BOW);
+        builder.add(SkinTypes.ITEM_TRIDENT);
     });
 
     public static ArrayList<Vector3f> OUTPUTS = new ArrayList<>();
@@ -145,6 +143,13 @@ public class AdvancedBuilderBlockRenderer<T extends AdvancedBuilderBlockEntity> 
             }
         }
 
+
+        // only item
+        if (USE_ITEM_TRANSFORMERS.contains(document.getType().getSkinType())) {
+            applyTransform(poseStack, document.getType().getSkinType(), document.getItemTransforms());
+        }
+
+
         var armature = BakedArmature.defaultBy(document.getType().getSkinType());
         renderNode(document, document.getRoot(), armature, 0, poseStack, bufferSource, light, overlay);
 
@@ -183,11 +188,6 @@ public class AdvancedBuilderBlockRenderer<T extends AdvancedBuilderBlockEntity> 
             if (transform != null) {
                 transform.apply(poseStack);
             }
-        }
-
-        // only item
-        if (node.isLocked() && USE_ITEM_TRANSFORMERS.contains(node.getType())) {
-            applyTransform(poseStack, document.getRoot(), document.getItemTransforms());
         }
 
         // apply node transform.
@@ -237,22 +237,18 @@ public class AdvancedBuilderBlockRenderer<T extends AdvancedBuilderBlockEntity> 
         poseStack.popPose();
     }
 
-    protected void applyTransform(IPoseStack poseStack, SkinDocumentNode node, OpenItemTransforms itemTransforms) {
+    protected void applyTransform(IPoseStack poseStack, ISkinType skinType, OpenItemTransforms itemTransforms) {
         if (itemTransforms != null) {
-            var itemTransform = itemTransforms.get(AbstractItemTransformType.THIRD_PERSON_RIGHT_HAND);
+            var itemTransform = itemTransforms.get(OpenItemDisplayContext.THIRD_PERSON_RIGHT_HAND);
             if (itemTransform != null) {
                 poseStack.translate(0, -2, -2);
                 itemTransform.apply(poseStack);
             }
         } else {
             poseStack.translate(0, -2, -2);
-            var entity = PlaceholderManager.MANNEQUIN.get();
-            var model = SkinModelManager.getInstance().getModel(node.getType(), null, ItemStack.EMPTY, null, entity);
-            var f1 = 16f;
-            var f2 = 1 / 16f;
-            poseStack.scale(f1, f1, f1);
-            model.applyTransform(poseStack, false, AbstractItemTransformType.THIRD_PERSON_RIGHT_HAND);
-            poseStack.scale(f2, f2, f2);
+            //var entity = PlaceholderManager.MANNEQUIN.get();
+            var model = ItemModelManager.getInstance().getModel(skinType);
+            model.getTransform(OpenItemDisplayContext.THIRD_PERSON_RIGHT_HAND).apply(false, poseStack);
         }
     }
 

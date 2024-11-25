@@ -73,7 +73,8 @@ public class SkinDocumentType implements IRegistryEntry {
     }
 
     public boolean usesItemTransforms() {
-        return skinType instanceof ISkinEquipmentType || skinType == SkinTypes.ITEM;
+        return true;
+        //return skinType instanceof ISkinEquipmentType || skinType == SkinTypes.ITEM;
     }
 
     @Override

@@ -2,7 +2,7 @@ package moe.plushie.armourers_workshop.core.client.other;
 
 import moe.plushie.armourers_workshop.api.skin.property.ISkinProperties;
 import moe.plushie.armourers_workshop.api.skin.property.ISkinProperty;
-import moe.plushie.armourers_workshop.compatibility.api.AbstractItemTransformType;
+import moe.plushie.armourers_workshop.core.utils.OpenItemDisplayContext;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperty;
 import moe.plushie.armourers_workshop.core.utils.Collections;
 import net.fabricmc.api.EnvType;
@@ -123,7 +123,7 @@ public class SkinOverriddenManager {
         return !disabledModelByProperties.isEmpty();
     }
 
-    public boolean overrideHandModel(AbstractItemTransformType transformType) {
+    public boolean overrideHandModel(OpenItemDisplayContext transformType) {
         if (transformType.isLeftHand()) {
             return contains(SkinProperty.OVERRIDE_MODEL_LEFT_ARM);
         }

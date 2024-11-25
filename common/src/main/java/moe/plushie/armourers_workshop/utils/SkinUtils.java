@@ -153,7 +153,7 @@ public final class SkinUtils {
 //    }
 
     public static Collection<String> getItemOverrides(ISkinPartType partType) {
-        ICanOverride override = Objects.safeCast(partType, ICanOverride.class);
+        var override = Objects.safeCast(partType, ICanOverride.class);
         if (override != null) {
             return override.getItemOverrides();
         }

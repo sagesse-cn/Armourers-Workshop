@@ -68,9 +68,9 @@ public class SkinnableBlockRenderer<T extends SkinnableBlockEntity> extends Abst
         renderingContext.setModelViewStack(AbstractPoseStack.create(RenderSystem.getExtendedModelViewStack()));
 
         for (var entry : renderingTasks) {
-            var skin = entry.getBakedSkin();
+            var skin = entry.getSkin();
             skin.setupAnim(mannequinEntity, armature, renderingContext);
-            var colorScheme = skin.resolve(mannequinEntity, entry.getBakedScheme());
+            var colorScheme = skin.resolve(mannequinEntity, entry.getPaintScheme());
             SkinRenderer.render(mannequinEntity, armature, skin, colorScheme, renderingContext);
             if (ModDebugger.skinnable) {
                 skin.getBlockBounds().forEach((pos, rect) -> {

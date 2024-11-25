@@ -27,7 +27,7 @@ public class SkinDescriptor implements IDataSerializable.Immutable, ISkinDescrip
     private final String identifier;
     private final ISkinType type;
     private final Options options;
-    private final SkinPaintScheme colorScheme;
+    private final SkinPaintScheme paintScheme;
 
     // not a required property, but it can help we reduce memory usage and improve performance.
     private ItemStack skinItemStack;
@@ -40,26 +40,26 @@ public class SkinDescriptor implements IDataSerializable.Immutable, ISkinDescrip
         this(identifier, type, Options.DEFAULT, SkinPaintScheme.EMPTY);
     }
 
-    public SkinDescriptor(String identifier, ISkinType type, SkinPaintScheme colorScheme) {
-        this(identifier, type, Options.DEFAULT, colorScheme);
+    public SkinDescriptor(String identifier, ISkinType type, SkinPaintScheme paintScheme) {
+        this(identifier, type, Options.DEFAULT, paintScheme);
     }
 
-    public SkinDescriptor(String identifier, ISkinType type, Options options, SkinPaintScheme colorScheme) {
+    public SkinDescriptor(String identifier, ISkinType type, Options options, SkinPaintScheme paintScheme) {
         this.identifier = identifier;
         this.type = type;
         this.options = options;
-        this.colorScheme = colorScheme;
+        this.paintScheme = paintScheme;
     }
 
-    public SkinDescriptor(SkinDescriptor descriptor, SkinPaintScheme colorScheme) {
-        this(descriptor.getIdentifier(), descriptor.getType(), descriptor.getOptions(), colorScheme);
+    public SkinDescriptor(SkinDescriptor descriptor, SkinPaintScheme paintScheme) {
+        this(descriptor.getIdentifier(), descriptor.getType(), descriptor.getOptions(), paintScheme);
     }
 
     public SkinDescriptor(IDataSerializer serializer) {
         this.identifier = serializer.read(CodingKeys.IDENTIFIER);
         this.type = serializer.read(CodingKeys.TYPE);
         this.options = serializer.read(CodingKeys.OPTIONS);
-        this.colorScheme = serializer.read(CodingKeys.SCHEME);
+        this.paintScheme = serializer.read(CodingKeys.SCHEME);
     }
 
     public static SkinDescriptor of(ItemStack itemStack) {
@@ -95,7 +95,7 @@ public class SkinDescriptor implements IDataSerializable.Immutable, ISkinDescrip
         serializer.write(CodingKeys.IDENTIFIER, identifier);
         serializer.write(CodingKeys.TYPE, type);
         serializer.write(CodingKeys.OPTIONS, options);
-        serializer.write(CodingKeys.SCHEME, colorScheme);
+        serializer.write(CodingKeys.SCHEME, paintScheme);
     }
 
     public ItemStack sharedItemStack() {
@@ -116,11 +116,11 @@ public class SkinDescriptor implements IDataSerializable.Immutable, ISkinDescrip
     }
 
     public boolean isEmpty() {
-        return this == EMPTY;
+        return this == EMPTY || identifier.isEmpty();
     }
 
-    public SkinPaintScheme getColorScheme() {
-        return colorScheme;
+    public SkinPaintScheme getPaintScheme() {
+        return paintScheme;
     }
 
     public ISkinType getType() {
@@ -145,7 +145,7 @@ public class SkinDescriptor implements IDataSerializable.Immutable, ISkinDescrip
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof SkinDescriptor that)) return false;
-        return identifier.equals(that.identifier) && colorScheme.equals(that.colorScheme);
+        return identifier.equals(that.identifier) && paintScheme.equals(that.paintScheme);
     }
 
     @Override

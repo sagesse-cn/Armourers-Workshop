@@ -2,13 +2,11 @@ package moe.plushie.armourers_workshop.init.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import moe.plushie.armourers_workshop.api.skin.ISkinToolType;
-import moe.plushie.armourers_workshop.compatibility.api.AbstractItemTransformType;
 import moe.plushie.armourers_workshop.compatibility.client.AbstractBufferSource;
 import moe.plushie.armourers_workshop.compatibility.client.AbstractPoseStack;
 import moe.plushie.armourers_workshop.core.armature.Armatures;
 import moe.plushie.armourers_workshop.core.client.bake.BakedArmature;
 import moe.plushie.armourers_workshop.core.client.bake.BakedFirstPersonArmature;
-import moe.plushie.armourers_workshop.core.client.bake.BakedItemModel;
 import moe.plushie.armourers_workshop.core.client.bake.SkinBakery;
 import moe.plushie.armourers_workshop.core.client.other.EntityRenderData;
 import moe.plushie.armourers_workshop.core.client.other.EntitySlot;
@@ -28,6 +26,7 @@ import moe.plushie.armourers_workshop.core.math.Vector3f;
 import moe.plushie.armourers_workshop.core.skin.SkinDescriptor;
 import moe.plushie.armourers_workshop.core.skin.SkinLocatorType;
 import moe.plushie.armourers_workshop.core.skin.SkinTypes;
+import moe.plushie.armourers_workshop.core.utils.OpenItemDisplayContext;
 import moe.plushie.armourers_workshop.init.ModConfig;
 import moe.plushie.armourers_workshop.init.ModDebugger;
 import moe.plushie.armourers_workshop.init.ModItems;
@@ -80,7 +79,7 @@ public class ClientWardrobeHandler {
         RENDERING_GUI_ITEM = null;
     }
 
-    public static void onRenderHandItem(LivingEntity entity, ItemStack itemStack, AbstractItemTransformType transformType, PoseStack poseStackIn, MultiBufferSource buffersIn) {
+    public static void onRenderHandItem(LivingEntity entity, ItemStack itemStack, OpenItemDisplayContext transformType, PoseStack poseStackIn, MultiBufferSource buffersIn) {
         var renderData = EntityRenderData.of(entity);
         if (renderData == null) {
             return;
@@ -94,7 +93,7 @@ public class ClientWardrobeHandler {
         poseStack.last().set(locatorPose.last());
     }
 
-    public static void onRenderSpecificHand(LivingEntity entity, float partialTicks, int packedLight, AbstractItemTransformType transformType, PoseStack poseStackIn, MultiBufferSource buffersIn, Runnable cancelHandler) {
+    public static void onRenderSpecificHand(LivingEntity entity, float partialTicks, int packedLight, OpenItemDisplayContext transformType, PoseStack poseStackIn, MultiBufferSource buffersIn, Runnable cancelHandler) {
         var renderData = EntityRenderData.of(entity);
         if (renderData == null) {
             return;
@@ -159,7 +158,7 @@ public class ClientWardrobeHandler {
     }
 
     @Nullable
-    public static EmbeddedSkinStack getEmbeddedSkinStack(@Nullable LivingEntity entity, @Nullable Level level, ItemStack itemStack, AbstractItemTransformType transformType, BakedModel bakedModel) {
+    public static EmbeddedSkinStack getEmbeddedSkinStack(@Nullable LivingEntity entity, @Nullable Level level, ItemStack itemStack, OpenItemDisplayContext itemDisplayContext, BakedModel bakedModel) {
         // when the wardrobe has override skin of the item,
         // we easily got a conclusion of the needs embedded skin.
         if (RENDERING_GUI_ITEM != itemStack) {
@@ -199,13 +198,13 @@ public class ClientWardrobeHandler {
         return null;
     }
 
-    public static void renderEmbeddedSkin(@Nullable LivingEntity entity, @Nullable Level level, ItemStack itemStack, EmbeddedSkinStack embeddedStack, @Nullable SkinItemProperties embeddedProperties, AbstractItemTransformType transformType, boolean leftHandHackery, PoseStack poseStackIn, MultiBufferSource buffersIn, BakedModel bakedModel, int packedLight, int overlay, CallbackInfo callback) {
+    public static void renderEmbeddedSkin(@Nullable LivingEntity entity, @Nullable Level level, ItemStack itemStack, EmbeddedSkinStack embeddedStack, @Nullable SkinItemProperties embeddedProperties, OpenItemDisplayContext itemDisplayContext, boolean leftHandHackery, PoseStack poseStackIn, MultiBufferSource buffersIn, BakedModel bakedModel, int packedLight, int overlay, CallbackInfo callback) {
         int counter = 0;
-        switch (transformType) {
+        switch (itemDisplayContext) {
             case GUI:
             case GROUND:
             case FIXED: {
-                counter = _renderEmbeddedSkinInBox(embeddedStack, embeddedProperties, transformType, leftHandHackery, poseStackIn, buffersIn, packedLight, overlay, 0);
+                counter = _renderEmbeddedSkinInBox(embeddedStack, embeddedProperties, itemDisplayContext, leftHandHackery, poseStackIn, buffersIn, packedLight, overlay, 0);
                 break;
             }
             case THIRD_PERSON_LEFT_HAND:
@@ -214,7 +213,7 @@ public class ClientWardrobeHandler {
             case FIRST_PERSON_RIGHT_HAND: {
                 // first person can't support render outline.
                 var outlineColor = 0;
-                if (entity != null && transformType.isThirdPerson()) {
+                if (entity != null && itemDisplayContext.isThirdPerson()) {
                     outlineColor = entity.getOutlineColor();
                 }
 
@@ -222,11 +221,11 @@ public class ClientWardrobeHandler {
                 // so we need replace it to custom renderer.
                 if (embeddedStack.getEntry() == null) {
                     if (shouldRenderInBox(embeddedStack)) {
-                        counter = _renderEmbeddedSkinInBox(embeddedStack, embeddedProperties, transformType, leftHandHackery, poseStackIn, buffersIn, packedLight, overlay, outlineColor);
+                        counter = _renderEmbeddedSkinInBox(embeddedStack, embeddedProperties, itemDisplayContext, leftHandHackery, poseStackIn, buffersIn, packedLight, overlay, outlineColor);
                     } else {
                         // use this case:
                         //  YDM's Weapon Master
-                        counter = _renderEmbeddedSkin(embeddedStack, embeddedProperties, transformType, leftHandHackery, poseStackIn, buffersIn, packedLight, overlay, outlineColor);
+                        counter = _renderEmbeddedSkin(embeddedStack, embeddedProperties, itemDisplayContext, leftHandHackery, poseStackIn, buffersIn, packedLight, overlay, outlineColor);
                     }
                     break;
                 }
@@ -241,7 +240,7 @@ public class ClientWardrobeHandler {
                     poseStack.pushPose();
                     poseStack.scale(-SCALE, -SCALE, SCALE);
 
-                    var context = SkinRenderContext.alloc(renderData, packedLight, 0, transformType);
+                    var context = SkinRenderContext.alloc(renderData, packedLight, 0, itemDisplayContext);
 
                     context.setOverlay(OverlayTexture.NO_OVERLAY);
                     context.setLightmap(packedLight);
@@ -254,7 +253,8 @@ public class ClientWardrobeHandler {
 
                     context.setOutlineColor(outlineColor);
 
-                    context.setItemSource(SkinItemSource.create(800, itemStack, transformType, embeddedProperties));
+                    context.setItemSource(SkinItemSource.create(800, itemStack, itemDisplayContext, embeddedProperties));
+                    context.setUseItemTransforms(true);
                     counter = render(entity, armature, context, Collections.singleton(embeddedStack.getEntry()));
                     context.release();
 
@@ -272,7 +272,7 @@ public class ClientWardrobeHandler {
         }
     }
 
-    private static int _renderEmbeddedSkinInBox(EmbeddedSkinStack embeddedStack, @Nullable SkinItemProperties embeddedProperties, AbstractItemTransformType transformType, boolean leftHandHackery, PoseStack poseStackIn, MultiBufferSource buffersIn, int packedLight, int overlay, int outlineColor) {
+    private static int _renderEmbeddedSkinInBox(EmbeddedSkinStack embeddedStack, @Nullable SkinItemProperties embeddedProperties, OpenItemDisplayContext itemDisplayContext, boolean leftHandHackery, PoseStack poseStackIn, MultiBufferSource buffersIn, int packedLight, int overlay, int outlineColor) {
         int count = 0;
         var descriptor = embeddedStack.getDescriptor();
         var bakedSkin = SkinBakery.getInstance().loadSkin(descriptor, Tickets.INVENTORY);
@@ -286,33 +286,20 @@ public class ClientWardrobeHandler {
 
         poseStack.pushPose();
 
-        // for skin of the custom item transforms, we will respect its options.
-        if (bakedSkin.getItemModel() == null) {
-            var itemModel = BakedItemModel.DEFAULT;
-            var transform = itemModel.getTransform(transformType);
-
-            // when skin not specify item transforms,
-            // we need to apply a default item transforms.
-            itemModel.applyTransform(poseStack, leftHandHackery, transformType);
-
-            rotation = new Vector3f(-transform.rotation.x(), -transform.rotation.y(), transform.rotation.z());
-            scale = new Vector3f(transform.scale.x(), transform.scale.y(), transform.scale.z());
-        }
-
         var itemSource = SkinItemSource.create(descriptor.sharedItemStack());
         itemSource.setScale(scale);
         itemSource.setRotation(rotation);
-        itemSource.setTransformType(transformType);
+        itemSource.setDisplayContext(itemDisplayContext);
 
-        var scheme = descriptor.getColorScheme();
-        count = ExtendedItemRenderer.renderSkinInBox(bakedSkin, scheme, scale, 0, packedLight, outlineColor, itemSource, poseStack, buffers);
+        var scheme = descriptor.getPaintScheme();
+        count = ExtendedItemRenderer.renderSkinInBox(bakedSkin, scheme, 0, packedLight, outlineColor, itemSource, poseStack, buffers);
 
         poseStack.popPose();
 
         return count;
     }
 
-    private static int _renderEmbeddedSkin(EmbeddedSkinStack embeddedStack, @Nullable SkinItemProperties embeddedProperties, AbstractItemTransformType transformType, boolean leftHandHackery, PoseStack poseStackIn, MultiBufferSource buffersIn, int packedLight, int overlay, int outlineColor) {
+    private static int _renderEmbeddedSkin(EmbeddedSkinStack embeddedStack, @Nullable SkinItemProperties embeddedProperties, OpenItemDisplayContext itemDisplayContext, boolean leftHandHackery, PoseStack poseStackIn, MultiBufferSource buffersIn, int packedLight, int overlay, int outlineColor) {
         int count = 0;
         var descriptor = embeddedStack.getDescriptor();
         var tesselator = SkinRenderTesselator.create(descriptor, Tickets.INVENTORY);
@@ -334,8 +321,11 @@ public class ClientWardrobeHandler {
         tesselator.setBufferSource(bufferSource);
         tesselator.setModelViewStack(AbstractPoseStack.create(RenderSystem.getExtendedModelViewStack()));
 
-        tesselator.setColorScheme(descriptor.getColorScheme());
-        tesselator.setItemSource(SkinItemSource.create(800, embeddedStack.getItemStack(), transformType, embeddedProperties));
+        tesselator.setColorScheme(descriptor.getPaintScheme());
+        tesselator.setItemSource(SkinItemSource.create(800, embeddedStack.getItemStack(), itemDisplayContext, embeddedProperties));
+        tesselator.setUseItemTransforms(true);
+        tesselator.setDisplayBox(null);
+        tesselator.setDisplayContext(itemDisplayContext);
         tesselator.setOutlineColor(outlineColor);
 
         count = tesselator.draw();
@@ -381,7 +371,7 @@ public class ClientWardrobeHandler {
     public static int render(Entity entity, BakedArmature bakedArmature, SkinRenderContext context, Iterable<EntitySlot> entries) {
         int r = 0;
         for (var entry : entries) {
-            var bakedSkin = entry.getBakedSkin();
+            var bakedSkin = entry.getSkin();
             var itemSource = context.getItemSource();
             var itemStack = itemSource.getItem();
             if (itemStack.isEmpty()) {
@@ -395,8 +385,12 @@ public class ClientWardrobeHandler {
             context.setItemSource(itemSource);
             context.setOverlay(entry.getOverrideOverlay(entity));
             bakedSkin.setupAnim(entity, bakedArmature, context);
-            var colorScheme = bakedSkin.resolve(entity, entry.getBakedScheme());
-            SkinRenderer.render(entity, bakedArmature, bakedSkin, colorScheme, context);
+            var paintScheme = bakedSkin.resolve(entity, entry.getPaintScheme());
+            if (context.isUseItemTransforms()) {
+                var itemTransform = bakedSkin.getItemTransform();
+                itemTransform.apply(context.getPoseStack(), entity, bakedSkin, context);
+            }
+            SkinRenderer.render(entity, bakedArmature, bakedSkin, paintScheme, context);
             r += SkinRenderHelper.getRenderCount(bakedSkin);
         }
         return r;

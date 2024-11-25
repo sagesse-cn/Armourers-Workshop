@@ -16,6 +16,7 @@ import moe.plushie.armourers_workshop.core.skin.serializer.SkinSerializer;
 import moe.plushie.armourers_workshop.core.skin.serializer.importer.blockbench.BlockBenchExporter;
 import moe.plushie.armourers_workshop.core.skin.serializer.importer.blockbench.BlockBenchPack;
 import moe.plushie.armourers_workshop.core.skin.serializer.importer.blockbench.BlockBenchPackReader;
+import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.init.environment.EnvironmentExecutor;
 import net.minecraft.client.Minecraft;
 
@@ -23,6 +24,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.Stack;
 import java.util.StringJoiner;
 import java.util.function.Consumer;
@@ -122,7 +124,9 @@ public class DocumentImporter {
         // the export skin must to editable.
         settings.setEditable(true);
 
-        exporter.setOffset(getPackOrigin(pack));
+        exporter.setOffset(getOffset(pack));
+        exporter.setDisplayOffset(getDisplayOffset(pack));
+
         return exporter.export();
     }
 
@@ -135,7 +139,14 @@ public class DocumentImporter {
         }
 
         var rootParts = new ArrayList<>(skin.getParts());
-        if (!boneMapper.isEmpty()) {
+        if (boneMapper.getRoot() != null) {
+            // merge into one part
+            var rootEntry = boneMapper.getRoot();
+            var builder = new SkinPart.Builder(rootEntry.getType());
+            builder.children(skin.getParts());
+            rootParts.clear();
+            rootParts.add(builder.build());
+        } else if (!boneMapper.isEmpty()) {
             skin.getParts().forEach(it -> extractToRootPart(it, new Stack<>(), rootParts));
         }
 
@@ -187,12 +198,29 @@ public class DocumentImporter {
         return OpenTransform3f.create(translate, rotation, Vector3f.ONE);
     }
 
-    private Vector3f getPackOrigin(BlockBenchPack pack) {
-        // relocation the block model origin to the bottom-center(0, 8, 0).
-        if (targetType == SkinTypes.BLOCK) {
+    private static final Set<ISkinType> ITEM_TYPES = Collections.immutableSet(builder -> {
+        builder.add(SkinTypes.ITEM_SWORD);
+        builder.add(SkinTypes.ITEM_SHIELD);
+        builder.add(SkinTypes.ITEM_BOW);
+        builder.add(SkinTypes.ITEM_TRIDENT);
+
+        builder.add(SkinTypes.ITEM_PICKAXE);
+        builder.add(SkinTypes.ITEM_AXE);
+        builder.add(SkinTypes.ITEM_SHOVEL);
+        builder.add(SkinTypes.ITEM_HOE);
+
+        builder.add(SkinTypes.ITEM_FISHING);
+
+        builder.add(SkinTypes.ITEM);
+        builder.add(SkinTypes.BLOCK);
+    });
+
+    private Vector3f getOffset(BlockBenchPack pack) {
+        // relocation the block model origin to the center(8, 8, 8).
+        if (ITEM_TYPES.contains(SkinTypes.BLOCK)) {
             // work in java_block.
             if (pack.getFormat().equals("java_block")) {
-                return new Vector3f(8, 8, -8);
+                return new Vector3f(8, 8, 8);
             }
             // work in bedrock_block/bedrock_entity/bedrock_entity_old/geckolib_block/generic_block/modded_entity/optifine_entity.
             return new Vector3f(0, 8, 0);
@@ -203,6 +231,16 @@ public class DocumentImporter {
         }
         return Vector3f.ZERO;
     }
+
+    private Vector3f getDisplayOffset(BlockBenchPack pack) {
+        // the java_block display center is same the wen model center.
+        if (pack.getFormat().equals("java_block")) {
+            return Vector3f.ZERO;
+        }
+        // work in bedrock_block/bedrock_entity/bedrock_entity_old/geckolib_block/generic_block/modded_entity/optifine_entity.
+        return new Vector3f(0, 8, 0);
+    }
+
 
     private Vector3f getParentOrigin(Stack<SkinPart> parent) {
         var origin = Vector3f.ZERO;

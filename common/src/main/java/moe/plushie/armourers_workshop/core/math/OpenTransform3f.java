@@ -31,11 +31,11 @@ public class OpenTransform3f implements ITransform3f, ITransform {
             return IDENTITY;
         }
         var transform = new OpenTransform3f();
-        transform.translate = translate;
-        transform.rotation = rotation;
-        transform.scale = scale;
-        transform.afterTranslate = afterTranslate;
-        transform.pivot = pivot;
+        transform.translate = optimize(translate, Vector3f.ZERO);
+        transform.rotation = optimize(rotation, Vector3f.ZERO);
+        transform.scale = optimize(scale, Vector3f.ONE);
+        transform.afterTranslate = optimize(afterTranslate, Vector3f.ZERO);
+        transform.pivot = optimize(pivot, Vector3f.ZERO);
         return transform;
     }
 
@@ -97,9 +97,6 @@ public class OpenTransform3f implements ITransform3f, ITransform {
                 poseStack.translate(pivot.getX(), pivot.getY(), pivot.getZ());
             }
             poseStack.rotate(OpenQuaternion3f.fromZYX(rotation, true));
-            // poseStack.rotate(Vector3f.ZP.rotationDegrees(rotation.getZ()));
-            // poseStack.rotate(Vector3f.YP.rotationDegrees(rotation.getY()));
-            // poseStack.rotate(Vector3f.XP.rotationDegrees(rotation.getX()));
             if (pivot != Vector3f.ZERO) {
                 poseStack.translate(-pivot.getX(), -pivot.getY(), -pivot.getZ());
             }
@@ -190,7 +187,7 @@ public class OpenTransform3f implements ITransform3f, ITransform {
         return pivot;
     }
 
-    private <T> T optimize(T value, T targetValue) {
+    private static <T> T optimize(T value, T targetValue) {
         if (value.equals(targetValue)) {
             return targetValue;
         }

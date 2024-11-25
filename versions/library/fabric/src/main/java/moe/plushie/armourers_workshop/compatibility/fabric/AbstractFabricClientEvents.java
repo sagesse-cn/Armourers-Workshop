@@ -5,7 +5,6 @@ import moe.plushie.armourers_workshop.compatibility.fabric.event.client.Abstract
 import moe.plushie.armourers_workshop.compatibility.fabric.event.client.AbstractFabricRegisterColorHandlersEvent;
 import moe.plushie.armourers_workshop.compatibility.fabric.event.client.AbstractFabricRegisterItemPropertyEvent;
 import moe.plushie.armourers_workshop.compatibility.fabric.event.client.AbstractFabricRegisterKeyMappingsEvent;
-import moe.plushie.armourers_workshop.compatibility.fabric.event.client.AbstractFabricRegisterModelEvent;
 import moe.plushie.armourers_workshop.compatibility.fabric.event.client.AbstractFabricRegisterScreensEvent;
 import moe.plushie.armourers_workshop.compatibility.fabric.event.client.AbstractFabricRegisterTextureEvent;
 import moe.plushie.armourers_workshop.compatibility.fabric.event.client.AbstractFabricRenderFrameEvent;
@@ -18,7 +17,6 @@ import moe.plushie.armourers_workshop.init.platform.event.client.ItemTooltipEven
 import moe.plushie.armourers_workshop.init.platform.event.client.RegisterColorHandlersEvent;
 import moe.plushie.armourers_workshop.init.platform.event.client.RegisterItemPropertyEvent;
 import moe.plushie.armourers_workshop.init.platform.event.client.RegisterKeyMappingsEvent;
-import moe.plushie.armourers_workshop.init.platform.event.client.RegisterModelEvent;
 import moe.plushie.armourers_workshop.init.platform.event.client.RegisterScreensEvent;
 import moe.plushie.armourers_workshop.init.platform.event.client.RegisterTextureEvent;
 import moe.plushie.armourers_workshop.init.platform.event.client.RenderFrameEvent;
@@ -51,9 +49,7 @@ public class AbstractFabricClientEvents {
 
         EventManager.post(RenderSpecificHandEvent.class, AbstractFabricRenderSpecificHandEvent.armFactory());
 
-        EventManager.post(RegisterModelEvent.class, AbstractFabricRegisterModelEvent.registryFactory());
         EventManager.post(RegisterTextureEvent.class, AbstractFabricRegisterTextureEvent.registryFactory());
-
         EventManager.post(RegisterItemPropertyEvent.class, AbstractFabricRegisterItemPropertyEvent.propertyFactory());
 
         EventManager.post(RegisterScreensEvent.class, AbstractFabricRegisterScreensEvent.registryFactory());

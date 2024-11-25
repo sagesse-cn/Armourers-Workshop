@@ -2,13 +2,14 @@ package moe.plushie.armourers_workshop.core.client.other;
 
 import moe.plushie.armourers_workshop.api.client.IBufferSource;
 import moe.plushie.armourers_workshop.api.core.math.IPoseStack;
-import moe.plushie.armourers_workshop.compatibility.api.AbstractItemTransformType;
 import moe.plushie.armourers_workshop.compatibility.client.AbstractBufferSource;
 import moe.plushie.armourers_workshop.compatibility.client.AbstractPoseStack;
 import moe.plushie.armourers_workshop.core.client.animation.AnimationManager;
 import moe.plushie.armourers_workshop.core.client.bake.BakedSkin;
+import moe.plushie.armourers_workshop.core.math.Vector3f;
 import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintScheme;
 import moe.plushie.armourers_workshop.core.utils.Collections;
+import moe.plushie.armourers_workshop.core.utils.OpenItemDisplayContext;
 import moe.plushie.armourers_workshop.utils.TickUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -36,10 +37,13 @@ public class SkinRenderContext implements ConcurrentRenderingContext {
     protected Function<BakedSkin, ConcurrentBufferBuilder> bufferProvider;
 
     protected SkinItemSource itemSource;
+    protected boolean useItemTransforms = false;
+    protected Vector3f displayBox;
+
 
     protected SkinPaintScheme colorScheme = SkinPaintScheme.EMPTY;
     protected AnimationManager animationManager;
-    protected AbstractItemTransformType transformType = AbstractItemTransformType.NONE;
+    protected OpenItemDisplayContext displayContext = OpenItemDisplayContext.NONE;
 
     protected final IPoseStack defaultPoseStack;
     protected IPoseStack poseStack;
@@ -54,18 +58,20 @@ public class SkinRenderContext implements ConcurrentRenderingContext {
         this.poseStack = defaultPoseStack;
     }
 
-    public static SkinRenderContext alloc(EntityRenderData renderData, int light, float partialTick, AbstractItemTransformType transformType) {
+    public static SkinRenderContext alloc(EntityRenderData renderData, int light, float partialTick, OpenItemDisplayContext itemDisplayContext) {
         SkinRenderContext context = POOL.next();
         context.setRenderData(renderData);
         context.setLightmap(light);
         context.setPartialTicks(partialTick);
         context.setAnimationTicks(TickUtils.animationTicks());
-        context.setTransformType(transformType);
+        context.setDisplayBox(null);
+        context.setDisplayContext(itemDisplayContext);
+        context.setUseItemTransforms(false);
         return context;
     }
 
     public static SkinRenderContext alloc(EntityRenderData renderData, int light, float partialTick) {
-        return alloc(renderData, light, partialTick, AbstractItemTransformType.NONE);
+        return alloc(renderData, light, partialTick, OpenItemDisplayContext.NONE);
     }
 
     public void release() {
@@ -75,8 +81,10 @@ public class SkinRenderContext implements ConcurrentRenderingContext {
         this.partialTicks = 0;
 
         this.colorScheme = SkinPaintScheme.EMPTY;
-        this.transformType = AbstractItemTransformType.NONE;
+        this.displayContext = OpenItemDisplayContext.NONE;
         this.itemSource = SkinItemSource.EMPTY;
+        this.displayBox = null;
+        this.useItemTransforms = false;
 
         this.poseStack = defaultPoseStack;
 
@@ -138,12 +146,20 @@ public class SkinRenderContext implements ConcurrentRenderingContext {
         return colorScheme;
     }
 
-    public void setTransformType(AbstractItemTransformType transformType) {
-        this.transformType = transformType;
+    public void setDisplayContext(OpenItemDisplayContext displayContext) {
+        this.displayContext = displayContext;
     }
 
-    public AbstractItemTransformType getTransformType() {
-        return transformType;
+    public OpenItemDisplayContext getDisplayContext() {
+        return displayContext;
+    }
+
+    public void setDisplayBox(Vector3f displayBox) {
+        this.displayBox = displayBox;
+    }
+
+    public Vector3f getDisplayBox() {
+        return displayBox;
     }
 
     public void setRenderData(EntityRenderData renderData) {
@@ -216,6 +232,14 @@ public class SkinRenderContext implements ConcurrentRenderingContext {
             return this.itemSource;
         }
         return SkinItemSource.EMPTY;
+    }
+
+    public void setUseItemTransforms(boolean useItemTransforms) {
+        this.useItemTransforms = useItemTransforms;
+    }
+
+    public boolean isUseItemTransforms() {
+        return useItemTransforms;
     }
 
     public void setPoseStack(IPoseStack pose) {

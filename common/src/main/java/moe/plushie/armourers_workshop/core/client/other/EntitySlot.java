@@ -23,7 +23,7 @@ public class EntitySlot {
         this.itemStack = itemStack;
         this.descriptor = descriptor;
         this.bakedSkin = bakedSkin;
-        this.bakedScheme = baking(descriptor.getColorScheme(), entityScheme, slotType);
+        this.bakedScheme = baking(descriptor.getPaintScheme(), entityScheme, slotType);
         this.renderPriority = renderPriority;
         this.slotType = slotType;
         this.keepOverlayColor = bakedSkin.getProperties().get(SkinProperty.KEEP_OVERLAY_COLOR);
@@ -49,11 +49,11 @@ public class EntitySlot {
         return renderPriority;
     }
 
-    public BakedSkin getBakedSkin() {
+    public BakedSkin getSkin() {
         return bakedSkin;
     }
 
-    public SkinPaintScheme getBakedScheme() {
+    public SkinPaintScheme getPaintScheme() {
         return bakedScheme;
     }
 

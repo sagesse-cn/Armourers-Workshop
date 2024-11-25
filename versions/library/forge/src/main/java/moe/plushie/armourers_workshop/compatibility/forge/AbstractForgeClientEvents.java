@@ -5,7 +5,6 @@ import moe.plushie.armourers_workshop.compatibility.forge.event.client.AbstractF
 import moe.plushie.armourers_workshop.compatibility.forge.event.client.AbstractForgeRegisterColorHandlersEvent;
 import moe.plushie.armourers_workshop.compatibility.forge.event.client.AbstractForgeRegisterItemPropertyEvent;
 import moe.plushie.armourers_workshop.compatibility.forge.event.client.AbstractForgeRegisterKeyMappingsEvent;
-import moe.plushie.armourers_workshop.compatibility.forge.event.client.AbstractForgeRegisterModelEvent;
 import moe.plushie.armourers_workshop.compatibility.forge.event.client.AbstractForgeRegisterScreensEvent;
 import moe.plushie.armourers_workshop.compatibility.forge.event.client.AbstractForgeRegisterTextureEvent;
 import moe.plushie.armourers_workshop.compatibility.forge.event.client.AbstractForgeRenderFrameEvent;
@@ -18,7 +17,6 @@ import moe.plushie.armourers_workshop.init.platform.event.client.ItemTooltipEven
 import moe.plushie.armourers_workshop.init.platform.event.client.RegisterColorHandlersEvent;
 import moe.plushie.armourers_workshop.init.platform.event.client.RegisterItemPropertyEvent;
 import moe.plushie.armourers_workshop.init.platform.event.client.RegisterKeyMappingsEvent;
-import moe.plushie.armourers_workshop.init.platform.event.client.RegisterModelEvent;
 import moe.plushie.armourers_workshop.init.platform.event.client.RegisterScreensEvent;
 import moe.plushie.armourers_workshop.init.platform.event.client.RegisterTextureEvent;
 import moe.plushie.armourers_workshop.init.platform.event.client.RenderFrameEvent;
@@ -50,9 +48,7 @@ public class AbstractForgeClientEvents {
 
         EventManager.post(RenderSpecificHandEvent.class, AbstractForgeRenderSpecificHandEvent.armFactory());
 
-        EventManager.post(RegisterModelEvent.class, AbstractForgeRegisterModelEvent.registryFactory());
         EventManager.post(RegisterTextureEvent.class, AbstractForgeRegisterTextureEvent.registryFactory());
-
         EventManager.post(RegisterItemPropertyEvent.class, AbstractForgeRegisterItemPropertyEvent.propertyFactory());
 
         EventManager.post(RegisterScreensEvent.class, AbstractForgeRegisterScreensEvent.registryFactory());

@@ -7,7 +7,8 @@ import moe.plushie.armourers_workshop.core.client.bake.BakedArmature;
 import moe.plushie.armourers_workshop.core.client.bake.BakedArmatureTransformer;
 import moe.plushie.armourers_workshop.core.client.other.EntityRenderData;
 import moe.plushie.armourers_workshop.core.client.other.EntityRendererContext;
-import moe.plushie.armourers_workshop.init.client.ClientWardrobeHandler;
+import moe.plushie.armourers_workshop.core.client.other.SkinItemSource;
+import moe.plushie.armourers_workshop.core.client.skinrender.SkinRenderer;
 import moe.plushie.armourers_workshop.utils.RenderSystem;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -66,7 +67,15 @@ public class FallbackEntityRenderPatch<T extends Entity> extends EntityRenderPat
         renderingContext.setBufferSource(AbstractBufferSource.wrap(bufferSourceIn));
         renderingContext.setModelViewStack(AbstractPoseStack.create(RenderSystem.getExtendedModelViewStack()));
 
-        ClientWardrobeHandler.render(entity, armature, renderingContext, renderData.getItemSkins());
+        // like the SkinWardrobeLayer
+        for (var entry : renderData.getItemSkins()) {
+            renderingContext.setOverlay(entry.getOverrideOverlay(entity));
+            renderingContext.setItemSource(SkinItemSource.create(entry.getRenderPriority(), entry.getItemStack()));
+            var bakedSkin = entry.getSkin();
+            bakedSkin.setupAnim(entity, armature, renderingContext);
+            var paintScheme = bakedSkin.resolve(entity, entry.getPaintScheme());
+            SkinRenderer.render(entity, armature, bakedSkin, paintScheme, renderingContext);
+        }
 
         poseStack.popPose();
     }

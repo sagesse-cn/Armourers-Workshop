@@ -24,8 +24,7 @@ public class BakedLocatorTransform {
     protected final Vector3f offset;
     protected final OpenPoseStack outputPose = new OpenPoseStack();
 
-
-    public BakedLocatorTransform(String name, Collection<BakedSkinPart> children) {
+    protected BakedLocatorTransform(String name, Collection<BakedSkinPart> children) {
         this.name = name;
         this.children = children;
         // right_arm(-5,2,0) + Vector3f(-1,10,-2)

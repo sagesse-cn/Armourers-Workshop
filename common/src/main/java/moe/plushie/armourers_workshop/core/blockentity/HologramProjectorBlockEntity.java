@@ -5,7 +5,6 @@ import moe.plushie.armourers_workshop.api.core.IDataSerializer;
 import moe.plushie.armourers_workshop.api.core.IDataSerializerKey;
 import moe.plushie.armourers_workshop.core.block.HologramProjectorBlock;
 import moe.plushie.armourers_workshop.core.client.bake.SkinBakery;
-import moe.plushie.armourers_workshop.core.client.other.SkinItemSource;
 import moe.plushie.armourers_workshop.core.data.ticket.Tickets;
 import moe.plushie.armourers_workshop.core.math.OpenMath;
 import moe.plushie.armourers_workshop.core.math.OpenQuaternion3f;
@@ -15,6 +14,7 @@ import moe.plushie.armourers_workshop.core.skin.SkinDescriptor;
 import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.core.utils.Constants;
 import moe.plushie.armourers_workshop.core.utils.NonNullItemList;
+import moe.plushie.armourers_workshop.core.utils.OpenItemDisplayContext;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
@@ -251,7 +251,7 @@ public class HologramProjectorBlockEntity extends RotableContainerBlockEntity {
         if (bakedSkin == null) {
             return null;
         }
-        var rect = bakedSkin.getRenderBounds(SkinItemSource.EMPTY);
+        var rect = bakedSkin.getRenderBounds();
         var f = 1 / 16f;
         var scale = getModelScale() * f;
         var modelRadius = 0.0f;

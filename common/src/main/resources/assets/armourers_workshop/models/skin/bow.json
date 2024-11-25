@@ -1,0 +1,7 @@
+{
+  "parent": "armourers_workshop:skin/legacy/bow",
+  "overrides": [
+    { "predicate": { "is_skin": 1 }, "model": "armourers_workshop:skin/unknown_item" },
+    { "predicate": { "is_crossbow": 1 }, "model": "armourers_workshop:skin/legacy/crossbow" }
+  ]
+}

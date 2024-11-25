@@ -61,6 +61,7 @@ public class BlockBenchPackReader {
         object.at("meta.model_format", it -> builder.format(it.stringValue()));
 
         object.at("resolution", it -> builder.resolution(it.size2fValue()));
+        object.at("display", it -> builder.setUseItemTransforms(true));
 
         object.each("elements", it -> builder.addElement(parseElementObject(it)));
         object.each("textures", it -> builder.addTexture(parseTextureObject(it)));

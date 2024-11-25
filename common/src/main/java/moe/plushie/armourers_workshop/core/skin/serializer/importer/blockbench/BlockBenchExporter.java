@@ -2,7 +2,6 @@ package moe.plushie.armourers_workshop.core.skin.serializer.importer.blockbench;
 
 import io.netty.buffer.Unpooled;
 import moe.plushie.armourers_workshop.api.skin.paint.texture.ITextureProvider;
-import moe.plushie.armourers_workshop.core.math.OpenItemTransforms;
 import moe.plushie.armourers_workshop.core.math.OpenMath;
 import moe.plushie.armourers_workshop.core.math.OpenPoseStack;
 import moe.plushie.armourers_workshop.core.math.OpenTransform3f;
@@ -36,6 +35,8 @@ import moe.plushie.armourers_workshop.core.skin.property.SkinSettings;
 import moe.plushie.armourers_workshop.core.skin.serializer.SkinSerializer;
 import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.core.utils.OpenDirection;
+import moe.plushie.armourers_workshop.core.utils.OpenItemDisplayContext;
+import moe.plushie.armourers_workshop.core.utils.OpenItemTransforms;
 import moe.plushie.armourers_workshop.init.ModLog;
 import org.jetbrains.annotations.Nullable;
 
@@ -62,6 +63,7 @@ public class BlockBenchExporter {
     protected SkinProperties properties = new SkinProperties();
 
     protected Vector3f offset = Vector3f.ZERO;
+    protected Vector3f displayOffset = Vector3f.ZERO;
     protected MolangVirtualMachine virtualMachine = new MolangVirtualMachine();
 
     protected final BlockBenchPack pack;
@@ -76,8 +78,8 @@ public class BlockBenchExporter {
 
         // convert to rendering coordinate.
         var poseStack = new OpenPoseStack();
-        poseStack.translate(offset.getX(), offset.getY(), offset.getZ());
         poseStack.scale(-1, -1, 1);
+        poseStack.translate(-offset.getX(), -offset.getY(), -offset.getZ());
         Collections.eachTree(Collections.singleton(rootBone), it -> it.children, it -> it.transform(poseStack));
         rootBone.children.forEach(it -> it.convertToLocal(Vector3f.ZERO));
 
@@ -100,7 +102,7 @@ public class BlockBenchExporter {
         var rootPart = exportRootPart(rootBone, textureSet);
 
         // export all item transforms to skin item transforms if needs.
-        if (!pack.getItemTransforms().isEmpty()) {
+        if (pack.getItemTransforms() != null) {
             var itemTransforms = exportItemTransforms(pack.getItemTransforms());
             settings.setItemTransforms(itemTransforms);
         }
@@ -204,10 +206,16 @@ public class BlockBenchExporter {
     }
 
     protected OpenItemTransforms exportItemTransforms(Map<String, BlockBenchDisplay> transforms) {
+        var fullItemTransforms = new LinkedHashMap<>(transforms);
         var itemTransforms = new OpenItemTransforms();
-        transforms.forEach((name, transform) -> {
-            var translation = transform.getTranslation();
-            var rotation = transform.getRotation();
+        for (var value : OpenItemDisplayContext.values()) {
+            if (!fullItemTransforms.containsKey(value.getName())) {
+                fullItemTransforms.put(value.getName(), new BlockBenchDisplay(Vector3f.ZERO, Vector3f.ZERO, Vector3f.ONE));
+            }
+        }
+        fullItemTransforms.forEach((name, transform) -> {
+            var translation = transform.getTranslation().scaling(-1, -1, 1);
+            var rotation = transform.getRotation().scaling(-1, -1, 1);
             var scale = transform.getScale();
             var transform1 = OpenTransform3f.create(translation, rotation, scale);
             // for identity transform, since it's the default value, we don't need to save it.
@@ -215,6 +223,13 @@ public class BlockBenchExporter {
                 itemTransforms.put(name, transform1);
             }
         });
+        // add display offset
+        if (!displayOffset.equals(Vector3f.ZERO) && !itemTransforms.isEmpty()) {
+            var translation = displayOffset.scaling(-1, -1, 1);
+            var rotation = Vector3f.ZERO;
+            var scale = Vector3f.ONE;
+            itemTransforms.setOffset(OpenTransform3f.create(translation, rotation, scale));
+        }
         return itemTransforms;
     }
 
@@ -241,6 +256,14 @@ public class BlockBenchExporter {
 
     public Vector3f getOffset() {
         return offset;
+    }
+
+    public void setDisplayOffset(Vector3f displayOffset) {
+        this.displayOffset = displayOffset;
+    }
+
+    public Vector3f getDisplayOffset() {
+        return displayOffset;
     }
 
     public SkinSettings getSettings() {

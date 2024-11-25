@@ -40,7 +40,7 @@ public class SkinIconView extends UIControl {
         float th = rect.height;
         float si = Math.min(tw, th);
         var poseStack = context.state().ctm();
-        var colorScheme = descriptor.getColorScheme();
+        var colorScheme = descriptor.getPaintScheme();
         var itemSource = SkinItemSource.EMPTY;
         var buffers = AbstractBufferSource.buffer();
         poseStack.pushPose();
@@ -50,7 +50,7 @@ public class SkinIconView extends UIControl {
         poseStack.rotate(Vector3f.YP.rotationDegrees(135));
         poseStack.scale(0.625f, 0.625f, 0.625f);
         poseStack.scale(si, si, si);
-        ExtendedItemRenderer.renderSkinInBox(bakedSkin, colorScheme, Vector3f.ONE, 0, 0xf000f0, itemSource, poseStack, buffers);
+        ExtendedItemRenderer.renderSkinInBox(bakedSkin, colorScheme, 0, 0xf000f0, itemSource, poseStack, buffers);
         poseStack.popPose();
         buffers.endBatch();
     }

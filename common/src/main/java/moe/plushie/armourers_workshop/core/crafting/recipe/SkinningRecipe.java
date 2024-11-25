@@ -80,7 +80,7 @@ public abstract class SkinningRecipe {
         var skin = skinStack.getOrDefault(ModDataComponents.SKIN.get(), SkinDescriptor.EMPTY);
         var newItemStack = targetStack.copy();
         newItemStack.setCount(1);
-        newItemStack.set(ModDataComponents.SKIN.get(), new SkinDescriptor(skin.getIdentifier(), skin.getType(), options, skin.getColorScheme()));
+        newItemStack.set(ModDataComponents.SKIN.get(), new SkinDescriptor(skin.getIdentifier(), skin.getType(), options, skin.getPaintScheme()));
         return newItemStack;
     }
 

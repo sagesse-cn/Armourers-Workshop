@@ -1,15 +1,13 @@
-package moe.plushie.armourers_workshop.compatibility.api;
+package moe.plushie.armourers_workshop.core.utils;
 
-import java.util.HashMap;
-
-public enum AbstractItemTransformType {
+public enum OpenItemDisplayContext {
 
     NONE(0, "none"),
     THIRD_PERSON_LEFT_HAND(1, "thirdperson_lefthand"),
     THIRD_PERSON_RIGHT_HAND(2, "thirdperson_righthand"),
     FIRST_PERSON_LEFT_HAND(3, "firstperson_lefthand"),
     FIRST_PERSON_RIGHT_HAND(4, "firstperson_righthand"),
-    HEAD(5, "head"),
+    HEAD(5, "head"), // or body
     GUI(6, "gui"),
     GROUND(7, "ground"),
     FIXED(8, "fixed");
@@ -17,14 +15,27 @@ public enum AbstractItemTransformType {
     private final int id;
     private final String name;
 
-    AbstractItemTransformType(int id, String name) {
+    OpenItemDisplayContext(int id, String name) {
         this.id = id;
         this.name = name;
-        Codec.BY_NAME.put(name, this);
     }
 
-    public static AbstractItemTransformType byName(String name) {
-        return Codec.BY_NAME.getOrDefault(name, NONE);
+    public static OpenItemDisplayContext byId(int id) {
+        for (var value : values()) {
+            if (value.id == id) {
+                return value;
+            }
+        }
+        return OpenItemDisplayContext.NONE;
+    }
+
+    public static OpenItemDisplayContext byName(String name) {
+        for (var value : values()) {
+            if (value.name.equals(name)) {
+                return value;
+            }
+        }
+        return OpenItemDisplayContext.NONE;
     }
 
     public int getId() {
@@ -34,6 +45,7 @@ public enum AbstractItemTransformType {
     public String getName() {
         return name;
     }
+
 
     public boolean isLeftHand() {
         return this == THIRD_PERSON_LEFT_HAND || this == FIRST_PERSON_LEFT_HAND;
@@ -49,9 +61,5 @@ public enum AbstractItemTransformType {
 
     public boolean isThirdPerson() {
         return this == THIRD_PERSON_LEFT_HAND || this == THIRD_PERSON_RIGHT_HAND;
-    }
-
-    private static class Codec {
-        static final HashMap<String, AbstractItemTransformType> BY_NAME = new HashMap<>();
     }
 }

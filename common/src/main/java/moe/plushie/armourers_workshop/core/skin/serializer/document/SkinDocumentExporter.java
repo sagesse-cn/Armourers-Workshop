@@ -1,7 +1,7 @@
 package moe.plushie.armourers_workshop.core.skin.serializer.document;
 
 import com.mojang.authlib.GameProfile;
-import moe.plushie.armourers_workshop.core.math.OpenItemTransforms;
+import moe.plushie.armourers_workshop.core.utils.OpenItemTransforms;
 import moe.plushie.armourers_workshop.core.math.OpenMath;
 import moe.plushie.armourers_workshop.core.math.Rectangle3f;
 import moe.plushie.armourers_workshop.core.math.Vector3i;

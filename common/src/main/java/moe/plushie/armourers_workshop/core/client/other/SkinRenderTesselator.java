@@ -6,7 +6,6 @@ import moe.plushie.armourers_workshop.core.client.bake.SkinBakery;
 import moe.plushie.armourers_workshop.core.client.skinrender.SkinRenderer;
 import moe.plushie.armourers_workshop.core.data.ticket.Ticket;
 import moe.plushie.armourers_workshop.core.entity.MannequinEntity;
-import moe.plushie.armourers_workshop.core.math.Rectangle3f;
 import moe.plushie.armourers_workshop.core.skin.SkinDescriptor;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -44,8 +43,12 @@ public class SkinRenderTesselator extends SkinRenderContext {
 
     public int draw() {
         bakedSkin.setupAnim(mannequin, bakedArmature, this);
-        var colorScheme = bakedSkin.resolve(mannequin, getColorScheme());
-        SkinRenderer.render(mannequin, bakedArmature, bakedSkin, colorScheme, this);
+        var paintScheme = bakedSkin.resolve(mannequin, getColorScheme());
+        if (isUseItemTransforms()) {
+            var itemTransform = bakedSkin.getItemTransform();
+            itemTransform.apply(poseStack, getMannequin(), bakedSkin, this);
+        }
+        SkinRenderer.render(mannequin, bakedArmature, bakedSkin, paintScheme, this);
         return SkinRenderHelper.getRenderCount(bakedSkin);
     }
 
@@ -53,11 +56,7 @@ public class SkinRenderTesselator extends SkinRenderContext {
         return mannequin;
     }
 
-    public BakedSkin getBakedSkin() {
+    public BakedSkin getSkin() {
         return bakedSkin;
-    }
-
-    public Rectangle3f getBakedRenderBounds() {
-        return bakedSkin.getRenderBounds(getItemSource());
     }
 }

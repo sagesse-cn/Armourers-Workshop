@@ -24,12 +24,12 @@ public class SkinRenderer {
         var poseStack = context.getPoseStack();
         var bufferBuilder = context.getBuffer(bakedSkin);
         for (var bakedPart : bakedSkin.getParts()) {
-            var bakedTransform = armature.getTransform(bakedPart);
-            if (bakedTransform == null) {
+            var jointTransform = armature.getTransform(bakedPart);
+            if (jointTransform == null) {
                 continue;
             }
             poseStack.pushPose();
-            bakedTransform.apply(poseStack);
+            jointTransform.apply(poseStack);
             bakedPart.getTransform().apply(poseStack);
             bufferBuilder.addPart(bakedPart, bakedSkin, scheme, context);
             renderChild(entity, bakedPart, bakedSkin, scheme, bakedPart.isVisible(), bufferBuilder, context);
@@ -86,13 +86,13 @@ public class SkinRenderer {
     }
 
     private static void getShape(Entity entity, OpenVoxelShape shape, BakedSkinPart bakedPart, BakedSkin bakedSkin, BakedArmature armature, IPoseStack poseStack) {
-        var bakedTransform = armature.getTransform(bakedPart);
-        if (bakedTransform == null) {
+        var jointTransform = armature.getTransform(bakedPart);
+        if (jointTransform == null) {
             return;
         }
         var shape1 = bakedPart.getRenderShape().copy();
         poseStack.pushPose();
-        bakedTransform.apply(poseStack);
+        jointTransform.apply(poseStack);
         bakedPart.getTransform().apply(poseStack);
         shape1.mul(poseStack.last().pose());
         shape.add(shape1);

@@ -209,7 +209,7 @@ public class ItemTooltipManager {
         if (ModConfig.Client.skinPreDrawBackground) {
             context.drawTilableImage(ModTextures.GUI_PREVIEW, dx, dy, size, size, 0, 0, 62, 62, 4, 4, 4, 4, 400);
         }
-        var colorScheme = descriptor.getColorScheme();
+        var colorScheme = descriptor.getPaintScheme();
         var buffers = AbstractBufferSource.buffer();
         ExtendedItemRenderer.renderSkinInTooltip(bakedSkin, colorScheme, itemStack, dx, dy, 500, size, size, 30, 45, 0, 0, 0xf000f0, context.state().ctm(), buffers);
         buffers.endBatch();

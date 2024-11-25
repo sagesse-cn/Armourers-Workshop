@@ -2,10 +2,10 @@ package moe.plushie.armourers_workshop.core.client.render;
 
 import moe.plushie.armourers_workshop.api.client.IBufferSource;
 import moe.plushie.armourers_workshop.api.core.math.IPoseStack;
-import moe.plushie.armourers_workshop.core.skin.paint.texture.EntityTextureDescriptor;
-import moe.plushie.armourers_workshop.compatibility.api.AbstractItemTransformType;
 import moe.plushie.armourers_workshop.compatibility.client.renderer.AbstractItemStackRenderer;
 import moe.plushie.armourers_workshop.core.math.Vector3f;
+import moe.plushie.armourers_workshop.core.skin.paint.texture.EntityTextureDescriptor;
+import moe.plushie.armourers_workshop.core.utils.OpenItemDisplayContext;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
@@ -24,21 +24,20 @@ public class MannequinItemRenderer extends AbstractItemStackRenderer {
     }
 
     @Override
-    public void renderByItem(ItemStack itemStack, AbstractItemTransformType transformType, IPoseStack poseStack, IBufferSource bufferSource, int light, int overlay) {
+    public void renderByItem(ItemStack itemStack, OpenItemDisplayContext itemDisplayContext, IPoseStack poseStack, IBufferSource bufferSource, int light, int overlay) {
         if (itemStack.isEmpty()) {
             return;
         }
         var bakedModel = Minecraft.getInstance().getItemRenderer().getItemModelShaper().getItemModel(itemStack);
-        var transform = bakedModel.getTransform(transformType);
+        var transform = bakedModel.getTransform(itemDisplayContext);
 
         poseStack.pushPose();
         poseStack.translate(0.5f, 0.5f, 0.5f); // reset to center
 
-        EntityTextureDescriptor descriptor = EntityTextureDescriptor.of(itemStack);
-        Vector3f rotation = new Vector3f(transform.rotation.x(), transform.rotation.y(), transform.rotation.z());
-        Vector3f scale = new Vector3f(transform.scale.x(), transform.scale.y(), transform.scale.z());
+        var descriptor = EntityTextureDescriptor.of(itemStack);
+        var rotation = new Vector3f(transform.rotation.x(), transform.rotation.y(), transform.rotation.z());
 
-        ExtendedItemRenderer.renderMannequin(descriptor, rotation, scale, 1, 1, 1, 0, light, poseStack, bufferSource);
+        ExtendedItemRenderer.renderMannequin(descriptor, rotation, 1, 1, 1, 0, light, poseStack, bufferSource);
 
         poseStack.popPose();
     }

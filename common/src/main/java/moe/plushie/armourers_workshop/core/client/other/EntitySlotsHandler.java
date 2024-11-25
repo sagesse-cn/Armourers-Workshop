@@ -174,7 +174,7 @@ public class EntitySlotsHandler<T> implements IAssociatedContainerProvider, Skin
     private void loadSkinInfos() {
         for (var entry : allSkins) {
             // check all part status, some skin only one part, but overridden all the models/overlays
-            var skin = entry.getBakedSkin();
+            var skin = entry.getSkin();
             var properties = skin.getSkin().getProperties();
             overriddenManager.merge(properties);
             if (!isLimitLimbs) {
@@ -222,7 +222,7 @@ public class EntitySlotsHandler<T> implements IAssociatedContainerProvider, Skin
     }
 
     private void loadSkinAnimation(EntitySlot slot) {
-        animatedSkins.put(slot.getDescriptor(), slot.getBakedSkin());
+        animatedSkins.put(slot.getDescriptor(), slot.getSkin());
     }
 
     public void onActivate() {

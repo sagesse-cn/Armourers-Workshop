@@ -81,19 +81,19 @@ public class HologramProjectorBlockRenderer<T extends HologramProjectorBlockEnti
 
         for (var entry : renderingTasks) {
             var itemSource = SkinItemSource.create(entry.getItemStack());
-            var bakedSkin = entry.getBakedSkin();
+            var bakedSkin = entry.getSkin();
             var bakedArmature = BakedArmature.defaultBy(bakedSkin.getType());
-            var rect = bakedSkin.getRenderBounds(itemSource);
+            var rect = bakedSkin.getRenderBounds();
 
             renderingContext.setItemSource(itemSource);
-            renderingContext.setColorScheme(entry.getBakedScheme());
+            renderingContext.setColorScheme(entry.getPaintScheme());
             //renderPatch.setOverlay(entry.getOverrideOverlay(entity));
 
             apply(entity, rect, renderingContext.getAnimationTicks(), poseStack, bufferSource);
 
             bakedSkin.setupAnim(mannequinEntity, bakedArmature, renderingContext);
-            var colorScheme = bakedSkin.resolve(mannequinEntity, entry.getBakedScheme());
-            SkinRenderer.render(mannequinEntity, bakedArmature, bakedSkin, colorScheme, renderingContext);
+            var paintScheme = bakedSkin.resolve(mannequinEntity, entry.getPaintScheme());
+            SkinRenderer.render(mannequinEntity, bakedArmature, bakedSkin, paintScheme, renderingContext);
         }
 
         poseStack.popPose();

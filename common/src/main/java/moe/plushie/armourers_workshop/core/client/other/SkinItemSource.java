@@ -1,8 +1,7 @@
 package moe.plushie.armourers_workshop.core.client.other;
 
-import moe.plushie.armourers_workshop.compatibility.api.AbstractItemTransformType;
+import moe.plushie.armourers_workshop.core.utils.OpenItemDisplayContext;
 import moe.plushie.armourers_workshop.core.math.Vector3f;
-import moe.plushie.armourers_workshop.core.skin.property.SkinProperties;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
@@ -16,42 +15,42 @@ public class SkinItemSource {
 
     private Vector3f itemScale;
     private Vector3f itemRotation;
-    private AbstractItemTransformType transformType;
+    private OpenItemDisplayContext itemDisplayContext;
 
     public SkinItemSource() {
-        this(0, ItemStack.EMPTY, AbstractItemTransformType.NONE);
+        this(0, ItemStack.EMPTY, OpenItemDisplayContext.NONE);
     }
 
-    public SkinItemSource(float renderPriority, ItemStack itemStack, AbstractItemTransformType transformType) {
+    public SkinItemSource(float renderPriority, ItemStack itemStack, OpenItemDisplayContext itemDisplayContext) {
         this.renderPriority = renderPriority;
         this.itemStack = itemStack;
-        this.transformType = transformType;
+        this.itemDisplayContext = itemDisplayContext;
     }
 
     public static SkinItemSource create(ItemStack itemStack) {
-        return create(0, itemStack, AbstractItemTransformType.NONE, null);
+        return create(0, itemStack, OpenItemDisplayContext.NONE, null);
     }
 
-    public static SkinItemSource create(ItemStack itemStack, AbstractItemTransformType transformType) {
+    public static SkinItemSource create(ItemStack itemStack, OpenItemDisplayContext transformType) {
         return create(0, itemStack, transformType, null);
     }
 
     public static SkinItemSource create(float renderPriority, ItemStack itemStack) {
-        return create(renderPriority, itemStack, AbstractItemTransformType.NONE, null);
+        return create(renderPriority, itemStack, OpenItemDisplayContext.NONE, null);
     }
 
-    public static SkinItemSource create(float renderPriority, ItemStack itemStack, AbstractItemTransformType transformType) {
+    public static SkinItemSource create(float renderPriority, ItemStack itemStack, OpenItemDisplayContext transformType) {
         return create(renderPriority, itemStack, transformType, null);
     }
 
-    public static SkinItemSource create(float renderPriority, ItemStack itemStack, AbstractItemTransformType transformType, @Nullable SkinItemProperties itemProperties) {
+    public static SkinItemSource create(float renderPriority, ItemStack itemStack, OpenItemDisplayContext transformType, @Nullable SkinItemProperties itemProperties) {
         var itemSource = new SkinItemSource();
         itemSource.setItem(itemStack);
         itemSource.setRenderPriority(renderPriority);
-        itemSource.setTransformType(transformType);
+        itemSource.setDisplayContext(transformType);
         itemSource.setScale(null);
         itemSource.setRotation(null);
-        itemSource.setItemProperties(itemProperties);
+        itemSource.setProperties(itemProperties);
         return itemSource;
     }
 
@@ -87,19 +86,19 @@ public class SkinItemSource {
         return itemScale;
     }
 
-    public void setTransformType(AbstractItemTransformType transformType) {
-        this.transformType = transformType;
+    public void setDisplayContext(OpenItemDisplayContext itemDisplayContext) {
+        this.itemDisplayContext = itemDisplayContext;
     }
 
-    public AbstractItemTransformType getTransformType() {
-        return transformType;
+    public OpenItemDisplayContext getDisplayContext() {
+        return itemDisplayContext;
     }
 
-    public void setItemProperties(SkinItemProperties itemProperties) {
+    public void setProperties(SkinItemProperties itemProperties) {
         this.itemProperties = itemProperties;
     }
 
-    public SkinItemProperties getItemProperties() {
+    public SkinItemProperties getProperties() {
         return itemProperties;
     }
 }
