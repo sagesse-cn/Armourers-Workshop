@@ -30,7 +30,6 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.phys.BlockHitResult;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
 
@@ -202,10 +201,10 @@ public class SkinBlockPlaceContext extends BlockPlaceContext {
         private final List<BlockPos> blockPosList;
         private List<SkinMarker> markerList;
 
-        public ParentPart(BlockPos offset, Rectangle3i shape, Collection<BlockPos> blockPosList, SkinDescriptor descriptor, Skin skin) {
+        public ParentPart(BlockPos offset, Rectangle3i shape, List<BlockPos> blockPosList, SkinDescriptor descriptor, Skin skin) {
             super(offset, shape);
             this.descriptor = descriptor;
-            this.blockPosList = Collections.newList(blockPosList);
+            this.blockPosList = blockPosList;
             this.properties = skin.getProperties();
             this.markerList = Collections.newList(skin.getMarkers());
         }

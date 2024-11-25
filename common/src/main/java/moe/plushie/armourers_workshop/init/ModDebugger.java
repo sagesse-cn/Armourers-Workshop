@@ -39,13 +39,13 @@ public class ModDebugger {
     public static boolean skinPartCombiner = false;
     public static boolean skinLocatorOrigin = false;
 
-    public static boolean targetBounds = true;
+    public static boolean targetBounds = false;
 
     public static boolean boundingBox = false;
 
     public static boolean mannequinCulling = false;
 
-    public static boolean itemOverride = true;
+    public static boolean itemOverride = false;
     public static boolean handOverride = false;
     public static boolean modelOverride = false;
     public static boolean fishingHook = false;
