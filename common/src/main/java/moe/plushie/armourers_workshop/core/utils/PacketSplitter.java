@@ -49,7 +49,7 @@ public class PacketSplitter {
                 int resolvedPartSize = Math.min(bufferSize - index, partSize);
                 var buffer1 = Unpooled.wrappedBuffer(partPrefix, buffer.retainedSlice(buffer.readerIndex(), resolvedPartSize));
                 buffer.skipBytes(resolvedPartSize);
-                T packet = builder.apply(IFriendlyByteBuf.wrap(buffer1));
+                var packet = builder.apply(IFriendlyByteBuf.wrap(buffer1));
                 consumer.accept(packet);
             }
             buffer.release();

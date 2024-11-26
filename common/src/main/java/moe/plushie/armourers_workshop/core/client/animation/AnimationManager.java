@@ -14,6 +14,7 @@ import moe.plushie.armourers_workshop.core.data.EntityActionTarget;
 import moe.plushie.armourers_workshop.core.data.EntityActions;
 import moe.plushie.armourers_workshop.core.math.OpenMath;
 import moe.plushie.armourers_workshop.core.skin.SkinDescriptor;
+import moe.plushie.armourers_workshop.core.skin.animation.SkinAnimationLoop;
 import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.core.utils.Objects;
 import moe.plushie.armourers_workshop.core.utils.TagSerializer;
@@ -42,13 +43,14 @@ public class AnimationManager {
     private final HashMap<BakedSkin, Entry> allEntries = new HashMap<>();
     private final HashMap<BakedSkin, Entry> activeEntries = new HashMap<>();
 
-    private final HashMap<BakedSkin, AnimationContext> defaultContexts = new HashMap<>();
-
     private final ArrayList<Entry> triggerableEntries = new ArrayList<>();
 
     private final ArrayList<Pair<AnimationPlayState, Runnable>> removeOnCompletion = new ArrayList<>();
 
+    private final HashMap<String, PlayAction> lastActions = new HashMap<>();
+
     private EntityActionSet lastActionSet;
+    private float lastAnimationTicks = 0;
 
     private final ClientExecutionContextImpl executionContext;
 
@@ -98,9 +100,10 @@ public class AnimationManager {
                 return; // no found, ignore.
             }
             activeEntries.put(skin, entry);
-            entry.autoplay();
+            resumeState(entry);
         });
         expiredEntries.forEach((key, entry) -> {
+            entry.getAnimationControllers().forEach(it -> lastActions.remove(it.getName()));
             activeEntries.remove(key);
             entry.stop();
         });
@@ -129,9 +132,11 @@ public class AnimationManager {
                 lastActionSet = actionSet.copy();
             }
         }
+        lastAnimationTicks = animationTicks;
     }
 
     public void play(String name, float atTime, CompoundTag tag) {
+        lastActions.put(name, new PlayAction(name, atTime, tag));
         for (var entry : activeEntries.values()) {
             for (var animationController : entry.getAnimationControllers()) {
                 if (name.equals(animationController.getName())) {
@@ -142,6 +147,11 @@ public class AnimationManager {
     }
 
     public void stop(String name) {
+        if (name.isEmpty()) {
+            lastActions.clear();
+        } else {
+            lastActions.remove(name);
+        }
         for (var entry : activeEntries.values()) {
             for (var animationController : entry.getAnimationControllers()) {
                 if (name.isEmpty() || name.equals(animationController.getName())) {
@@ -164,6 +174,17 @@ public class AnimationManager {
 
     private void setChanged() {
         lastActionSet = null;
+    }
+
+    private void resumeState(Entry entry) {
+        entry.autoplay();
+        lastActions.forEach((name, action) -> {
+            for (var animationController : entry.getAnimationControllers()) {
+                if (name.equals(animationController.getName())) {
+                    action.resume(entry, animationController);
+                }
+            }
+        });
     }
 
     private void rebuildTriggerableEntities() {
@@ -435,6 +456,31 @@ public class AnimationManager {
         @Override
         public String toString() {
             return animationController.toString();
+        }
+    }
+
+    protected class PlayAction {
+
+        private final float time;
+        private final String name;
+        private final CompoundTag tag;
+
+        public PlayAction(String name, float time, CompoundTag tag) {
+            this.name = name;
+            this.time = time;
+            this.tag = tag;
+        }
+
+        public void resume(Entry entry, AnimationController animationController) {
+            // check it still playing.
+            if (animationController.getLoop() == SkinAnimationLoop.NONE) {
+                float endTime = time + animationController.getDuration();
+                if (endTime < lastAnimationTicks) {
+                    return; // can't play
+                }
+            }
+            debugLog("resume animation {}", name);
+            entry.play(animationController, time, tag);
         }
     }
 }
