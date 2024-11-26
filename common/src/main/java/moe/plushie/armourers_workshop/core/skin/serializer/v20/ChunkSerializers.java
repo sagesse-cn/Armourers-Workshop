@@ -1,7 +1,6 @@
 package moe.plushie.armourers_workshop.core.skin.serializer.v20;
 
 import moe.plushie.armourers_workshop.api.skin.ISkinType;
-import moe.plushie.armourers_workshop.core.utils.OpenItemTransforms;
 import moe.plushie.armourers_workshop.core.math.OpenTransform3f;
 import moe.plushie.armourers_workshop.core.math.Rectangle3f;
 import moe.plushie.armourers_workshop.core.skin.Skin;
@@ -27,6 +26,7 @@ import moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk.ChunkPartDa
 import moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk.ChunkPreviewData;
 import moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk.ChunkType;
 import moe.plushie.armourers_workshop.core.utils.Collections;
+import moe.plushie.armourers_workshop.core.utils.OpenItemTransforms;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.IOException;

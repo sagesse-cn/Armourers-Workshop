@@ -1,13 +1,14 @@
 package moe.plushie.armourers_workshop.core.client.animation;
 
 import moe.plushie.armourers_workshop.core.math.OpenMath;
-import moe.plushie.armourers_workshop.core.skin.part.SkinPartTransform;
+import moe.plushie.armourers_workshop.core.skin.animation.engine.bind.ExecutionContextImpl;
 import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.core.utils.Objects;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -16,13 +17,17 @@ public class AnimationContext {
     private final List<Snapshot> snapshots = new ArrayList<>();
     private final Map<AnimationController, AnimationPlayState> playStates = new HashMap<>();
 
-    public AnimationContext() {
-    }
+    protected final ExecutionContextImpl executionContext;
+    protected final List<AnimationController> animationControllers;
 
-    public AnimationContext(AnimationContext context) {
-        context.snapshots.forEach(snapshot -> {
-            snapshots.add(new VariantSnapshot(snapshot));
-        });
+    public AnimationContext(ExecutionContextImpl executionContext, List<AnimationController> animationControllers) {
+        this.executionContext = executionContext;
+        this.animationControllers = animationControllers;
+        // find all animated transform and add into context.
+        var animatedTransforms = new LinkedHashSet<>(Collections.flatMap(animationControllers, AnimationController::getAffectedTransforms));
+        for (var animatedTransform : animatedTransforms) {
+            this.snapshots.add(new Snapshot(animatedTransform));
+        }
     }
 
     public void beginUpdates(float animationTime) {
@@ -43,8 +48,8 @@ public class AnimationContext {
         affectedTransforms.addAll(Objects.flatMap(fromAnimationController, AnimationController::getAffectedTransforms, Collections.emptyList()));
         affectedTransforms.addAll(Objects.flatMap(toAnimationController, AnimationController::getAffectedTransforms, Collections.emptyList()));
         for (var snapshot : snapshots) {
-            if (snapshot instanceof VariantSnapshot variant && affectedTransforms.contains(snapshot.transform)) {
-                variant.addTransitingAnimation(time, speed, duration);
+            if (affectedTransforms.contains(snapshot.transform)) {
+                snapshot.addTransitingAnimation(time, speed, duration);
             }
         }
     }
@@ -63,47 +68,28 @@ public class AnimationContext {
         return playStates.get(animationController);
     }
 
-    public boolean isEmpty() {
-        return snapshots.isEmpty();
+    public List<AnimationController> getAnimationControllers() {
+        return animationControllers;
+    }
+
+    public ExecutionContextImpl getExecutionContext() {
+        return executionContext;
     }
 
 
     private static class Snapshot {
 
-        protected final AnimatedTransform transform;
-
-        public Snapshot(AnimatedTransform transform) {
-            this.transform = transform;
-        }
-
-        public void beginUpdates(float animationTicks) {
-            // set snapshot to null, the transform will skip calculations.
-            transform.snapshot = null;
-        }
-
-        public void commitUpdates() {
-            // nop.
-        }
-
-        @Override
-        public String toString() {
-            return Objects.toString(this);
-        }
-    }
-
-    private static class VariantSnapshot extends Snapshot {
-
         protected final AnimatedPoint currentValue = new AnimatedPoint();
+        protected final AnimatedTransform transform;
 
         protected TransitingAnimation transitingAnimation;
 
         protected boolean isExported = false;
 
-        public VariantSnapshot(Snapshot snapshot) {
-            super(snapshot.transform);
+        public Snapshot(AnimatedTransform transform) {
+            this.transform = transform;
         }
 
-        @Override
         public void beginUpdates(float animationTicks) {
             // set snapshot to null, the transform will skip calculations.
             transform.snapshot = null;
@@ -117,7 +103,6 @@ public class AnimationContext {
             }
         }
 
-        @Override
         public void commitUpdates() {
             // when no transiting or no change, we will need skip calculate.
             if (transitingAnimation == null && transform.dirty == 0) {
@@ -147,6 +132,11 @@ public class AnimationContext {
                 snapshotValue.setRotation(original.getRotation());
                 snapshotValue.setScale(original.getScale());
             }
+        }
+
+        @Override
+        public String toString() {
+            return Objects.toString(this);
         }
     }
 
@@ -209,26 +199,6 @@ public class AnimationContext {
 
         public boolean isCompleted() {
             return isCompleted;
-        }
-    }
-
-    public static class Builder {
-
-        private final ArrayList<Snapshot> snapshots = new ArrayList<>();
-
-        public void add(SkinPartTransform partTransform) {
-            // convert animated transform to snapshot if exists.
-            for (var transform : partTransform.getChildren()) {
-                if (transform instanceof AnimatedTransform animatedTransform) {
-                    snapshots.add(new Snapshot(animatedTransform));
-                }
-            }
-        }
-
-        public AnimationContext build() {
-            var context = new AnimationContext();
-            context.snapshots.addAll(snapshots);
-            return context;
         }
     }
 }

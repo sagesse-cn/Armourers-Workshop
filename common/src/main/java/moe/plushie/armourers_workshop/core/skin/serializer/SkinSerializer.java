@@ -41,10 +41,10 @@ public class SkinSerializer {
         options1.merge(options); // merge if needed
         for (var serializer : REGISTERED_SERIALIZERS) {
             if (serializer.isSupportedVersion(options1)) {
-                if (options1.getFileVersion() >= Versions.V20) {
+                if (options1.getFileVersion() >= SkinSerializerV20.FILE_MIN_VERSION) {
                     stream.writeInt(Versions.HEADER); // add the header (>=20)
                 }
-                stream.writeInt(serializer.getSupportedVersion());
+                stream.writeInt(serializer.getVersion());
                 serializer.writeToStream(skin, stream, options1);
                 return;
             }

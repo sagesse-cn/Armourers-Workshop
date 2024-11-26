@@ -4,6 +4,7 @@ import moe.plushie.armourers_workshop.api.core.IDataCodec;
 import moe.plushie.armourers_workshop.api.core.IDataSerializable;
 import moe.plushie.armourers_workshop.api.core.IDataSerializer;
 import moe.plushie.armourers_workshop.api.core.IDataSerializerKey;
+import moe.plushie.armourers_workshop.core.client.animation.bind.ClientExecutionContextImpl;
 import moe.plushie.armourers_workshop.core.client.bake.BakedSkin;
 import moe.plushie.armourers_workshop.core.client.other.BlockEntityRenderData;
 import moe.plushie.armourers_workshop.core.client.other.EntityRenderData;
@@ -13,8 +14,6 @@ import moe.plushie.armourers_workshop.core.data.EntityActionTarget;
 import moe.plushie.armourers_workshop.core.data.EntityActions;
 import moe.plushie.armourers_workshop.core.math.OpenMath;
 import moe.plushie.armourers_workshop.core.skin.SkinDescriptor;
-import moe.plushie.armourers_workshop.core.skin.animation.engine.bind.ExecutionContextImpl;
-import moe.plushie.armourers_workshop.core.client.animation.bind.ClientExecutionContextImpl;
 import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.core.utils.Objects;
 import moe.plushie.armourers_workshop.core.utils.TagSerializer;
@@ -42,6 +41,8 @@ public class AnimationManager {
 
     private final HashMap<BakedSkin, Entry> allEntries = new HashMap<>();
     private final HashMap<BakedSkin, Entry> activeEntries = new HashMap<>();
+
+    private final HashMap<BakedSkin, AnimationContext> defaultContexts = new HashMap<>();
 
     private final ArrayList<Entry> triggerableEntries = new ArrayList<>();
 
@@ -156,20 +157,13 @@ public class AnimationManager {
         setChanged();
     }
 
-    public void setChanged() {
-        lastActionSet = null;
-    }
-
+    @Nullable
     public AnimationContext getAnimationContext(BakedSkin skin) {
-        var entry = allEntries.get(skin);
-        if (entry != null) {
-            return entry;
-        }
-        return skin.getAnimationContext();
+        return allEntries.get(skin);
     }
 
-    public ExecutionContextImpl getExecutionContext() {
-        return executionContext;
+    private void setChanged() {
+        lastActionSet = null;
     }
 
     private void rebuildTriggerableEntities() {
@@ -185,7 +179,6 @@ public class AnimationManager {
 
     protected class Entry extends AnimationContext {
 
-        protected final List<AnimationController> animationControllers;
         protected final List<TriggerableController> triggerableControllers = new ArrayList<>();
 
         protected final HashMap<String, String> actionToName = new HashMap<>();
@@ -195,8 +188,7 @@ public class AnimationManager {
         protected boolean isFirstTransitionAnimation = true;
 
         public Entry(BakedSkin skin) {
-            super(skin.getAnimationContext());
-            this.animationControllers = skin.getAnimationControllers();
+            super(AnimationManager.this.executionContext, skin.getAnimationControllers());
             this.rebuildTriggerableControllers();
         }
 
@@ -266,9 +258,6 @@ public class AnimationManager {
             animationControllers.forEach(this::stop);
         }
 
-        public List<AnimationController> getAnimationControllers() {
-            return animationControllers;
-        }
 
         public boolean hasTriggerableAnimation() {
             return !triggerableControllers.isEmpty();

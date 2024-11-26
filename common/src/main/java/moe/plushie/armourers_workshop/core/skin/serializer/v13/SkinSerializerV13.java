@@ -243,7 +243,7 @@ public final class SkinSerializerV13 implements IOSerializer {
     }
 
     @Override
-    public int getSupportedVersion() {
+    public int getVersion() {
         return FILE_VERSION;
     }
 }

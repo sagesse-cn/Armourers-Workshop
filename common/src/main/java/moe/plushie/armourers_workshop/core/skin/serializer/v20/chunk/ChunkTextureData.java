@@ -1,24 +1,30 @@
 package moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk;
 
 import moe.plushie.armourers_workshop.api.skin.paint.texture.ITextureProvider;
+import moe.plushie.armourers_workshop.core.math.OpenMath;
 import moe.plushie.armourers_workshop.core.math.Rectangle2f;
 import moe.plushie.armourers_workshop.core.math.Vector2f;
 import moe.plushie.armourers_workshop.core.skin.paint.texture.TextureAnimation;
 import moe.plushie.armourers_workshop.core.skin.paint.texture.TextureData;
 import moe.plushie.armourers_workshop.core.skin.paint.texture.TextureOptions;
 import moe.plushie.armourers_workshop.core.skin.paint.texture.TextureProperties;
+import moe.plushie.armourers_workshop.core.skin.property.SkinProperty;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IInputStream;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IOutputStream;
 import moe.plushie.armourers_workshop.core.utils.Collections;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Function;
 
 public class ChunkTextureData {
 
+    private static final SkinProperty<List<Float>> USED_RECT_KEY = SkinProperty.normal("usedRect", null);
+
     protected ChunkTextureData proxy;
     protected Rectangle2f rect = Rectangle2f.ZERO;
+    protected Rectangle2f usedRect = Rectangle2f.ZERO;
     protected ITextureProvider provider;
     protected boolean isResolved = false;
 
@@ -32,6 +38,7 @@ public class ChunkTextureData {
 
     public ChunkTextureData(ITextureProvider provider) {
         this.rect = new Rectangle2f(0, 0, provider.getWidth(), provider.getHeight());
+        this.usedRect = rect;
         this.provider = provider;
     }
 
@@ -46,8 +53,9 @@ public class ChunkTextureData {
         var width = stream.readFloat();
         var height = stream.readFloat();
         this.rect = new Rectangle2f(x, y, width, height);
+        this.usedRect = rect;
         var animation = stream.readTextureAnimation();
-        var properties = stream.readTextureProperties();
+        var properties = readAdditionalData(stream.readTextureProperties());
         var byteSize = stream.readInt();
         var provider = new TextureData(String.valueOf(id), width, height, animation, properties);
         provider.load(stream.readBytes(byteSize));
@@ -66,33 +74,38 @@ public class ChunkTextureData {
         stream.writeFloat(rect.getWidth());
         stream.writeFloat(rect.getHeight());
         stream.writeTextureAnimation((TextureAnimation) provider.getAnimation());
-        stream.writeTextureProperties((TextureProperties) provider.getProperties());
+        stream.writeTextureProperties(writeAdditionalData((TextureProperties) provider.getProperties()));
         stream.writeInt(buffer.remaining());
         stream.writeBytes(buffer);
     }
 
     public void freeze(float x, float y, Function<ITextureProvider, ChunkTextureData> childProvider) {
-        this.rect = new Rectangle2f(x, y, rect.getWidth(), rect.getHeight());
-        this.isResolved = true;
         // bind the child -> parent
         Collections.compactMap(provider.getVariants(), childProvider).forEach(it -> it.parentId = this.id);
+
+        // alignment the coordinate 16x16.
+        float minX = OpenMath.floori((usedRect.getMinX() - rect.getMinX()) / 16f) * 16f;
+        float minY = OpenMath.floori((usedRect.getMinY() - rect.getMinY()) / 16f) * 16f;
+        float maxX = OpenMath.ceili((usedRect.getMaxX() - rect.getMinX()) / 16f) * 16f;
+        float maxY = OpenMath.ceili((usedRect.getMaxY() - rect.getMinY()) / 16f) * 16f;
+
+        this.rect = new Rectangle2f(x - minX, y - minY, rect.getWidth(), rect.getHeight());
+        this.usedRect = new Rectangle2f(x, y, maxX - minX, maxY - minY);
+        this.isResolved = true;
     }
 
     public boolean contains(Vector2f uv) {
         if (proxy != null) {
             return proxy.contains(uv);
         }
-        float x0 = rect.getMinX();
-        float x1 = uv.getX();
-        float x2 = rect.getMaxX();
-        return x0 <= x1 && x1 <= x2;
+        return usedRect.contains(uv);
     }
 
     public TextureRef get(Vector2f uv, ChunkColorSection section) {
         if (proxy != null) {
             return proxy.get(uv, section);
         }
-        return new TextureRef(section, this, new Vector2f(uv.getX() - rect.getX(), uv.getY()));
+        return new TextureRef(section, this, new Vector2f(uv.getX() - rect.getX(), uv.getY() - rect.getY()));
     }
 
     public TextureRef add(Vector2f uv, ChunkColorSection section) {
@@ -100,6 +113,14 @@ public class ChunkTextureData {
             return proxy.add(uv, section);
         }
         var ref = new TextureRef(section, this, uv);
+        // the texture coordinates maybe exceed the texture itself.
+        if (!usedRect.contains(uv)) {
+            float x0 = Math.min(usedRect.getMinX(), uv.getX());
+            float y0 = Math.min(usedRect.getMinY(), uv.getY());
+            float x1 = Math.max(usedRect.getMaxX(), uv.getX());
+            float y1 = Math.max(usedRect.getMaxY(), uv.getY());
+            usedRect = new Rectangle2f(x0, y0, x1 - x0, y1 - y0);
+        }
         uvs.add(ref);
         return ref;
     }
@@ -109,6 +130,13 @@ public class ChunkTextureData {
             return proxy.getRect();
         }
         return rect;
+    }
+
+    public Rectangle2f getUsedRect() {
+        if (proxy != null) {
+            return proxy.getUsedRect();
+        }
+        return usedRect;
     }
 
     public boolean isProxy() {
@@ -121,6 +149,34 @@ public class ChunkTextureData {
         }
         return isResolved;
     }
+
+    private TextureProperties readAdditionalData(TextureProperties properties) {
+        // have custom used rect?
+        var rectValues = properties.get(USED_RECT_KEY);
+        if (rectValues != null) {
+            float x = rectValues.get(0);
+            float y = rectValues.get(1);
+            float w = rectValues.get(2);
+            float h = rectValues.get(3);
+            this.usedRect = new Rectangle2f(x, y, w, h);
+        }
+        return properties;
+    }
+
+    private TextureProperties writeAdditionalData(TextureProperties properties) {
+        // have custom used rect?
+        if (!rect.equals(usedRect)) {
+            float x = usedRect.getX();
+            float y = usedRect.getY();
+            float w = usedRect.getWidth();
+            float h = usedRect.getHeight();
+            var newProperties = properties.copy();
+            newProperties.set(USED_RECT_KEY, Collections.newList(x, y, w, h));
+            properties = newProperties;
+        }
+        return properties;
+    }
+
 
     public static class TextureRef implements ChunkVariable {
 

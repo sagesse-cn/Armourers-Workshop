@@ -9,12 +9,13 @@ import net.minecraft.nbt.FloatTag;
 import net.minecraft.nbt.IntTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
+import net.minecraft.nbt.Tag;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -30,107 +31,20 @@ public abstract class OpenProperties {
         this.properties = properties;
     }
 
-    public void writeToStream(IOutputStream stream) throws IOException {
-        stream.writeInt(properties.size());
-        for (var entry : properties.entrySet()) {
-            var key = entry.getKey();
-            var value = entry.getValue();
-            stream.writeString(key);
-            if (value instanceof String stringValue) {
-                stream.writeByte(DataTypes.STRING.ordinal());
-                stream.writeString(stringValue);
-            } else if (value instanceof Integer intValue) {
-                stream.writeByte(DataTypes.INT.ordinal());
-                stream.writeInt(intValue);
-            } else if (value instanceof Double doubleValue) {
-                stream.writeByte(DataTypes.DOUBLE.ordinal());
-                stream.writeDouble(doubleValue);
-            } else if (value instanceof Boolean boolValue) {
-                stream.writeByte(DataTypes.BOOLEAN.ordinal());
-                stream.writeBoolean(boolValue);
-            } else if (value instanceof Collection<?> listValue) {
-                stream.writeByte(DataTypes.LIST.ordinal());
-                stream.writeInt(listValue.size());
-                // TODO: NO IMPL
-            } else if (value instanceof OpenProperties compoundValue) {
-                stream.writeByte(DataTypes.COMPOUND.ordinal());
-                compoundValue.writeToStream(stream);
-            }
-        }
-    }
-
     public void readFromStream(IInputStream stream) throws IOException {
-        int count = stream.readInt();
-        for (int i = 0; i < count; i++) {
-            var key = stream.readString();
-            var byteType = stream.readByte();
-            var type = DataTypes.byId(byteType);
-            if (type == null) {
-                throw new IOException("Error loading properties " + byteType);
-            }
-            properties.put(key, switch (type) {
-                case STRING -> stream.readString();
-                case INT -> stream.readInt();
-                case DOUBLE -> stream.readDouble();
-                case BOOLEAN -> stream.readBoolean();
-                case LIST -> {
-                    int size = stream.readInt();
-                    // TODO: NO IMPL
-                    yield new ArrayList<>(size);
-                }
-                case COMPOUND -> {
-                    var properties1 = empty();
-                    properties1.readFromStream(stream);
-                    yield properties1;
-                }
-            });
-        }
+        Serializer.DEFAULT.readFromStream(this, stream);
     }
 
+    public void writeToStream(IOutputStream stream) throws IOException {
+        Serializer.DEFAULT.writeToStream(this, stream);
+    }
 
     public void readFromNBT(CompoundTag nbt) {
-        for (var key : nbt.getAllKeys()) {
-            var value = nbt.get(key);
-            if (value instanceof StringTag stringTag) {
-                properties.put(key, stringTag.getAsString());
-            } else if (value instanceof IntTag intTag) {
-                properties.put(key, intTag.getAsInt());
-            } else if (value instanceof FloatTag floatTag) {
-                properties.put(key, floatTag.getAsFloat());
-            } else if (value instanceof DoubleTag doubleTag) {
-                properties.put(key, doubleTag.getAsDouble());
-            } else if (value instanceof ByteTag byteTag) {
-                properties.put(key, byteTag.getAsByte() != 0);
-            } else if (value instanceof ListTag listTag) {
-                // TODO: NO IMPL
-            } else if (value instanceof CompoundTag compoundTag) {
-                var compoundValue = empty();
-                compoundValue.readFromNBT(compoundTag);
-                properties.put(key, compoundValue);
-            }
-        }
+        Serializer.DEFAULT.readFromNBT(this, nbt);
     }
 
     public void writeToNBT(CompoundTag nbt) {
-        properties.forEach((key, value) -> {
-            if (value instanceof String stringValue) {
-                nbt.putString(key, stringValue);
-            } else if (value instanceof Integer intValue) {
-                nbt.putInt(key, intValue);
-            } else if (value instanceof Float floatValue) {
-                nbt.putDouble(key, floatValue);
-            } else if (value instanceof Double doubleValue) {
-                nbt.putDouble(key, doubleValue);
-            } else if (value instanceof Boolean boolValue) {
-                nbt.putBoolean(key, boolValue);
-            } else if (value instanceof Collection<?> listValue) {
-                // TODO: NO IMPL
-            } else if (value instanceof OpenProperties compoundValue) {
-                var compoundTag = new CompoundTag();
-                compoundValue.writeToNBT(compoundTag);
-                nbt.put(key, compoundTag);
-            }
-        });
+        Serializer.DEFAULT.writeToNBT(this, nbt);
     }
 
     public void put(String key, Object value) {
@@ -204,13 +118,187 @@ public abstract class OpenProperties {
         return properties.toString();
     }
 
-    protected enum DataTypes {
-        STRING, INT, DOUBLE, BOOLEAN, LIST, COMPOUND;
+
+    private enum DataTypes {
+        STRING, INT, DOUBLE, BOOLEAN, LIST, COMPOUND, FLOAT;
 
         @Nullable
         public static DataTypes byId(int id) {
             if (id >= 0 & id < DataTypes.values().length) {
                 return DataTypes.values()[id];
+            }
+            return null;
+        }
+    }
+
+    private static class Serializer {
+
+        private static final Serializer DEFAULT = new Serializer();
+        private static final Serializer ONLY_VALUE = new Serializer() {
+            @Override
+            protected void writeTypeToStream(DataTypes dataTypes, IOutputStream stream) {
+                // ignore
+            }
+        };
+
+        protected void writeToStream(OpenProperties instance, IOutputStream stream) throws IOException {
+            stream.writeInt(instance.properties.size());
+            for (var entry : instance.properties.entrySet()) {
+                stream.writeString(entry.getKey());
+                writeValueToStream(entry.getValue(), stream);
+            }
+        }
+
+        protected void writeTypeToStream(DataTypes dataTypes, IOutputStream stream) throws IOException {
+            stream.writeByte(dataTypes.ordinal());
+        }
+
+        protected void writeValueToStream(Object value, IOutputStream stream) throws IOException {
+            if (value instanceof String stringValue) {
+                writeTypeToStream(DataTypes.STRING, stream);
+                stream.writeString(stringValue);
+            } else if (value instanceof Integer intValue) {
+                writeTypeToStream(DataTypes.INT, stream);
+                stream.writeInt(intValue);
+            } else if (value instanceof Float floatValue) {
+                writeTypeToStream(DataTypes.FLOAT, stream);
+                stream.writeFloat(floatValue);
+            } else if (value instanceof Double doubleValue) {
+                writeTypeToStream(DataTypes.DOUBLE, stream);
+                stream.writeDouble(doubleValue);
+            } else if (value instanceof Boolean boolValue) {
+                writeTypeToStream(DataTypes.BOOLEAN, stream);
+                stream.writeBoolean(boolValue);
+            } else if (value instanceof List<?> listValue) {
+                writeTypeToStream(DataTypes.LIST, stream);
+                stream.writeInt(listValue.size());
+                var serializer = DEFAULT; // only write element type
+                for (var element : listValue) {
+                    serializer.writeValueToStream(element, stream);
+                    serializer = ONLY_VALUE;
+                }
+            } else if (value instanceof OpenProperties compoundValue) {
+                writeTypeToStream(DataTypes.COMPOUND, stream);
+                compoundValue.writeToStream(stream);
+            }
+        }
+
+        protected void readFromStream(OpenProperties instance, IInputStream stream) throws IOException {
+            int size = stream.readInt();
+            for (int i = 0; i < size; ++i) {
+                var key = stream.readString();
+                var type = readTypeFromStream(stream);
+                instance.properties.put(key, readValueFromStream(instance, type, stream));
+            }
+        }
+
+
+        protected DataTypes readTypeFromStream(IInputStream stream) throws IOException {
+            var byteType = stream.readByte();
+            var type = DataTypes.byId(byteType);
+            if (type == null) {
+                throw new IOException("Error loading properties " + byteType);
+            }
+            return type;
+        }
+
+        protected Object readValueFromStream(OpenProperties instance, DataTypes type, IInputStream stream) throws IOException {
+            return switch (type) {
+                case STRING -> stream.readString();
+                case INT -> stream.readInt();
+                case FLOAT -> stream.readFloat();
+                case DOUBLE -> stream.readDouble();
+                case BOOLEAN -> stream.readBoolean();
+                case LIST -> {
+                    int size = stream.readInt();
+                    if (size == 0) {
+                        yield Collections.emptyList();
+                    }
+                    var elementType = readTypeFromStream(stream);
+                    var elements = new ArrayList<>();
+                    for (int i = 0; i < size; ++i) {
+                        elements.add(readValueFromStream(instance, elementType, stream));
+                    }
+                    yield elements;
+                }
+                case COMPOUND -> {
+                    var properties1 = instance.empty();
+                    properties1.readFromStream(stream);
+                    yield properties1;
+                }
+            };
+        }
+
+        protected void writeToNBT(OpenProperties instance, CompoundTag nbt) {
+            for (var entry : instance.properties.entrySet()) {
+                nbt.put(entry.getKey(), writeValueToNbt(entry.getValue()));
+            }
+        }
+
+        protected Tag writeValueToNbt(Object value) {
+            if (value instanceof String stringValue) {
+                return StringTag.valueOf(stringValue);
+            }
+            if (value instanceof Integer intValue) {
+                return IntTag.valueOf(intValue);
+            }
+            if (value instanceof Float floatValue) {
+                return FloatTag.valueOf(floatValue);
+            }
+            if (value instanceof Double doubleValue) {
+                return DoubleTag.valueOf(doubleValue);
+            }
+            if (value instanceof Boolean boolValue) {
+                return ByteTag.valueOf(boolValue);
+            }
+            if (value instanceof List<?> listValue) {
+                var listTag = new ListTag();
+                for (var element : listValue) {
+                    listTag.add(writeValueToNbt(element));
+                }
+                return listTag;
+            }
+            if (value instanceof OpenProperties compoundValue) {
+                var compoundTag = new CompoundTag();
+                compoundValue.writeToNBT(compoundTag);
+                return compoundTag;
+            }
+            return null;
+        }
+
+        protected void readFromNBT(OpenProperties instance, CompoundTag nbt) {
+            for (var key : nbt.getAllKeys()) {
+                instance.properties.put(key, readValueFromNBT(instance, nbt.get(key)));
+            }
+        }
+
+        protected Object readValueFromNBT(OpenProperties instance, Object value) {
+            if (value instanceof StringTag stringTag) {
+                return stringTag.getAsString();
+            }
+            if (value instanceof IntTag intTag) {
+                return intTag.getAsInt();
+            }
+            if (value instanceof FloatTag floatTag) {
+                return floatTag.getAsFloat();
+            }
+            if (value instanceof DoubleTag doubleTag) {
+                return doubleTag.getAsDouble();
+            }
+            if (value instanceof ByteTag byteTag) {
+                return byteTag.getAsByte() != 0;
+            }
+            if (value instanceof ListTag listTag) {
+                var elements = new ArrayList<>();
+                for (var element : listTag) {
+                    elements.add(readValueFromNBT(instance, element));
+                }
+                return elements;
+            }
+            if (value instanceof CompoundTag compoundTag) {
+                var compoundValue = instance.empty();
+                compoundValue.readFromNBT(compoundTag);
+                return compoundValue;
             }
             return null;
         }

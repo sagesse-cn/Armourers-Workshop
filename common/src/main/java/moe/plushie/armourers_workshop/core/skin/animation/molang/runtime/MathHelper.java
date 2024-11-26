@@ -1,10 +1,6 @@
 package moe.plushie.armourers_workshop.core.skin.animation.molang.runtime;
 
-import moe.plushie.armourers_workshop.core.skin.animation.molang.ast.Binary;
-import moe.plushie.armourers_workshop.core.skin.animation.molang.ast.Ternary;
-import moe.plushie.armourers_workshop.core.skin.animation.molang.core.Expression;
 import moe.plushie.armourers_workshop.core.skin.animation.molang.core.Result;
-import net.minecraft.util.Mth;
 
 public final class MathHelper {
 

@@ -27,18 +27,18 @@ public class PacketSplitter {
 
     public <T> void split(final CustomPacket message, Function<IFriendlyByteBuf, T> builder, int partSize, Consumer<T> consumer) {
         workThread.submit(() -> {
-            ByteBuf buffer = Unpooled.buffer();
+            var buffer = Unpooled.buffer();
             writePacket(message, buffer);
             buffer.capacity(buffer.readableBytes());
             // when packet exceeds the part size, it will be split automatically
             int bufferSize = buffer.readableBytes();
             if (bufferSize <= partSize) {
-                T packet = builder.apply(IFriendlyByteBuf.wrap(buffer));
+                var packet = builder.apply(IFriendlyByteBuf.wrap(buffer));
                 consumer.accept(packet);
                 return;
             }
             for (int index = 0; index < bufferSize; index += partSize) {
-                ByteBuf partPrefix = Unpooled.buffer(4);
+                var partPrefix = Unpooled.buffer(4);
                 if (index == 0) {
                     partPrefix.writeInt(SPLIT_BEGIN_FLAG);
                 } else if ((index + partSize) >= bufferSize) {
@@ -47,7 +47,7 @@ public class PacketSplitter {
                     partPrefix.writeInt(SPLIT_BODY_FLAG);
                 }
                 int resolvedPartSize = Math.min(bufferSize - index, partSize);
-                ByteBuf buffer1 = Unpooled.wrappedBuffer(partPrefix, buffer.retainedSlice(buffer.readerIndex(), resolvedPartSize));
+                var buffer1 = Unpooled.wrappedBuffer(partPrefix, buffer.retainedSlice(buffer.readerIndex(), resolvedPartSize));
                 buffer.skipBytes(resolvedPartSize);
                 T packet = builder.apply(IFriendlyByteBuf.wrap(buffer1));
                 consumer.accept(packet);
@@ -57,10 +57,10 @@ public class PacketSplitter {
     }
 
     public void merge(UUID uuid, IFriendlyByteBuf bufferIn, Consumer<CustomPacket> consumer) {
-        ByteBuf buffer = bufferIn.asByteBuf();
+        var buffer = bufferIn.asByteBuf();
         int packetState = buffer.getInt(0);
         if (packetState < 0) {
-            ArrayList<ByteBuf> playerReceivedBuffers = receivedBuffers.computeIfAbsent(uuid, k -> new ArrayList<>());
+            var playerReceivedBuffers = receivedBuffers.computeIfAbsent(uuid, k -> new ArrayList<>());
             if (packetState == SPLIT_BEGIN_FLAG) {
                 if (!playerReceivedBuffers.isEmpty()) {
                     ModLog.warn("aw2:split received out of order - inbound buffer not empty when receiving first");
@@ -72,7 +72,7 @@ public class PacketSplitter {
             if (packetState == SPLIT_END_FLAG) {
                 workThread.submit(() -> {
                     // ownership will transfer to full buffer, so don't call release again.
-                    ByteBuf full = Unpooled.wrappedBuffer(playerReceivedBuffers.toArray(new ByteBuf[0]));
+                    var full = Unpooled.wrappedBuffer(playerReceivedBuffers.toArray(new ByteBuf[0]));
                     playerReceivedBuffers.clear();
                     consumer.accept(readPacket(full));
                     full.release();
@@ -84,7 +84,7 @@ public class PacketSplitter {
             consumer.accept(readPacket(buffer));
             return;
         }
-        ByteBuf receivedBuf = buffer.retainedDuplicate(); // we need to keep writer/reader index
+        var receivedBuf = buffer.retainedDuplicate(); // we need to keep writer/reader index
         workThread.submit(() -> {
             consumer.accept(readPacket(receivedBuf));
             receivedBuf.release();
@@ -98,7 +98,7 @@ public class PacketSplitter {
 
     private CustomPacket readPacket(ByteBuf buffer) {
         int packetId = buffer.readInt();
-        Function<IFriendlyByteBuf, CustomPacket> decoder = CustomPacket.getPacketType(packetId);
+        var decoder = CustomPacket.getPacketType(packetId);
         if (decoder != null) {
             return decoder.apply(IFriendlyByteBuf.wrap(buffer));
         }

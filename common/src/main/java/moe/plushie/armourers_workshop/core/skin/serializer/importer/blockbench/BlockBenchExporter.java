@@ -62,9 +62,10 @@ public class BlockBenchExporter {
     protected SkinSettings settings = new SkinSettings();
     protected SkinProperties properties = new SkinProperties();
 
+    protected MolangVirtualMachine virtualMachine = new MolangVirtualMachine();
+
     protected Vector3f offset = Vector3f.ZERO;
     protected Vector3f displayOffset = Vector3f.ZERO;
-    protected MolangVirtualMachine virtualMachine = new MolangVirtualMachine();
 
     protected final BlockBenchPack pack;
 

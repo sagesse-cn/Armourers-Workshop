@@ -149,6 +149,10 @@ public class AnimatedTransform implements ITransform {
         dirty = 0;
     }
 
+    public void reset() {
+        snapshot = null;
+    }
+
     public void setDirty(int flags) {
         dirty |= flags;
     }

@@ -1,6 +1,7 @@
 package moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk;
 
 import moe.plushie.armourers_workshop.api.skin.paint.texture.ITextureProvider;
+import moe.plushie.armourers_workshop.core.math.OpenMath;
 import moe.plushie.armourers_workshop.core.math.Vector2f;
 import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
 import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintType;
@@ -177,11 +178,29 @@ public abstract class ChunkColorSection {
 
         @Override
         public void freeze(int index) {
-            float x = 0;
-            float y = 0;
-            for (var list : textureLists.values()) {
-                list.freeze(x, y, textureLists::get);
-                x += list.rect.getWidth() * 2;
+            // we need to reorder all textures and save it.
+            if (!textureLists.isEmpty()) {
+                float x = 0;
+                float y = 0;
+                float lineHeight = 0;
+                var lists = new ArrayList<>(textureLists.values());
+                int columns = OpenMath.ceili(Math.sqrt(lists.size()));
+                for (int i = 0, col = 0; i < lists.size(); ++i) {
+                    var list = lists.get(i);
+                    // add into line
+                    list.freeze(x, y, textureLists::get);
+                    var usedRect = list.getUsedRect();
+                    lineHeight = Math.max(lineHeight, usedRect.getHeight());
+                    x += usedRect.getWidth() + 16f;
+                    if (++col < columns) {
+                        continue;
+                    }
+                    // return to next line
+                    y += lineHeight + 16f;
+                    x = 0;
+                    lineHeight = 0;
+                    col = 0;
+                }
             }
             size = colorLists.size() + textureLists.size();
             super.freeze(index);

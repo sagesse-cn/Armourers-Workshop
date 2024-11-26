@@ -1,6 +1,7 @@
 package moe.plushie.armourers_workshop.core.skin.paint.texture;
 
 import moe.plushie.armourers_workshop.api.skin.paint.texture.ITextureProperties;
+import moe.plushie.armourers_workshop.api.skin.property.ISkinProperty;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperties;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperty;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IInputStream;
@@ -13,28 +14,36 @@ public class TextureProperties implements ITextureProperties {
 
     public static final TextureProperties EMPTY = new TextureProperties();
 
-    public static final SkinProperty<String> NAME_KEY = SkinProperty.normal("name", "");
+    private static final SkinProperty<String> NAME_KEY = SkinProperty.normal("name", "");
 
     private int flags = 0;
     private final SkinProperties storage = new SkinProperties();
 
     public TextureProperties() {
-        super();
     }
 
     public void readFromStream(IInputStream stream) throws IOException {
         flags = stream.readInt();
-        if (getFlag(31)) {
+        if ((flags & 0x80000000) != 0) {
             storage.readFromStream(stream);
         }
     }
 
     public void writeToStream(IOutputStream stream) throws IOException {
-        setFlag(31, !storage.isEmpty());
-        stream.writeInt(flags);
-        if (getFlag(31)) {
+        if (storage.isEmpty()) {
+            stream.writeInt(flags);
+        } else {
+            stream.writeInt(flags | 0x80000000);
             storage.writeToStream(stream);
         }
+    }
+
+    public <T> void set(ISkinProperty<T> property, T value) {
+        storage.put(property, value);
+    }
+
+    public <T> T get(ISkinProperty<T> property) {
+        return storage.get(property);
     }
 
     public void setName(String name) {
@@ -79,6 +88,13 @@ public class TextureProperties implements ITextureProperties {
     @Override
     public boolean isNormal() {
         return getFlag(3);
+    }
+
+    public TextureProperties copy() {
+        var properties = new TextureProperties();
+        properties.flags = flags;
+        properties.storage.putAll(storage);
+        return properties;
     }
 
     @Override

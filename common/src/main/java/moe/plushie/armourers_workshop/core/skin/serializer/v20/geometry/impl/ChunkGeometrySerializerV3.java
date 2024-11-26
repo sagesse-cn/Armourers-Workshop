@@ -152,8 +152,11 @@ public class ChunkGeometrySerializerV3 extends ChunkGeometrySerializer {
 
         protected Vector2f parseTextureCoords(Vector2f uv) {
             var ref = palette.readTexture(uv);
-            textureProvider = ref.getProvider();
-            return ref.getPos();
+            if (ref != null) {
+                textureProvider = ref.getProvider();
+                return ref.getPos();
+            }
+            return Vector2f.ZERO;
         }
     }
 

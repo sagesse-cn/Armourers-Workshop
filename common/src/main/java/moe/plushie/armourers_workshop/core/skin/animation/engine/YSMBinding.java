@@ -16,9 +16,9 @@ import moe.plushie.armourers_workshop.core.skin.animation.molang.function.query.
 import moe.plushie.armourers_workshop.core.skin.animation.molang.function.query.ItemEnchantmentLevel;
 import moe.plushie.armourers_workshop.core.skin.animation.molang.function.query.RelativeBlockName;
 
-public class CustomBinding extends ContextBinding {
+public class YSMBinding extends ContextBinding {
 
-    public CustomBinding() {
+    public YSMBinding() {
         variable("rendering_in_inventory", ContextSelector::isRenderingInInventory);
         variable("first_person_mod_hide", ContextSelector::isRenderingInFirstPersonMod);
 

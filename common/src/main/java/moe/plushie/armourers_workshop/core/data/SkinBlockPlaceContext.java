@@ -75,13 +75,17 @@ public class SkinBlockPlaceContext extends BlockPlaceContext {
             return;
         }
         var parts = new ArrayList<Part>();
+        var parentParts = new ArrayList<ParentPart>();
         var blockPosList = new ArrayList<BlockPos>();
         skin.getBlockBounds().forEach((pos, shape) -> {
             var rect = new Rectangle3i(shape);
             if (pos.equals(Vector3i.ZERO)) {
-                parts.add(new ParentPart(BlockPos.ZERO, rect, blockPosList, descriptor, skin));
+                var part = new ParentPart(BlockPos.ZERO, rect, descriptor, skin);
+                parts.add(part);
+                parentParts.add(part);
             } else {
-                parts.add(new Part(new BlockPos(pos.getX(), pos.getY(), pos.getZ()), rect));
+                var part = new Part(new BlockPos(pos.getX(), pos.getY(), pos.getZ()), rect);
+                parts.add(part);
             }
         });
         this.skin = descriptor;
@@ -96,6 +100,7 @@ public class SkinBlockPlaceContext extends BlockPlaceContext {
         for (var part : parts) {
             blockPosList.add(part.getOffset());
         }
+        parentParts.forEach(it -> it.setReferences(blockPosList));
     }
 
     public <V> V getProperty(SkinProperty<V> property) {
@@ -198,13 +203,13 @@ public class SkinBlockPlaceContext extends BlockPlaceContext {
 
         private final SkinDescriptor descriptor;
         private final SkinProperties properties;
-        private final List<BlockPos> blockPosList;
+
+        private List<BlockPos> references = Collections.emptyList();
         private List<SkinMarker> markerList;
 
-        public ParentPart(BlockPos offset, Rectangle3i shape, List<BlockPos> blockPosList, SkinDescriptor descriptor, Skin skin) {
+        public ParentPart(BlockPos offset, Rectangle3i shape, SkinDescriptor descriptor, Skin skin) {
             super(offset, shape);
             this.descriptor = descriptor;
-            this.blockPosList = blockPosList;
             this.properties = skin.getProperties();
             this.markerList = Collections.newList(skin.getMarkers());
         }
@@ -212,7 +217,7 @@ public class SkinBlockPlaceContext extends BlockPlaceContext {
         @Override
         public void serialize(IDataSerializer serializer) {
             super.serialize(serializer);
-            serializer.write(CodingKeys.REFERENCES, blockPosList);
+            serializer.write(CodingKeys.REFERENCES, references);
             serializer.write(CodingKeys.MARKERS, markerList);
             serializer.write(CodingKeys.SKIN, descriptor);
             serializer.write(CodingKeys.SKIN_PROPERTIES, properties);
@@ -235,6 +240,14 @@ public class SkinBlockPlaceContext extends BlockPlaceContext {
                 newMarkerList.add(marker);
             }
             this.markerList = newMarkerList;
+        }
+
+        public void setReferences(List<BlockPos> blockPosList) {
+            this.references = blockPosList;
+        }
+
+        public List<BlockPos> getReferences() {
+            return references;
         }
     }
 

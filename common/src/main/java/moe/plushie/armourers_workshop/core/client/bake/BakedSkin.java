@@ -6,7 +6,7 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import moe.plushie.armourers_workshop.api.client.IBakedSkin;
 import moe.plushie.armourers_workshop.api.skin.ISkinType;
 import moe.plushie.armourers_workshop.api.skin.part.features.ICanUse;
-import moe.plushie.armourers_workshop.core.client.animation.AnimationContext;
+import moe.plushie.armourers_workshop.core.client.animation.AnimatedTransform;
 import moe.plushie.armourers_workshop.core.client.animation.AnimationController;
 import moe.plushie.armourers_workshop.core.client.animation.AnimationEngine;
 import moe.plushie.armourers_workshop.core.client.model.ItemTransform;
@@ -61,11 +61,11 @@ public class BakedSkin implements IBakedSkin {
 
     private final ArrayList<WingPartTransform> cachedWingsTransforms = new ArrayList<>();
     private final ArrayList<BakedLocatorTransform> cachedLocatorTransforms = new ArrayList<>();
+    private final ArrayList<AnimatedTransform> cachedAnimatedTransforms = new ArrayList<>();
 
     private final Range<Integer> useTickRange;
     private final List<BakedSkinPart> skinParts;
 
-    private final AnimationContext animationContext;
     private final List<AnimationController> animationControllers;
 
     private final ColorDescriptor colorDescriptor;
@@ -81,7 +81,6 @@ public class BakedSkin implements IBakedSkin {
         this.skin = skin;
         this.skinType = skinType;
         this.animationControllers = resolveAnimationControllers(bakedParts, skin.getAnimations(), skin.getProperties());
-        this.animationContext = resolveAnimationContext(bakedParts);
         this.skinParts = BakedSkinPartCombiner.apply(bakedParts); // depends `resolveAnimationControllers`
         this.paintScheme = paintScheme;
         this.colorDescriptor = colorDescriptor;
@@ -93,6 +92,7 @@ public class BakedSkin implements IBakedSkin {
     }
 
     public void setupAnim(Entity entity, BakedArmature bakedArmature, SkinRenderContext context) {
+        cachedAnimatedTransforms.forEach(AnimatedTransform::reset);
         cachedWingsTransforms.forEach(it -> it.setup(entity, context.getAnimationTicks()));
         AnimationEngine.apply(entity, this, context);
         SkinRenderHelper.apply(entity, this, bakedArmature, context.getItemSource());
@@ -139,10 +139,6 @@ public class BakedSkin implements IBakedSkin {
 
     public SkinProperties getProperties() {
         return skin.getProperties();
-    }
-
-    public AnimationContext getAnimationContext() {
-        return animationContext;
     }
 
     public List<AnimationController> getAnimationControllers() {
@@ -224,6 +220,11 @@ public class BakedSkin implements IBakedSkin {
                 cachedWingsTransforms.add(transform1);
             }
         }));
+        Collections.eachTree(skinParts, BakedSkinPart::getChildren, part -> part.getTransform().getChildren().forEach(transform -> {
+            if (transform instanceof AnimatedTransform transform1) {
+                cachedAnimatedTransforms.add(transform1);
+            }
+        }));
         // attach locator transform.
         cachedLocatorTransforms.addAll(BakedLocatorTransform.create(skinParts));
     }
@@ -264,9 +265,10 @@ public class BakedSkin implements IBakedSkin {
     }
 
     private List<AnimationController> resolveAnimationControllers(List<BakedSkinPart> skinParts, Collection<SkinAnimation> animations, SkinProperties properties) {
-        var results = new ArrayList<AnimationController>();
+        // create animation controller by animation.
+        var animationControllers = new ArrayList<AnimationController>();
         if (animations.isEmpty()) {
-            return results;
+            return animationControllers;
         }
         var namedParts = new HashMap<String, SkinPartTransform>();
         Collections.eachTree(skinParts, BakedSkinPart::getChildren, part -> {
@@ -279,17 +281,10 @@ public class BakedSkin implements IBakedSkin {
         });
         animations.forEach(animation -> {
             var controller = new AnimationController(animation, namedParts);
-            results.add(controller);
+            animationControllers.add(controller);
         });
-        results.removeIf(AnimationController::isEmpty);
-        return results;
-    }
-
-    private AnimationContext resolveAnimationContext(List<BakedSkinPart> skinParts) {
-        // find all animated transform and add into context.
-        var builder = new AnimationContext.Builder();
-        Collections.eachTree(skinParts, BakedSkinPart::getChildren, it -> builder.add(it.getTransform()));
-        return builder.build();
+        animationControllers.removeIf(AnimationController::isEmpty);
+        return animationControllers;
     }
 
     @Override

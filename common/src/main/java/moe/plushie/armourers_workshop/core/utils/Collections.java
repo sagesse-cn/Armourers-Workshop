@@ -112,12 +112,31 @@ public class Collections {
         };
     }
 
+    public static <S, R> ArrayList<R> flatMap(S[] in, Function<S, Collection<? extends R>> transform) {
+        return flatMap(newList(in), transform);
+    }
+
+    public static <S, R> ArrayList<R> flatMap(Collection<? extends S> in, Function<S, Collection<? extends R>> transform) {
+        var results = new ArrayList<R>(in.size());
+        for (S value : in) {
+            if (value == null) {
+                continue;
+            }
+            var result = transform.apply(value);
+            if (result == null) {
+                continue;
+            }
+            results.addAll(result);
+        }
+        return results;
+    }
+
 
     public static <T> List<T> emptyList() {
         return java.util.Collections.emptyList();
     }
 
-    public static <K,V> Map<K,V> emptyMap() {
+    public static <K, V> Map<K, V> emptyMap() {
         return java.util.Collections.emptyMap();
     }
 

@@ -15,32 +15,35 @@ public class AnimationEngine {
     private static final MolangVirtualMachine VM = new MolangVirtualMachine();
 
     public static void apply(@Nullable Object source, BakedSkin skin, SkinRenderContext context) {
+        // If not found it means it is not any animation active.
+        var animationContext = context.getAnimationManager().getAnimationContext(skin);
+        if (animationContext == null) {
+            return;
+        }
         VM.beginVariableCaching();
-        var animationManager = context.getAnimationManager();
-        var animationContext = animationManager.getAnimationContext(skin);
-        apply(source, skin, context.getPartialTicks(), context.getAnimationTicks(), animationContext, animationManager);
+        apply(source, skin.getId(), context.getPartialTicks(), context.getAnimationTicks(), animationContext);
         VM.endVariableCaching();
     }
 
-    public static void apply(@Nullable Object source, BakedSkin skin, float partialTick, float animationTime, AnimationContext animationContext, AnimationManager animationManager) {
-        animationContext.beginUpdates(animationTime);
-        for (var animationController : skin.getAnimationControllers()) {
+    public static void apply(@Nullable Object source, int skinId, float partialTick, float animationTime, AnimationContext context) {
+        context.beginUpdates(animationTime);
+        for (var animationController : context.getAnimationControllers()) {
             // query the current play state of the animation controller.
-            var playState = animationContext.getPlayState(animationController);
+            var playState = context.getPlayState(animationController);
             if (playState == null) {
                 continue;
             }
             // we only bind it when transformer use the molang environment.
             var adjustedTime = playState.getAdjustedTime(animationTime);
-            var executionContext = animationManager.getExecutionContext();
+            var executionContext = context.getExecutionContext();
             if (animationController.isRequiresVirtualMachine()) {
-                executionContext.upload(skin.getId(), playState.getTime(), adjustedTime, animationTime, partialTick);
+                executionContext.upload(skinId, playState.getTime(), adjustedTime, animationTime, partialTick);
             }
 
             // check/switch frames of animation and write to applier.
             animationController.process(adjustedTime, playState, executionContext);
         }
-        animationContext.commitUpdates();
+        context.commitUpdates();
     }
 
 
