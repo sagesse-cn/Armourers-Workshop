@@ -4,8 +4,7 @@ import moe.plushie.armourers_workshop.core.capability.SkinWardrobe;
 import moe.plushie.armourers_workshop.core.capability.SkinWardrobeJS;
 import moe.plushie.armourers_workshop.core.client.other.BlockEntityRenderData;
 import moe.plushie.armourers_workshop.core.client.other.EntityRenderData;
-import moe.plushie.armourers_workshop.core.skin.animation.molang.core.VariableStorage;
-import moe.plushie.armourers_workshop.core.skin.animation.molang.runtime.StaticVariableStorage;
+import moe.plushie.armourers_workshop.core.skin.animation.engine.bind.EntityVariableStorageImpl;
 import moe.plushie.armourers_workshop.core.utils.LazyOptional;
 import moe.plushie.armourers_workshop.init.ModCapabilities;
 import moe.plushie.armourers_workshop.init.environment.EnvironmentExecutor;
@@ -34,14 +33,14 @@ public class EntityDataStorage {
         protected final LazyOptional<SkinWardrobeJS> wardrobeJS;
         protected final LazyOptional<EntityRenderData> renderData;
         protected final LazyOptional<EntityActionSet> actionSet;
-        protected final LazyOptional<VariableStorage> variableStorage;
+        protected final LazyOptional<EntityVariableStorageImpl> variableStorage;
 
         public EntityImpl(Entity entity) {
             this.wardrobe = LazyOptional.of(() -> ModCapabilities.WARDROBE.get().get(entity));
             this.wardrobeJS = LazyOptional.of(() -> wardrobe.resolve().map(SkinWardrobeJS::new));
             this.renderData = LazyOptional.of(() -> EnvironmentExecutor.callOn(EnvironmentType.CLIENT, () -> () -> new EntityRenderData(entity)));
             this.actionSet = LazyOptional.ofNullable(EntityActionSet::new);
-            this.variableStorage = LazyOptional.ofNullable(StaticVariableStorage::new);
+            this.variableStorage = LazyOptional.ofNullable(EntityVariableStorageImpl::new);
         }
 
         public Optional<SkinWardrobe> getWardrobe() {
@@ -61,7 +60,7 @@ public class EntityDataStorage {
             return actionSet.resolve();
         }
 
-        public Optional<VariableStorage> getVariableStorage() {
+        public Optional<EntityVariableStorageImpl> getVariableStorage() {
             return variableStorage.resolve();
         }
     }
@@ -69,11 +68,11 @@ public class EntityDataStorage {
     public static class BlockEntityImpl {
 
         protected final LazyOptional<BlockEntityRenderData> renderData;
-        protected final LazyOptional<VariableStorage> variableStorage;
+        protected final LazyOptional<EntityVariableStorageImpl> variableStorage;
 
         public BlockEntityImpl(BlockEntity entity) {
             this.renderData = LazyOptional.of(() -> EnvironmentExecutor.callOn(EnvironmentType.CLIENT, () -> () -> new BlockEntityRenderData(entity)));
-            this.variableStorage = LazyOptional.ofNullable(StaticVariableStorage::new);
+            this.variableStorage = LazyOptional.ofNullable(EntityVariableStorageImpl::new);
         }
 
         @Environment(EnvType.CLIENT)
@@ -81,7 +80,7 @@ public class EntityDataStorage {
             return renderData.resolve();
         }
 
-        public Optional<VariableStorage> getVariableStorage() {
+        public Optional<EntityVariableStorageImpl> getVariableStorage() {
             return variableStorage.resolve();
         }
     }

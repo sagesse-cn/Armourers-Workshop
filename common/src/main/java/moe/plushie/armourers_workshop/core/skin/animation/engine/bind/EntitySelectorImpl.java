@@ -27,7 +27,7 @@ public class EntitySelectorImpl<T extends Entity> implements EntitySelector, Var
     public EntitySelectorImpl<T> apply(T entity, ContextSelectorImpl contextSelector) {
         this.entity = entity;
         this.contextSelector = contextSelector;
-        this.variableStorage = EntityDataStorage.of(entity).getVariableStorage().orElse(null);
+        this.variableStorage = EntityDataStorage.of(entity).getVariableStorage().map(it -> it.get(contextSelector)).orElse(null);
         return this;
     }
 

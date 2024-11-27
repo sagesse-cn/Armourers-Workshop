@@ -4,9 +4,9 @@ import moe.plushie.armourers_workshop.api.skin.part.ISkinPartType;
 import moe.plushie.armourers_workshop.api.skin.part.features.ICanOverride;
 import moe.plushie.armourers_workshop.compatibility.core.data.AbstractDataSerializer;
 import moe.plushie.armourers_workshop.core.capability.SkinWardrobe;
-import moe.plushie.armourers_workshop.core.menu.SkinSlotType;
 import moe.plushie.armourers_workshop.core.math.OpenMatrix4f;
 import moe.plushie.armourers_workshop.core.math.Vector4f;
+import moe.plushie.armourers_workshop.core.menu.SkinSlotType;
 import moe.plushie.armourers_workshop.core.skin.Skin;
 import moe.plushie.armourers_workshop.core.skin.SkinDescriptor;
 import moe.plushie.armourers_workshop.core.utils.Collections;
@@ -16,6 +16,7 @@ import moe.plushie.armourers_workshop.init.ModConfig;
 import moe.plushie.armourers_workshop.init.ModDataComponents;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -31,8 +32,10 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
+import java.util.function.Consumer;
 
 public final class SkinUtils {
 
@@ -188,37 +191,43 @@ public final class SkinUtils {
         }
     }
 
-    public static void saveVehicleSkin(Entity entity, ItemStack itemStack) {
-        // only allow of the boat
-        if (!(entity instanceof Boat || entity instanceof AbstractMinecart)) {
-            return;
+    public static <T extends Entity> Consumer<T> appendSkinIntoEntity(Consumer<T> consumer, ServerLevel serverLevel, ItemStack itemStack, @Nullable Player player) {
+        //
+        var descriptor = itemStack.getOrDefault(ModDataComponents.SKIN.get(), SkinDescriptor.EMPTY);
+        if (descriptor.isEmpty()) {
+            return consumer;
         }
-        SkinWardrobe wardrobe = SkinWardrobe.of(entity);
-        if (wardrobe != null) {
-            ItemStack itemStack1 = wardrobe.getItem(SkinSlotType.ANY, 0);
-            SkinDescriptor descriptor = SkinDescriptor.of(itemStack1);
-            if (!descriptor.isEmpty()) {
-                itemStack.set(ModDataComponents.SKIN.get(), descriptor);
+        return consumer.andThen(entity -> {
+            // only allow of the boat
+            if (!(entity instanceof Boat || entity instanceof AbstractMinecart)) {
+                return;
             }
-        }
+            var wardrobe = SkinWardrobe.of(entity);
+            if (wardrobe != null) {
+                wardrobe.setItem(SkinSlotType.ANY, 0, descriptor.asItemStack());
+                wardrobe.broadcast();
+            }
+        });
     }
 
-    public static void copyVehicleSkin(Entity entity, CompoundTag tag) {
+    public static <T extends Entity> Consumer<ItemStack> appendSkinIntoItemStack(Consumer<ItemStack> consumer, T entity) {
         // only allow of the boat
         if (!(entity instanceof Boat || entity instanceof AbstractMinecart)) {
-            return;
+            return consumer;
         }
-        // when not provide skin descriptor, ignore it.
-        if (tag == null || !tag.contains(Constants.Key.SKIN, Constants.TagFlags.COMPOUND)) {
-            return;
-        }
-        var descriptor = new SkinDescriptor(AbstractDataSerializer.wrap(tag.getCompound(Constants.Key.SKIN), entity));
         var wardrobe = SkinWardrobe.of(entity);
-        if (wardrobe != null) {
-            wardrobe.setItem(SkinSlotType.ANY, 0, descriptor.asItemStack());
-            wardrobe.broadcast();
+        if (wardrobe == null) {
+            return consumer;
         }
+        // ..
+        var itemStack1 = wardrobe.getItem(SkinSlotType.ANY, 0);
+        var descriptor = SkinDescriptor.of(itemStack1);
+        if (descriptor.isEmpty()) {
+            return consumer;
+        }
+        return consumer.andThen(itemStack -> itemStack.set(ModDataComponents.SKIN.get(), descriptor));
     }
+
 
     public static void copySkinFromOwner(Entity entity) {
         Projectile projectile = Objects.safeCast(entity, Projectile.class);

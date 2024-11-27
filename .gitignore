@@ -1,6 +1,8 @@
 build/
 *.ipr
-run/
+run
+fabric/run
+forge/run
 *.iws
 out/
 *.iml

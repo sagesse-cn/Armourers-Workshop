@@ -22,6 +22,10 @@ public class ContextSelectorImpl implements ContextSelector {
         this.partialTicks = partialTicks;
     }
 
+    public int getSkinId() {
+        return skinId;
+    }
+
     @Override
     public float getAnimationTicks() {
         return animationTicks;

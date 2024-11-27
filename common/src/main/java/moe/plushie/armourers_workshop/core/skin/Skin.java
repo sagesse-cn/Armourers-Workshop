@@ -316,7 +316,7 @@ public class Skin implements ISkin {
                 properties.remove(SkinProperty.OVERRIDE_OVERLAY_ALL);
             }
             if (!properties.get(SkinProperty.OVERRIDE_OVERLAY_COLOR)) {
-                properties.put(SkinProperty.KEEP_OVERLAY_COLOR, true);
+                properties.put(SkinProperty.USE_OVERLAY_COLOR, true);
                 properties.remove(SkinProperty.OVERRIDE_OVERLAY_COLOR);
             }
             // bind properties to part.

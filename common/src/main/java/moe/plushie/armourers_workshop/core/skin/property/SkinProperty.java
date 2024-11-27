@@ -51,7 +51,7 @@ public class SkinProperty<T> implements ISkinProperty<T> {
     public static final SkinProperty<Boolean> OVERRIDE_EQUIPMENT_LEGGINGS = normal("hideEquipmentLegs", false);
     public static final SkinProperty<Boolean> OVERRIDE_EQUIPMENT_BOOTS = normal("hideEquipmentFeet", false);
 
-    public static final SkinProperty<Boolean> KEEP_OVERLAY_COLOR = normal("keepOverlayColor", false);
+    public static final SkinProperty<Boolean> USE_OVERLAY_COLOR = normal("keepOverlayColor", false);
     public static final SkinProperty<Boolean> LIMIT_LEGS_LIMBS = normal("limitLimbs", false);
 
     public static final SkinProperty<String> OUTFIT_PART_INDEXS = normal("partIndexs", "");

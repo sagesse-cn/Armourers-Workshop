@@ -42,13 +42,13 @@ public class AdvancedSettingPanel extends AdvancedPanel {
                 SkinProperty.OVERRIDE_EQUIPMENT_HELMET,
                 SkinProperty.OVERRIDE_EQUIPMENT_LEGGINGS,
                 SkinProperty.LIMIT_LEGS_LIMBS,
-                SkinProperty.KEEP_OVERLAY_COLOR
+                SkinProperty.USE_OVERLAY_COLOR
         ));
         builder.put(SkinTypes.ARMOR_HEAD, Collections.newList(
                 SkinProperty.OVERRIDE_MODEL_HEAD,
                 SkinProperty.OVERRIDE_OVERLAY_HAT,
                 SkinProperty.OVERRIDE_EQUIPMENT_HELMET,
-                SkinProperty.KEEP_OVERLAY_COLOR
+                SkinProperty.USE_OVERLAY_COLOR
         ));
         builder.put(SkinTypes.ARMOR_CHEST, Collections.newList(
                 SkinProperty.OVERRIDE_MODEL_CHEST,
@@ -59,7 +59,7 @@ public class AdvancedSettingPanel extends AdvancedPanel {
                 SkinProperty.OVERRIDE_OVERLAY_LEFT_SLEEVE,
                 SkinProperty.OVERRIDE_OVERLAY_RIGHT_SLEEVE,
                 SkinProperty.OVERRIDE_EQUIPMENT_CHESTPLATE,
-                SkinProperty.KEEP_OVERLAY_COLOR
+                SkinProperty.USE_OVERLAY_COLOR
         ));
         builder.put(SkinTypes.ARMOR_FEET, Collections.newList(
                 SkinProperty.OVERRIDE_MODEL_LEFT_LEG,
@@ -67,7 +67,7 @@ public class AdvancedSettingPanel extends AdvancedPanel {
                 SkinProperty.OVERRIDE_OVERLAY_LEFT_PANTS,
                 SkinProperty.OVERRIDE_OVERLAY_RIGHT_PANTS,
                 SkinProperty.OVERRIDE_EQUIPMENT_LEGGINGS,
-                SkinProperty.KEEP_OVERLAY_COLOR
+                SkinProperty.USE_OVERLAY_COLOR
         ));
         builder.put(SkinTypes.ARMOR_LEGS, Collections.newList(
                 SkinProperty.OVERRIDE_MODEL_LEFT_LEG,
@@ -76,10 +76,10 @@ public class AdvancedSettingPanel extends AdvancedPanel {
                 SkinProperty.OVERRIDE_OVERLAY_RIGHT_PANTS,
                 SkinProperty.OVERRIDE_EQUIPMENT_BOOTS,
                 SkinProperty.LIMIT_LEGS_LIMBS,
-                SkinProperty.KEEP_OVERLAY_COLOR
+                SkinProperty.USE_OVERLAY_COLOR
         ));
         builder.put(SkinTypes.ARMOR_WINGS, Collections.newList(
-                SkinProperty.KEEP_OVERLAY_COLOR
+                SkinProperty.USE_OVERLAY_COLOR
         ));
         builder.put(SkinTypes.ITEM_SWORD, Collections.newList());
         builder.put(SkinTypes.ITEM_SHIELD, Collections.newList());
@@ -110,7 +110,7 @@ public class AdvancedSettingPanel extends AdvancedPanel {
                 SkinProperty.OVERRIDE_MODEL_RIGHT_HIND_LEG,
                 SkinProperty.OVERRIDE_MODEL_TAIL,
                 SkinProperty.OVERRIDE_EQUIPMENT_CHESTPLATE,
-                SkinProperty.KEEP_OVERLAY_COLOR
+                SkinProperty.USE_OVERLAY_COLOR
         ));
     });
 
