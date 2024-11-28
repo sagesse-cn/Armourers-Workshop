@@ -7,8 +7,8 @@ import net.minecraft.world.level.Level;
 import manifold.ext.rt.api.Extension;
 import manifold.ext.rt.api.This;
 
-@Extension
 @Available("[1.16, 1.18)")
+@Extension
 public class PropertyProvider {
 
     public static void setYRot(@This Entity entity, float value) {

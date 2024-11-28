@@ -1,4 +1,4 @@
-package moe.plushie.armourers_workshop.core.skin;
+package moe.plushie.armourers_workshop.core.skin.locator;
 
 public enum SkinLocatorType {
 

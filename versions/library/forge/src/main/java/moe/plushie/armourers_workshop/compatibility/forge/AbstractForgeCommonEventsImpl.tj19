@@ -6,6 +6,7 @@ import net.minecraftforge.event.OnDatapackSyncEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
+import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
@@ -53,6 +54,8 @@ public class AbstractForgeCommonEventsImpl {
     public static final auto PLAYER_LOGOUT = AbstractForgeEventBus.create(PlayerEvent.PlayerLoggedOutEvent.class);
     public static final auto PLAYER_CLONE = AbstractForgeEventBus.create(PlayerEvent.Clone.class);
     public static final auto PLAYER_TRACKING = AbstractForgeEventBus.create(PlayerEvent.StartTracking.class);
+
+    public static final auto ENTITY_RELOAD_SIZE = AbstractForgeEventBus.create(EntityEvent.Size.class);
 
     public static final auto DATA_PACK_SYNC = AbstractForgeEventBus.create(OnDatapackSyncEvent.class);
 

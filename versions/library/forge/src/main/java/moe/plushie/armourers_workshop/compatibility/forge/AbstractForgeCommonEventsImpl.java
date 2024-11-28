@@ -9,6 +9,7 @@ import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import net.neoforged.neoforge.event.OnDatapackSyncEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
+import net.neoforged.neoforge.event.entity.EntityEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDropsEvent;
 import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
@@ -54,6 +55,8 @@ public class AbstractForgeCommonEventsImpl {
     public static final auto PLAYER_LOGOUT = AbstractForgeEventBus.create(PlayerEvent.PlayerLoggedOutEvent.class);
     public static final auto PLAYER_CLONE = AbstractForgeEventBus.create(PlayerEvent.Clone.class);
     public static final auto PLAYER_TRACKING = AbstractForgeEventBus.create(PlayerEvent.StartTracking.class);
+
+    public static final auto ENTITY_RELOAD_SIZE = AbstractForgeEventBus.create(EntityEvent.Size.class);
 
     public static final auto DATA_PACK_SYNC = AbstractForgeEventBus.create(OnDatapackSyncEvent.class);
 

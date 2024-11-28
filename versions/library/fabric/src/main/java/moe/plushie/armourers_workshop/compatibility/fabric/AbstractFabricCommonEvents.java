@@ -3,6 +3,7 @@ package moe.plushie.armourers_workshop.compatibility.fabric;
 import moe.plushie.armourers_workshop.compatibility.fabric.event.common.AbstractFabricBlockEvent;
 import moe.plushie.armourers_workshop.compatibility.fabric.event.common.AbstractFabricConfigEvent;
 import moe.plushie.armourers_workshop.compatibility.fabric.event.common.AbstractFabricDataPackEvent;
+import moe.plushie.armourers_workshop.compatibility.fabric.event.common.AbstractFabricEntityEvent;
 import moe.plushie.armourers_workshop.compatibility.fabric.event.common.AbstractFabricLauncherLifecycleEvent;
 import moe.plushie.armourers_workshop.compatibility.fabric.event.common.AbstractFabricPlayerEvent;
 import moe.plushie.armourers_workshop.compatibility.fabric.event.common.AbstractFabricRegisterCommandsEvent;
@@ -14,6 +15,7 @@ import moe.plushie.armourers_workshop.compatibility.fabric.event.common.Abstract
 import moe.plushie.armourers_workshop.init.platform.EventManager;
 import moe.plushie.armourers_workshop.init.platform.event.common.BlockEvent;
 import moe.plushie.armourers_workshop.init.platform.event.common.DataPackEvent;
+import moe.plushie.armourers_workshop.init.platform.event.common.EntityEvent;
 import moe.plushie.armourers_workshop.init.platform.event.common.LauncherClientSetupEvent;
 import moe.plushie.armourers_workshop.init.platform.event.common.LauncherCommonSetupEvent;
 import moe.plushie.armourers_workshop.init.platform.event.common.LauncherConfigSetupEvent;
@@ -61,6 +63,8 @@ public class AbstractFabricCommonEvents {
         EventManager.post(PlayerEvent.Clone.class, AbstractFabricPlayerEvent.cloneFactory());
         EventManager.post(PlayerEvent.Attack.class, AbstractFabricPlayerEvent.attackFactory());
         EventManager.post(PlayerEvent.StartTracking.class, AbstractFabricPlayerEvent.startTrackingFactory());
+
+        EventManager.post(EntityEvent.ReloadSize.class, AbstractFabricEntityEvent.reloadSizeFactory());
 
         EventManager.post(DataPackEvent.Sync.class, AbstractFabricDataPackEvent.syncFactory());
 

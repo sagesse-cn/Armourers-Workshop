@@ -7,8 +7,8 @@ import net.minecraft.world.level.Level;
 import manifold.ext.rt.api.Extension;
 import manifold.ext.rt.api.This;
 
-@Extension
 @Available("[1.20, )")
+@Extension
 public class PropertyProvider {
 
     public static Level getLevel(@This Entity entity) {

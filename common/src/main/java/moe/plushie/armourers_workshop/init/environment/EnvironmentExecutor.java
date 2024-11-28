@@ -88,7 +88,7 @@ public class EnvironmentExecutor {
         Util.backgroundExecutor().execute(handler.get());
     }
 
-    protected static class Manager {
+    private static class Manager {
 
         private final HashSet<EnvironmentType> status = new HashSet<>();
         private final HashMap<EnvironmentType, ArrayList<Supplier<Runnable>>> tasks = new HashMap<>();

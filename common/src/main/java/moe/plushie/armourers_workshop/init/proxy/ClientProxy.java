@@ -20,6 +20,7 @@ import moe.plushie.armourers_workshop.core.menu.SkinSlotType;
 import moe.plushie.armourers_workshop.core.skin.SkinLoader;
 import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.core.utils.OpenItemDisplayContext;
+import moe.plushie.armourers_workshop.core.utils.Scheduler;
 import moe.plushie.armourers_workshop.core.utils.TypedRegistry;
 import moe.plushie.armourers_workshop.init.ModConfig;
 import moe.plushie.armourers_workshop.init.ModConfigSpec;
@@ -149,6 +150,7 @@ public class ClientProxy {
         });
 
         EventManager.listen(RenderFrameEvent.Pre.class, event -> {
+            Scheduler.CLIENT.begin();
             AutoreleasePool.begin();
             TickUtils.tick(event.isPaused() || event.isFrozen()); // respect the /tick frozen command.
             SkinPreloadManager.tick(event.isPaused());
@@ -156,6 +158,7 @@ public class ClientProxy {
 
         EventManager.listen(RenderFrameEvent.Post.class, event -> {
             AutoreleasePool.end();
+            Scheduler.CLIENT.end();
         });
 
         // listen the block highlight events.

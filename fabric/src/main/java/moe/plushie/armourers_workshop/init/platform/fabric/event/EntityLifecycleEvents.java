@@ -5,7 +5,10 @@ import net.fabricmc.fabric.api.event.EventFactory;
 import net.fabricmc.fabric.api.networking.v1.EntityTrackingEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Pose;
 import net.minecraft.world.level.block.state.BlockState;
 
 @SuppressWarnings("unused")
@@ -31,6 +34,14 @@ public final class EntityLifecycleEvents {
         return InteractionResult.PASS;
     });
 
+    public static final Event<Size> SIZE = EventFactory.createArrayBacked(Size.class, callbacks -> (entity, pose, oldSize, newSize) -> {
+        for (var callback : callbacks) {
+            newSize = callback.resize(entity, pose, oldSize, newSize);
+        }
+        return newSize;
+    });
+
+
     @FunctionalInterface
     public interface AllowClimbing {
         /**
@@ -41,5 +52,12 @@ public final class EntityLifecycleEvents {
          * @return true if allowed, false otherwise
          */
         InteractionResult allowClimbing(LivingEntity entity, BlockPos blockPos, BlockState blockState);
+    }
+
+
+    @FunctionalInterface
+    public interface Size {
+
+        EntityDimensions resize(Entity entity, Pose pose, EntityDimensions oldSize, EntityDimensions newSize);
     }
 }

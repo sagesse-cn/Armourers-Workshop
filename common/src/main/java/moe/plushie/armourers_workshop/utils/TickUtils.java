@@ -1,6 +1,5 @@
 package moe.plushie.armourers_workshop.utils;
 
-
 import moe.plushie.armourers_workshop.core.data.TickTracker;
 
 public class TickUtils {

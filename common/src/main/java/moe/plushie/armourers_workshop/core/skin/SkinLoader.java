@@ -187,6 +187,10 @@ public class SkinLoader {
         throw new RuntimeException("can't support method in session");
     }
 
+    public void loadSkinInfo(String identifier, @Nullable IResultHandler<Skin> handler) {
+        loadSkin(identifier, handler);
+    }
+
     public String saveSkin(String identifier, Skin skin) {
         try {
             // when the skin is already in the database, we not need to modify it.
@@ -592,6 +596,9 @@ public class SkinLoader {
             }
             // fs:<file-path> or ws:<file-path>
             var path = FileUtils.normalize(DataDomain.getPath(identifier));
+            if (path.isEmpty()) {
+                throw new FileNotFoundException(identifier);
+            }
             var file = new File(EnvironmentManager.getSkinLibraryDirectory(), path);
             if (file.exists()) {
                 return new FileInputStream(file);
@@ -622,7 +629,11 @@ public class SkinLoader {
                 throw new IllegalAccessException("the resource pack session only work in the client side.");
             }
             // pk:<pack-id>:<skin-path>
-            var file = OpenResourceLocation.parse(DataDomain.getPath(identifier));
+            var path = DataDomain.getPath(identifier);
+            if (path.isEmpty()) {
+                throw new FileNotFoundException(identifier);
+            }
+            var file = OpenResourceLocation.parse(path);
             var resourceManager = EnvironmentManager.getResourceManager();
             if (resourceManager.hasResource(file)) {
                 return resourceManager.readResource(file).getInputStream();
@@ -671,7 +682,7 @@ public class SkinLoader {
         }
 
         public Skin await(Request request) throws Exception {
-            LockState state = new LockState(available);
+            var state = new LockState(available);
             LOADER.waiting.put(request.identifier, (skin, exception) -> receive(request, state, skin, exception));
             ModLog.debug("'{}' => await server response", request.identifier);
             boolean ignored = available.tryAcquire(30, TimeUnit.SECONDS);

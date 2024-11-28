@@ -232,7 +232,7 @@ public class SkinSettings {
 
             @Override
             void write(List<Rectangle3f> collisionBox, IOutputStream outputStream) throws IOException {
-                outputStream.writeVarInt(collisionBox.size());
+                outputStream.writeVarInt(collisionBox.size() + 1);
                 for (var box : collisionBox) {
                     outputStream.writeRectangle3f(box);
                 }

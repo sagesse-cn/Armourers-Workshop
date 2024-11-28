@@ -102,7 +102,7 @@ public class ModelHolder {
         return allParts;
     }
 
-    public static class Entry<T extends Model, M extends IModel> {
+    private static class Entry<T extends Model, M extends IModel> {
 
         Class<T> clazz;
         Function<Container, M> factory;
@@ -115,7 +115,7 @@ public class ModelHolder {
         }
     }
 
-    public static class Container extends CachedModel.Container<ModelPart> {
+    private static class Container extends CachedModel.Container<ModelPart> {
 
         private final EntityModel<?> model;
 

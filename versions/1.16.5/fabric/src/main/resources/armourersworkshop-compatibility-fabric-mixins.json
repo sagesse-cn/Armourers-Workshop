@@ -9,6 +9,7 @@
     "FabricTrinketsAddonMixin"
   ],
   "mixins": [
+    "FabricEntitySizeMixin"
   ],
   "injectors": {
     "defaultRequire": 1

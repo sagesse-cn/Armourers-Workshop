@@ -14,12 +14,16 @@ import moe.plushie.armourers_workshop.api.skin.ISkinType;
 import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintColor;
 import moe.plushie.armourers_workshop.compatibility.core.data.AbstractEntityDataSerializer;
 import moe.plushie.armourers_workshop.core.capability.SkinWardrobe;
+import moe.plushie.armourers_workshop.core.data.EntityCollisionShape;
 import moe.plushie.armourers_workshop.core.entity.EntityProfile;
+import moe.plushie.armourers_workshop.core.math.Rectangle3f;
 import moe.plushie.armourers_workshop.core.math.Vector3f;
 import moe.plushie.armourers_workshop.core.skin.SkinTypes;
 import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
 import moe.plushie.armourers_workshop.core.skin.paint.texture.EntityTextureDescriptor;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperties;
+import moe.plushie.armourers_workshop.core.utils.Collections;
+import moe.plushie.armourers_workshop.core.utils.Objects;
 import moe.plushie.armourers_workshop.core.utils.OpenResourceLocation;
 import moe.plushie.armourers_workshop.core.utils.StreamUtils;
 import moe.plushie.armourers_workshop.init.ModConfig;
@@ -42,6 +46,7 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -53,6 +58,8 @@ import java.util.zip.GZIPOutputStream;
 public class DataSerializers {
 
     public static final IDataCodec<IResourceLocation> RESOURCE_LOCATION = IDataCodec.STRING.xmap(OpenResourceLocation::parse, IResourceLocation::toString);
+    public static final IDataCodec<Rectangle3f> BOUNDING_BOX = IDataCodec.FLOAT.listOf().xmap(Rectangle3f::new, Rectangle3f::toList);
+
 
     public static final IEntitySerializer<CompoundTag> COMPOUND_TAG = of(EntityDataSerializers.COMPOUND_TAG);
     public static final IEntitySerializer<Integer> INT = of(EntityDataSerializers.INT);
@@ -110,6 +117,33 @@ public class DataSerializers {
         @Override
         public EntityTextureDescriptor read(IFriendlyByteBuf buffer) {
             return buffer.readNbtWithCodec(EntityTextureDescriptor.CODEC);
+        }
+    };
+
+    public static final IEntitySerializer<EntityCollisionShape> COLLISION_SHAPE_OPT = new IEntitySerializer<EntityCollisionShape>() {
+        @Override
+        public EntityCollisionShape read(IFriendlyByteBuf buffer) {
+            int size = buffer.readVarInt();
+            if (size == 0) {
+                return null;
+            }
+            var values = new ArrayList<Float>();
+            for (int i = 0; i < size; ++i) {
+                values.add(buffer.readFloat());
+            }
+            return new EntityCollisionShape(values);
+        }
+
+        @Override
+        public void write(IFriendlyByteBuf buffer, EntityCollisionShape shape) {
+            var values = Objects.flatMap(shape, EntityCollisionShape::toList);
+            if (values == null) {
+                values = Collections.emptyList();
+            }
+            buffer.writeVarInt(values.size());
+            for (var value : values) {
+                buffer.writeFloat(value);
+            }
         }
     };
 

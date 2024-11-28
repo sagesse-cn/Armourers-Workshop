@@ -181,38 +181,45 @@ public class UpdateWardrobePacket extends CustomPacket {
 
         private static final auto TYPE = GenericProperties.of(SkinWardrobe.class, UpdateWardrobePacket::field);
 
-        public static final auto WARDROBE_ARMOUR_HEAD = create(EquipmentSlot.HEAD);
-        public static final auto WARDROBE_ARMOUR_CHEST = create(EquipmentSlot.CHEST);
-        public static final auto WARDROBE_ARMOUR_LEGS = create(EquipmentSlot.LEGS);
-        public static final auto WARDROBE_ARMOUR_FEET = create(EquipmentSlot.FEET);
+        public static final auto WARDROBE_ARMOUR_HEAD = wardrobe(EquipmentSlot.HEAD);
+        public static final auto WARDROBE_ARMOUR_CHEST = wardrobe(EquipmentSlot.CHEST);
+        public static final auto WARDROBE_ARMOUR_LEGS = wardrobe(EquipmentSlot.LEGS);
+        public static final auto WARDROBE_ARMOUR_FEET = wardrobe(EquipmentSlot.FEET);
 
-        public static final auto WARDROBE_EXTRA_RENDER = create(SkinWardrobe::shouldRenderExtra, SkinWardrobe::setRenderExtra);
+        public static final auto WARDROBE_EXTRA_RENDER = wardrobe(SkinWardrobe::shouldRenderExtra, SkinWardrobe::setRenderExtra);
 
-        public static final auto MANNEQUIN_IS_CHILD = create(MannequinEntity.DATA_IS_CHILD);
-        public static final auto MANNEQUIN_IS_FLYING = create(MannequinEntity.DATA_IS_FLYING);
-        public static final auto MANNEQUIN_IS_VISIBLE = create(MannequinEntity.DATA_IS_VISIBLE);
-        public static final auto MANNEQUIN_IS_GHOST = create(MannequinEntity.DATA_IS_GHOST);
-        public static final auto MANNEQUIN_EXTRA_RENDER = create(MannequinEntity.DATA_EXTRA_RENDERER);
+        public static final auto WARDROBE_COLLISION_SHAPE = wardrobe(SkinWardrobe::getCollisionShape, SkinWardrobe::setCollisionShape, DataSerializers.COLLISION_SHAPE_OPT);
 
-        public static final auto MANNEQUIN_POSE = create(MannequinEntity::saveCustomPose, MannequinEntity::readCustomPose, DataSerializers.COMPOUND_TAG);
-        public static final auto MANNEQUIN_POSITION = create(MannequinEntity::position, MannequinEntity::moveTo, DataSerializers.VECTOR_3D);
+        public static final auto MANNEQUIN_IS_CHILD = entity(MannequinEntity.DATA_IS_CHILD);
+        public static final auto MANNEQUIN_IS_FLYING = entity(MannequinEntity.DATA_IS_FLYING);
+        public static final auto MANNEQUIN_IS_VISIBLE = entity(MannequinEntity.DATA_IS_VISIBLE);
+        public static final auto MANNEQUIN_IS_GHOST = entity(MannequinEntity.DATA_IS_GHOST);
+        public static final auto MANNEQUIN_EXTRA_RENDER = entity(MannequinEntity.DATA_EXTRA_RENDERER);
 
-        public static final auto MANNEQUIN_TEXTURE = create(MannequinEntity.DATA_TEXTURE);
+        public static final auto MANNEQUIN_POSE = entity(MannequinEntity::saveCustomPose, MannequinEntity::readCustomPose, DataSerializers.COMPOUND_TAG);
+        public static final auto MANNEQUIN_POSITION = entity(MannequinEntity::position, MannequinEntity::moveTo, DataSerializers.VECTOR_3D);
+
+        public static final auto MANNEQUIN_TEXTURE = entity(MannequinEntity.DATA_TEXTURE);
 
 
-        private static Field<Boolean> create(EquipmentSlot slotType) {
-            return create((source) -> source.shouldRenderEquipment(slotType), (source, value) -> source.setRenderEquipment(slotType, value));
+        private static Field<Boolean> wardrobe(EquipmentSlot slotType) {
+            return wardrobe((source) -> source.shouldRenderEquipment(slotType), (source, value) -> source.setRenderEquipment(slotType, value), DataSerializers.BOOLEAN);
         }
 
-        private static Field<Boolean> create(Function<SkinWardrobe, Boolean> supplier, BiConsumer<SkinWardrobe, Boolean> applier) {
-            return TYPE.create(DataSerializers.BOOLEAN).getter(supplier).setter(applier).build(Field::new);
+        private static Field<Boolean> wardrobe(Function<SkinWardrobe, Boolean> supplier, BiConsumer<SkinWardrobe, Boolean> applier) {
+            return wardrobe(supplier, applier, DataSerializers.BOOLEAN);
         }
 
-        private static <T> Field<T> create(EntityDataAccessor<T> dataParameter) {
-            return create((entity) -> entity.getEntityData().get(dataParameter), (entity, value) -> entity.getEntityData().set(dataParameter, value), AbstractEntityDataSerializer.wrap(dataParameter));
+        private static <T> Field<T> wardrobe(Function<SkinWardrobe, T> supplier, BiConsumer<SkinWardrobe, T> applier, IEntitySerializer<T> dataSerializer) {
+            return TYPE.create(dataSerializer).getter(supplier).setter(applier).build(Field::new);
         }
 
-        private static <S extends Entity, T> Field<T> create(Function<S, T> supplier, BiConsumer<S, T> applier, IEntitySerializer<T> dataSerializer) {
+
+        private static <T> Field<T> entity(EntityDataAccessor<T> dataParameter) {
+            return entity((entity) -> entity.getEntityData().get(dataParameter), (entity, value) -> entity.getEntityData().set(dataParameter, value), AbstractEntityDataSerializer.wrap(dataParameter));
+        }
+
+        private static <S extends Entity, T> Field<T> entity(Function<S, T> supplier, BiConsumer<S, T> applier, IEntitySerializer<T> dataSerializer) {
             return TYPE.create(dataSerializer).getter((source) -> {
                 var entity = source.getEntity();
                 if (entity != null) {

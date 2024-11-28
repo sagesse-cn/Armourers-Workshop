@@ -1,7 +1,6 @@
 package moe.plushie.armourers_workshop.core.skin.serializer.document;
 
 import com.mojang.authlib.GameProfile;
-import moe.plushie.armourers_workshop.core.utils.OpenItemTransforms;
 import moe.plushie.armourers_workshop.core.math.OpenMath;
 import moe.plushie.armourers_workshop.core.math.Rectangle3f;
 import moe.plushie.armourers_workshop.core.math.Vector3i;
@@ -11,13 +10,14 @@ import moe.plushie.armourers_workshop.core.skin.SkinLoader;
 import moe.plushie.armourers_workshop.core.skin.SkinMarker;
 import moe.plushie.armourers_workshop.core.skin.SkinTypes;
 import moe.plushie.armourers_workshop.core.skin.animation.SkinAnimation;
-import moe.plushie.armourers_workshop.core.skin.serializer.exception.SkinSaveException;
-import moe.plushie.armourers_workshop.core.skin.serializer.exception.TranslatableException;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPart;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperty;
 import moe.plushie.armourers_workshop.core.skin.property.SkinSettings;
 import moe.plushie.armourers_workshop.core.skin.serializer.SkinSerializer;
+import moe.plushie.armourers_workshop.core.skin.serializer.exception.SkinSaveException;
+import moe.plushie.armourers_workshop.core.skin.serializer.exception.TranslatableException;
 import moe.plushie.armourers_workshop.core.utils.Collections;
+import moe.plushie.armourers_workshop.core.utils.OpenItemTransforms;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.Nullable;
 
@@ -84,6 +84,7 @@ public class SkinDocumentExporter {
 
         settings.setEditable(false);
         settings.setItemTransforms(itemTransforms);
+        //settings.setCollisionBox(Collections.newList(new Rectangle3f(0, 0, 0, 2, 2, 2)));
 
         builder.version(SkinSerializer.Versions.V20);
         builder.settings(settings);

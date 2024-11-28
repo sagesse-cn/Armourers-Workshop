@@ -193,7 +193,7 @@ public final class SkinUtils {
 
     public static <T extends Entity> Consumer<T> appendSkinIntoEntity(Consumer<T> consumer, ServerLevel serverLevel, ItemStack itemStack, @Nullable Player player) {
         //
-        var descriptor = itemStack.getOrDefault(ModDataComponents.SKIN.get(), SkinDescriptor.EMPTY);
+        var descriptor = SkinDescriptor.of(itemStack);
         if (descriptor.isEmpty()) {
             return consumer;
         }

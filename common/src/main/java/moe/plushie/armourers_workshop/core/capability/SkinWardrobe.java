@@ -1,10 +1,12 @@
 package moe.plushie.armourers_workshop.core.capability;
 
-import moe.plushie.armourers_workshop.api.core.IDataSerializer;
 import moe.plushie.armourers_workshop.api.core.IDataSerializable;
+import moe.plushie.armourers_workshop.api.core.IDataSerializer;
+import moe.plushie.armourers_workshop.core.data.EntityCollisionContainer;
+import moe.plushie.armourers_workshop.core.data.EntityCollisionShape;
 import moe.plushie.armourers_workshop.core.data.EntityDataStorage;
-import moe.plushie.armourers_workshop.core.menu.SkinSlotType;
 import moe.plushie.armourers_workshop.core.entity.EntityProfile;
+import moe.plushie.armourers_workshop.core.menu.SkinSlotType;
 import moe.plushie.armourers_workshop.core.network.UpdateWardrobePacket;
 import moe.plushie.armourers_workshop.init.ModConfig;
 import moe.plushie.armourers_workshop.init.ModEntityProfiles;
@@ -34,6 +36,7 @@ public class SkinWardrobe implements IDataSerializable.Mutable {
     private final HashMap<SkinSlotType, Integer> skinSlots = new HashMap<>();
 
     private final SimpleContainer inventory = new SimpleContainer(SkinSlotType.getTotalSize());
+    private final EntityCollisionContainer collision;
 
     private final WeakReference<Entity> entity;
 
@@ -43,6 +46,7 @@ public class SkinWardrobe implements IDataSerializable.Mutable {
     public SkinWardrobe(Entity entity, EntityProfile profile) {
         this.id = entity.getId();
         this.entity = new WeakReference<>(entity);
+        this.collision = new EntityCollisionContainer(inventory, entity);
         this.profile = profile;
     }
 
@@ -67,15 +71,19 @@ public class SkinWardrobe implements IDataSerializable.Mutable {
         SkinWardrobeStorage.saveSkinSlots(skinSlots, serializer);
         SkinWardrobeStorage.saveFlags(flags, serializer);
         SkinWardrobeStorage.saveInventoryItems(inventory, serializer);
+        SkinWardrobeStorage.saveBoundingBox(collision, serializer);
         SkinWardrobeStorage.saveDataFixer(this, serializer);
     }
 
     @Override
     public void deserialize(IDataSerializer serializer) {
+        collision.beginUpdates();
         SkinWardrobeStorage.loadSkinSlots(skinSlots, serializer);
         SkinWardrobeStorage.loadFlags(flags, serializer);
         SkinWardrobeStorage.loadInventoryItems(inventory, serializer);
+        SkinWardrobeStorage.loadBoundingBox(collision, this, serializer);
         SkinWardrobeStorage.loadDataFixer(this, serializer);
+        collision.endUpdates();
     }
 
     public void setProfile(EntityProfile profile) {
@@ -143,6 +151,14 @@ public class SkinWardrobe implements IDataSerializable.Mutable {
 
     public void broadcast(ServerPlayer player) {
         NetworkManager.sendTo(UpdateWardrobePacket.sync(this), player);
+    }
+
+    public void setCollisionShape(EntityCollisionShape shape) {
+        collision.setResult(shape);
+    }
+
+    public EntityCollisionShape getCollisionShape() {
+        return collision.getResult();
     }
 
     public boolean shouldRenderEquipment(EquipmentSlot slotType) {

@@ -11,6 +11,7 @@ import moe.plushie.armourers_workshop.core.data.TickTracker;
 import moe.plushie.armourers_workshop.core.entity.MannequinEntity;
 import moe.plushie.armourers_workshop.core.entity.SeatEntity;
 import moe.plushie.armourers_workshop.core.skin.SkinLoader;
+import moe.plushie.armourers_workshop.core.utils.Scheduler;
 import moe.plushie.armourers_workshop.init.ModCommands;
 import moe.plushie.armourers_workshop.init.ModContext;
 import moe.plushie.armourers_workshop.init.ModEntityProfiles;
@@ -25,6 +26,7 @@ import moe.plushie.armourers_workshop.init.platform.NetworkManager;
 import moe.plushie.armourers_workshop.init.platform.ReplayManager;
 import moe.plushie.armourers_workshop.init.platform.event.common.BlockEvent;
 import moe.plushie.armourers_workshop.init.platform.event.common.DataPackEvent;
+import moe.plushie.armourers_workshop.init.platform.event.common.EntityEvent;
 import moe.plushie.armourers_workshop.init.platform.event.common.PlayerEvent;
 import moe.plushie.armourers_workshop.init.platform.event.common.RegisterCommandsEvent;
 import moe.plushie.armourers_workshop.init.platform.event.common.RegisterDataPackEvent;
@@ -35,6 +37,7 @@ import moe.plushie.armourers_workshop.init.platform.event.common.ServerStartedEv
 import moe.plushie.armourers_workshop.init.platform.event.common.ServerStartingEvent;
 import moe.plushie.armourers_workshop.init.platform.event.common.ServerStoppedEvent;
 import moe.plushie.armourers_workshop.init.platform.event.common.ServerStoppingEvent;
+import moe.plushie.armourers_workshop.init.platform.event.common.ServerTickEvent;
 import moe.plushie.armourers_workshop.library.data.GlobalSkinLibrary;
 import moe.plushie.armourers_workshop.library.data.SkinLibraryManager;
 import moe.plushie.armourers_workshop.utils.BlockUtils;
@@ -92,6 +95,9 @@ public class CommonProxy {
             ModLog.debug("bye");
             ModContext.reset();
         });
+
+        EventManager.listen(ServerTickEvent.Pre.class, event -> Scheduler.SERVER.begin());
+        EventManager.listen(ServerTickEvent.Post.class, event -> Scheduler.SERVER.end());
 
         EventManager.listen(DataPackEvent.Sync.class, event -> {
             // when the data pack sync event, we will initialize context.
@@ -151,6 +157,14 @@ public class CommonProxy {
                 NetworkManager.sendWardrobeTo(event.getTarget(), (ServerPlayer) event.getPlayer());
             }
         });
+
+        EventManager.listen(EntityEvent.ReloadSize.class, event -> {
+            var collisionShape = event.getEntity().getCollisionShape();
+            if (collisionShape != null) {
+                event.setSize(event.getSize().withCollisionShape(collisionShape));
+            }
+        });
+
 
         EventManager.listen(ServerLevelTickEvent.Pre.class, event -> {
             TickTracker.server().update(false);

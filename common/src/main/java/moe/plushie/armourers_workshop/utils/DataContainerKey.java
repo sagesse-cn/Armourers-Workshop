@@ -41,6 +41,11 @@ public class DataContainerKey<T> implements IAssociatedContainerKey<T> {
         return id;
     }
 
+    @Override
+    public String toString() {
+        return name;
+    }
+
     public int getId() {
         return id;
     }

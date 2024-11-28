@@ -4,9 +4,10 @@ import moe.plushie.armourers_workshop.api.core.IDataCodec;
 import moe.plushie.armourers_workshop.api.core.IDataSerializer;
 import moe.plushie.armourers_workshop.api.core.IDataSerializerKey;
 import moe.plushie.armourers_workshop.compatibility.core.data.AbstractDataSerializer;
+import moe.plushie.armourers_workshop.core.data.EntityCollisionContainer;
 import moe.plushie.armourers_workshop.core.menu.SkinSlotType;
-import moe.plushie.armourers_workshop.utils.DataFixerUtils;
 import moe.plushie.armourers_workshop.core.utils.NonNullItemList;
+import moe.plushie.armourers_workshop.utils.DataFixerUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.Entity;
@@ -59,6 +60,14 @@ public class SkinWardrobeStorage {
                 inventory.setItem(i, newItemStack);
             }
         }
+    }
+
+    public static void saveBoundingBox(EntityCollisionContainer boundingBox, IDataSerializer serializer) {
+        boundingBox.serialize(serializer);
+    }
+
+    public static void loadBoundingBox(EntityCollisionContainer boundingBox, SkinWardrobe wardrobe, IDataSerializer serializer) {
+        boundingBox.deserialize(serializer);
     }
 
     public static void saveFlags(BitSet flags, IDataSerializer serializer) {
