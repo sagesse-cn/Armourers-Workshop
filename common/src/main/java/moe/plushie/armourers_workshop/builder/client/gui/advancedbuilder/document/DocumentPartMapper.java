@@ -7,14 +7,18 @@ import moe.plushie.armourers_workshop.core.armature.Armature;
 import moe.plushie.armourers_workshop.core.armature.Armatures;
 import moe.plushie.armourers_workshop.core.math.Vector3f;
 import moe.plushie.armourers_workshop.core.skin.SkinTypes;
+import moe.plushie.armourers_workshop.core.skin.attachment.SkinAttachmentType;
+import moe.plushie.armourers_workshop.core.skin.attachment.SkinAttachmentTypes;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPartTypes;
 import moe.plushie.armourers_workshop.core.utils.Collections;
 
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 
-public class DocumentBoneMapper {
+public class DocumentPartMapper {
 
     private static final Set<ISkinType> SINGLE_TYPES = Collections.immutableSet(builder -> {
         builder.add(SkinTypes.ITEM_SWORD);
@@ -50,12 +54,15 @@ public class DocumentBoneMapper {
     private final ISkinType type;
     private final Function<String, Entry> provider;
 
-    public DocumentBoneMapper(ISkinType type, Function<String, Entry> provider) {
+    private final Map<Node, Node> overrideNodes = new HashMap<>();
+
+    public DocumentPartMapper(ISkinType type, Function<String, Entry> provider) {
         this.type = type;
         this.provider = provider;
+        this.setup();
     }
 
-    public static DocumentBoneMapper of(ISkinType type) {
+    public static DocumentPartMapper of(ISkinType type) {
         // read bow item
         if (type == SkinTypes.ITEM_BOW) {
             return of(type, BOW_PARTS);
@@ -68,8 +75,8 @@ public class DocumentBoneMapper {
         return of(type, Armatures.byType(type));
     }
 
-    private static DocumentBoneMapper of(ISkinType type, Armature armature) {
-        return new DocumentBoneMapper(type, name -> {
+    private static DocumentPartMapper of(ISkinType type, Armature armature) {
+        return new DocumentPartMapper(type, name -> {
             var joint = armature.getJoint(name);
             if (joint != null) {
                 var partType = armature.getPartType(joint);
@@ -81,8 +88,8 @@ public class DocumentBoneMapper {
         });
     }
 
-    private static DocumentBoneMapper of(ISkinType type, Map<String, ISkinPartType> map) {
-        return new DocumentBoneMapper(type, name -> {
+    private static DocumentPartMapper of(ISkinType type, Map<String, ISkinPartType> map) {
+        return new DocumentPartMapper(type, name -> {
             var partType = map.get(name);
             if (partType != null) {
                 return new Entry(null, partType);
@@ -109,9 +116,43 @@ public class DocumentBoneMapper {
         return null;
     }
 
+    public Node resolve(String name, ISkinPartType partType) {
+        var node = new Node(name, partType);
+        return overrideNodes.getOrDefault(node, node);
+    }
+
     public boolean isEmpty() {
         return false;
     }
+
+
+    private void setup() {
+
+        register(Node.bone("LeftHandLocator"), SkinAttachmentTypes.LEFT_HAND);
+        register(Node.bone("RightHandLocator"), SkinAttachmentTypes.RIGHT_HAND);
+
+        register(Node.bone("LeftShoulderLocator"), SkinAttachmentTypes.LEFT_SHOULDER);
+        register(Node.bone("RightShoulderLocator"), SkinAttachmentTypes.RIGHT_SHOULDER);
+
+        register(Node.bone("LeftWaistLocator"), SkinAttachmentTypes.LEFT_WAIST);
+        register(Node.bone("RightWaistLocator"), SkinAttachmentTypes.RIGHT_WAIST);
+
+        register(Node.bone("PistolLocator"), SkinAttachmentTypes.PISTOL);
+        register(Node.bone("RifleLocator"), SkinAttachmentTypes.RIFLE);
+
+        register(Node.bone("ViewLocator"), SkinAttachmentTypes.VIEW);
+
+        register(Node.bone("ElytraLocator"), SkinAttachmentTypes.ELYTRA);
+        register(Node.bone("NameLocator"), SkinAttachmentTypes.NAME);
+
+        register(Node.locator("hand_l"), SkinAttachmentTypes.LEFT_HAND);
+        register(Node.locator("hand_r"), SkinAttachmentTypes.RIGHT_HAND);
+    }
+
+    private void register(Node node, SkinAttachmentType attachmentType) {
+        overrideNodes.put(node, Node.locator(attachmentType.getRegistryName().toString()));
+    }
+
 
     public static class Entry {
 
@@ -136,6 +177,45 @@ public class DocumentBoneMapper {
 
         public ISkinPartType getType() {
             return type;
+        }
+    }
+
+    public static class Node {
+
+        private final String name;
+        private final ISkinPartType type;
+
+        public Node(String name, ISkinPartType type) {
+            this.name = name;
+            this.type = type;
+        }
+
+        public static Node bone(String name) {
+            return new Node(name, SkinPartTypes.ADVANCED);
+        }
+
+        public static Node locator(String name) {
+            return new Node(name, SkinPartTypes.ADVANCED_LOCATOR);
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public ISkinPartType getType() {
+            return type;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof Node node)) return false;
+            return Objects.equals(name, node.name) && Objects.equals(type, node.type);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(name, type);
         }
     }
 }

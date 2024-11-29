@@ -9,10 +9,13 @@ import moe.plushie.armourers_workshop.core.math.OpenTransform3f;
 import moe.plushie.armourers_workshop.core.math.Vector3f;
 import moe.plushie.armourers_workshop.core.skin.Skin;
 import moe.plushie.armourers_workshop.core.skin.SkinTypes;
-import moe.plushie.armourers_workshop.core.skin.serializer.exception.TranslatableException;
+import moe.plushie.armourers_workshop.core.skin.animation.SkinAnimation;
+import moe.plushie.armourers_workshop.core.skin.animation.SkinAnimationKeyframe;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPart;
+import moe.plushie.armourers_workshop.core.skin.part.SkinPartTypes;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperty;
 import moe.plushie.armourers_workshop.core.skin.serializer.SkinSerializer;
+import moe.plushie.armourers_workshop.core.skin.serializer.exception.TranslatableException;
 import moe.plushie.armourers_workshop.core.skin.serializer.importer.blockbench.BlockBenchExporter;
 import moe.plushie.armourers_workshop.core.skin.serializer.importer.blockbench.BlockBenchPack;
 import moe.plushie.armourers_workshop.core.skin.serializer.importer.blockbench.BlockBenchPackReader;
@@ -23,6 +26,7 @@ import net.minecraft.client.Minecraft;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.Stack;
@@ -34,12 +38,12 @@ public class DocumentImporter {
     private boolean keepItemTransforms = false;
     private final File inputFile;
     private final ISkinType targetType;
-    private final DocumentBoneMapper boneMapper;
+    private final DocumentPartMapper partMapper;
 
     public DocumentImporter(File inputFile, ISkinType targetType) {
         this.inputFile = inputFile;
         this.targetType = targetType;
-        this.boneMapper = DocumentBoneMapper.of(targetType);
+        this.partMapper = DocumentPartMapper.of(targetType);
         //this.boneMapper = DocumentBoneMapper.of(SkinTypes.ADVANCED);
     }
 
@@ -138,27 +142,58 @@ public class DocumentImporter {
             settings.setItemTransforms(null);
         }
 
-        var rootParts = new ArrayList<>(skin.getParts());
-        if (boneMapper.getRoot() != null) {
+        var resolvedParts = resolveMappedParts(skin.getParts());
+        var resolvedAnimations = resolveMappedAnimations(skin.getAnimations());
+
+        var rootParts = new ArrayList<>(resolvedParts);
+        if (partMapper.getRoot() != null) {
             // merge into one part
-            var rootEntry = boneMapper.getRoot();
+            var rootEntry = partMapper.getRoot();
             var builder = new SkinPart.Builder(rootEntry.getType());
-            builder.children(skin.getParts());
+            builder.children(resolvedParts);
             rootParts.clear();
             rootParts.add(builder.build());
-        } else if (!boneMapper.isEmpty()) {
-            skin.getParts().forEach(it -> extractToRootPart(it, new Stack<>(), rootParts));
+        } else if (!partMapper.isEmpty()) {
+            resolvedParts.forEach(it -> extractToRootPart(it, new Stack<>(), rootParts));
         }
 
         var builder = new Skin.Builder(SkinTypes.ADVANCED);
         builder.parts(rootParts);
         builder.settings(settings);
         builder.properties(properties);
-        builder.animations(skin.getAnimations());
+        builder.animations(resolvedAnimations);
         builder.version(SkinSerializer.Versions.V20);
         return builder.build();
     }
 
+    public List<SkinPart> resolveMappedParts(List<SkinPart> parts) {
+        var results = new ArrayList<SkinPart>();
+        for (var part : parts) {
+            var node = partMapper.resolve(part.getName(), part.getType());
+            var builder = new SkinPart.Builder(node.getType());
+            builder.copyFrom(part);
+            builder.name(node.getName());
+            builder.children(resolveMappedParts(part.getChildren()));
+            results.add(builder.build());
+        }
+        return results;
+    }
+
+    private List<SkinAnimation> resolveMappedAnimations(List<SkinAnimation> animations) {
+        var results = new ArrayList<SkinAnimation>();
+        for (var animation : animations) {
+            var keyframes = new LinkedHashMap<String, List<SkinAnimationKeyframe>>();
+            animation.getKeyframes().forEach((key, value) -> {
+                var node = partMapper.resolve(key, SkinPartTypes.ADVANCED);
+                keyframes.put(node.getName(), value);
+            });
+            var name = animation.getName();
+            var duration = animation.getDuration();
+            var loop = animation.getLoop();
+            results.add(new SkinAnimation(name, duration, loop, keyframes));
+        }
+        return results;
+    }
 
     private void extractToRootPart(SkinPart part, Stack<SkinPart> parent, List<SkinPart> rootParts) {
         // search all child part.
@@ -169,7 +204,7 @@ public class DocumentImporter {
             parent.pop();
         }
         // the part is rewrite?
-        var entry = boneMapper.get(part.getName());
+        var entry = partMapper.get(part.getName());
         if (entry != null && entry.isRootPart()) {
             // remove from the part tree.
             if (parent.isEmpty()) {
@@ -179,15 +214,13 @@ public class DocumentImporter {
                 parentPart.removePart(part);
             }
             var builder = new SkinPart.Builder(entry.getType());
-            builder.name(part.getName());
+            builder.copyFrom(part);
             builder.transform(convertToLocal(part, entry, parent));
-            builder.geometries(part.getGeometries());
-            builder.children(part.getChildren());
             rootParts.add(builder.build());
         }
     }
 
-    private OpenTransform3f convertToLocal(SkinPart part, DocumentBoneMapper.Entry entry, Stack<SkinPart> parent) {
+    private OpenTransform3f convertToLocal(SkinPart part, DocumentPartMapper.Entry entry, Stack<SkinPart> parent) {
         // TODO: @SAGESSE add built-in pivot support.
         //var origin = getParentOrigin(parent).adding(transform.getTranslate());
         //translate = origin;
@@ -217,7 +250,7 @@ public class DocumentImporter {
 
     private Vector3f getOffset(BlockBenchPack pack) {
         // relocation the block model origin to the center(8, 8, 8).
-        if (ITEM_TYPES.contains(SkinTypes.BLOCK)) {
+        if (ITEM_TYPES.contains(targetType)) {
             // work in java_block.
             if (pack.getFormat().equals("java_block")) {
                 return new Vector3f(8, 8, 8);

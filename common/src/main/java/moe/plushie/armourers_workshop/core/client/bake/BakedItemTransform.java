@@ -99,8 +99,6 @@ public abstract class BakedItemTransform {
     protected void applyItemTransform(ItemTransform itemTransform, OpenItemDisplayContext displayContext, IPoseStack poseStack) {
         // apply left item transform.
         itemTransform.apply(displayContext.isLeftHand(), poseStack);
-        ModDebugger.translate(poseStack);
-        ModDebugger.rotate(poseStack);
         // apply right item transform.
         if (offsetTransform != null) {
             offsetTransform.apply(poseStack);

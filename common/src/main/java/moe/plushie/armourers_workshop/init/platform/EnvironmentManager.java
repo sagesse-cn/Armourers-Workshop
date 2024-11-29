@@ -4,7 +4,7 @@ import dev.architectury.injectables.annotations.ExpectPlatform;
 import moe.plushie.armourers_workshop.api.config.IConfigSpec;
 import moe.plushie.armourers_workshop.api.core.IResourceManager;
 import moe.plushie.armourers_workshop.compatibility.core.AbstractRegistryManager;
-import moe.plushie.armourers_workshop.core.skin.serializer.SkinServerType;
+import moe.plushie.armourers_workshop.core.utils.OpenDistributionType;
 import moe.plushie.armourers_workshop.core.utils.Constants;
 import moe.plushie.armourers_workshop.init.environment.EnvironmentPlatformType;
 import moe.plushie.armourers_workshop.init.environment.EnvironmentType;
@@ -56,14 +56,14 @@ public class EnvironmentManager {
         throw new AssertionError();
     }
 
-    public static SkinServerType getServerType(MinecraftServer server) {
+    public static OpenDistributionType getDistributionType(MinecraftServer server) {
         if (server == null) {
-            return SkinServerType.CLIENT;
+            return OpenDistributionType.CLIENT;
         }
         if (server.isDedicatedServer()) {
-            return SkinServerType.DEDICATED_SERVER;
+            return OpenDistributionType.DEDICATED_SERVER;
         }
-        return SkinServerType.INTEGRATED_SERVER;
+        return OpenDistributionType.INTEGRATED_SERVER;
     }
 
     @Environment(EnvType.CLIENT)

@@ -7,7 +7,6 @@
     "RenderStateMixin",
     "ItemRendererREIMixin",
     "ItemRendererMixin",
-    "ItemInHandLayerMixin",
     "InventoryScreenMixin",
     "HttpTextureMixin",
     "FallbackResourceManagerMixin",
@@ -22,7 +21,9 @@
     "patch/ThrownTridentRendererMixin",
     "patch/model/ModelPartMixin",
     "patch/model/ListModelMixin",
-    "patch/model/AgeableListModelMixin"
+    "patch/model/AgeableListModelMixin",
+    "patch/attachment/ItemInHandLayerMixin",
+    "patch/attachment/ParrotOnShoulderLayerMixin"
   ],
   "mixins": [
     "ServerGameMixin",

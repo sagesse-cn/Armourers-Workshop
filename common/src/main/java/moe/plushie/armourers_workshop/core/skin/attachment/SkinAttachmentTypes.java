@@ -1,0 +1,66 @@
+package moe.plushie.armourers_workshop.core.skin.attachment;
+
+import moe.plushie.armourers_workshop.core.utils.OpenResourceLocation;
+import moe.plushie.armourers_workshop.init.ModLog;
+
+import java.util.Collection;
+import java.util.LinkedHashMap;
+
+@SuppressWarnings("unused")
+public class SkinAttachmentTypes {
+
+    private static final LinkedHashMap<String, SkinAttachmentType> ALL_ATTACHMENT_TYPES = new LinkedHashMap<>();
+
+    public static final SkinAttachmentType UNKNOWN = register("unknown");
+
+    public static final SkinAttachmentType LEFT_HAND = register("leftHand");
+    public static final SkinAttachmentType RIGHT_HAND = register("rightHand");
+
+    public static final SkinAttachmentType LEFT_SHOULDER = register("leftShoulder");
+    public static final SkinAttachmentType RIGHT_SHOULDER = register("rightShoulder");
+
+    public static final SkinAttachmentType ELYTRA = register("elytra");
+    public static final SkinAttachmentType NAME = register("name");
+
+    // https://www.curseforge.com/minecraft/mc-mods/slashblade
+    // https://www.curseforge.com/minecraft/mc-mods/slashblade-resharped
+    public static final SkinAttachmentType LEFT_WAIST = register("leftWaist");
+    public static final SkinAttachmentType RIGHT_WAIST = register("rightWaist");
+
+    // https://www.curseforge.com/minecraft/mc-mods/timeless-and-classic-guns-tac
+    // https://www.curseforge.com/minecraft/mc-mods/timeless-and-classics-zero
+    public static final SkinAttachmentType PISTOL = register("pistol");
+    public static final SkinAttachmentType RIFLE = register("rifle");
+
+    public static final SkinAttachmentType BACKPACK = register("backpack");
+
+    // https://www.curseforge.com/minecraft/mc-mods/first-person-model
+    public static final SkinAttachmentType VIEW = register("view");
+
+
+    private static SkinAttachmentType register(String name) {
+        var attachmentType = new SkinAttachmentType();
+        attachmentType.setRegistryName(OpenResourceLocation.create("armourers", name));
+        if (ALL_ATTACHMENT_TYPES.containsKey(attachmentType.getRegistryName().toString())) {
+            ModLog.warn("A mod tried to register a attachment type with an id that is in use.");
+            return attachmentType;
+        }
+        ALL_ATTACHMENT_TYPES.put(attachmentType.getRegistryName().toString(), attachmentType);
+        ModLog.debug("Registering Skin Attachment '{}'", attachmentType.getRegistryName());
+        return attachmentType;
+    }
+
+    public static SkinAttachmentType byName(String name) {
+        if (name.equals("hand_l")) {
+            return LEFT_HAND;
+        }
+        if (name.equals("hand_r")) {
+            return RIGHT_HAND;
+        }
+        return ALL_ATTACHMENT_TYPES.getOrDefault(name, UNKNOWN);
+    }
+
+    public static Collection<SkinAttachmentType> values() {
+        return ALL_ATTACHMENT_TYPES.values();
+    }
+}

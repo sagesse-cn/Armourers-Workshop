@@ -1,6 +1,5 @@
 package moe.plushie.armourers_workshop.core.client.other;
 
-import moe.plushie.armourers_workshop.api.core.math.IPoseStack;
 import moe.plushie.armourers_workshop.api.data.IAssociatedContainerKey;
 import moe.plushie.armourers_workshop.api.data.IAssociatedContainerProvider;
 import moe.plushie.armourers_workshop.api.skin.ISkinToolType;
@@ -18,8 +17,9 @@ import moe.plushie.armourers_workshop.core.entity.EntityProfile;
 import moe.plushie.armourers_workshop.core.entity.MannequinEntity;
 import moe.plushie.armourers_workshop.core.menu.SkinSlotType;
 import moe.plushie.armourers_workshop.core.skin.SkinDescriptor;
-import moe.plushie.armourers_workshop.core.skin.locator.SkinLocatorType;
 import moe.plushie.armourers_workshop.core.skin.SkinTypes;
+import moe.plushie.armourers_workshop.core.skin.attachment.SkinAttachmentPose;
+import moe.plushie.armourers_workshop.core.skin.attachment.SkinAttachmentType;
 import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
 import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintScheme;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperty;
@@ -61,7 +61,7 @@ public class EntitySlotsHandler<T> implements IAssociatedContainerProvider, Skin
     private final HashMap<SkinDescriptor, BakedSkin> activeSkins = new HashMap<>();
     private final HashMap<SkinDescriptor, BakedSkin> animatedSkins = new HashMap<>();
 
-    private final HashMap<SkinLocatorType, IPoseStack> locatorPoses = new HashMap<>();
+    private final HashMap<SkinAttachmentType, SkinAttachmentPose> attachmentPoses = new HashMap<>();
 
     private final Ticket loadTicket = Ticket.wardrobe();
     private final AnimationManager animationManager;
@@ -73,6 +73,7 @@ public class EntitySlotsHandler<T> implements IAssociatedContainerProvider, Skin
     private int lastVersion = Integer.MAX_VALUE;
 
     private boolean isLimitLimbs = false;
+    private boolean isOverrideAttachemntByDefault = false;
     private boolean isListening = false;
 
     protected EntitySlotsHandler(T entity, SlotProvider<T> entityProvider, WardrobeProvider wardrobeProvider) {
@@ -132,6 +133,7 @@ public class EntitySlotsHandler<T> implements IAssociatedContainerProvider, Skin
         activeSkins.clear();
         animatedSkins.clear();
         overriddenManager.clear();
+        attachmentPoses.clear();
 
         loadTicket.invalidate();
     }
@@ -225,16 +227,6 @@ public class EntitySlotsHandler<T> implements IAssociatedContainerProvider, Skin
         animatedSkins.put(slot.getDescriptor(), slot.getSkin());
     }
 
-    public void onActivate() {
-    }
-
-    public void onApply() {
-    }
-
-    public void onDeactivate() {
-        locatorPoses.clear();
-    }
-
     @Override
     public void didBake(String identifier, BakedSkin bakedSkin) {
         if (missingSkins.contains(identifier)) {
@@ -320,12 +312,19 @@ public class EntitySlotsHandler<T> implements IAssociatedContainerProvider, Skin
         return animationManager;
     }
 
-    public void setLocatorPose(SkinLocatorType type, IPoseStack poseStack) {
-        locatorPoses.put(type, poseStack);
+    public void setAttachmentPose(SkinAttachmentType attachmentType, SkinAttachmentPose pose) {
+        attachmentPoses.put(attachmentType, pose);
     }
 
-    public IPoseStack getLocatorPose(SkinLocatorType type) {
-        return locatorPoses.get(type);
+    public SkinAttachmentPose getAttachmentPose(SkinAttachmentType attachmentType) {
+        var attachmentPose = attachmentPoses.get(attachmentType);
+        if (attachmentPose != null) {
+            return attachmentPose;
+        }
+        if (isOverrideAttachemntByDefault) {
+            return SkinAttachmentPose.EMPTY;
+        }
+        return null;
     }
 
     @Override

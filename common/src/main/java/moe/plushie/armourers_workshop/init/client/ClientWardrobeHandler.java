@@ -22,10 +22,11 @@ import moe.plushie.armourers_workshop.core.client.skinrender.patch.FallbackEntit
 import moe.plushie.armourers_workshop.core.client.skinrender.patch.LivingEntityRenderPatch;
 import moe.plushie.armourers_workshop.core.data.ticket.Tickets;
 import moe.plushie.armourers_workshop.core.entity.MannequinEntity;
+import moe.plushie.armourers_workshop.core.math.OpenTransform3f;
 import moe.plushie.armourers_workshop.core.math.Vector3f;
 import moe.plushie.armourers_workshop.core.skin.SkinDescriptor;
-import moe.plushie.armourers_workshop.core.skin.locator.SkinLocatorType;
 import moe.plushie.armourers_workshop.core.skin.SkinTypes;
+import moe.plushie.armourers_workshop.core.skin.attachment.SkinAttachmentType;
 import moe.plushie.armourers_workshop.core.utils.OpenItemDisplayContext;
 import moe.plushie.armourers_workshop.init.ModConfig;
 import moe.plushie.armourers_workshop.init.ModDebugger;
@@ -79,21 +80,21 @@ public class ClientWardrobeHandler {
         RENDERING_GUI_ITEM = null;
     }
 
-    public static void onRenderHandItem(LivingEntity entity, ItemStack itemStack, OpenItemDisplayContext transformType, PoseStack poseStackIn, MultiBufferSource buffersIn) {
+    public static void onRenderAttachment(LivingEntity entity, ItemStack itemStack, SkinAttachmentType attachmentType, PoseStack poseStackIn, MultiBufferSource buffersIn, OpenTransform3f offset) {
         var renderData = EntityRenderData.of(entity);
         if (renderData == null) {
             return;
         }
-        var type = transformType.isLeftHand() ? SkinLocatorType.LEFT_HAND : SkinLocatorType.RIGHT_HAND;
-        var locatorPose = renderData.getLocatorPose(type);
-        if (locatorPose == null) {
-            return;
+        var attachmentPose = renderData.getAttachmentPose(attachmentType);
+        if (attachmentPose == null) {
+            return; // pass, use vanilla behavior.
         }
         var poseStack = AbstractPoseStack.wrap(poseStackIn);
-        poseStack.last().set(locatorPose.last());
+        poseStack.last().set(attachmentPose.last());
+        offset.apply(poseStack);
     }
 
-    public static void onRenderSpecificHand(LivingEntity entity, float partialTicks, int packedLight, OpenItemDisplayContext transformType, PoseStack poseStackIn, MultiBufferSource buffersIn, Runnable cancelHandler) {
+    public static void onRenderSpecificHand(LivingEntity entity, float partialTicks, int packedLight, OpenItemDisplayContext displayContext, PoseStack poseStackIn, MultiBufferSource buffersIn, Runnable cancelHandler) {
         var renderData = EntityRenderData.of(entity);
         if (renderData == null) {
             return;
@@ -104,13 +105,13 @@ public class ClientWardrobeHandler {
         }
         var poseStack = AbstractPoseStack.wrap(poseStackIn);
         var bufferSource = AbstractBufferSource.wrap(buffersIn);
-        var armature = BakedFirstPersonArmature.defaultBy(transformType);
+        var armature = BakedFirstPersonArmature.defaultBy(displayContext);
 
         poseStack.pushPose();
         poseStack.scale(-SCALE, -SCALE, SCALE);
 
-        var overrideHandModel = renderData.getOverriddenManager().overrideHandModel(transformType);
-        var context = SkinRenderContext.alloc(renderData, packedLight, partialTicks, transformType);
+        var overrideHandModel = renderData.getOverriddenManager().overrideHandModel(displayContext);
+        var context = SkinRenderContext.alloc(renderData, packedLight, partialTicks, displayContext);
 
         context.setOverlay(OverlayTexture.NO_OVERLAY);
         context.setLightmap(packedLight);

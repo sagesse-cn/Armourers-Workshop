@@ -9,7 +9,7 @@ import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintScheme;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPart;
 import moe.plushie.armourers_workshop.core.skin.serializer.SkinFileOptions;
 import moe.plushie.armourers_workshop.core.skin.serializer.SkinSerializer;
-import moe.plushie.armourers_workshop.core.skin.serializer.SkinServerType;
+import moe.plushie.armourers_workshop.core.utils.OpenDistributionType;
 import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.core.utils.Constants;
 import moe.plushie.armourers_workshop.core.utils.Executors;
@@ -65,14 +65,14 @@ public class SkinLoader {
     private final ConcurrentHashMap<String, GlobalEntry> globalEntries = new ConcurrentHashMap<>();
 
     private SkinLoader() {
-        this.setup(SkinServerType.CLIENT);
+        this.setup(OpenDistributionType.CLIENT);
     }
 
     public static SkinLoader getInstance() {
         return LOADER;
     }
 
-    private void setup(SkinServerType type) {
+    private void setup(OpenDistributionType type) {
         // we need shutdown all old sessions (only shutdown once).
         if (!taskManager.isEmpty()) {
             var shutdownQueue = new LinkedHashSet<>(taskManager.values());
@@ -83,7 +83,7 @@ public class SkinLoader {
         var pack = new ResourcePackSession();
         var download = new DownloadSession();
         var slice = new SliceSession();
-        if (type == SkinServerType.CLIENT) {
+        if (type.isClient()) {
             var proxy = new ProxySession();
             taskManager.put(DataDomain.LOCAL, local);
             taskManager.put(DataDomain.RESOURCE_PACK, pack);
@@ -228,7 +228,7 @@ public class SkinLoader {
         }
     }
 
-    public synchronized void prepare(SkinServerType type) {
+    public synchronized void prepare(OpenDistributionType type) {
         ModLog.debug("prepare skin loader");
         setup(type);
     }
@@ -244,7 +244,7 @@ public class SkinLoader {
         waiting.clear();
         entries.clear();
         globalEntries.clear();
-        setup(SkinServerType.CLIENT);
+        setup(OpenDistributionType.CLIENT);
     }
 
     public void submit(Runnable cmd) {

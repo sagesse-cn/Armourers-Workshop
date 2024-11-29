@@ -60,7 +60,7 @@ public class BakedSkin implements IBakedSkin {
     private final HashMap<Vector3i, Rectangle3f> cachedBlockBounds = new HashMap<>();
 
     private final ArrayList<WingPartTransform> cachedWingsTransforms = new ArrayList<>();
-    private final ArrayList<BakedLocatorTransform> cachedLocatorTransforms = new ArrayList<>();
+    private final ArrayList<BakedAttachmentTransform> cachedAttachmentTransforms = new ArrayList<>();
     private final ArrayList<AnimatedTransform> cachedAnimatedTransforms = new ArrayList<>();
 
     private final Range<Integer> useTickRange;
@@ -96,7 +96,7 @@ public class BakedSkin implements IBakedSkin {
         cachedWingsTransforms.forEach(it -> it.setup(entity, context.getAnimationTicks()));
         AnimationEngine.apply(entity, this, context);
         SkinRenderHelper.apply(entity, this, bakedArmature, context.getItemSource());
-        cachedLocatorTransforms.forEach(it -> it.setup(entity, bakedArmature, context));
+        cachedAttachmentTransforms.forEach(it -> it.setup(entity, bakedArmature, context));
     }
 
     public SkinPaintScheme resolve(Entity entity, SkinPaintScheme scheme) {
@@ -226,7 +226,7 @@ public class BakedSkin implements IBakedSkin {
             }
         }));
         // attach locator transform.
-        cachedLocatorTransforms.addAll(BakedLocatorTransform.create(skinParts));
+        cachedAttachmentTransforms.addAll(BakedAttachmentTransform.create(skinParts));
     }
 
     private void loadBlockBounds(List<BakedSkinPart> skinParts) {

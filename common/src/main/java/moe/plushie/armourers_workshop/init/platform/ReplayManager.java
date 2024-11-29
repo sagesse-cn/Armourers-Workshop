@@ -3,7 +3,7 @@ package moe.plushie.armourers_workshop.init.platform;
 import moe.plushie.armourers_workshop.api.network.IFriendlyByteBuf;
 import moe.plushie.armourers_workshop.core.data.DataManager;
 import moe.plushie.armourers_workshop.core.skin.SkinLoader;
-import moe.plushie.armourers_workshop.core.skin.serializer.SkinServerType;
+import moe.plushie.armourers_workshop.core.utils.OpenDistributionType;
 import moe.plushie.armourers_workshop.init.ModLog;
 import moe.plushie.armourers_workshop.init.network.ServerReplayPacket;
 import net.minecraft.server.MinecraftServer;
@@ -37,8 +37,8 @@ public class ReplayManager {
                 clean();
                 // if record an integrated server, we need to launch the data service.
                 var param = IFriendlyByteBuf.wrap(packet.getParameters());
-                var clientType = param.readEnum(SkinServerType.class);
-                if (clientType == SkinServerType.INTEGRATED_SERVER) {
+                var distType = param.readEnum(OpenDistributionType.class);
+                if (distType.isIntegratedServer()) {
                     var dbPath = new File(param.readUtf());
                     if (dbPath.exists()) {
                         DataManager.getInstance().connect(dbPath);
@@ -48,7 +48,7 @@ public class ReplayManager {
                     }
                 }
                 // prepare and launch the skin loader.
-                SkinLoader.getInstance().prepare(clientType);
+                SkinLoader.getInstance().prepare(distType);
                 SkinLoader.getInstance().start();
                 REPLAY_CLEANER.add(() -> SkinLoader.getInstance().stop());
                 break;
@@ -75,12 +75,12 @@ public class ReplayManager {
             // we need to save path of the skin-database,
             if (server.isSingleplayer() && server.isSingleplayerOwner(player.getGameProfile())) {
                 // we need restore the skin-database when replaying.
-                buf.writeEnum(SkinServerType.INTEGRATED_SERVER);
+                buf.writeEnum(OpenDistributionType.INTEGRATED_SERVER);
                 buf.writeUtf(EnvironmentManager.getSkinDatabaseDirectory().getPath());
                 return;
             }
             // we specified replay as client mode, it will work based skin-cache.
-            buf.writeEnum(SkinServerType.CLIENT);
+            buf.writeEnum(OpenDistributionType.CLIENT);
         });
     }
 

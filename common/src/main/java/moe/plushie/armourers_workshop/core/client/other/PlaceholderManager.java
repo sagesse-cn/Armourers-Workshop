@@ -24,7 +24,10 @@ public class PlaceholderManager {
 
 
     public static boolean isPlaceholder(Entity entity) {
-        return entity.getId() == PLACEHOLDER_ENTITY_ID;
+        if (entity != null) {
+            return entity.getId() == PLACEHOLDER_ENTITY_ID;
+        }
+        return false;
     }
 
     private static class LazyEntry<T extends Entity> implements Supplier<T> {

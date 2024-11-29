@@ -74,7 +74,7 @@ public class CommonProxy {
         EventManager.listen(ServerStartingEvent.class, event -> {
             ModLog.debug("hello");
             DataManager.getInstance().connect(EnvironmentManager.getSkinDatabaseDirectory());
-            SkinLoader.getInstance().prepare(EnvironmentManager.getServerType(event.getServer()));
+            SkinLoader.getInstance().prepare(EnvironmentManager.getDistributionType(event.getServer()));
         });
         EventManager.listen(ServerStartedEvent.class, event -> {
             ModLog.debug("init");

@@ -124,9 +124,10 @@ public class OpenQuaternion3f implements IQuaternion3f {
 //    }
 
     public static OpenQuaternion3f fromXYZ(IVector3f value, boolean bl) {
-        float x = value.getX();
-        float y = value.getY();
-        float z = value.getZ();
+        return fromXYZ(value.getX(), value.getY(), value.getZ(), bl);
+    }
+
+    public static OpenQuaternion3f fromXYZ(float x, float y, float z, boolean bl) {
         if (bl) {
             x *= DEGREES_TO_RADIANS;
             y *= DEGREES_TO_RADIANS;
@@ -135,10 +136,12 @@ public class OpenQuaternion3f implements IQuaternion3f {
         return fromXYZ(x, y, z);
     }
 
+
     public static OpenQuaternion3f fromZYX(IVector3f value, boolean bl) {
-        float x = value.getX();
-        float y = value.getY();
-        float z = value.getZ();
+        return fromZYX(value.getZ(), value.getY(), value.getX(), bl);
+    }
+
+    public static OpenQuaternion3f fromZYX(float z, float y, float x, boolean bl) {
         if (bl) {
             x *= DEGREES_TO_RADIANS;
             y *= DEGREES_TO_RADIANS;
@@ -147,10 +150,12 @@ public class OpenQuaternion3f implements IQuaternion3f {
         return fromZYX(z, y, x);
     }
 
+
     public static OpenQuaternion3f fromYXZ(IVector3f value, boolean bl) {
-        float x = value.getX();
-        float y = value.getY();
-        float z = value.getZ();
+        return fromYXZ(value.getY(), value.getX(), value.getZ(), bl);
+    }
+
+    public static OpenQuaternion3f fromYXZ(float y, float x, float z, boolean bl) {
         if (bl) {
             x *= DEGREES_TO_RADIANS;
             y *= DEGREES_TO_RADIANS;

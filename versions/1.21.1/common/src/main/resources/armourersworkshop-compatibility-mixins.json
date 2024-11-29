@@ -13,7 +13,6 @@
     "RenderStateMixin",
     "ItemRendererREIMixin",
     "ItemRendererMixin",
-    "ItemInHandLayerMixin",
     "InventoryScreenMixin",
     "GuiGraphicsMixin",
     "HttpTextureMixin",
@@ -30,7 +29,9 @@
     "patch/model/ModelPartMixin",
     "patch/model/ListModelMixin",
     "patch/model/AgeableListModelMixin",
-    "patch/model/HierarchicalModelMixin"
+    "patch/model/HierarchicalModelMixin",
+    "patch/attachment/ItemInHandLayerMixin",
+    "patch/attachment/ParrotOnShoulderLayerMixin"
   ],
   "mixins": [
     "EntityJSMixin",

@@ -60,7 +60,7 @@ public class ItemTransform {
                 g = -g;
                 h = -h;
             }
-            poseStack.rotate(OpenQuaternion3f.fromXYZ(f * 0.017453292F, g * 0.017453292F, h * 0.017453292F));
+            poseStack.rotate(OpenQuaternion3f.fromXYZ(f, g, h, true));
         }
         if (scale != Vector3f.ONE) {
             poseStack.scale(scale.getX(), scale.getY(), scale.getZ());

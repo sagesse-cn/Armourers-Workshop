@@ -148,6 +148,17 @@ public class SkinPart implements ISkinPart {
             this.type = type;
         }
 
+        public Builder copyFrom(SkinPart part) {
+            this.name(part.getName());
+            this.transform(part.getTransform());
+            this.geometries(part.getGeometries());
+            this.markers(part.getMarkers());
+            this.children(part.getChildren());
+            this.properties(part.getProperties());
+            this.blobs(part.getBlobs());
+            return this;
+        }
+
         public Builder name(String name) {
             this.name = name;
             return this;

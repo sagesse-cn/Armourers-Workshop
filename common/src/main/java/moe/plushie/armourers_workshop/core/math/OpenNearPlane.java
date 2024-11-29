@@ -12,7 +12,7 @@ public class OpenNearPlane {
     private final Vector3f left = new Vector3f(1, 0, 0);
 
     public OpenNearPlane(float rx, float ry, float width, float height, float fov) {
-        OpenQuaternion3f quaternion = OpenQuaternion3f.fromYXZ(-ry * ((float) Math.PI / 180), rx * ((float) Math.PI / 180), 0.0f);
+        var quaternion = OpenQuaternion3f.fromYXZ(-ry, rx, 0.0f, true);
         this.forwards.transform(quaternion);
         this.up.transform(quaternion);
         this.left.transform(quaternion);
