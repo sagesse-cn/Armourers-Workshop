@@ -137,9 +137,7 @@ public class DocumentPartMapper {
         register(Node.bone("LeftWaistLocator"), SkinAttachmentTypes.LEFT_WAIST);
         register(Node.bone("RightWaistLocator"), SkinAttachmentTypes.RIGHT_WAIST);
 
-        register(Node.bone("PistolLocator"), SkinAttachmentTypes.PISTOL);
-        register(Node.bone("RifleLocator"), SkinAttachmentTypes.RIFLE);
-
+        register(Node.bone("BackpackLocator"), SkinAttachmentTypes.BACKPACK);
         register(Node.bone("ViewLocator"), SkinAttachmentTypes.VIEW);
 
         register(Node.bone("ElytraLocator"), SkinAttachmentTypes.ELYTRA);

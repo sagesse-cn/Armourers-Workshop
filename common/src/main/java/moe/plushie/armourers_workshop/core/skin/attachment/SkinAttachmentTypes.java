@@ -22,15 +22,8 @@ public class SkinAttachmentTypes {
     public static final SkinAttachmentType ELYTRA = register("elytra");
     public static final SkinAttachmentType NAME = register("name");
 
-    // https://www.curseforge.com/minecraft/mc-mods/slashblade
-    // https://www.curseforge.com/minecraft/mc-mods/slashblade-resharped
     public static final SkinAttachmentType LEFT_WAIST = register("leftWaist");
     public static final SkinAttachmentType RIGHT_WAIST = register("rightWaist");
-
-    // https://www.curseforge.com/minecraft/mc-mods/timeless-and-classic-guns-tac
-    // https://www.curseforge.com/minecraft/mc-mods/timeless-and-classics-zero
-    public static final SkinAttachmentType PISTOL = register("pistol");
-    public static final SkinAttachmentType RIFLE = register("rifle");
 
     public static final SkinAttachmentType BACKPACK = register("backpack");
 
