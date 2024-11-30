@@ -20,6 +20,7 @@ import moe.plushie.armourers_workshop.core.math.Rectangle3f;
 import moe.plushie.armourers_workshop.core.math.Vector3f;
 import moe.plushie.armourers_workshop.core.skin.SkinTypes;
 import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
+import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintData;
 import moe.plushie.armourers_workshop.core.skin.paint.texture.EntityTextureDescriptor;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperties;
 import moe.plushie.armourers_workshop.core.utils.Collections;
@@ -42,10 +43,16 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.apache.logging.log4j.util.Strings;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -59,7 +66,7 @@ public class DataSerializers {
 
     public static final IDataCodec<IResourceLocation> RESOURCE_LOCATION = IDataCodec.STRING.xmap(OpenResourceLocation::parse, IResourceLocation::toString);
     public static final IDataCodec<Rectangle3f> BOUNDING_BOX = IDataCodec.FLOAT.listOf().xmap(Rectangle3f::new, Rectangle3f::toList);
-
+    public static final IDataCodec<SkinPaintData> COMPRESSED_PAINT_DATA = IDataCodec.BYTE_BUFFER.xmap(DataSerializers::decompressPaintData, DataSerializers::compressPaintData);
 
     public static final IEntitySerializer<CompoundTag> COMPOUND_TAG = of(EntityDataSerializers.COMPOUND_TAG);
     public static final IEntitySerializer<Integer> INT = of(EntityDataSerializers.INT);
@@ -345,6 +352,38 @@ public class DataSerializers {
             float f = 0.05F;
             itementity.setDeltaMovement(RANDOM.nextGaussian() * (double) 0.05F, RANDOM.nextGaussian() * (double) 0.05F + (double) 0.2F, RANDOM.nextGaussian() * (double) 0.05F);
             level.addFreshEntity(itementity);
+        }
+    }
+
+    public static SkinPaintData decompressPaintData(ByteBuffer buffer) {
+        var inputStream = new ByteArrayInputStream(buffer.array());
+        try (var dataStream = new DataInputStream(new GZIPInputStream(inputStream))) {
+            var paintData = SkinPaintData.v2();
+            var length = dataStream.readInt();
+            var colors = paintData.getData();
+            for (int i = 0; i < length; ++i) {
+                if (i < colors.length) {
+                    colors[i] = dataStream.readInt();
+                }
+            }
+            return paintData;
+        } catch (IOException exception) {
+            return null;
+        }
+    }
+
+    public static ByteBuffer compressPaintData(SkinPaintData paintData) {
+        var outputStream = new ByteArrayOutputStream();
+        try (var dataStream = new DataOutputStream(new GZIPOutputStream(outputStream))) {
+            var colors = paintData.getData();
+            dataStream.writeInt(colors.length);
+            for (int color : colors) {
+                dataStream.writeInt(color);
+            }
+            dataStream.close();
+            return ByteBuffer.wrap(outputStream.toByteArray());
+        } catch (IOException e) {
+            return null;
         }
     }
 }

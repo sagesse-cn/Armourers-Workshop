@@ -1,19 +1,10 @@
 package moe.plushie.armourers_workshop.core.skin.paint;
 
-import moe.plushie.armourers_workshop.api.core.IDataCodec;
 import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintColor;
 import moe.plushie.armourers_workshop.core.math.Vector2i;
 import moe.plushie.armourers_workshop.core.skin.paint.texture.EntityTextureModel;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.GZIPOutputStream;
 
 public class SkinPaintData {
 
@@ -22,8 +13,6 @@ public class SkinPaintData {
 
     public static final int TEXTURE_WIDTH = 64;
     public static final int TEXTURE_HEIGHT = 64;
-
-    public static final IDataCodec<SkinPaintData> CODEC = IDataCodec.BYTE_BUFFER.xmap(SkinPaintData::decompress, SkinPaintData::compress);
 
     private final int width;
     private final int height;
@@ -48,23 +37,6 @@ public class SkinPaintData {
 
     public static SkinPaintData v2() {
         return new SkinPaintData(TEXTURE_WIDTH, TEXTURE_HEIGHT);
-    }
-
-    public static SkinPaintData decompress(ByteBuffer buffer) {
-        var inputStream = new ByteArrayInputStream(buffer.array());
-        try (var dataStream = new DataInputStream(new GZIPInputStream(inputStream))) {
-            var paintData = SkinPaintData.v2();
-            var length = dataStream.readInt();
-            var colors = paintData.getData();
-            for (int i = 0; i < length; ++i) {
-                if (i < colors.length) {
-                    colors[i] = dataStream.readInt();
-                }
-            }
-            return paintData;
-        } catch (IOException exception) {
-            return null;
-        }
     }
 
     @Override
@@ -144,19 +116,5 @@ public class SkinPaintData {
 
     public int[] getData() {
         return data;
-    }
-
-    public ByteBuffer compress() {
-        var outputStream = new ByteArrayOutputStream();
-        try (var dataStream = new DataOutputStream(new GZIPOutputStream(outputStream))) {
-            var colors = getData();
-            dataStream.writeInt(colors.length);
-            for (int color : colors) {
-                dataStream.writeInt(color);
-            }
-            return ByteBuffer.wrap(outputStream.toByteArray());
-        } catch (IOException e) {
-            return null;
-        }
     }
 }

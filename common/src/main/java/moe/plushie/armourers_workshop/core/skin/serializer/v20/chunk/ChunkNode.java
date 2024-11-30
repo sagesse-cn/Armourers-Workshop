@@ -211,7 +211,6 @@ public class ChunkNode {
                 node.next = null;
                 node = next;
             }
-            outputStream.flush();
             outputStream.close();
             stream = null;
             // reset the node info.

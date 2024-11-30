@@ -805,7 +805,6 @@ public class SkinLoader {
                         }
                         try (var outputStream = new FileOutputStream(cachedFile)) {
                             SkinSerializer.writeToStream(skin, null, outputStream);
-                            outputStream.flush();
                         }
                     } catch (Exception e) {
                         e.printStackTrace();

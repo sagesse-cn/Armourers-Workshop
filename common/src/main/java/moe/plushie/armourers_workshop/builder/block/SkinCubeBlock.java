@@ -95,8 +95,8 @@ public class SkinCubeBlock extends AbstractHorizontalBlock implements AbstractBl
             direction = Direction.values()[index - 1];
         }
         var blockEntity = reader.getBlockEntity(blockPos);
-        if (blockEntity instanceof IPaintable) {
-            var paintColor = ((IPaintable) blockEntity).getColor(direction);
+        if (blockEntity instanceof IPaintable paintable) {
+            var paintColor = paintable.getColor(direction);
             if (paintColor != null) {
                 return paintColor.getRGB() | 0xff000000;
             }

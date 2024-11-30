@@ -34,6 +34,7 @@ import moe.plushie.armourers_workshop.core.skin.property.SkinProperty;
 import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.init.ModBlocks;
 import moe.plushie.armourers_workshop.utils.BlockUtils;
+import moe.plushie.armourers_workshop.utils.DataSerializers;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
@@ -381,12 +382,12 @@ public class ArmourerBlockEntity extends UpdatableBlockEntity implements IBlockE
         }
         // we need to remove the old bounding box before add.
         applyBoundingBoxes(oldBoxes, (partType, pos, offset) -> {
-            WorldBlockUpdateTask task = new WorldBlockUpdateTask(level, pos, Blocks.AIR.defaultBlockState());
+            var task = new WorldBlockUpdateTask(level, pos, Blocks.AIR.defaultBlockState());
             task.setValidator(state -> state.is(ModBlocks.BOUNDING_BOX.get()));
             return task;
         });
         applyBoundingBoxes(newBoxes, (partType, pos, offset) -> {
-            WorldBlockUpdateTask task = new WorldBlockUpdateTask(level, pos, ModBlocks.BOUNDING_BOX.get().defaultBlockState());
+            var task = new WorldBlockUpdateTask(level, pos, ModBlocks.BOUNDING_BOX.get().defaultBlockState());
             task.setValidator(state -> state.isReplaceable() || state.is(ModBlocks.BOUNDING_BOX.get()));
             task.setModifier(state -> setupBoundingBox(level, pos, offset, partType));
             return task;
@@ -408,11 +409,11 @@ public class ArmourerBlockEntity extends UpdatableBlockEntity implements IBlockE
         }
         var transform = getTransform();
         boxes.forEach(box -> box.forEach((ix, iy, iz) -> {
-            BlockPos target = transform.mul(ix + box.getX(), iy + box.getY(), iz + box.getZ());
+            var target = transform.mul(ix + box.getX(), iy + box.getY(), iz + box.getZ());
             ix = box.getWidth() - ix - 1;
             iy = box.getHeight() - iy - 1;
-            ISkinPartType partType = box.getPartType();
-            IWorldUpdateTask task = builder.build(partType, target, new Vector3i(ix, iy, iz));
+            var partType = box.getPartType();
+            var task = builder.build(partType, target, new Vector3i(ix, iy, iz));
             if (task != null) {
                 WorldUpdater.getInstance().submit(task);
             }
@@ -463,7 +464,7 @@ public class ArmourerBlockEntity extends UpdatableBlockEntity implements IBlockE
         public static final IDataSerializerKey<ISkinType> SKIN_TYPE = IDataSerializerKey.create("SkinType", SkinTypes.CODEC, SkinTypes.UNKNOWN);
         public static final IDataSerializerKey<SkinProperties> SKIN_PROPERTIES = IDataSerializerKey.create("SkinProperties", SkinProperties.CODEC, SkinProperties.EMPTY, SkinProperties.EMPTY::copy);
         public static final IDataSerializerKey<EntityTextureDescriptor> PLAYER_TEXTURE = IDataSerializerKey.create("Texture", EntityTextureDescriptor.CODEC, EntityTextureDescriptor.EMPTY);
-        public static final IDataSerializerKey<SkinPaintData> PAINT_DATA = IDataSerializerKey.create("PaintData", SkinPaintData.CODEC, null);
+        public static final IDataSerializerKey<SkinPaintData> PAINT_DATA = IDataSerializerKey.create("PaintData", DataSerializers.COMPRESSED_PAINT_DATA, null);
         public static final IDataSerializerKey<Integer> FLAGS = IDataSerializerKey.create("Flags", IDataCodec.INT, 0);
         public static final IDataSerializerKey<Integer> VERSION = IDataSerializerKey.create("DataVersion", IDataCodec.INT, 0);
     }

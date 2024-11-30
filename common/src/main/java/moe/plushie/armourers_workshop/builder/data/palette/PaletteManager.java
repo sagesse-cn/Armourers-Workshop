@@ -123,7 +123,6 @@ public class PaletteManager {
             var text = new GsonBuilder().setPrettyPrinting().create().toJson(json);
             var data = text.getBytes(StandardCharsets.UTF_8);
             outputStream.write(data);
-            outputStream.flush();
             outputStream.close();
         } catch (IOException e) {
             e.printStackTrace();
