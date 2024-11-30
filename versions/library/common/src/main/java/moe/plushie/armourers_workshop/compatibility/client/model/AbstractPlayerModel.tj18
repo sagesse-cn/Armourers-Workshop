@@ -4,7 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import moe.plushie.armourers_workshop.api.annotation.Available;
 import moe.plushie.armourers_workshop.compatibility.client.AbstractEntityRendererProvider;
-import moe.plushie.armourers_workshop.utils.ColorUtils;
+import moe.plushie.armourers_workshop.core.utils.ColorUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.model.PlayerModel;
@@ -21,10 +21,10 @@ public abstract class AbstractPlayerModel<T extends LivingEntity> extends Player
     }
 
     public void renderToBuffer(PoseStack poseStack, VertexConsumer builder, int light, int overlay, int color) {
-        float r = ColorUtils.getRed(color) / 255.0F;
-        float g = ColorUtils.getGreen(color) / 255.0F;
-        float b = ColorUtils.getBlue(color) / 255.0F;
-        float a = ColorUtils.getAlpha(color) / 255.0F;
+        float r = ColorUtils.getRed(color) / 255f;
+        float g = ColorUtils.getGreen(color) / 255f;
+        float b = ColorUtils.getBlue(color) / 255f;
+        float a = ColorUtils.getAlpha(color) / 255f;
         super.renderToBuffer(poseStack, builder, light, overlay, r, g, b, a);
     }
 

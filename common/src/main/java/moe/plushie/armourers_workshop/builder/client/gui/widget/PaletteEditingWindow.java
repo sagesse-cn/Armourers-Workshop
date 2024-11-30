@@ -17,6 +17,7 @@ import moe.plushie.armourers_workshop.core.client.gui.widget.HSBSliderBox;
 import moe.plushie.armourers_workshop.core.client.gui.widget.InputDialog;
 import moe.plushie.armourers_workshop.core.client.gui.widget.MenuWindow;
 import moe.plushie.armourers_workshop.core.client.gui.widget.PaintColorView;
+import moe.plushie.armourers_workshop.core.utils.ColorUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.world.entity.player.Inventory;
@@ -58,15 +59,15 @@ public abstract class PaletteEditingWindow<M extends AbstractContainerMenu> exte
         Palette palette = getSelectedPalette();
         if (palette != null) {
             if (!palette.isLocked() && InputManagerImpl.hasShiftDown()) {
-                palette.setColor(index, paintColorView.color());
+                palette.setColor(index, paintColorView.color().getRGB());
                 paletteManager.markDirty();
                 return;
             }
             var selectedColor = palette.getColor(index);
-            if (selectedColor == null) {
+            if (selectedColor == 0) {
                 return;
             }
-            setSelectedColor(selectedColor);
+            setSelectedColor(new UIColor(selectedColor));
             submitColorChange(button);
         }
     }
@@ -156,7 +157,7 @@ public abstract class PaletteEditingWindow<M extends AbstractContainerMenu> exte
     }
 
     protected void setColorComponents(float[] values) {
-        var newValue = UIColor.getHSBColor(values[0], values[1], values[2]);
+        var newValue = new UIColor(ColorUtils.HSBtoRGB(values[0], values[1], values[2]));
         paintColorView.setColor(newValue);
         for (var slider : sliders) {
             slider.setValueWithComponents(values);
@@ -168,7 +169,7 @@ public abstract class PaletteEditingWindow<M extends AbstractContainerMenu> exte
     }
 
     public void setSelectedColor(UIColor selectedColor) {
-        var values = UIColor.RGBtoHSB(selectedColor.getRed(), selectedColor.getGreen(), selectedColor.getBlue(), null);
+        var values = ColorUtils.RGBtoHSB(selectedColor.getRed(), selectedColor.getGreen(), selectedColor.getBlue(), null);
         setColorComponents(values);
     }
 

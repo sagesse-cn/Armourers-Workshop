@@ -156,7 +156,7 @@ public class TextStorageImpl {
         if (diff > 600) {
             return;
         }
-        context.fillRect(AppearanceImpl.TEXT_CURSOR_COLOR, cursorRect);
+        context.fillRect(cursorRect, AppearanceImpl.TEXT_CURSOR_COLOR);
     }
 
     public void renderHighlightedRectIfNeeded(CGGraphicsContext context) {

@@ -13,6 +13,7 @@ import moe.plushie.armourers_workshop.core.math.OpenBoundingBox;
 import moe.plushie.armourers_workshop.core.math.OpenMatrix3f;
 import moe.plushie.armourers_workshop.core.math.OpenOrientedBoundingBox;
 import moe.plushie.armourers_workshop.core.math.OpenTransformedBoundingBox;
+import moe.plushie.armourers_workshop.core.utils.ColorUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -192,30 +193,30 @@ public class ShapeTesselator {
         arrowBuilder.vertex(entry, midX - n, midY - n, maxZ - m).color(0, 0, 255, 255).normal(entry, 0, 0, 1).endVertex();
     }
 
-    public static void stroke(AABB rect, UIColor color, IPoseStack poseStack, IBufferSource bufferSource) {
+    public static void stroke(AABB rect, int color, IPoseStack poseStack, IBufferSource bufferSource) {
         stroke((float) rect.minX, (float) rect.minY, (float) rect.minZ, (float) rect.maxX, (float) rect.maxY, (float) rect.maxZ, color, poseStack, bufferSource);
     }
 
-    public static void stroke(IRectangle3f rect, UIColor color, IPoseStack poseStack, IBufferSource bufferSource) {
+    public static void stroke(IRectangle3f rect, int color, IPoseStack poseStack, IBufferSource bufferSource) {
         stroke(rect.getMinX(), rect.getMinY(), rect.getMinZ(), rect.getMaxX(), rect.getMaxY(), rect.getMaxZ(), color, poseStack, bufferSource);
     }
 
-    public static void stroke(IRectangle3i rect, UIColor color, IPoseStack poseStack, IBufferSource bufferSource) {
+    public static void stroke(IRectangle3i rect, int color, IPoseStack poseStack, IBufferSource bufferSource) {
         stroke(rect.getMinX(), rect.getMinY(), rect.getMinZ(), rect.getMaxX(), rect.getMaxY(), rect.getMaxZ(), color, poseStack, bufferSource);
     }
 
-    public static void stroke(OpenBoundingBox aabb, UIColor color, IPoseStack poseStack, IBufferSource bufferSource) {
+    public static void stroke(OpenBoundingBox aabb, int color, IPoseStack poseStack, IBufferSource bufferSource) {
         stroke(aabb.getMinX(), aabb.getMinY(), aabb.getMinZ(), aabb.getMaxX(), aabb.getMaxY(), aabb.getMaxZ(), color, poseStack, bufferSource);
     }
 
-    public static void stroke(OpenOrientedBoundingBox obb, UIColor color, IPoseStack poseStack, IBufferSource bufferSource) {
+    public static void stroke(OpenOrientedBoundingBox obb, int color, IPoseStack poseStack, IBufferSource bufferSource) {
         poseStack.pushPose();
         poseStack.rotate(obb.getOrientation());
         stroke(obb.getBoundingBox(), color, poseStack, bufferSource);
         poseStack.popPose();
     }
 
-    public static void stroke(OpenTransformedBoundingBox tbb, UIColor color, IPoseStack poseStack, IBufferSource bufferSource) {
+    public static void stroke(OpenTransformedBoundingBox tbb, int color, IPoseStack poseStack, IBufferSource bufferSource) {
         poseStack.pushPose();
         poseStack.multiply(tbb.getTransform());
         poseStack.multiply(new OpenMatrix3f(tbb.getTransform()));
@@ -223,7 +224,7 @@ public class ShapeTesselator {
         poseStack.popPose();
     }
 
-    public static void stroke(JointShape shape, UIColor color, IPoseStack poseStack, IBufferSource bufferSource) {
+    public static void stroke(JointShape shape, int color, IPoseStack poseStack, IBufferSource bufferSource) {
         poseStack.pushPose();
         var rect = shape.bounds();
         shape.transform().apply(poseStack);
@@ -235,16 +236,48 @@ public class ShapeTesselator {
         poseStack.popPose();
     }
 
-    public static void stroke(float x0, float y0, float z0, float x1, float y1, float z1, UIColor color, IPoseStack poseStack, IBufferSource bufferSource) {
+    public static void stroke(float x0, float y0, float z0, float x1, float y1, float z1, int color, IPoseStack poseStack, IBufferSource bufferSource) {
         fill(x0, y0, z0, x1, y1, z1, color, poseStack, bufferSource.getBuffer(SkinRenderType.lines()));
     }
 
-    public static void fill(float x0, float y0, float z0, float x1, float y1, float z1, UIColor color, IPoseStack poseStack, IVertexConsumer builder) {
+    public static void stroke(AABB rect, UIColor color, IPoseStack poseStack, IBufferSource bufferSource) {
+        stroke(rect, color.getRGB(), poseStack, bufferSource);
+    }
+
+    public static void stroke(IRectangle3f rect, UIColor color, IPoseStack poseStack, IBufferSource bufferSource) {
+        stroke(rect, color.getRGB(), poseStack, bufferSource);
+    }
+
+    public static void stroke(IRectangle3i rect, UIColor color, IPoseStack poseStack, IBufferSource bufferSource) {
+        stroke(rect, color.getRGB(), poseStack, bufferSource);
+    }
+
+    public static void stroke(OpenBoundingBox aabb, UIColor color, IPoseStack poseStack, IBufferSource bufferSource) {
+        stroke(aabb, color.getRGB(), poseStack, bufferSource);
+    }
+
+    public static void stroke(OpenOrientedBoundingBox obb, UIColor color, IPoseStack poseStack, IBufferSource bufferSource) {
+        stroke(obb, color.getRGB(), poseStack, bufferSource);
+    }
+
+    public static void stroke(OpenTransformedBoundingBox tbb, UIColor color, IPoseStack poseStack, IBufferSource bufferSource) {
+        stroke(tbb, color.getRGB(), poseStack, bufferSource);
+    }
+
+    public static void stroke(JointShape shape, UIColor color, IPoseStack poseStack, IBufferSource bufferSource) {
+        stroke(shape, color.getRGB(), poseStack, bufferSource);
+    }
+
+    public static void stroke(float x0, float y0, float z0, float x1, float y1, float z1, UIColor color, IPoseStack poseStack, IBufferSource bufferSource) {
+        stroke(x0, y0, z0, x1, y1, z1, color.getRGB(), poseStack, bufferSource);
+    }
+
+    public static void fill(float x0, float y0, float z0, float x1, float y1, float z1, int color, IPoseStack poseStack, IVertexConsumer builder) {
         var entry = poseStack.last();
-        int r = color.getRed();
-        int g = color.getGreen();
-        int b = color.getBlue();
-        int a = color.getAlpha();
+        int r = ColorUtils.getRed(color);
+        int g = ColorUtils.getGreen(color);
+        int b = ColorUtils.getBlue(color);
+        int a = ColorUtils.getAlpha(color);
         builder.vertex(entry, x0, y0, z0).color(r, g, b, a).normal(entry, 1, 0, 0).endVertex();
         builder.vertex(entry, x1, y0, z0).color(r, g, b, a).normal(entry, 1, 0, 0).endVertex();
         builder.vertex(entry, x0, y0, z0).color(r, g, b, a).normal(entry, 0, 1, 0).endVertex();
@@ -270,6 +303,11 @@ public class ShapeTesselator {
         builder.vertex(entry, x1, y1, z0).color(r, g, b, a).normal(entry, 0, 0, 1).endVertex();
         builder.vertex(entry, x1, y1, z1).color(r, g, b, a).normal(entry, 0, 0, 1).endVertex();
     }
+
+    public static void fill(float x0, float y0, float z0, float x1, float y1, float z1, UIColor color, IPoseStack poseStack, IVertexConsumer builder) {
+        fill(x0, y0, z0, x1, y1, z1, color.getRGB(), poseStack, builder);
+    }
+
 
     public static void cube(IRectangle3i rect, float r, float g, float b, float a, IPoseStack poseStack, IBufferSource bufferSource) {
         float x = rect.getMinX();

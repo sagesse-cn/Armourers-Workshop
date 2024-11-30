@@ -6,6 +6,7 @@ import moe.plushie.armourers_workshop.core.skin.animation.molang.core.Expression
 import moe.plushie.armourers_workshop.core.skin.animation.molang.function.LivingEntityFunction;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ItemHasAnyName extends LivingEntityFunction {
 
@@ -15,7 +16,7 @@ public class ItemHasAnyName extends LivingEntityFunction {
     public ItemHasAnyName(Expression name, List<Expression> arguments) {
         super(name, 2, arguments);
         this.slot = arguments.get(0);
-        this.names = arguments.stream().skip(1).toList();
+        this.names = arguments.stream().skip(1).collect(Collectors.toList());
     }
 
     @Override

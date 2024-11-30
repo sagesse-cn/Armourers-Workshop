@@ -21,7 +21,7 @@ import moe.plushie.armourers_workshop.init.ModConstants;
 import moe.plushie.armourers_workshop.init.ModDataComponents;
 import moe.plushie.armourers_workshop.init.ModSounds;
 import moe.plushie.armourers_workshop.init.environment.EnvironmentExecutorIO;
-import moe.plushie.armourers_workshop.utils.ColorUtils;
+import moe.plushie.armourers_workshop.core.utils.ColorUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;

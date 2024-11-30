@@ -6,6 +6,7 @@ import moe.plushie.armourers_workshop.core.skin.animation.molang.core.Expression
 import moe.plushie.armourers_workshop.core.skin.animation.molang.function.EntityFunction;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class RelativeBlockHasAnyTag extends EntityFunction {
 
@@ -19,7 +20,7 @@ public class RelativeBlockHasAnyTag extends EntityFunction {
         this.offsetX = arguments.get(0);
         this.offsetY = arguments.get(1);
         this.offsetZ = arguments.get(2);
-        this.tags = arguments.stream().skip(3).toList();
+        this.tags = arguments.stream().skip(3).collect(Collectors.toList());
     }
 
     @Override

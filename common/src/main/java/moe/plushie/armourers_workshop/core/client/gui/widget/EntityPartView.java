@@ -58,7 +58,7 @@ public class EntityPartView extends UIControl {
     public void render(CGPoint point, CGGraphicsContext context) {
         context.drawImage(backgroundImage, bounds());
         for (var part : Part.values()) {
-            context.fillRect(partColor.valueForState(getPartState(part)), part.bounds);
+            context.fillRect(part.bounds, partColor.valueForState(getPartState(part)));
         }
     }
 

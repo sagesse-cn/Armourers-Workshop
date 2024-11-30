@@ -1,15 +1,12 @@
-package moe.plushie.armourers_workshop.utils;
+package moe.plushie.armourers_workshop.core.utils;
 
-import com.apple.library.uikit.UIColor;
 import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintColor;
-import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintType;
 import moe.plushie.armourers_workshop.core.data.ItemStackStorage;
 import moe.plushie.armourers_workshop.core.data.color.BlockPaintColor;
 import moe.plushie.armourers_workshop.core.math.OpenMath;
 import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintTypes;
-import moe.plushie.armourers_workshop.core.utils.Constants;
-import moe.plushie.armourers_workshop.core.utils.TagSerializer;
 import moe.plushie.armourers_workshop.init.ModDataComponents;
+import moe.plushie.armourers_workshop.utils.TranslateUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -21,19 +18,28 @@ import java.util.Random;
 
 public class ColorUtils {
 
-    public static UIColor[] PALETTE_MINECRAFT = makePaletteColors(
-            0xFFFFFF, 0xFFFF55, 0xFF55FF, 0xFF5555,
-            0x55FFFF, 0x55FF55, 0x5555FF, 0x555555,
-            0xAAAAAA, 0xFFAA00, 0xAA00AA, 0xAA0000,
-            0x00AAAA, 0x00AA00, 0x0000AA, 0x000000,
-            0xDDDDDD, 0xDB7D3E, 0xB350BC, 0x6B8AC9,
-            0xB1A627, 0x41AE38, 0xD08499, 0x404040,
-            0x9AA1A1, 0x2E6E89, 0x7E3DB5, 0x2E388D,
-            0x4F321F, 0x35461B, 0x963430, 0x191616
-    );
-    public static UIColor[] PALETTE_SHADES = {};
+    public static final int[] PALETTE_MINECRAFT = {
+            0xffffff, 0xffff55, 0xff55ff, 0xff5555,
+            0x55ffff, 0x55ff55, 0x5555ff, 0x555555,
+            0xaaaaaa, 0xffaa00, 0xaa00aa, 0xaa0000,
+            0x00aaaa, 0x00aa00, 0x0000aa, 0x000000,
+            0xdddddd, 0xdb7d3e, 0xb350bc, 0x6b8ac9,
+            0xb1a627, 0x41ae38, 0xd08499, 0x404040,
+            0x9aa1a1, 0x2e6e89, 0x7e3db5, 0x2e388d,
+            0x4f321f, 0x35461b, 0x963430, 0x191616
+    };
+    public static final int[] PALETTE_SHADES = {
+            0x070707, 0x0f0f0f, 0x171717, 0x1f1f1f,
+            0x272727, 0x2f2f2f, 0x373737, 0x3f3f3f,
+            0x474747, 0x4f4f4f, 0x575757, 0x5f5f5f,
+            0x676767, 0x6f6f6f, 0x777777, 0x7f7f7f,
+            0x878787, 0x8f8f8f, 0x979797, 0x9f9f9f,
+            0xa7a7a7, 0xafafaf, 0xb7b7b7, 0xbfbfbf,
+            0xc7c7c7, 0xcfcfcf, 0xd7d7d7, 0xdfdfdf,
+            0xe7e7e7, 0xefefef, 0xf7f7f7, 0xffffff,
+    };
     // Warm32 from https://lospec.com/palette-list/warm32
-    public static UIColor[] PALETTE_WARM32 = makePaletteColors(
+    public static final int[] PALETTE_WARM32 = {
             0x0d0e1e, 0x2f3144, 0x626a73, 0x94a5aa,
             0xd3dfe1, 0x291820, 0x694749, 0xa56e66,
             0xcb9670, 0xecd8b7, 0x28092d, 0x692b58,
@@ -42,9 +48,9 @@ public class ColorUtils {
             0x3a4b6d, 0x65799a, 0x99b4dd, 0x41648b,
             0x6fa9c3, 0xb9e2e5, 0xd3ead8, 0x0a2325,
             0x204039, 0x3e6248, 0x778f73, 0xb4c3a8
-    );
+    };
     // Pastel-64 from https://lospec.com/palette-list/pastel-64
-    public static UIColor[] PALETTE_PASTEL_64_A = makePaletteColors(
+    public static final int[] PALETTE_PASTEL_64_A = {
             0x998276, 0xc4c484, 0xabd883, 0xa2f2bd,
             0xb88488, 0xd1b182, 0xd4eb91, 0xccfcc4,
             0x907699, 0xc484a4, 0xea8c79, 0xf2e5a2,
@@ -53,8 +59,8 @@ public class ColorUtils {
             0x84b8b4, 0x82a2d1, 0xa791eb, 0xfbc8f5,
             0x7c957a, 0x84c4a4, 0x79d7ea, 0xa2aff2,
             0xa2b884, 0x82d189, 0x91ebd4, 0xc9e5fa
-    );
-    public static UIColor[] PALETTE_PASTEL_64_B = makePaletteColors(
+    };
+    public static final int[] PALETTE_PASTEL_64_B = {
             0xb8a784, 0xb9ca89, 0x91eb91, 0xc9fce9,
             0x957686, 0xc49484, 0xeade7a, 0xc3f2a2,
             0xb884af, 0xd1828f, 0xebbd91, 0xf7f9c4,
@@ -63,9 +69,9 @@ public class ColorUtils {
             0x76958d, 0x84b4c4, 0x7982ea, 0xd1a2f2,
             0x84b88d, 0x82d1c4, 0x91beeb, 0xd2c6fa,
             0x969976, 0x94c484, 0x79eaa8, 0xa2ebf2
-    );
+    };
     // SoftMilk32 from https://gumroad.com/l/qMfX
-    public static UIColor[] PALETTE_SOFTMILK32 = makePaletteColors(
+    public static final int[] PALETTE_SOFTMILK32 = {
             0xd95b9a, 0x9e4491, 0x633662, 0x903d62,
             0xbd515a, 0xd69a4e, 0xf3d040, 0xffe88c,
             0xf2f2f0, 0x94e092, 0x1f9983, 0x22636b,
@@ -74,9 +80,9 @@ public class ColorUtils {
             0x57546f, 0x23213d, 0x454194, 0x425bbd,
             0x4884d4, 0x45a1de, 0x7cd8eb, 0xe2f266,
             0xc3d442, 0x82aa28, 0x597f1e, 0x376129
-    );
+    };
     // Endesga 32 from https://lospec.com/palette-list/endesga-32
-    public static UIColor[] PALETTE_ENDESGA_32 = makePaletteColors(
+    public static final int[] PALETTE_ENDESGA_32 = {
             0xbe4a2f, 0xd77643, 0xead4aa, 0xe4a672,
             0xb86f50, 0x733e39, 0x3e2731, 0xa22633,
             0xe43b44, 0xf77622, 0xfeae34, 0xfee761,
@@ -85,15 +91,7 @@ public class ColorUtils {
             0xc0cbdc, 0x8b9bb4, 0x5a6988, 0x3a4466,
             0x262b44, 0x181425, 0xff0044, 0x68386c,
             0xb55088, 0xf6757a, 0xe8b796, 0xc28569
-    );
-
-    static {
-        PALETTE_SHADES = new UIColor[32];
-        PALETTE_SHADES[0] = UIColor.WHITE;
-        for (int i = 1; i < PALETTE_SHADES.length + 1; i++) {
-            PALETTE_SHADES[i - 1] = new UIColor((8 * i) - 1, (8 * i) - 1, (8 * i) - 1);
-        }
-    }
+    };
 
     public static int makeColorBighter(int rgb, int amount) {
         int r = getRed(rgb) + amount;
@@ -107,17 +105,17 @@ public class ColorUtils {
         return getRGB(r, g, b);
     }
 
-//    public static int makeColourDarker(int rgb, int amount) {
-//        int r = getRed(rgb) - amount;
-//        int g = getGreen(rgb) - amount;
-//        int b = getBlue(rgb) - amount;
-//
-//        r = OpenMath.clamp(r, 0, 255);
-//        g = OpenMath.clamp(g, 0, 255);
-//        b = OpenMath.clamp(b, 0, 255);
-//
-//        return getRGB(r, g, b);
-//    }
+    public static int makeColourDarker(int rgb, int amount) {
+        int r = getRed(rgb) - amount;
+        int g = getGreen(rgb) - amount;
+        int b = getBlue(rgb) - amount;
+
+        r = OpenMath.clamp(r, 0, 255);
+        g = OpenMath.clamp(g, 0, 255);
+        b = OpenMath.clamp(b, 0, 255);
+
+        return getRGB(r, g, b);
+    }
 
     public static int addColorNoise(int rgb, int amount, Random random) {
         int r = getRed(rgb) - amount + random.nextInt((amount * 2));
@@ -162,22 +160,10 @@ public class ColorUtils {
         return getRGB(red / count, green / count, blue / count);
     }
 
-    public static UIColor[] makePaletteColors(int... colors) {
-        UIColor[] colors1 = new UIColor[colors.length];
-        for (int i = 0; i < colors.length; ++i) {
-            colors1[i] = new UIColor(colors[i]);
-        }
-        return colors1;
+    public static int getPaletteColor(int index) {
+        return PALETTE_MINECRAFT[((index & 0x7fffffff) + 1) % PALETTE_MINECRAFT.length] | 0xff000000;
     }
 
-    public static UIColor getPaletteColor(int index) {
-        return PALETTE_MINECRAFT[((index & 0x7fffffff) + 1) % PALETTE_MINECRAFT.length];
-    }
-
-
-    public static int getPaletteColor(int index, int type) {
-        return (type << 24) | (getPaletteColor(index).getRGB() & 0xffffff);
-    }
 
     /* Old pastel colors
     0xDDDDDD, 0xDB7D3E, 0xB350BC, 0x6B8AC9,
@@ -188,7 +174,7 @@ public class ColorUtils {
 
     public static int getRainbowRGB() {
         float f = System.currentTimeMillis() % (255L * 25) / 25F;
-        return UIColor.HSBtoRGB(f / 255F, 1F, 1F);
+        return HSBtoRGB(f / 255F, 1F, 1F);
     }
 
     public static int getPulse1Color(int color) {
@@ -198,8 +184,8 @@ public class ColorUtils {
             f = 255F - (f - 255);
         }
         f = OpenMath.clamp(f, 0, 255);
-        float[] hsb = UIColor.RGBtoHSB(getRed(color), getGreen(color), getBlue(color), null);
-        return UIColor.HSBtoRGB(hsb[0], hsb[1], f / 255F);
+        float[] hsb = RGBtoHSB(getRed(color), getGreen(color), getBlue(color), null);
+        return HSBtoRGB(hsb[0], hsb[1], f / 255F);
     }
 
     public static int getPulse2Color(int color) {
@@ -209,12 +195,12 @@ public class ColorUtils {
             f = 255F - (f - 255);
         }
         f = OpenMath.clamp(f, 0, 255);
-        float[] hsb = UIColor.RGBtoHSB(getRed(color), getGreen(color), getBlue(color), null);
-        return UIColor.HSBtoRGB(hsb[0], hsb[1], f / 255F);
+        float[] hsb = RGBtoHSB(getRed(color), getGreen(color), getBlue(color), null);
+        return HSBtoRGB(hsb[0], hsb[1], f / 255F);
     }
 
     public static int getDisplayRGB(ISkinPaintColor paintColor) {
-        ISkinPaintType paintType = paintColor.getPaintType();
+        var paintType = paintColor.getPaintType();
         if (paintType == SkinPaintTypes.RAINBOW) {
             return getRainbowRGB();
         }
@@ -254,14 +240,14 @@ public class ColorUtils {
     }
 
     public static ArrayList<Component> getColorTooltips(ISkinPaintColor color, boolean useDisplayColor) {
-        ArrayList<Component> tooltips = new ArrayList<>();
+        var tooltips = new ArrayList<Component>();
         int rgb = color.getRGB();
         if (useDisplayColor) {
             rgb = getDisplayRGB(color);
         }
-        ISkinPaintType paintType = color.getPaintType();
-        String hexColor = String.format("#%06x", rgb & 0xffffff);
-        Component paintName = TranslateUtils.Name.of(paintType);
+        var paintType = color.getPaintType();
+        var hexColor = String.format("#%06x", rgb & 0xffffff);
+        var paintName = TranslateUtils.Name.of(paintType);
         tooltips.add(TranslateUtils.subtitle("item.armourers_workshop.rollover.colour", rgb & 0xffffff));
         tooltips.add(TranslateUtils.subtitle("item.armourers_workshop.rollover.hex", hexColor));
         tooltips.add(TranslateUtils.subtitle("item.armourers_workshop.rollover.paintType", paintName));
@@ -285,27 +271,6 @@ public class ColorUtils {
         }
     }
 
-//    // #[A]RGB or 0x[A]RGB
-//    public static UIColor parseColor(String colorString) {
-//        try {
-//            long value = Long.decode(colorString);
-//            if ((value & 0xff000000) == 0) {
-//                value |= 0xff000000;
-//            }
-//            return new UIColor((int) value, true);
-//        } catch (NumberFormatException e) {
-//            return UIColor.BLACK;
-//        }
-//    }
-
-    public static int HSBtoRGB(float[] hsb) {
-        return UIColor.HSBtoRGB(hsb[0], hsb[1], hsb[2]);
-    }
-
-    public static float[] RGBtoHSB(ISkinPaintColor paintColor) {
-        int rgb = paintColor.getRGB();
-        return UIColor.RGBtoHSB(getRed(rgb), getGreen(rgb), getBlue(rgb), null);
-    }
 
     public static int getRed(int rgb) {
         return (rgb >> 16) & 0xff;
@@ -331,35 +296,87 @@ public class ColorUtils {
         return alpha << 24 | red << 16 | green << 8 | blue;
     }
 
+    public static int HSBtoRGB(float[] hsb) {
+        return HSBtoRGB(hsb[0], hsb[1], hsb[2]);
+    }
 
-    public static class ARGB32 {
-
-        public static int alpha(int i) {
-            return i >>> 24;
+    public static int HSBtoRGB(float hue, float saturation, float brightness) {
+        int r = 0, g = 0, b = 0;
+        if (saturation == 0) {
+            r = g = b = (int) (brightness * 255.0f + 0.5f);
+        } else {
+            float h = (hue - (float) Math.floor(hue)) * 6.0f;
+            float f = h - (float) java.lang.Math.floor(h);
+            float p = brightness * (1.0f - saturation);
+            float q = brightness * (1.0f - saturation * f);
+            float t = brightness * (1.0f - (saturation * (1.0f - f)));
+            switch ((int) h) {
+                case 0:
+                    r = (int) (brightness * 255.0f + 0.5f);
+                    g = (int) (t * 255.0f + 0.5f);
+                    b = (int) (p * 255.0f + 0.5f);
+                    break;
+                case 1:
+                    r = (int) (q * 255.0f + 0.5f);
+                    g = (int) (brightness * 255.0f + 0.5f);
+                    b = (int) (p * 255.0f + 0.5f);
+                    break;
+                case 2:
+                    r = (int) (p * 255.0f + 0.5f);
+                    g = (int) (brightness * 255.0f + 0.5f);
+                    b = (int) (t * 255.0f + 0.5f);
+                    break;
+                case 3:
+                    r = (int) (p * 255.0f + 0.5f);
+                    g = (int) (q * 255.0f + 0.5f);
+                    b = (int) (brightness * 255.0f + 0.5f);
+                    break;
+                case 4:
+                    r = (int) (t * 255.0f + 0.5f);
+                    g = (int) (p * 255.0f + 0.5f);
+                    b = (int) (brightness * 255.0f + 0.5f);
+                    break;
+                case 5:
+                    r = (int) (brightness * 255.0f + 0.5f);
+                    g = (int) (p * 255.0f + 0.5f);
+                    b = (int) (q * 255.0f + 0.5f);
+                    break;
+            }
         }
+        return 0xff000000 | (r << 16) | (g << 8) | (b);
+    }
 
-        public static int red(int i) {
-            return i >> 16 & 0xFF;
-        }
+    public static float[] RGBtoHSB(int rgb) {
+        return RGBtoHSB(getRed(rgb), getGreen(rgb), getBlue(rgb), null);
+    }
 
-        public static int green(int i) {
-            return i >> 8 & 0xFF;
+    public static float[] RGBtoHSB(int r, int g, int b, float[] hsbvals) {
+        float hue, saturation, brightness;
+        if (hsbvals == null) {
+            hsbvals = new float[3];
         }
+        int cmax = (r > g) ? r : g;
+        if (b > cmax) cmax = b;
+        int cmin = (r < g) ? r : g;
+        if (b < cmin) cmin = b;
 
-        public static int blue(int i) {
-            return i & 0xFF;
+        brightness = ((float) cmax) / 255.0f;
+        if (cmax != 0) saturation = ((float) (cmax - cmin)) / ((float) cmax);
+        else saturation = 0;
+        if (saturation == 0) hue = 0;
+        else {
+            float redc = ((float) (cmax - r)) / ((float) (cmax - cmin));
+            float greenc = ((float) (cmax - g)) / ((float) (cmax - cmin));
+            float bluec = ((float) (cmax - b)) / ((float) (cmax - cmin));
+            if (r == cmax) hue = bluec - greenc;
+            else if (g == cmax) hue = 2.0f + redc - bluec;
+            else hue = 4.0f + greenc - redc;
+            hue = hue / 6.0f;
+            if (hue < 0) hue = hue + 1.0f;
         }
-
-        public static int color(int a, int r, int g, int b) {
-            return a << 24 | r << 16 | g << 8 | b;
-        }
-
-        public static int color(float a, float r, float g, float b) {
-            return color((int) (a * 255.0f), (int) (r * 255.0f), (int) (g * 255.0f), (int) (b * 255.0f));
-        }
-
-        public static int multiply(int i, int j) {
-            return color(alpha(i) * alpha(j) / 255, red(i) * red(j) / 255, green(i) * green(j) / 255, blue(i) * blue(j) / 255);
-        }
+        hsbvals[0] = hue;
+        hsbvals[1] = saturation;
+        hsbvals[2] = brightness;
+        return hsbvals;
     }
 }

@@ -1,7 +1,7 @@
 package moe.plushie.armourers_workshop.api.client;
 
 import moe.plushie.armourers_workshop.api.core.math.IPoseStack;
-import moe.plushie.armourers_workshop.utils.ColorUtils;
+import moe.plushie.armourers_workshop.core.utils.ColorUtils;
 
 public interface IVertexConsumer {
 
@@ -34,7 +34,7 @@ public interface IVertexConsumer {
     }
 
     default IVertexConsumer color(int color) {
-        return color(ColorUtils.ARGB32.red(color), ColorUtils.ARGB32.green(color), ColorUtils.ARGB32.blue(color), ColorUtils.ARGB32.alpha(color));
+        return color(ColorUtils.getRed(color), ColorUtils.getGreen(color), ColorUtils.getBlue(color), ColorUtils.getAlpha(color));
     }
 
     default IVertexConsumer uv2(int i) {

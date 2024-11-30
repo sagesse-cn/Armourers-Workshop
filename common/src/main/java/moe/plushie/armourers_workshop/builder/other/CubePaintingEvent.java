@@ -9,7 +9,7 @@ import moe.plushie.armourers_workshop.builder.item.impl.IPaintToolSelector;
 import moe.plushie.armourers_workshop.core.data.color.TexturedPaintColor;
 import moe.plushie.armourers_workshop.core.math.OpenMath;
 import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
-import moe.plushie.armourers_workshop.utils.ColorUtils;
+import moe.plushie.armourers_workshop.core.utils.ColorUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Player;
@@ -332,8 +332,8 @@ public class CubePaintingEvent {
 
         @Override
         public ISkinPaintColor resolve(BlockPos pos, Direction dir, ISkinPaintColor sourceColor) {
-            float[] sourceHSB = ColorUtils.RGBtoHSB(sourceColor);
-            float[] destinationHSB = ColorUtils.RGBtoHSB(destinationColor);
+            float[] sourceHSB = ColorUtils.RGBtoHSB(sourceColor.getRGB());
+            float[] destinationHSB = ColorUtils.RGBtoHSB(destinationColor.getRGB());
             if (!changeHue) {
                 destinationHSB[0] = sourceHSB[0];
             }

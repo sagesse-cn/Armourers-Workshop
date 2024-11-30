@@ -1,6 +1,5 @@
 package moe.plushie.armourers_workshop.builder.data.palette;
 
-import com.apple.library.uikit.UIColor;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -9,7 +8,7 @@ import moe.plushie.armourers_workshop.core.utils.FileUtils;
 import moe.plushie.armourers_workshop.core.utils.StreamUtils;
 import moe.plushie.armourers_workshop.init.ModLog;
 import moe.plushie.armourers_workshop.init.platform.EnvironmentManager;
-import moe.plushie.armourers_workshop.utils.ColorUtils;
+import moe.plushie.armourers_workshop.core.utils.ColorUtils;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
@@ -154,7 +153,7 @@ public class PaletteManager {
         }
     }
 
-    private JsonArray intToJsonArray(UIColor[] intArray) {
+    private JsonArray intToJsonArray(int[] intArray) {
         var jsonArray = new JsonArray();
         for (var color : intArray) {
             jsonArray.add(colorToHex(color));
@@ -162,12 +161,12 @@ public class PaletteManager {
         return jsonArray;
     }
 
-    private UIColor[] jsonToIntArray(JsonArray jsonArray) {
-        var intArray = new UIColor[jsonArray.size()];
+    private int[] jsonToIntArray(JsonArray jsonArray) {
+        var intArray = new int[jsonArray.size()];
         for (int i = 0; i < jsonArray.size(); i++) {
             var colorHex = jsonArray.get(i).getAsString();
             if (isValidHex(colorHex)) {
-                intArray[i] = UIColor.decode(colorHex);
+                intArray[i] = Integer.decode(colorHex);
             }
         }
         return intArray;
@@ -183,10 +182,10 @@ public class PaletteManager {
         return matcher.matches();
     }
 
-    private String colorToHex(UIColor c) {
-        if (c == null) {
+    private String colorToHex(int c) {
+        if (c == 0) {
             return "";
         }
-        return String.format("#%02x%02x%02x", c.getRed(), c.getGreen(), c.getBlue());
+        return String.format("#%06x", c);
     }
 }

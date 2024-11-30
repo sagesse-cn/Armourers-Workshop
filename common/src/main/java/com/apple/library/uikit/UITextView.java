@@ -83,8 +83,8 @@ public class UITextView extends UIScrollView implements TextInputTraits {
         CGRect bounds = bounds();
         CGRect fixedBounds = bounds.insetBy(1, 1, 1, 1);
         if (isBordered) {
-            context.fillRect(getBorderColor(), bounds);
-            context.fillRect(getFillColor(), fixedBounds);
+            context.fillRect(bounds, getBorderColor());
+            context.fillRect(fixedBounds, getFillColor());
         }
         context.addClip(UIScreen.convertRectFromView(fixedBounds, this));
         storage.render(point, context);

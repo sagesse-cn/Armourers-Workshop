@@ -7,7 +7,7 @@ import moe.plushie.armourers_workshop.builder.item.option.PaintingToolOptions;
 import moe.plushie.armourers_workshop.builder.other.CubePaintingEvent;
 import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
 import moe.plushie.armourers_workshop.init.ModSounds;
-import moe.plushie.armourers_workshop.utils.ColorUtils;
+import moe.plushie.armourers_workshop.core.utils.ColorUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.item.ItemStack;

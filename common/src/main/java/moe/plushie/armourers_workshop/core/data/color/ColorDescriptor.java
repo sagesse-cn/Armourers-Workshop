@@ -50,6 +50,12 @@ public class ColorDescriptor {
         return channels.keySet();
     }
 
+    public ColorDescriptor copy() {
+        var result = new ColorDescriptor();
+        result.add(this);
+        return result;
+    }
+
     private boolean shouldRecordChannel(ISkinPaintType paintType) {
         if (paintType == SkinPaintTypes.RAINBOW) {
             return true;

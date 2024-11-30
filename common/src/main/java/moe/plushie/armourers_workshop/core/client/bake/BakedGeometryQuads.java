@@ -135,14 +135,15 @@ public class BakedGeometryQuads {
         if (!mergedShape.isEmpty()) {
             mergedShape.optimize();
         }
-        var result = new BakedGeometryQuads(mergedShape, parent.getColorInfo());
-        parent.splitFaces.forEach((key, value) -> result.splitFaces.put(key, value.copy()));
+        var mergedQuads = new BakedGeometryQuads(mergedShape, parent.getColorInfo().copy());
+        parent.splitFaces.forEach((key, value) -> mergedQuads.splitFaces.put(key, value.copy()));
         children.forEach(pair -> {
             var transform = pair.getKey();
             var child = pair.getValue();
-            child.splitFaces.forEach((key, value) -> result.splitFaces.computeIfAbsent(key, CompressedList::new).addAll(transform, value));
+            child.splitFaces.forEach((key, value) -> mergedQuads.splitFaces.computeIfAbsent(key, CompressedList::new).addAll(transform, value));
+            mergedQuads.getColorInfo().add(child.getColorInfo());
         });
-        return result;
+        return mergedQuads;
     }
 
     public void forEach(BiConsumer<RenderType, CompressedList<BakedGeometryFace>> action) {

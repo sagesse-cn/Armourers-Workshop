@@ -1,6 +1,5 @@
 package moe.plushie.armourers_workshop.core.client.skinrender;
 
-import com.apple.library.uikit.UIColor;
 import moe.plushie.armourers_workshop.api.core.math.IPoseStack;
 import moe.plushie.armourers_workshop.core.client.bake.BakedArmature;
 import moe.plushie.armourers_workshop.core.client.bake.BakedSkin;
@@ -12,7 +11,7 @@ import moe.plushie.armourers_workshop.core.math.Vector3f;
 import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintScheme;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPartTypes;
 import moe.plushie.armourers_workshop.init.ModDebugger;
-import moe.plushie.armourers_workshop.utils.ColorUtils;
+import moe.plushie.armourers_workshop.core.utils.ColorUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.world.entity.Entity;
@@ -37,7 +36,7 @@ public class SkinRenderer {
             poseStack.popPose();
         }
         if (ModDebugger.skinBounds) {
-            bufferBuilder.addShape(getShape(entity, armature, bakedSkin, poseStack), UIColor.RED, context);
+            bufferBuilder.addShape(getShape(entity, armature, bakedSkin, poseStack), 0xffff0000, context);
         }
         if (ModDebugger.skinOrigin) {
             bufferBuilder.addShape(Vector3f.ZERO, context);

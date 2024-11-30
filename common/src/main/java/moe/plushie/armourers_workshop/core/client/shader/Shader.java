@@ -7,7 +7,7 @@ import moe.plushie.armourers_workshop.core.client.other.VertexIndexObject;
 import moe.plushie.armourers_workshop.core.math.OpenMatrix4f;
 import moe.plushie.armourers_workshop.core.math.Vector4f;
 import moe.plushie.armourers_workshop.init.ModDebugger;
-import moe.plushie.armourers_workshop.utils.ColorUtils;
+import moe.plushie.armourers_workshop.core.utils.ColorUtils;
 import moe.plushie.armourers_workshop.utils.RenderSystem;
 import moe.plushie.armourers_workshop.utils.TickUtils;
 import net.fabricmc.api.EnvType;

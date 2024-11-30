@@ -178,7 +178,7 @@ public class LivingEntitySelectorImpl<T extends LivingEntity> extends EntitySele
             return 0;
         }
         var climbablePos = entity.getLastClimbablePos();
-        if (climbablePos.isEmpty()) {
+        if (!climbablePos.isPresent()) {
             return 0;
         }
         var blockState = level.getBlockState(climbablePos.get());

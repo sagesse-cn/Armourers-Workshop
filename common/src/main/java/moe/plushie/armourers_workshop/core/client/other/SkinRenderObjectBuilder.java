@@ -1,6 +1,5 @@
 package moe.plushie.armourers_workshop.core.client.other;
 
-import com.apple.library.uikit.UIColor;
 import moe.plushie.armourers_workshop.core.client.bake.BakedArmature;
 import moe.plushie.armourers_workshop.core.client.bake.BakedSkin;
 import moe.plushie.armourers_workshop.core.client.bake.BakedSkinPart;
@@ -9,7 +8,7 @@ import moe.plushie.armourers_workshop.core.math.OpenVoxelShape;
 import moe.plushie.armourers_workshop.core.math.Vector3f;
 import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintScheme;
 import moe.plushie.armourers_workshop.init.ModDebugger;
-import moe.plushie.armourers_workshop.utils.ColorUtils;
+import moe.plushie.armourers_workshop.core.utils.ColorUtils;
 import moe.plushie.armourers_workshop.utils.ShapeTesselator;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -46,7 +45,7 @@ public class SkinRenderObjectBuilder implements ConcurrentBufferBuilder {
     }
 
     @Override
-    public void addShape(OpenVoxelShape shape, UIColor color, ConcurrentRenderingContext context) {
+    public void addShape(OpenVoxelShape shape, int color, ConcurrentRenderingContext context) {
         ShapeTesselator.stroke(shape.bounds(), color, context.getPoseStack(), context.getBufferSource());
     }
 

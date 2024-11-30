@@ -560,7 +560,7 @@ public class UIWindow extends UIView {
             }
             var backgroundColor = view.backgroundColor();
             if (backgroundColor != null) {
-                context.fillRect(backgroundColor, bounds);
+                context.fillRect(bounds, backgroundColor);
             }
             if (layer.borderWidth() != 0) {
                 context.strokeRect(bounds, layer.borderWidth(), layer.borderColor());

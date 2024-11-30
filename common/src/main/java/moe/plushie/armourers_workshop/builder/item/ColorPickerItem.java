@@ -20,7 +20,7 @@ import moe.plushie.armourers_workshop.init.ModConstants;
 import moe.plushie.armourers_workshop.init.ModDataComponents;
 import moe.plushie.armourers_workshop.init.ModSounds;
 import moe.plushie.armourers_workshop.init.platform.NetworkManager;
-import moe.plushie.armourers_workshop.utils.ColorUtils;
+import moe.plushie.armourers_workshop.core.utils.ColorUtils;
 import moe.plushie.armourers_workshop.utils.TranslateUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

@@ -10,6 +10,7 @@ import com.apple.library.uikit.UIEvent;
 import com.apple.library.uikit.UIImage;
 import com.apple.library.uikit.UIScreen;
 import moe.plushie.armourers_workshop.core.math.OpenMath;
+import moe.plushie.armourers_workshop.core.utils.ColorUtils;
 import moe.plushie.armourers_workshop.init.ModTextures;
 import moe.plushie.armourers_workshop.utils.RenderSystem;
 import net.fabricmc.api.EnvType;
@@ -88,8 +89,8 @@ public class HSBSliderBox extends UIControl {
     public void setValueWithComponents(float[] values) {
         System.arraycopy(values, 0, this.values, 0, this.values.length);
         if (type == Type.SATURATION) {
-            this.hueColor = UIColor.getHSBColor(values[0], 1.0f, 1.0f);
-            this.brightnessColor = UIColor.getHSBColor(0.0f, 0.0f, values[2]);
+            this.hueColor = new UIColor(ColorUtils.HSBtoRGB(values[0], 1.0f, 1.0f));
+            this.brightnessColor = new UIColor(ColorUtils.HSBtoRGB(0.0f, 0.0f, values[2]));
         }
     }
 

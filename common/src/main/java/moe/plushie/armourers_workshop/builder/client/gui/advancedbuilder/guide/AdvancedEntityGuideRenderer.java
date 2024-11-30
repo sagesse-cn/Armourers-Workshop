@@ -1,11 +1,7 @@
 package moe.plushie.armourers_workshop.builder.client.gui.advancedbuilder.guide;
 
-import com.apple.library.uikit.UIColor;
-import moe.plushie.armourers_workshop.api.armature.IJoint;
-import moe.plushie.armourers_workshop.api.armature.IJointTransform;
 import moe.plushie.armourers_workshop.api.client.IBufferSource;
 import moe.plushie.armourers_workshop.api.core.math.IPoseStack;
-import moe.plushie.armourers_workshop.core.armature.Armature;
 import moe.plushie.armourers_workshop.core.armature.JointShape;
 import moe.plushie.armourers_workshop.core.client.bake.BakedArmature;
 import moe.plushie.armourers_workshop.core.client.other.SkinRenderType;
@@ -16,7 +12,7 @@ import moe.plushie.armourers_workshop.core.skin.geometry.cube.SkinCubeFace;
 import moe.plushie.armourers_workshop.core.skin.paint.texture.TextureData;
 import moe.plushie.armourers_workshop.core.utils.OpenDirection;
 import moe.plushie.armourers_workshop.core.utils.OpenResourceLocation;
-import moe.plushie.armourers_workshop.utils.ColorUtils;
+import moe.plushie.armourers_workshop.core.utils.ColorUtils;
 import moe.plushie.armourers_workshop.utils.ShapeTesselator;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -59,20 +55,20 @@ public abstract class AdvancedEntityGuideRenderer extends AbstractAdvancedGuideR
         poseStack.popPose();
     }
 
-    protected void renderShape(JointShape shape, UIColor color, IPoseStack poseStack, IBufferSource bufferSource) {
+    protected void renderShape(JointShape shape, int color, IPoseStack poseStack, IBufferSource bufferSource) {
         poseStack.pushPose();
         var rect = shape.bounds();
         shape.transform().apply(poseStack);
         renderCube(shape, poseStack, bufferSource);
         renderOutline(rect, color, poseStack, bufferSource);
         poseStack.translate(rect.getX(), rect.getY(), rect.getZ());
-        for (JointShape shape1 : shape.children()) {
+        for (var shape1 : shape.children()) {
             renderShape(shape1, color, poseStack, bufferSource);
         }
         poseStack.popPose();
     }
 
-    protected void renderOutline(Rectangle3f rect, UIColor color, IPoseStack poseStack, IBufferSource bufferSource) {
+    protected void renderOutline(Rectangle3f rect, int color, IPoseStack poseStack, IBufferSource bufferSource) {
         ShapeTesselator.stroke(rect, color, poseStack, bufferSource);
     }
 

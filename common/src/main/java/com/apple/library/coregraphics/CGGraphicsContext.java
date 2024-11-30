@@ -10,7 +10,7 @@ import com.apple.library.uikit.UIFont;
 import com.apple.library.uikit.UIImage;
 import com.apple.library.uikit.UIView;
 import moe.plushie.armourers_workshop.init.ModDebugger;
-import moe.plushie.armourers_workshop.utils.ColorUtils;
+import moe.plushie.armourers_workshop.core.utils.ColorUtils;
 import moe.plushie.armourers_workshop.utils.RenderSystem;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
@@ -112,7 +112,7 @@ public class CGGraphicsContext implements GraphicsContextImpl {
             return;
         }
         if (contents instanceof UIColor color) {
-            fillRect(color, rect);
+            fillRect(rect, color);
             return;
         }
         if (contents instanceof CGGradient gradient) {
@@ -130,12 +130,14 @@ public class CGGraphicsContext implements GraphicsContextImpl {
         renderer.renderItem(itemStack, x, y, this);
     }
 
-    public void fillRect(UIColor color, CGRect rect) {
-        if (color == null || color == UIColor.CLEAR) {
-            return;
+    public void fillRect(CGRect rect, UIColor color) {
+        if (color != null && color != UIColor.CLEAR) {
+            fillRect(rect, color.getRGB());
         }
-        int color1 = color.getRGB();
-        drawColor(rect.x, rect.y, rect.x + rect.width, rect.y + rect.height, 0, color1, color1);
+    }
+
+    public void fillRect(CGRect rect, int color) {
+        drawColor(rect.x, rect.y, rect.x + rect.width, rect.y + rect.height, 0, color, color);
     }
 
     public void fillRect(float x1, float y1, float x2, float y2, int color) {
@@ -224,7 +226,7 @@ public class CGGraphicsContext implements GraphicsContextImpl {
     public void strokeDebugRect(int tag, CGRect rect) {
         if (ModDebugger.viewHierarchy) {
             var color = ColorUtils.getPaletteColor(tag);
-            drawBorder(rect.getMinX(), rect.getMinY(), rect.getMaxX(), rect.getMaxY(), 0, color.getRGB());
+            drawBorder(rect.getMinX(), rect.getMinY(), rect.getMaxX(), rect.getMaxY(), 0, color);
         }
     }
 

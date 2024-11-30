@@ -47,7 +47,7 @@ public class PaletteBox extends UIControl {
             for (int i = 0; i < column; ++i) {
                 int index = j * column + i;
                 var rect = new CGRect(i * cellWidth + 1, j * cellHeight + 1, cellWidth, cellHeight);
-                context.fillRect(palette.getColor(index), rect);
+                context.fillRect(rect, palette.getColor(index));
             }
         }
     }
