@@ -138,9 +138,13 @@ public class UpdateWardrobePacket extends CustomPacket {
                 var inventory = wardrobe.getInventory();
                 int slot = compoundTag.getInt("Slot");
                 if (slot < inventory.getContainerSize()) {
+                    var itemStack = ItemStack.EMPTY;
                     var color = SkinPaintColor.of(compoundTag.getInt("Color"));
-                    var itemStack = new ItemStack(ModItems.BOTTLE.get());
-                    itemStack.set(ModDataComponents.TOOL_COLOR.get(), color);
+                    if (!color.isEmpty()) {
+                        var newItemStack = new ItemStack(ModItems.BOTTLE.get());
+                        newItemStack.set(ModDataComponents.TOOL_COLOR.get(), color);
+                        itemStack = newItemStack;
+                    }
                     inventory.setItem(slot, itemStack);
                     yield wardrobe;
                 }
