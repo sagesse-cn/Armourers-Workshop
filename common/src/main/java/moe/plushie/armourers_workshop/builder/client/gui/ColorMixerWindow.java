@@ -50,7 +50,6 @@ public class ColorMixerWindow extends PaletteEditingWindow<ColorMixerMenu> imple
 
     @Override
     public void menuDidChange() {
-        super.menuDidChange();
         reloadStatus();
     }
 

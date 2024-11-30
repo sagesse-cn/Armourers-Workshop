@@ -34,7 +34,7 @@ public final class ExtendedItemRenderer {
     }
 
     public static void renderSkinInGUI(BakedSkin bakedSkin, SkinPaintScheme scheme, ItemStack itemStack, float x, float y, float z, float width, float height, float rx, float ry, float rz, float partialTicks, int light, IPoseStack poseStack, IBufferSource bufferSource) {
-        renderSkinInBox(bakedSkin, scheme, itemStack, null, x, y, z, width, height, rx, ry, rz, partialTicks, light, 0, poseStack, bufferSource);
+        renderSkinInBox(bakedSkin, scheme, itemStack, Vector3f.ONE, x, y, z, width, height, rx, ry, rz, partialTicks, light, 0, poseStack, bufferSource);
     }
 
     public static void renderSkinInTooltip(BakedSkin bakedSkin, SkinPaintScheme scheme, ItemStack itemStack, float x, float y, float z, float width, float height, float rx, float ry, float rz, float partialTicks, int light, IPoseStack poseStack, IBufferSource bufferSource) {
@@ -50,19 +50,20 @@ public final class ExtendedItemRenderer {
     }
 
     private static void renderSkinInBox(BakedSkin bakedSkin, SkinPaintScheme scheme, ItemStack itemStack, @Nullable Vector3f targetBox, float x, float y, float z, float width, float height, float rx, float ry, float rz, float partialTicks, int light, int outlineColor, IPoseStack poseStack, IBufferSource bufferSource) {
-        if (bakedSkin != null) {
-            float t = TickUtils.animationTicks();
-            float si = Math.min(width, height);
-            poseStack.pushPose();
-            poseStack.translate(x + width / 2f, y + height / 2f, z);
-            poseStack.scale(1, -1, 1);
-            poseStack.rotate(Vector3f.XP.rotationDegrees(rx));
-            poseStack.rotate(Vector3f.YP.rotationDegrees(ry + ((t * 100) % 360)));
-            poseStack.scale(0.625f, 0.625f, 0.625f);
-            poseStack.scale(si, si, si);
-            renderSkinInBox(bakedSkin, scheme, targetBox, partialTicks, light, outlineColor, SkinItemSource.create(itemStack), poseStack, bufferSource);
-            poseStack.popPose();
+        if (bakedSkin == null) {
+            return;
         }
+        float t = TickUtils.animationTicks();
+        float si = Math.min(width, height);
+        poseStack.pushPose();
+        poseStack.translate(x + width / 2f, y + height / 2f, z);
+        poseStack.scale(1, -1, 1);
+        poseStack.rotate(Vector3f.XP.rotationDegrees(rx));
+        poseStack.rotate(Vector3f.YP.rotationDegrees(ry + ((t * 100) % 360)));
+        poseStack.scale(0.625f, 0.625f, 0.625f);
+        poseStack.scale(si, si, si);
+        renderSkinInBox(bakedSkin, scheme, targetBox, partialTicks, light, outlineColor, SkinItemSource.create(itemStack), poseStack, bufferSource);
+        poseStack.popPose();
     }
 
     private static int renderSkinInBox(BakedSkin bakedSkin, SkinPaintScheme scheme, @Nullable Vector3f targetBox, float partialTicks, int light, int outlineColor, SkinItemSource itemSource, IPoseStack poseStack, IBufferSource bufferSource) {

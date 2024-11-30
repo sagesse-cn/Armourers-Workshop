@@ -126,7 +126,7 @@ public class DyeTableMenu extends AbstractBlockEntityMenu<DyeTableBlockEntity> {
             var paintColor = scheme.getColor(paintTypes[i]);
             if (paintColor != null) {
                 colorStack = new ItemStack(ModItems.BOTTLE.get());
-                itemStack.set(ModDataComponents.TOOL_COLOR.get(), paintColor);
+                colorStack.set(ModDataComponents.TOOL_COLOR.get(), paintColor);
             }
             inventory.setItem(i, colorStack);
         }

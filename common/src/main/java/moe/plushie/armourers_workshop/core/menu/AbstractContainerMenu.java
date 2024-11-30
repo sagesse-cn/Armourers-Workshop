@@ -28,7 +28,7 @@ public abstract class AbstractContainerMenu extends AbstractContainerMenuImpl {
         }
         var itemStack = slot.getItem();
         if (index >= 36) {
-            if (!(moveItemStackTo(itemStack, 9, 36, false) || moveItemStackTo(itemStack, 0, 9, false))) {
+            if (!(moveItemStackTo(itemStack, 0, 9, false) || moveItemStackTo(itemStack, 9, 36, false))) {
                 return ItemStack.EMPTY;
             }
             slot.set(ItemStack.EMPTY);

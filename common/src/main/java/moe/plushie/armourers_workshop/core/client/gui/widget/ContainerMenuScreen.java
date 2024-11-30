@@ -115,11 +115,7 @@ public class ContainerMenuScreen<M extends AbstractContainerMenu, W extends UIWi
     @Override
     public void slotClicked(Slot slot, int slotIndex, int j, ClickType clickType) {
         super.slotClicked(slot, slotIndex, j, clickType);
-        // in normal case the clicking will call the `slotClicked`,
-        // we need to know that this is a slot click.
-        if (slotIndex >= 0) {
-            menuWindow.menuDidChange();
-        }
+        menuWindow.menuDidChange();
     }
 
     @Override

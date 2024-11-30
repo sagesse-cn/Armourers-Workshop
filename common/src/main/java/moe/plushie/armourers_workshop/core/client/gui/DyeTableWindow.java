@@ -47,7 +47,6 @@ public class DyeTableWindow extends MenuWindow<DyeTableMenu> {
 
     @Override
     public void menuDidChange() {
-        super.menuDidChange();
         var descriptor = SkinDescriptor.of(menu.getOutputStack());
         previewView.setSkin(descriptor);
         loadDyeSlots(descriptor, skin -> {

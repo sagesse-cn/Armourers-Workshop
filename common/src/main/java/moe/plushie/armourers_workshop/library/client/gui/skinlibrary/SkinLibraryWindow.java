@@ -118,7 +118,6 @@ public class SkinLibraryWindow extends MenuWindow<SkinLibraryMenu> implements UI
 
     @Override
     public void menuDidChange() {
-        super.menuDidChange();
         reloadStatus();
         reloadInputName();
     }
