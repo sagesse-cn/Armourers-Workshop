@@ -11,6 +11,7 @@ import moe.plushie.armourers_workshop.core.client.texture.PlayerTextureLoader;
 import moe.plushie.armourers_workshop.core.entity.MannequinEntity;
 import moe.plushie.armourers_workshop.core.utils.OpenResourceLocation;
 import moe.plushie.armourers_workshop.init.ModDebugger;
+import moe.plushie.armourers_workshop.init.ModTextures;
 import moe.plushie.armourers_workshop.utils.ShapeTesselator;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -98,7 +99,10 @@ public class MannequinEntityRenderer<T extends MannequinEntity> extends Abstract
 
     @Override
     public ResourceLocation getTextureLocation(T entity) {
-        return texture.toLocation();
+        if (texture != null) {
+            return texture.toLocation();
+        }
+        return ModTextures.MANNEQUIN_DEFAULT.toLocation();
     }
 
     public MannequinEntityRenderer<T> getChildRenderer() {
