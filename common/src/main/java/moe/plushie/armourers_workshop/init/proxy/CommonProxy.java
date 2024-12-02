@@ -159,7 +159,7 @@ public class CommonProxy {
         });
 
         EventManager.listen(EntityEvent.ReloadSize.class, event -> {
-            var collisionShape = event.getEntity().getCollisionShape();
+            var collisionShape = event.getEntity().getCustomCollision();
             if (collisionShape != null) {
                 event.setSize(event.getSize().withCollisionShape(collisionShape));
             }

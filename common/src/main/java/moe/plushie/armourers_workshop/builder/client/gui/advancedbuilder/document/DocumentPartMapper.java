@@ -143,6 +143,8 @@ public class DocumentPartMapper {
         register(Node.bone("ElytraLocator"), SkinAttachmentTypes.ELYTRA);
         register(Node.bone("NameLocator"), SkinAttachmentTypes.NAME);
 
+        register(Node.bone("RidingLocator"), SkinAttachmentTypes.RIDING);
+
         register(Node.locator("hand_l"), SkinAttachmentTypes.LEFT_HAND);
         register(Node.locator("hand_r"), SkinAttachmentTypes.RIGHT_HAND);
     }

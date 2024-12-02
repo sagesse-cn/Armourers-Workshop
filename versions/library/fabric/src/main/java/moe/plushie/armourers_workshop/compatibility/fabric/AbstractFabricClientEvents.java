@@ -10,6 +10,7 @@ import moe.plushie.armourers_workshop.compatibility.fabric.event.client.Abstract
 import moe.plushie.armourers_workshop.compatibility.fabric.event.client.AbstractFabricRenderFrameEvent;
 import moe.plushie.armourers_workshop.compatibility.fabric.event.client.AbstractFabricRenderHighlightEvent;
 import moe.plushie.armourers_workshop.compatibility.fabric.event.client.AbstractFabricRenderLivingEvent;
+import moe.plushie.armourers_workshop.compatibility.fabric.event.client.AbstractFabricRenderScreenEvent;
 import moe.plushie.armourers_workshop.compatibility.fabric.event.client.AbstractFabricRenderSpecificHandEvent;
 import moe.plushie.armourers_workshop.init.platform.EventManager;
 import moe.plushie.armourers_workshop.init.platform.event.client.ClientPlayerEvent;
@@ -22,6 +23,7 @@ import moe.plushie.armourers_workshop.init.platform.event.client.RegisterTexture
 import moe.plushie.armourers_workshop.init.platform.event.client.RenderFrameEvent;
 import moe.plushie.armourers_workshop.init.platform.event.client.RenderHighlightEvent;
 import moe.plushie.armourers_workshop.init.platform.event.client.RenderLivingEntityEvent;
+import moe.plushie.armourers_workshop.init.platform.event.client.RenderScreenEvent;
 import moe.plushie.armourers_workshop.init.platform.event.client.RenderSpecificHandEvent;
 
 public class AbstractFabricClientEvents {
@@ -37,6 +39,9 @@ public class AbstractFabricClientEvents {
 
         EventManager.post(RenderFrameEvent.Pre.class, AbstractFabricRenderFrameEvent.preFactory());
         EventManager.post(RenderFrameEvent.Post.class, AbstractFabricRenderFrameEvent.postFactory());
+
+        EventManager.post(RenderScreenEvent.Pre.class, AbstractFabricRenderScreenEvent.preFactory());
+        EventManager.post(RenderScreenEvent.Post.class, AbstractFabricRenderScreenEvent.postFactory());
 
         EventManager.post(ItemTooltipEvent.Gather.class, AbstractFabricItemTooltipEvent.gatherFactory());
         EventManager.post(ItemTooltipEvent.Render.class, AbstractFabricItemTooltipEvent.renderFactory());

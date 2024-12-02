@@ -10,6 +10,7 @@ import moe.plushie.armourers_workshop.compatibility.forge.event.client.AbstractF
 import moe.plushie.armourers_workshop.compatibility.forge.event.client.AbstractForgeRenderFrameEvent;
 import moe.plushie.armourers_workshop.compatibility.forge.event.client.AbstractForgeRenderHighlightEvent;
 import moe.plushie.armourers_workshop.compatibility.forge.event.client.AbstractForgeRenderLivingEvent;
+import moe.plushie.armourers_workshop.compatibility.forge.event.client.AbstractForgeRenderScreenEvent;
 import moe.plushie.armourers_workshop.compatibility.forge.event.client.AbstractForgeRenderSpecificHandEvent;
 import moe.plushie.armourers_workshop.init.platform.EventManager;
 import moe.plushie.armourers_workshop.init.platform.event.client.ClientPlayerEvent;
@@ -22,6 +23,7 @@ import moe.plushie.armourers_workshop.init.platform.event.client.RegisterTexture
 import moe.plushie.armourers_workshop.init.platform.event.client.RenderFrameEvent;
 import moe.plushie.armourers_workshop.init.platform.event.client.RenderHighlightEvent;
 import moe.plushie.armourers_workshop.init.platform.event.client.RenderLivingEntityEvent;
+import moe.plushie.armourers_workshop.init.platform.event.client.RenderScreenEvent;
 import moe.plushie.armourers_workshop.init.platform.event.client.RenderSpecificHandEvent;
 
 public class AbstractForgeClientEvents {
@@ -37,6 +39,9 @@ public class AbstractForgeClientEvents {
 
         EventManager.post(RenderFrameEvent.Pre.class, AbstractForgeRenderFrameEvent.preFactory());
         EventManager.post(RenderFrameEvent.Post.class, AbstractForgeRenderFrameEvent.postFactory());
+
+        EventManager.post(RenderScreenEvent.Pre.class, AbstractForgeRenderScreenEvent.preFactory());
+        EventManager.post(RenderScreenEvent.Post.class, AbstractForgeRenderScreenEvent.postFactory());
 
         EventManager.post(ItemTooltipEvent.Gather.class, AbstractForgeItemTooltipEvent.gatherFactory());
         EventManager.post(ItemTooltipEvent.Render.class, AbstractForgeItemTooltipEvent.renderFactory());

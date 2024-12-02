@@ -92,6 +92,10 @@ public class ShapeTesselator {
         vector(origin.getX(), origin.getY(), origin.getZ(), length, poseStack, bufferSource);
     }
 
+    public static void vector(float x, float y, float z, IPoseStack poseStack, IBufferSource bufferSource) {
+        vector(x, y, z, 1, 1, 1, poseStack, bufferSource);
+    }
+
     public static void vector(float x, float y, float z, float length, IPoseStack poseStack, IBufferSource bufferSource) {
         vector(x, y, z, length, length, length, poseStack, bufferSource);
     }

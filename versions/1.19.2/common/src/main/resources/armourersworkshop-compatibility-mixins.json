@@ -30,7 +30,8 @@
     "patch/model/AgeableListModelMixin",
     "patch/model/HierarchicalModelMixin",
     "patch/attachment/ItemInHandLayerMixin",
-    "patch/attachment/ParrotOnShoulderLayerMixin"
+    "patch/attachment/ParrotOnShoulderLayerMixin",
+    "patch/attachment/EntityRiderMixin"
   ],
   "mixins": [
     "EntityJSMixin",

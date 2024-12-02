@@ -12,6 +12,7 @@ import net.neoforged.neoforge.client.event.RenderFrameEvent;
 import net.neoforged.neoforge.client.event.RenderHighlightEvent;
 import net.neoforged.neoforge.client.event.RenderLivingEvent;
 import net.neoforged.neoforge.client.event.RenderTooltipEvent;
+import net.neoforged.neoforge.client.event.ScreenEvent;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 
@@ -45,4 +46,7 @@ public class AbstractForgeClientEventsImpl {
 
     public static final auto RENDER_FRAME_PRE = AbstractForgeEventBus.create(RenderFrameEvent.Pre.class);
     public static final auto RENDER_FRAME_POST = AbstractForgeEventBus.create(RenderFrameEvent.Post.class);
+
+    public static final auto RENDER_SCREEN_PRE = AbstractForgeEventBus.create(ScreenEvent.Render.Pre.class);
+    public static final auto RENDER_SCREEN_POST = AbstractForgeEventBus.create(ScreenEvent.Render.Post.class);
 }

@@ -5,6 +5,7 @@
   "client": [
     "FabricClientFrameRenderMixin",
     "FabricClientPlayerLifecycleMixin",
+    "FabricClientScreenRenderMixin",
     "FabricScreenMixin",
     "FabricGuiGraphicsMixin",
     "FabricRecipeComponentMixin",

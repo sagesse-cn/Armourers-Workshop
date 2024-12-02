@@ -1,6 +1,7 @@
 package moe.plushie.armourers_workshop.init.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.datafixers.util.Function3;
 import moe.plushie.armourers_workshop.api.skin.ISkinToolType;
 import moe.plushie.armourers_workshop.compatibility.client.AbstractBufferSource;
 import moe.plushie.armourers_workshop.compatibility.client.AbstractPoseStack;
@@ -27,6 +28,7 @@ import moe.plushie.armourers_workshop.core.math.Vector3f;
 import moe.plushie.armourers_workshop.core.skin.SkinDescriptor;
 import moe.plushie.armourers_workshop.core.skin.SkinTypes;
 import moe.plushie.armourers_workshop.core.skin.attachment.SkinAttachmentType;
+import moe.plushie.armourers_workshop.core.skin.attachment.SkinAttachmentTypes;
 import moe.plushie.armourers_workshop.core.utils.OpenItemDisplayContext;
 import moe.plushie.armourers_workshop.init.ModConfig;
 import moe.plushie.armourers_workshop.init.ModDebugger;
@@ -80,7 +82,7 @@ public class ClientWardrobeHandler {
         RENDERING_GUI_ITEM = null;
     }
 
-    public static void onRenderAttachment(LivingEntity entity, ItemStack itemStack, SkinAttachmentType attachmentType, PoseStack poseStackIn, MultiBufferSource buffersIn, OpenTransform3f offset) {
+    public static void onRenderAttachment(Entity entity, ItemStack itemStack, SkinAttachmentType attachmentType, PoseStack poseStackIn, MultiBufferSource buffersIn, OpenTransform3f offset) {
         var renderData = EntityRenderData.of(entity);
         if (renderData == null) {
             return;
@@ -92,6 +94,45 @@ public class ClientWardrobeHandler {
         var poseStack = AbstractPoseStack.wrap(poseStackIn);
         poseStack.last().set(attachmentPose.last());
         offset.apply(poseStack);
+    }
+
+
+    // euler angles xyz(-90, 180, 0) => euler angles zyx(-90, 0, -180)
+    // https://www.andre-gaschler.com/rotationconverter/
+    private static final OpenTransform3f HAND_OFFSET = OpenTransform3f.createRotationTransform(new Vector3f(-90, 0, -180));
+
+    public static void onRenderHandAttachment(Entity entity, ItemStack itemStack, OpenItemDisplayContext displayContext, PoseStack poseStackIn, MultiBufferSource bufferSourceIn) {
+        var attachmentType = switch (displayContext) {
+            case FIRST_PERSON_LEFT_HAND, THIRD_PERSON_LEFT_HAND -> SkinAttachmentTypes.LEFT_HAND;
+            case FIRST_PERSON_RIGHT_HAND, THIRD_PERSON_RIGHT_HAND -> SkinAttachmentTypes.RIGHT_HAND;
+            default -> SkinAttachmentTypes.UNKNOWN;
+        };
+        onRenderAttachment(entity, itemStack, attachmentType, poseStackIn, bufferSourceIn, HAND_OFFSET);
+    }
+
+    private static final OpenTransform3f SHOULDER_OFFSET = OpenTransform3f.createTranslateTransform(new Vector3f(0, -1.5f, 0));
+
+    public static void onRenderParrotAttachment(Entity entity, boolean bl, PoseStack poseStackIn, MultiBufferSource bufferSourceIn) {
+        if (bl) {
+            ClientWardrobeHandler.onRenderAttachment(entity, ItemStack.EMPTY, SkinAttachmentTypes.LEFT_SHOULDER, poseStackIn, bufferSourceIn, SHOULDER_OFFSET);
+        } else {
+            ClientWardrobeHandler.onRenderAttachment(entity, ItemStack.EMPTY, SkinAttachmentTypes.RIGHT_SHOULDER, poseStackIn, bufferSourceIn, SHOULDER_OFFSET);
+        }
+    }
+
+    public static Function3<Entity, Entity, Float, Integer> TTTTT = null;
+
+    public static void onRenderRiderAttachment(Entity entity, Entity passenger, float partialTicks) {
+        var renderData = EntityRenderData.of(entity);
+        if (renderData == null) {
+            return;
+        }
+        var attachmentPose = renderData.getAttachmentPose(SkinAttachmentTypes.RIDING);
+        if (attachmentPose == null) {
+            return; // pass, use vanilla behavior.
+        }
+        var offset = entity.getCustomRidding(partialTicks, attachmentPose);
+        entity.setCustomRidding(passenger, offset);
     }
 
     public static void onRenderSpecificHand(LivingEntity entity, float partialTicks, int packedLight, OpenItemDisplayContext displayContext, PoseStack poseStackIn, MultiBufferSource buffersIn, Runnable cancelHandler) {

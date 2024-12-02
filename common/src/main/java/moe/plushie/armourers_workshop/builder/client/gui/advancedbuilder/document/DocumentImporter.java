@@ -262,6 +262,9 @@ public class DocumentImporter {
         if (targetType == SkinTypes.OUTFIT || targetType == SkinTypes.ARMOR_HEAD || targetType == SkinTypes.ARMOR_CHEST || targetType == SkinTypes.ARMOR_LEGS || targetType == SkinTypes.ARMOR_FEET || targetType == SkinTypes.ARMOR_WINGS) {
             return new Vector3f(0, 24, 0);
         }
+        if (targetType == SkinTypes.HORSE) {
+            return new Vector3f(0, 24, 0);
+        }
         return Vector3f.ZERO;
     }
 

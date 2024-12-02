@@ -10,6 +10,7 @@ import moe.plushie.armourers_workshop.compatibility.core.data.AbstractDataSerial
 import moe.plushie.armourers_workshop.core.capability.SkinWardrobe;
 import moe.plushie.armourers_workshop.core.client.bake.SkinBakery;
 import moe.plushie.armourers_workshop.core.client.bake.SkinPreloadManager;
+import moe.plushie.armourers_workshop.core.client.other.SkinRenderMode;
 import moe.plushie.armourers_workshop.core.client.render.HighlightPlacementRenderer;
 import moe.plushie.armourers_workshop.core.client.skinrender.SkinRendererManager;
 import moe.plushie.armourers_workshop.core.client.texture.TextureManager;
@@ -45,6 +46,7 @@ import moe.plushie.armourers_workshop.init.platform.event.client.RegisterTexture
 import moe.plushie.armourers_workshop.init.platform.event.client.RenderFrameEvent;
 import moe.plushie.armourers_workshop.init.platform.event.client.RenderHighlightEvent;
 import moe.plushie.armourers_workshop.init.platform.event.client.RenderLivingEntityEvent;
+import moe.plushie.armourers_workshop.init.platform.event.client.RenderScreenEvent;
 import moe.plushie.armourers_workshop.init.platform.event.client.RenderSpecificHandEvent;
 import moe.plushie.armourers_workshop.library.data.GlobalSkinLibrary;
 import moe.plushie.armourers_workshop.library.data.SkinLibraryManager;
@@ -160,6 +162,9 @@ public class ClientProxy {
             AutoreleasePool.end();
             Scheduler.CLIENT.end();
         });
+
+        EventManager.listen(RenderScreenEvent.Pre.class, event -> SkinRenderMode.push(SkinRenderMode.GUI));
+        EventManager.listen(RenderScreenEvent.Post.class, event -> SkinRenderMode.pop());
 
         // listen the block highlight events.
         EventManager.listen(RenderHighlightEvent.Block.class, event -> {

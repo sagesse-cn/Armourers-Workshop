@@ -22,6 +22,8 @@ public class SkinAttachmentTypes {
     public static final SkinAttachmentType ELYTRA = register("elytra");
     public static final SkinAttachmentType NAME = register("name");
 
+    public static final SkinAttachmentType RIDING = register("riding");
+
     public static final SkinAttachmentType LEFT_WAIST = register("leftWaist");
     public static final SkinAttachmentType RIGHT_WAIST = register("rightWaist");
 

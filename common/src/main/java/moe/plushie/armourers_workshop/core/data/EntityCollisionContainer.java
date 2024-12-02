@@ -60,7 +60,7 @@ public class EntityCollisionContainer {
         // refresh the entity size if needed
         var entity1 = entity.get();
         if (entity1 != null) {
-            entity1.setCollisionShape(result);
+            entity1.setCustomCollision(result);
         }
     }
 

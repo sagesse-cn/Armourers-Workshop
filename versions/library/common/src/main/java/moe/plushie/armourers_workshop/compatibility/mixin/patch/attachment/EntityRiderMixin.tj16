@@ -1,0 +1,32 @@
+package moe.plushie.armourers_workshop.compatibility.mixin.patch.attachment;
+
+import moe.plushie.armourers_workshop.api.annotation.Available;
+import net.minecraft.world.entity.Entity;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+@Available("[1.16, 1.21)")
+@Mixin(Entity.class)
+public class EntityRiderMixin {
+
+    @Inject(method = "positionRider(Lnet/minecraft/world/entity/Entity;Lnet/minecraft/world/entity/Entity$MoveFunction;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity$MoveFunction;accept(Lnet/minecraft/world/entity/Entity;DDD)V"), cancellable = true)
+    private void aw2$positionRider(Entity passenger, Entity.MoveFunction moveFunction, CallbackInfo ci) {
+        var entity = Entity.class.cast(this);
+        var level = entity.getLevel();
+        if (level == null || !level.isClientSide()) {
+            return; // only work client side
+        }
+        var index = entity.getPassengers().indexOf(passenger);
+        var offset = entity.getCustomRidding(index);
+        if (offset == null) {
+            return; // can't found custom riding position.
+        }
+        double x = entity.getX() + offset.getX();
+        double y = entity.getY() + offset.getY() + passenger.getMyRidingOffset();
+        double z = entity.getZ() + offset.getZ();
+        moveFunction.accept(passenger, x, y, z);
+        ci.cancel();
+    }
+}
