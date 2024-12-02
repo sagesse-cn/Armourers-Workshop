@@ -17,6 +17,7 @@ import moe.plushie.armourers_workshop.core.client.texture.TextureManager;
 import moe.plushie.armourers_workshop.core.data.DataPackType;
 import moe.plushie.armourers_workshop.core.data.cache.AutoreleasePool;
 import moe.plushie.armourers_workshop.core.data.ticket.Tickets;
+import moe.plushie.armourers_workshop.core.entity.MannequinEntity;
 import moe.plushie.armourers_workshop.core.menu.SkinSlotType;
 import moe.plushie.armourers_workshop.core.skin.SkinLoader;
 import moe.plushie.armourers_workshop.core.utils.Collections;
@@ -90,8 +91,16 @@ public class ClientProxy {
             if (item instanceof IItemPropertiesProvider provider) {
                 provider.createModelProperties((key, property) -> event.register(key, item, property));
             }
-            event.register(ModConstants.key("is_skin"), ModItems.SKIN.get(), ((itemStack, level, entity, id) -> 1));
-            event.register(ModConstants.key("is_crossbow"), Items.CROSSBOW, ((itemStack, level, entity, id) -> 1));
+            event.register(ModConstants.key("is_crossbow"), Items.CROSSBOW, (itemStack, level, entity, id) -> 1);
+            event.register(ModConstants.key("is_skin"), ModItems.SKIN.get(), (itemStack, level, entity, id) -> {
+                // the mannequin entity mainhand/offhand is special, it will rendering skin stack as a normal item.
+                if (entity instanceof MannequinEntity mannequin) {
+                    if (itemStack == mannequin.getMainHandItem() || itemStack == mannequin.getOffhandItem()) {
+                        return 0;
+                    }
+                }
+                return 1;
+            });
         }));
 
         // register item/block color handler.
