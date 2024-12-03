@@ -12,7 +12,9 @@ import net.minecraft.server.packs.PackType;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 
 public class SmartResourceManager {
@@ -21,7 +23,7 @@ public class SmartResourceManager {
 
     protected final String id;
     protected final Set<String> namespaces = Collections.immutableSet(builder -> builder.add(ModConstants.MOD_ID));
-    protected final HashMap<IResourceLocation, ByteBuffer> resources = new HashMap<>();
+    protected final Map<IResourceLocation, ByteBuffer> resources = new ConcurrentHashMap<>();
 
     protected SmartResourceManager() {
         this.id = String.format("dynamic/%s", ModConstants.MOD_ID);

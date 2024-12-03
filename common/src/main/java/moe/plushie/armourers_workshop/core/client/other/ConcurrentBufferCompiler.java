@@ -144,7 +144,7 @@ public class ConcurrentBufferCompiler {
         mergedByteBuffer.rewind();
 
         // upload only be called in the render thread !!!
-        RenderSystem.recordRenderCall(() -> upload(mergedByteBuffer, cachedTasks));
+        RenderSystem.safeCall(() -> upload(mergedByteBuffer, cachedTasks));
     }
 
     private void upload(ByteBuffer byteBuffer, ArrayList<Group> cachedTasks) {

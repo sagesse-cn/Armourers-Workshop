@@ -95,7 +95,7 @@ public class TextureManager {
 
         @Override
         protected void init() {
-            RenderSystem.recordRenderCall(() -> {
+            RenderSystem.safeCall(() -> {
                 textureBuffers.forEach(SmartResourceManager.getInstance()::register);
                 Minecraft.getInstance().getTextureManager().register(location.toLocation(), new SimpleTexture(location.toLocation()));
             });
@@ -103,7 +103,7 @@ public class TextureManager {
 
         @Override
         protected void dispose() {
-            RenderSystem.recordRenderCall(() -> {
+            RenderSystem.safeCall(() -> {
                 textureBuffers.keySet().forEach(SmartResourceManager.getInstance()::unregister);
                 Minecraft.getInstance().getTextureManager().unregister(location.toLocation());
             });

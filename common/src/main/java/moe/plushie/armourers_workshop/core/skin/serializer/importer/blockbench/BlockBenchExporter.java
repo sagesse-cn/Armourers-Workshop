@@ -792,10 +792,17 @@ public class BlockBenchExporter {
                 var image = ImageIO.read(new ByteArrayInputStream(imageBytes));
                 imageSize = new Size2f(image.getWidth(), image.getHeight());
             }
-            var width = OpenMath.floori(imageSize.getWidth());
-            var height = OpenMath.floori(imageSize.getHeight());
-            var frame = height / width;
-            if (frame * width == height) {
+            var textureSize = resolveTextureSize(texture, 1);
+            if (textureSize.width == 0 || textureSize.height == 0) {
+                return 0;
+            }
+            // image(32, 640) => uv(128, 128) => frame(20)
+            // image(63, 2574) => uv(63, 66) => frame(39)
+            // image(256, 256) => uv(128, 128) => frame(1)
+            var scaleHeight = OpenMath.floori(imageSize.width * (textureSize.height / textureSize.width));
+            var height = OpenMath.floori(imageSize.height);
+            var frame = OpenMath.floori(imageSize.height / scaleHeight);
+            if (frame * scaleHeight == height) {
                 return frame;
             }
             return 0;
@@ -810,14 +817,14 @@ public class BlockBenchExporter {
                 height = texture.getTextureSize().getHeight();
             }
             if (frameCount > 1) {
-                height = width * frameCount;
+                height *= frameCount;
             }
             return new Size2f(width, height);
         }
 
         private TextureAnimation resolveTextureAnimation(BlockBenchTexture texture, int frameCount) {
             if (frameCount > 1) {
-                var time = texture.getFrameTime() * 50;
+                var time = texture.getFrameTime() * 50; // 1/20s
                 var interpolate = texture.getFrameInterpolate();
                 var mode = texture.getFrameMode();
                 return new TextureAnimation(time, frameCount, mode, interpolate);

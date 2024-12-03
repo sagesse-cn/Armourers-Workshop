@@ -121,12 +121,6 @@ public class EntityRendererContext {
     }
 
     private <T extends LivingEntity, V extends EntityModel<T>> void removeLayer(LivingEntityRenderer<T, V> livingRenderer) {
-        var iterator = livingRenderer.layers.iterator();
-        while (iterator.hasNext()) {
-            var layer = iterator.next();
-            if (layer instanceof SkinWardrobeLayer<?, ?, ?>) {
-                iterator.remove();
-            }
-        }
+        livingRenderer.layers.removeIf(layer -> layer instanceof SkinWardrobeLayer<?, ?, ?>);
     }
 }
