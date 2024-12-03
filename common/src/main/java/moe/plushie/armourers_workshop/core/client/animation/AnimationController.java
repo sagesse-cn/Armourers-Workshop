@@ -53,10 +53,10 @@ public class AnimationController {
         animation.getKeyframes().forEach((partName, linkedValues) -> {
             var partTransform = partTransforms.get(partName);
             if (partTransform != null) {
-                this.animators.add(new Bone(AnimationController.toTime(duration), mode, linkedValues, resolveAnimatedTransform(partTransform)));
+                this.animators.add(new Bone(partName, AnimationController.toTime(duration), mode, linkedValues, resolveAnimatedTransform(partTransform)));
             }
             if (partName.equals("Effects")) {
-                this.animators.add(new Effect(AnimationController.toTime(duration), mode, linkedValues));
+                this.animators.add(new Effect(partName, AnimationController.toTime(duration), mode, linkedValues));
             }
         });
 
@@ -171,10 +171,12 @@ public class AnimationController {
 
     private static abstract class Animator {
 
+        protected final String name;
         protected final AnimatedPoint output;
         protected final List<Channel> channels;
 
-        public Animator(int duration, List<SkinAnimationKeyframe> linkedKeyframes, AnimatedPoint output) {
+        public Animator(String name, int duration, List<SkinAnimationKeyframe> linkedKeyframes, AnimatedPoint output) {
+            this.name = name;
             this.output = output;
             this.channels = build(duration, linkedKeyframes);
         }
@@ -182,6 +184,11 @@ public class AnimationController {
         public abstract void apply(Fragment fragment, Selector selector, int time, AnimationPlayState playState, ExecutionContext context);
 
         public abstract Selector selectorByName(String name);
+
+        @Override
+        public String toString() {
+            return Objects.toString(this, "name", name);
+        }
 
         private List<Channel> build(int duration, List<SkinAnimationKeyframe> linkedKeyframes) {
             var namedKeyframes = new LinkedHashMap<String, ArrayList<SkinAnimationKeyframe>>();
@@ -191,7 +198,7 @@ public class AnimationController {
             return Collections.compactMap(namedKeyframes.entrySet(), it -> {
                 var selector = selectorByName(it.getKey());
                 if (selector != null) {
-                    return new Channel(duration, selector, it.getValue());
+                    return new Channel(it.getKey(), duration, selector, it.getValue());
                 }
                 return null;
             });
@@ -202,8 +209,8 @@ public class AnimationController {
 
         private final AnimatedTransform transform;
 
-        public Bone(int duration, AnimatedMixMode mode, List<SkinAnimationKeyframe> linkedKeyframes, AnimatedTransform transform) {
-            super(duration, linkedKeyframes, new LinkedOutput(transform, mode));
+        public Bone(String name, int duration, AnimatedMixMode mode, List<SkinAnimationKeyframe> linkedKeyframes, AnimatedTransform transform) {
+            super(name, duration, linkedKeyframes, new LinkedOutput(transform, mode));
             this.transform = transform;
         }
 
@@ -227,8 +234,8 @@ public class AnimationController {
 
     private static class Effect extends Animator {
 
-        public Effect(int duration, AnimatedMixMode type, List<SkinAnimationKeyframe> linkedKeyframes) {
-            super(duration, linkedKeyframes, null);
+        public Effect(String name, int duration, AnimatedMixMode type, List<SkinAnimationKeyframe> linkedKeyframes) {
+            super(name, duration, linkedKeyframes, null);
         }
 
         @Override
@@ -260,12 +267,14 @@ public class AnimationController {
 
     private static class Channel {
 
+        private final String name;
         private final Selector selector;
         private final Fragment[] fragments;
 
         private Fragment current;
 
-        public Channel(int duration, Selector selector, List<SkinAnimationKeyframe> keyframes) {
+        public Channel(String name, int duration, Selector selector, List<SkinAnimationKeyframe> keyframes) {
+            this.name = name;
             this.selector = selector;
             this.fragments = create(duration, keyframes).toArray(new Fragment[0]);
         }
@@ -289,6 +298,11 @@ public class AnimationController {
             return fragments == null || fragments.length == 0;
         }
 
+        @Override
+        public String toString() {
+            return Objects.toString(this, "name", name);
+        }
+
         private List<Fragment> create(int duration, List<SkinAnimationKeyframe> keyframes) {
             var defaultValue = calcDefaultValue();
             var builders = new ArrayList<FragmentBuilder>();
@@ -302,19 +316,24 @@ public class AnimationController {
                 builders.add(0, builders.get(0).copy(0));
                 builders.add(builders.get(builders.size() - 1).copy(duration));
             }
+            // convert `L|R - L|R - L|R` to `|L - R|L - R|L - R|`.
             for (int i = 1; i < builders.size(); i++) {
                 var left = builders.get(i - 1);
                 var right = builders.get(i);
                 left.rightTime = right.leftTime;
                 left.rightValue = right.leftValue;
+                right.leftTime = right.rightTime;
+                right.leftValue = right.rightValue;
             }
             // we need to remove invalid builder (e.g. zero duration),
             // but it will remove all builder when total duration is zero,
             // this is wrong we require to keep least one builder.
             if (builders.size() > 1) {
-                var first = builders.remove(0);
+                var first = builders.get(0);
                 builders.removeIf(it -> it.leftTime == it.rightTime);
-                builders.add(0, first);
+                if (builders.isEmpty()) {
+                    builders.add(first);
+                }
             }
             return Collections.compactMap(builders, FragmentBuilder::build);
         }
@@ -414,8 +433,8 @@ public class AnimationController {
 
         private final SkinAnimationFunction function;
 
-        private final int leftTime;
-        private final AnimatedPointValue leftValue;
+        private int leftTime;
+        private AnimatedPointValue leftValue;
 
         private int rightTime;
         private AnimatedPointValue rightValue;

@@ -3,8 +3,8 @@ package moe.plushie.armourers_workshop.core.client.bake;
 import moe.plushie.armourers_workshop.api.core.math.ITransform;
 import moe.plushie.armourers_workshop.core.client.animation.AnimatedTransform;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPartTransform;
-import moe.plushie.armourers_workshop.core.skin.part.wings.WingPartTransform;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPartTypes;
+import moe.plushie.armourers_workshop.core.skin.part.wings.WingPartTransform;
 import moe.plushie.armourers_workshop.init.ModDebugger;
 import org.apache.commons.lang3.tuple.Pair;
 
