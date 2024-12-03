@@ -2,9 +2,9 @@ package moe.plushie.armourers_workshop.compatibility.forge;
 
 import moe.plushie.armourers_workshop.api.annotation.Available;
 import moe.plushie.armourers_workshop.api.common.ICapabilityType;
+import moe.plushie.armourers_workshop.api.core.IDataSerializable;
 import moe.plushie.armourers_workshop.api.core.IRegistryHolder;
 import moe.plushie.armourers_workshop.api.core.IResourceLocation;
-import moe.plushie.armourers_workshop.api.core.IDataSerializable;
 import moe.plushie.armourers_workshop.core.capability.SkinWardrobe;
 import moe.plushie.armourers_workshop.core.capability.SkinWardrobeStorage;
 import moe.plushie.armourers_workshop.core.utils.Objects;
@@ -12,7 +12,6 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.capabilities.EntityCapability;

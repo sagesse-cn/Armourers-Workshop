@@ -6,13 +6,13 @@ import net.minecraft.client.Minecraft;
 
 public class ClientScreenRenderEvents {
 
-    public static final Event<Start> START = EventFactory.createArrayBacked(Start.class, context -> {}, callbacks -> context -> {
+    public static final Event<Start> START = EventFactory.createArrayBacked(Start.class, callbacks -> context -> {
         for (var callback : callbacks) {
             callback.onStart(context);
         }
     });
 
-    public static final Event<End> END = EventFactory.createArrayBacked(End.class, context -> {}, callbacks -> context -> {
+    public static final Event<End> END = EventFactory.createArrayBacked(End.class, callbacks -> context -> {
         for (var callback : callbacks) {
             callback.onEnd(context);
         }

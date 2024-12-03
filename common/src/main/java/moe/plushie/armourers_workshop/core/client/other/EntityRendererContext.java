@@ -1,18 +1,22 @@
 package moe.plushie.armourers_workshop.core.client.other;
 
 import moe.plushie.armourers_workshop.api.client.model.IModel;
+import moe.plushie.armourers_workshop.api.event.client.AddRendererLayerEvent;
+import moe.plushie.armourers_workshop.api.event.client.RemoveRendererLayerEvent;
 import moe.plushie.armourers_workshop.core.armature.ArmatureTransformerManager;
 import moe.plushie.armourers_workshop.core.client.bake.BakedArmatureTransformer;
 import moe.plushie.armourers_workshop.core.client.layer.SkinWardrobeLayer;
 import moe.plushie.armourers_workshop.core.client.skinrender.SkinRendererManager;
 import moe.plushie.armourers_workshop.core.entity.EntityProfile;
 import moe.plushie.armourers_workshop.core.utils.Objects;
+import moe.plushie.armourers_workshop.init.platform.EventManager;
 import moe.plushie.armourers_workshop.utils.DataContainer;
 import moe.plushie.armourers_workshop.utils.ModelHolder;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
+import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import org.jetbrains.annotations.Nullable;
@@ -116,11 +120,48 @@ public class EntityRendererContext {
         removeLayer(livingRenderer);
         var transformer = getTransformer(null);
         if (transformer != null) {
-            livingRenderer.layers.add(0, new SkinWardrobeLayer<>(transformer, livingRenderer));
+            var layer = new SkinWardrobeLayer<>(transformer, livingRenderer);
+            livingRenderer.layers.add(0, layer);
+            didAddLayer(layer, livingRenderer);
         }
     }
 
     private <T extends LivingEntity, V extends EntityModel<T>> void removeLayer(LivingEntityRenderer<T, V> livingRenderer) {
-        livingRenderer.layers.removeIf(layer -> layer instanceof SkinWardrobeLayer<?, ?, ?>);
+        var iterator = livingRenderer.layers.iterator();
+        while (iterator.hasNext()) {
+            var layer = iterator.next();
+            if (layer instanceof SkinWardrobeLayer<?, ?, ?>) {
+                iterator.remove();
+                didRemoveLayer(layer, livingRenderer);
+            }
+        }
+    }
+
+    private <T extends LivingEntity, V extends EntityModel<T>> void didAddLayer(RenderLayer<T, V> layer, LivingEntityRenderer<T, V> renderer) {
+        EventManager.post(AddRendererLayerEvent.class, new AddRendererLayerEvent<T, V>() {
+            @Override
+            public RenderLayer<T, V> getLayer() {
+                return layer;
+            }
+
+            @Override
+            public LivingEntityRenderer<T, V> getRenderer() {
+                return renderer;
+            }
+        });
+    }
+
+    private <T extends LivingEntity, V extends EntityModel<T>> void didRemoveLayer(RenderLayer<T, V> layer, LivingEntityRenderer<T, V> renderer) {
+        EventManager.post(RemoveRendererLayerEvent.class, new RemoveRendererLayerEvent<T, V>() {
+            @Override
+            public RenderLayer<T, V> getLayer() {
+                return layer;
+            }
+
+            @Override
+            public LivingEntityRenderer<T, V> getRenderer() {
+                return renderer;
+            }
+        });
     }
 }

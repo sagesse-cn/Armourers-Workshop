@@ -1,6 +1,7 @@
 package moe.plushie.armourers_workshop.init.platform;
 
 import dev.architectury.injectables.annotations.ExpectPlatform;
+import moe.plushie.armourers_workshop.api.event.EventBus;
 import moe.plushie.armourers_workshop.api.registry.IEventHandler;
 import moe.plushie.armourers_workshop.core.utils.Objects;
 
@@ -45,5 +46,6 @@ public class EventManager {
 
     static {
         init();
+        EventBus.init();
     }
 }
