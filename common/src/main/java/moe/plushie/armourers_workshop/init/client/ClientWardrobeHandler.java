@@ -1,7 +1,6 @@
 package moe.plushie.armourers_workshop.init.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.datafixers.util.Function3;
 import moe.plushie.armourers_workshop.api.skin.ISkinToolType;
 import moe.plushie.armourers_workshop.compatibility.client.AbstractBufferSource;
 import moe.plushie.armourers_workshop.compatibility.client.AbstractPoseStack;
@@ -87,19 +86,19 @@ public class ClientWardrobeHandler {
         if (renderData == null) {
             return;
         }
-        var attachmentPose = renderData.getAttachmentPose(attachmentType);
+        var attachmentPose = renderData.getAttachmentPose(attachmentType, 0);
         if (attachmentPose == null) {
             return; // pass, use vanilla behavior.
         }
         var poseStack = AbstractPoseStack.wrap(poseStackIn);
-        poseStack.last().set(attachmentPose.last());
+        poseStack.last().set(attachmentPose);
         offset.apply(poseStack);
     }
-
 
     // euler angles xyz(-90, 180, 0) => euler angles zyx(-90, 0, -180)
     // https://www.andre-gaschler.com/rotationconverter/
     private static final OpenTransform3f HAND_OFFSET = OpenTransform3f.createRotationTransform(new Vector3f(-90, 0, -180));
+    private static final OpenTransform3f SHOULDER_OFFSET = OpenTransform3f.createTranslateTransform(new Vector3f(0, -1.5f, 0));
 
     public static void onRenderHandAttachment(Entity entity, ItemStack itemStack, OpenItemDisplayContext displayContext, PoseStack poseStackIn, MultiBufferSource bufferSourceIn) {
         var attachmentType = switch (displayContext) {
@@ -110,29 +109,13 @@ public class ClientWardrobeHandler {
         onRenderAttachment(entity, itemStack, attachmentType, poseStackIn, bufferSourceIn, HAND_OFFSET);
     }
 
-    private static final OpenTransform3f SHOULDER_OFFSET = OpenTransform3f.createTranslateTransform(new Vector3f(0, -1.5f, 0));
 
-    public static void onRenderParrotAttachment(Entity entity, boolean bl, PoseStack poseStackIn, MultiBufferSource bufferSourceIn) {
-        if (bl) {
-            ClientWardrobeHandler.onRenderAttachment(entity, ItemStack.EMPTY, SkinAttachmentTypes.LEFT_SHOULDER, poseStackIn, bufferSourceIn, SHOULDER_OFFSET);
-        } else {
-            ClientWardrobeHandler.onRenderAttachment(entity, ItemStack.EMPTY, SkinAttachmentTypes.RIGHT_SHOULDER, poseStackIn, bufferSourceIn, SHOULDER_OFFSET);
+    public static void onRenderParrotAttachment(Entity entity, boolean isLeft, PoseStack poseStackIn, MultiBufferSource bufferSourceIn) {
+        var attachmentType = SkinAttachmentTypes.RIGHT_SHOULDER;
+        if (isLeft) {
+            attachmentType = SkinAttachmentTypes.LEFT_SHOULDER;
         }
-    }
-
-    public static Function3<Entity, Entity, Float, Integer> TTTTT = null;
-
-    public static void onRenderRiderAttachment(Entity entity, Entity passenger, float partialTicks) {
-        var renderData = EntityRenderData.of(entity);
-        if (renderData == null) {
-            return;
-        }
-        var attachmentPose = renderData.getAttachmentPose(SkinAttachmentTypes.RIDING);
-        if (attachmentPose == null) {
-            return; // pass, use vanilla behavior.
-        }
-        var offset = entity.getCustomRidding(partialTicks, attachmentPose);
-        entity.setCustomRidding(passenger, offset);
+        ClientWardrobeHandler.onRenderAttachment(entity, ItemStack.EMPTY, attachmentType, poseStackIn, bufferSourceIn, SHOULDER_OFFSET);
     }
 
     public static void onRenderSpecificHand(LivingEntity entity, float partialTicks, int packedLight, OpenItemDisplayContext displayContext, PoseStack poseStackIn, MultiBufferSource buffersIn, Runnable cancelHandler) {

@@ -18,6 +18,7 @@ import moe.plushie.armourers_workshop.core.entity.MannequinEntity;
 import moe.plushie.armourers_workshop.core.menu.SkinSlotType;
 import moe.plushie.armourers_workshop.core.skin.SkinDescriptor;
 import moe.plushie.armourers_workshop.core.skin.SkinTypes;
+import moe.plushie.armourers_workshop.core.skin.attachment.SkinAttachmentContainer;
 import moe.plushie.armourers_workshop.core.skin.attachment.SkinAttachmentPose;
 import moe.plushie.armourers_workshop.core.skin.attachment.SkinAttachmentType;
 import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
@@ -61,13 +62,13 @@ public class EntitySlotsHandler<T> implements IAssociatedContainerProvider, Skin
     private final HashMap<SkinDescriptor, BakedSkin> activeSkins = new HashMap<>();
     private final HashMap<SkinDescriptor, BakedSkin> animatedSkins = new HashMap<>();
 
-    private final HashMap<SkinAttachmentType, SkinAttachmentPose> attachmentPoses = new HashMap<>();
 
     private final Ticket loadTicket = Ticket.wardrobe();
     private final AnimationManager animationManager;
     private final SkinOverriddenManager overriddenManager;
 
     private final DataContainer dataStorage = new DataContainer();
+    private final SkinAttachmentContainer attachmentStorage = new SkinAttachmentContainer();
 
     private int version = 0;
     private int lastVersion = Integer.MAX_VALUE;
@@ -125,6 +126,7 @@ public class EntitySlotsHandler<T> implements IAssociatedContainerProvider, Skin
         lastSkinTypes.clear();
         lastSkinPartTypes.clear();
 
+        attachmentStorage.clear();
         missingSkins.clear();
         armorSkins.clear();
         itemSkins.clear();
@@ -133,7 +135,6 @@ public class EntitySlotsHandler<T> implements IAssociatedContainerProvider, Skin
         activeSkins.clear();
         animatedSkins.clear();
         overriddenManager.clear();
-        attachmentPoses.clear();
 
         loadTicket.invalidate();
     }
@@ -312,12 +313,12 @@ public class EntitySlotsHandler<T> implements IAssociatedContainerProvider, Skin
         return animationManager;
     }
 
-    public void setAttachmentPose(SkinAttachmentType attachmentType, SkinAttachmentPose pose) {
-        attachmentPoses.put(attachmentType, pose);
+    public void setAttachmentPose(SkinAttachmentType attachmentType, int index, SkinAttachmentPose pose) {
+        attachmentStorage.put(attachmentType, index, pose);
     }
 
-    public SkinAttachmentPose getAttachmentPose(SkinAttachmentType attachmentType) {
-        var attachmentPose = attachmentPoses.get(attachmentType);
+    public SkinAttachmentPose getAttachmentPose(SkinAttachmentType attachmentType, int index) {
+        var attachmentPose = attachmentStorage.get(attachmentType, index);
         if (attachmentPose != null) {
             return attachmentPose;
         }

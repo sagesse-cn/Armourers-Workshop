@@ -1,11 +1,10 @@
 package moe.plushie.armourers_workshop.compatibility.fabric.mixin;
 
-import com.apple.library.coregraphics.CGGraphicsContext;
 import com.mojang.blaze3d.vertex.PoseStack;
 import moe.plushie.armourers_workshop.api.annotation.Available;
 import moe.plushie.armourers_workshop.compatibility.client.gui.AbstractGraphicsRenderer;
-import moe.plushie.armourers_workshop.init.platform.fabric.event.RenderTooltipEvents;
 import moe.plushie.armourers_workshop.core.utils.Objects;
+import moe.plushie.armourers_workshop.init.platform.fabric.event.RenderTooltipEvents;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.item.ItemStack;

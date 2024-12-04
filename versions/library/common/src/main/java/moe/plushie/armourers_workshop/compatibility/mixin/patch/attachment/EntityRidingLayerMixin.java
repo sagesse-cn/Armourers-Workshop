@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
 @Available("[1.21, )")
 @Mixin(Entity.class)
-public class EntityRiderMixin {
+public class EntityRidingLayerMixin {
 
     @ModifyVariable(method = "positionRider(Lnet/minecraft/world/entity/Entity;Lnet/minecraft/world/entity/Entity$MoveFunction;)V", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/world/entity/Entity;getPassengerRidingPosition(Lnet/minecraft/world/entity/Entity;)Lnet/minecraft/world/phys/Vec3;", shift = At.Shift.AFTER))
     private Vec3 aw2$positionRider(Vec3 pos, Entity passenger, Entity.MoveFunction moveFunction) {

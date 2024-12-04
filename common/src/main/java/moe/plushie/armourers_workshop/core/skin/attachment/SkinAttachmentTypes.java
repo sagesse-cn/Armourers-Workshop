@@ -2,6 +2,7 @@ package moe.plushie.armourers_workshop.core.skin.attachment;
 
 import moe.plushie.armourers_workshop.core.utils.OpenResourceLocation;
 import moe.plushie.armourers_workshop.init.ModLog;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -53,6 +54,16 @@ public class SkinAttachmentTypes {
             return RIGHT_HAND;
         }
         return ALL_ATTACHMENT_TYPES.getOrDefault(name, UNKNOWN);
+    }
+
+    public static Pair<SkinAttachmentType, Integer> parse(String name) {
+        // armourers:<name>.<index>
+        var index = name.replaceFirst("^.+?(?:\\.(\\d+))?$", "$1");
+        if (index.isEmpty()) {
+            return Pair.of(byName(name), -1);
+        }
+        name = name.replaceFirst("\\.\\d+$", "");
+        return Pair.of(byName(name), Integer.parseInt(index));
     }
 
     public static Collection<SkinAttachmentType> values() {

@@ -163,8 +163,8 @@ public class ClientProxy {
         EventManager.listen(RenderFrameEvent.Pre.class, event -> {
             Scheduler.CLIENT.begin();
             AutoreleasePool.begin();
-            TickUtils.tick(event.isPaused() || event.isFrozen()); // respect the /tick frozen command.
-            SkinPreloadManager.tick(event.isPaused());
+            TickUtils.tick(event.getDeltaTracker().isPaused() || event.getDeltaTracker().isFrozen()); // respect the /tick frozen command.
+            SkinPreloadManager.tick(event.getDeltaTracker().isPaused());
         });
 
         EventManager.listen(RenderFrameEvent.Post.class, event -> {

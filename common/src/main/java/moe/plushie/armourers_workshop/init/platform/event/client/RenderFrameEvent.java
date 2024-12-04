@@ -1,10 +1,10 @@
 package moe.plushie.armourers_workshop.init.platform.event.client;
 
+import moe.plushie.armourers_workshop.compatibility.core.AbstractDeltaTracker;
+
 public interface RenderFrameEvent {
 
-    boolean isPaused();
-
-    boolean isFrozen();
+    AbstractDeltaTracker getDeltaTracker();
 
     interface Pre extends RenderFrameEvent {
 

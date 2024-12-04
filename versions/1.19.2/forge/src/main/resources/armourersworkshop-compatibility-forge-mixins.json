@@ -7,7 +7,7 @@
     "ForgeEpicFightRendererMixin",
     "ForgeEpicFightFirstPersonRendererMixin",
     "ForgeCuriosAddonMixin",
-    "ForgeTACZOffhandRenderMixin"
+    "ForgeTacZeroItemRenderMixin"
   ],
   "mixins": [
     "ForgeBlockEntityHandlerMixin"

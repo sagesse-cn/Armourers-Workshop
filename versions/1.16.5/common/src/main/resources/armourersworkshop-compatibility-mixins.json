@@ -24,7 +24,7 @@
     "patch/model/AgeableListModelMixin",
     "patch/attachment/ItemInHandLayerMixin",
     "patch/attachment/ParrotOnShoulderLayerMixin",
-    "patch/attachment/EntityRiderMixin"
+    "patch/attachment/EntityRidingLayerMixin"
   ],
   "mixins": [
     "ServerGameMixin",

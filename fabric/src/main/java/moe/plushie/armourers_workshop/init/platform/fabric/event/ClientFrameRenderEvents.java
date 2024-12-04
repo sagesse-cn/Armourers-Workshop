@@ -1,8 +1,8 @@
 package moe.plushie.armourers_workshop.init.platform.fabric.event;
 
+import moe.plushie.armourers_workshop.compatibility.core.AbstractDeltaTracker;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
-import net.minecraft.client.Minecraft;
 
 public class ClientFrameRenderEvents {
 
@@ -20,11 +20,11 @@ public class ClientFrameRenderEvents {
 
     @FunctionalInterface
     public interface Start {
-        void onStart(Minecraft minecraft);
+        void onStart(AbstractDeltaTracker delta);
     }
 
     @FunctionalInterface
     public interface End {
-        void onEnd(Minecraft minecraft);
+        void onEnd(AbstractDeltaTracker delta);
     }
 }

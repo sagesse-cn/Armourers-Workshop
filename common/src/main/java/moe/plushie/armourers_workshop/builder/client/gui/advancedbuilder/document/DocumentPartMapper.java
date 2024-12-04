@@ -147,10 +147,27 @@ public class DocumentPartMapper {
 
         register(Node.locator("hand_l"), SkinAttachmentTypes.LEFT_HAND);
         register(Node.locator("hand_r"), SkinAttachmentTypes.RIGHT_HAND);
+
+        // multiple hands is allowed.
+        registerMultiple(9, Node.bone("LeftHandLocator"), SkinAttachmentTypes.LEFT_HAND);
+        registerMultiple(9, Node.bone("RightHandLocator"), SkinAttachmentTypes.RIGHT_HAND);
+
+        // multiple riding is allowed.
+        registerMultiple(16, Node.bone("RidingLocator"), SkinAttachmentTypes.RIDING);
     }
 
+    // <name>Locator => armourers:<name>
     private void register(Node node, SkinAttachmentType attachmentType) {
         overrideNodes.put(node, Node.locator(attachmentType.getRegistryName().toString()));
+    }
+
+    // <name>Locator<index> => armourers:<name>.<index>
+    private void registerMultiple(int count, Node node, SkinAttachmentType attachmentType) {
+        for (int i = 0; i < count; i++) {
+            var s1 = new Node(node.name + (i + 1), node.type);
+            var s2 = Node.locator(attachmentType.getRegistryName().toString() + "." + i);
+            overrideNodes.put(s1, s2);
+        }
     }
 
 

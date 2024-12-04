@@ -2,6 +2,7 @@ package moe.plushie.armourers_workshop.compatibility.forge.event.client;
 
 import moe.plushie.armourers_workshop.api.annotation.Available;
 import moe.plushie.armourers_workshop.api.registry.IEventHandler;
+import moe.plushie.armourers_workshop.compatibility.core.AbstractDeltaTracker;
 import moe.plushie.armourers_workshop.compatibility.forge.AbstractForgeClientEventsImpl;
 import moe.plushie.armourers_workshop.init.platform.event.client.RenderFrameEvent;
 import net.minecraft.client.Minecraft;
@@ -13,7 +14,8 @@ public class AbstractForgeRenderFrameEvent {
     public static IEventHandler<RenderFrameEvent.Pre> preFactory() {
         return AbstractForgeClientEventsImpl.RENDER_FRAME_PRE.flatMap(event -> {
             if (event.phase == TickEvent.Phase.START) {
-                return ReusableEvent.INSTANCE;
+                var delta = new AbstractDeltaTracker(event.renderTickTime, Minecraft.getInstance().isPaused(), false);
+                return () -> delta;
             }
             return null;
         });
@@ -22,24 +24,10 @@ public class AbstractForgeRenderFrameEvent {
     public static IEventHandler<RenderFrameEvent.Post> postFactory() {
         return AbstractForgeClientEventsImpl.RENDER_FRAME_POST.flatMap(event -> {
             if (event.phase == TickEvent.Phase.END) {
-                return ReusableEvent.INSTANCE;
+                var delta = new AbstractDeltaTracker(event.renderTickTime, Minecraft.getInstance().isPaused(), false);
+                return () -> delta;
             }
             return null;
         });
-    }
-
-    private static class ReusableEvent implements RenderFrameEvent.Pre, RenderFrameEvent.Post {
-
-        private static final ReusableEvent INSTANCE = new ReusableEvent();
-
-        @Override
-        public boolean isPaused() {
-            return Minecraft.getInstance().isPaused();
-        }
-
-        @Override
-        public boolean isFrozen() {
-            return false;
-        }
     }
 }
