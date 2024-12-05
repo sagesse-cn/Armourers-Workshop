@@ -695,6 +695,7 @@
   "inventory.armourers_workshop.toolOptions.changePaintColor": "ペイントの色を変更",
   "inventory.armourers_workshop.toolOptions.changeSaturation": "彩度を変更",
   "inventory.armourers_workshop.toolOptions.effectRadius": "効果範囲",
+  "inventory.armourers_workshop.toolOptions.sampleRadius": "サンプル半径",
   "inventory.armourers_workshop.toolOptions.fullBlockMode": "完全ブロックモード",
   "inventory.armourers_workshop.toolOptions.intensity": "強度",
   "inventory.armourers_workshop.toolOptions.planeRestrict": "平面制限",

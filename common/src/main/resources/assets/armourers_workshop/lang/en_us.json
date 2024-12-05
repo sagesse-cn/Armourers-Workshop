@@ -802,6 +802,7 @@
   "inventory.armourers_workshop.toolOptions.changePaintColor": "Change Paint Color",
   "inventory.armourers_workshop.toolOptions.changeSaturation": "Change Saturation",
   "inventory.armourers_workshop.toolOptions.effectRadius": "Effect Radius",
+  "inventory.armourers_workshop.toolOptions.sampleRadius": "Sample Radius",
   "inventory.armourers_workshop.toolOptions.fullBlockMode": "Full block mode",
   "inventory.armourers_workshop.toolOptions.intensity": "Intensity",
   "inventory.armourers_workshop.toolOptions.planeRestrict": "Restrict Plane",

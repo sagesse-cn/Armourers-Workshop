@@ -8,6 +8,7 @@ import moe.plushie.armourers_workshop.core.skin.Skin;
 import moe.plushie.armourers_workshop.core.skin.SkinTypes;
 import moe.plushie.armourers_workshop.core.skin.serializer.SkinSerializer;
 import moe.plushie.armourers_workshop.core.utils.FileUtils;
+import moe.plushie.armourers_workshop.core.utils.Objects;
 import moe.plushie.armourers_workshop.core.utils.StreamUtils;
 import moe.plushie.armourers_workshop.init.ModConfig;
 import moe.plushie.armourers_workshop.init.ModLog;
@@ -36,7 +37,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.Executor;
 import java.util.function.Consumer;
@@ -107,7 +107,7 @@ public class GlobalSkinLibrary extends ServerSession {
     public void join(IResultHandler<Void> handlerIn) {
         submit(handlerIn, handlerOut -> {
             try {
-                HashMap<String, Object> parameters = authenticationFromMinecraft();
+                var parameters = authenticationFromMinecraft();
                 request("/user/join", parameters, o -> o);
                 updateUser(request("/connect", a2m("uuid", parameters.get("uuid")), ServerUser::fromJSON));
                 handlerOut.accept(null);
@@ -204,7 +204,7 @@ public class GlobalSkinLibrary extends ServerSession {
     }
 
     public void getReportList(int pageIndex, int pageSize, ReportFilter filter, IResultHandler<ReportResult> handler) {
-        HashMap<String, Object> parameters = new HashMap<>();
+        var parameters = new HashMap<String, Object>();
         parameters.put("page", pageIndex);
         parameters.put("size", pageSize);
         parameters.put("filter", filter.toString().toLowerCase());
@@ -217,9 +217,9 @@ public class GlobalSkinLibrary extends ServerSession {
 
     @Override
     protected void checkRequest(ServerRequest request, @Nullable Map<String, ?> parameters) throws Exception {
-        ServerUser user = getUser();
+        var user = getUser();
         // when request permission is specified, we need to check it.
-        ServerPermission permission = resolvePermission(request, parameters);
+        var permission = resolvePermission(request, parameters);
         if (permission != null && !user.hasPermission(permission)) {
             throw new RuntimeException("insufficient permissions");
         }
@@ -260,12 +260,12 @@ public class GlobalSkinLibrary extends ServerSession {
     @Nullable
     public ServerUser getUserById(String userId) {
         synchronized (state.users) {
-            ServerUser user = state.users.get(userId);
+            var user = state.users.get(userId);
             if (user != null) {
                 return user;
             }
         }
-        ServerUser user = new ServerUser(userId, UUID.randomUUID(), "", ServerPermissions.NO_LOGIN);
+        var user = new ServerUser(userId, UUID.randomUUID(), "", ServerPermissions.NO_LOGIN);
         state.users.put(userId, user);
         if (!state.downloaded.contains(userId)) {
             state.downloaded.add(userId);
@@ -283,8 +283,8 @@ public class GlobalSkinLibrary extends ServerSession {
     }
 
     public boolean isValidJavaVersion() {
-        String[] javaVersion = getJavaVersion();
-        int[] targetVersion = new int[]{8, 0, 101};
+        var javaVersion = getJavaVersion();
+        var targetVersion = new int[]{8, 0, 101};
         for (int i = 0; i < javaVersion.length || i < targetVersion.length; ++i) {
             int sv = 0, dv = 0;
             if (i < javaVersion.length) {
@@ -309,7 +309,7 @@ public class GlobalSkinLibrary extends ServerSession {
     // Java 9 or higher: 9.0.1, 11.0.4, 12, 12.0.1
     public String[] getJavaVersion() {
         try {
-            String[] version = System.getProperty("java.version").split("[._]");
+            var version = System.getProperty("java.version").split("[._]");
             // modify the version to aligned format.
             if (Objects.equals(version[0], "1")) {
                 return Arrays.copyOfRange(version, 1, version.length);
@@ -337,17 +337,17 @@ public class GlobalSkinLibrary extends ServerSession {
         return searchTypesBuilder.toString();
     }
 
-    private HashMap<String, Object> authenticationFromMinecraft() {
-        ServerUser user = getUser();
-        String serverId = String.valueOf(defaultBaseURL().hashCode());
+    private Map<String, Object> authenticationFromMinecraft() {
+        var user = getUser();
+        var serverId = String.valueOf(defaultBaseURL().hashCode());
         if (!MinecraftAuth.checkAndRefeshAuth(serverId)) {
-            Exception error = MinecraftAuth.getLastError();
+            var error = MinecraftAuth.getLastError();
             ModLog.debug("MC Auth Failed");
             error.printStackTrace();
             throw new RuntimeException(error.getMessage());
         }
         ModLog.debug("MC Auth Done");
-        HashMap<String, Object> parameters = new HashMap<>();
+        var parameters = new HashMap<String, Object>();
         parameters.put("username", user.getName());
         parameters.put("uuid", user.getUUID());
         parameters.put("serverId", serverId);
@@ -355,7 +355,7 @@ public class GlobalSkinLibrary extends ServerSession {
     }
 
     private Map<String, Object> a2m(String m, Object o) {
-        HashMap<String, Object> map = new HashMap<>();
+        var map = new HashMap<String, Object>();
         map.put(m, o);
         return map;
     }
@@ -368,17 +368,13 @@ public class GlobalSkinLibrary extends ServerSession {
     }
 
     private ServerPermission resolvePermission(ServerRequest request, @Nullable Map<String, ?> parameters) {
-        ServerUser user = getUser();
-        ServerPermission permission = request.getPermission();
-        // if current user is not the owner, we need required the mod permission.
-        Object value = null;
-        if (parameters != null) {
-            value = parameters.get("skinOwner");
-        }
+        var user = getUser();
+        var permission = request.getPermission();
+        var value = Objects.flatMap(parameters, it -> it.get("skinOwner"));
         if (value == null || user.getId().equals(value)) {
             return permission;
         }
-        // this is a simple mapping.
+        // the user is not the owner, we need required the mod permission.
         return switch (permission) {
             case SKIN_OWNER_DELETE -> ServerPermission.SKIN_MOD_DELETE;
             case SKIN_OWNER_EDIT -> ServerPermission.SKIN_MOD_EDIT;
@@ -387,7 +383,7 @@ public class GlobalSkinLibrary extends ServerSession {
     }
 
     private void resolveState() {
-        ArrayList<String> customURLs = ModConfig.Common.customSkinServerURLs;
+        var customURLs = ModConfig.Common.customSkinServerURLs;
         if (!customURLs.equals(state.hosts)) {
             state = new State(customURLs);
         }

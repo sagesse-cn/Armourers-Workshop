@@ -1,17 +1,18 @@
 package moe.plushie.armourers_workshop.library.data.impl;
 
 import moe.plushie.armourers_workshop.core.utils.JsonSerializer;
-import moe.plushie.armourers_workshop.init.ModLog;
 import moe.plushie.armourers_workshop.core.utils.StreamUtils;
+import moe.plushie.armourers_workshop.init.ModLog;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.function.Supplier;
 
+/**
+ * https://minecraft.wiki/w/Mojang_API
+ */
 public class MinecraftAuth {
 
     // Based on
@@ -43,14 +44,16 @@ public class MinecraftAuth {
                 return false;
             }
             ModLog.info("MC Auth Start");
-            String data = "{\"accessToken\":\"" + USER_ACCESS_TOKEN_PROVIDER.get() + "\", \"serverId\":\"" + serverId + "\", \"selectedProfile\":\"" + USER_ID_PROVIDER.get() + "\"}";
+            var data = "{\"accessToken\":\"" + USER_ACCESS_TOKEN_PROVIDER.get() + "\", \"serverId\":\"" + serverId + "\", \"selectedProfile\":\"" + USER_ID_PROVIDER.get() + "\"}";
 
             try {
                 // returns non 204 if error occurred
                 var result = performPostRequest(new URL(JOIN_URL), data, "application/json");
-                var object = JsonSerializer.readFromString(result);
-                if (object.get("error") != null) {
-                    throw new RuntimeException(object.get("error").stringValue());
+                if (result != null && !result.isEmpty()) {
+                    var object = JsonSerializer.readFromString(result);
+                    if (object.get("error") != null) {
+                        throw new RuntimeException(object.get("error").stringValue());
+                    }
                 }
                 lastAuthTime = System.currentTimeMillis();
                 return true;
@@ -66,42 +69,32 @@ public class MinecraftAuth {
     }
 
     private static String performPostRequest(URL url, String post, String contentType) throws IOException {
-        HttpURLConnection connection = createUrlConnection(url);
-        byte[] postAsBytes = post.getBytes(StandardCharsets.UTF_8);
+        var connection = createUrlConnection(url);
+        var postAsBytes = post.getBytes(StandardCharsets.UTF_8);
 
         connection.setRequestMethod("POST");
         connection.setRequestProperty("Content-Type", contentType + "; charset=utf-8");
         connection.setRequestProperty("Content-Length", "" + postAsBytes.length);
         connection.setDoOutput(true);
 
-        OutputStream outputStream = null;
-        try {
-            outputStream = connection.getOutputStream();
+        try (var outputStream = connection.getOutputStream()) {
             outputStream.write(postAsBytes);
-        } finally {
-            StreamUtils.closeQuietly(outputStream);
         }
 
-        InputStream inputStream = null;
-        try {
-            inputStream = connection.getInputStream();
+        try (var inputStream = connection.getInputStream()) {
             return StreamUtils.readStreamToString(inputStream, StandardCharsets.UTF_8);
         } catch (IOException e) {
-            StreamUtils.closeQuietly(inputStream);
-            inputStream = connection.getErrorStream();
-
+            var inputStream = connection.getErrorStream();
             if (inputStream != null) {
                 return StreamUtils.readStreamToString(inputStream, StandardCharsets.UTF_8);
             } else {
                 throw e;
             }
-        } finally {
-            StreamUtils.closeQuietly(inputStream);
         }
     }
 
     private static HttpURLConnection createUrlConnection(URL url) throws IOException {
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        var connection = (HttpURLConnection) url.openConnection();
         connection.setConnectTimeout(15000);
         connection.setReadTimeout(15000);
         connection.setUseCaches(false);

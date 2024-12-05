@@ -670,6 +670,7 @@
   "inventory.armourers_workshop.toolOptions.changePaintType": "改变染料类型",
   "inventory.armourers_workshop.toolOptions.changeSaturation": "改变饱和度",
   "inventory.armourers_workshop.toolOptions.effectRadius": "作用半径",
+  "inventory.armourers_workshop.toolOptions.sampleRadius": "采样半径",
   "inventory.armourers_workshop.toolOptions.fullBlockMode": "完整方块模式",
   "inventory.armourers_workshop.toolOptions.intensity": "强度",
   "inventory.armourers_workshop.toolOptions.planeRestrict": "限制于平面",
