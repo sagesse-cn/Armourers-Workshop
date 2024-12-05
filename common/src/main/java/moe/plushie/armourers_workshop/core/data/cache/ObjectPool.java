@@ -1,5 +1,7 @@
 package moe.plushie.armourers_workshop.core.data.cache;
 
+import moe.plushie.armourers_workshop.core.utils.ReferenceCounted;
+
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;

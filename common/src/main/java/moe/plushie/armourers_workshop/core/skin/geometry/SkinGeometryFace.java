@@ -2,7 +2,7 @@ package moe.plushie.armourers_workshop.core.skin.geometry;
 
 import moe.plushie.armourers_workshop.api.skin.geometry.ISkinGeometryFace;
 import moe.plushie.armourers_workshop.core.math.OpenTransform3f;
-import moe.plushie.armourers_workshop.core.skin.paint.texture.TexturePos;
+import moe.plushie.armourers_workshop.core.skin.texture.TexturePos;
 import moe.plushie.armourers_workshop.core.utils.Objects;
 
 public abstract class SkinGeometryFace implements ISkinGeometryFace {

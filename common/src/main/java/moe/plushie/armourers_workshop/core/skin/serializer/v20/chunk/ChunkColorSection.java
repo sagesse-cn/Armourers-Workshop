@@ -1,14 +1,12 @@
 package moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk;
 
-import moe.plushie.armourers_workshop.api.skin.paint.texture.ITextureProvider;
+import moe.plushie.armourers_workshop.api.skin.texture.ITextureProvider;
 import moe.plushie.armourers_workshop.core.math.OpenMath;
 import moe.plushie.armourers_workshop.core.math.Vector2f;
 import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
 import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintType;
-import moe.plushie.armourers_workshop.core.skin.paint.texture.TextureData;
-import moe.plushie.armourers_workshop.core.skin.paint.texture.TextureOptions;
-import moe.plushie.armourers_workshop.core.skin.serializer.io.IInputStream;
-import moe.plushie.armourers_workshop.core.skin.serializer.io.IOutputStream;
+import moe.plushie.armourers_workshop.core.skin.texture.TextureData;
+import moe.plushie.armourers_workshop.core.skin.texture.TextureOptions;
 import moe.plushie.armourers_workshop.core.utils.Collections;
 
 import java.io.IOException;
@@ -32,7 +30,7 @@ public abstract class ChunkColorSection {
         this.paintType = paintType;
     }
 
-    public abstract void writeToStream(IOutputStream stream) throws IOException;
+    public abstract void writeToStream(ChunkOutputStream stream) throws IOException;
 
     public void freeze(int index) {
         this.index = index;
@@ -93,7 +91,7 @@ public abstract class ChunkColorSection {
             super(total, usedBytes, paintType);
         }
 
-        public void readFromStream(IInputStream stream) throws IOException {
+        public void readFromStream(ChunkInputStream stream) throws IOException {
             if (usedBytes != 0) {
                 buffers = new byte[usedBytes * size];
                 stream.read(buffers);
@@ -121,7 +119,7 @@ public abstract class ChunkColorSection {
         }
 
         @Override
-        public void writeToStream(IOutputStream stream) throws IOException {
+        public void writeToStream(ChunkOutputStream stream) throws IOException {
             if (buffers != null) {
                 stream.write(buffers);
             }
@@ -167,7 +165,7 @@ public abstract class ChunkColorSection {
         }
 
         @Override
-        public void writeToStream(IOutputStream stream) throws IOException {
+        public void writeToStream(ChunkOutputStream stream) throws IOException {
             for (int color : colorLists) {
                 stream.writeFixedInt(color, usedBytes);
             }
@@ -266,7 +264,7 @@ public abstract class ChunkColorSection {
         }
 
         @Override
-        public void writeToStream(IOutputStream stream) throws IOException {
+        public void writeToStream(ChunkOutputStream stream) throws IOException {
             stream.writeFixedInt(section.getStartIndex() + value, section.colorIndexBytes);
         }
 

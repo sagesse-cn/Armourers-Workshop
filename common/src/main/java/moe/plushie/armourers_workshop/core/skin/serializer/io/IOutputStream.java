@@ -8,20 +8,25 @@ import moe.plushie.armourers_workshop.api.core.math.ITransform3f;
 import moe.plushie.armourers_workshop.api.core.math.IVector3f;
 import moe.plushie.armourers_workshop.api.core.math.IVector3i;
 import moe.plushie.armourers_workshop.core.math.OpenTransform3f;
-import moe.plushie.armourers_workshop.core.skin.paint.texture.TextureAnimation;
-import moe.plushie.armourers_workshop.core.skin.paint.texture.TextureProperties;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperties;
+import moe.plushie.armourers_workshop.core.skin.texture.TextureAnimation;
+import moe.plushie.armourers_workshop.core.skin.texture.TextureProperties;
 import moe.plushie.armourers_workshop.core.utils.TagSerializer;
 import net.minecraft.nbt.CompoundTag;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.channels.Channels;
-import java.nio.channels.WritableByteChannel;
+import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 
 public interface IOutputStream {
+
+    static IOutputStream of(OutputStream stream) {
+        if (stream instanceof DataOutputStream dataOutputStream) {
+            return of(dataOutputStream);
+        }
+        return of(new DataOutputStream(stream));
+    }
 
     static IOutputStream of(DataOutputStream stream) {
         return () -> stream;
@@ -43,11 +48,6 @@ public interface IOutputStream {
 
     default void writeBytes(ByteBuf buf, int limit) throws IOException {
         buf.getBytes(0, getOutputStream(), limit);
-    }
-
-    default void writeBytes(ByteBuffer buf) throws IOException {
-        WritableByteChannel channel = Channels.newChannel(getOutputStream());
-        channel.write(buf.duplicate());
     }
 
     default void writeByte(int v) throws IOException {
@@ -133,6 +133,18 @@ public interface IOutputStream {
 
     default void writeEnum(Enum<?> value) throws IOException {
         writeVarInt(value.ordinal());
+    }
+
+    default void writeOptionalString(String v) throws IOException {
+        // 0 is null string.
+        if (v == null) {
+            writeVarInt(0);
+            return;
+        }
+        // 1 is empty string.
+        int len = v.length();
+        writeVarInt(len + 1);
+        writeString(v, len);
     }
 
     default void writeVector3i(IVector3i vec) throws IOException {

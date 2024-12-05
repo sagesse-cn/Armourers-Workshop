@@ -13,7 +13,8 @@ import moe.plushie.armourers_workshop.core.client.bake.SkinPreloadManager;
 import moe.plushie.armourers_workshop.core.client.other.SkinRenderMode;
 import moe.plushie.armourers_workshop.core.client.render.HighlightPlacementRenderer;
 import moe.plushie.armourers_workshop.core.client.skinrender.SkinRendererManager;
-import moe.plushie.armourers_workshop.core.client.texture.TextureManager;
+import moe.plushie.armourers_workshop.core.client.sound.SmartSoundManager;
+import moe.plushie.armourers_workshop.core.client.texture.SmartTextureManager;
 import moe.plushie.armourers_workshop.core.data.DataPackType;
 import moe.plushie.armourers_workshop.core.data.cache.AutoreleasePool;
 import moe.plushie.armourers_workshop.core.data.ticket.Tickets;
@@ -129,7 +130,8 @@ public class ClientProxy {
             }
             SkinBakery.start();
             SkinPreloadManager.start();
-            TextureManager.getInstance().start();
+            SmartSoundManager.getInstance().start();
+            SmartTextureManager.getInstance().start();
         });
         EventManager.listen(ClientPlayerEvent.LoggingOut.class, event -> {
             var player = event.getPlayer();
@@ -139,7 +141,8 @@ public class ClientProxy {
             SkinPreloadManager.stop();
             SkinBakery.stop();
             Tickets.invalidateAll();
-            TextureManager.getInstance().stop();
+            SmartSoundManager.getInstance().stop();
+            SmartTextureManager.getInstance().stop();
             SkinLoader.getInstance().stop();
             GlobalSkinLibrary.getInstance().disconnect();
             SkinLibraryManager.getClient().getPublicSkinLibrary().reset();

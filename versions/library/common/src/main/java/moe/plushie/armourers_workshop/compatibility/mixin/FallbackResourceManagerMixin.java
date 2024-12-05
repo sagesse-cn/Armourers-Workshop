@@ -1,7 +1,7 @@
 package moe.plushie.armourers_workshop.compatibility.mixin;
 
 import moe.plushie.armourers_workshop.api.annotation.Available;
-import moe.plushie.armourers_workshop.core.client.texture.SmartResourceManager;
+import moe.plushie.armourers_workshop.core.client.other.SmartResourceManager;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.FallbackResourceManager;
 import org.spongepowered.asm.mixin.Mixin;

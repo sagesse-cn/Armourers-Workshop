@@ -10,7 +10,7 @@ public class ChunkPartReader extends ChunkReader {
     protected int id = 0;
     protected final LinkedHashMap<Object, ArrayList<Entry>> mapping = new LinkedHashMap<>();
 
-    public ChunkPartReader(ChunkInputStream stream, Predicate<String> chunkFilter) {
+    public ChunkPartReader(ChunkDataInputStream stream, Predicate<String> chunkFilter) {
         super(stream, chunkFilter);
     }
 

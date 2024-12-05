@@ -17,4 +17,8 @@ public interface IOSerializer {
     int getVersion();
 
     boolean isSupportedVersion(SkinFileOptions options);
+
+    default boolean isRequiresHeader() {
+        return false;
+    }
 }

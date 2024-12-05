@@ -1,8 +1,5 @@
 package moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk;
 
-import moe.plushie.armourers_workshop.core.skin.serializer.io.IInputStream;
-import moe.plushie.armourers_workshop.core.skin.serializer.io.IOutputStream;
-
 import java.io.IOException;
 
 public class ChunkFlags {
@@ -17,11 +14,11 @@ public class ChunkFlags {
         this.flags = flags;
     }
 
-    public static ChunkFlags readFromStream(IInputStream stream) throws IOException {
+    public static ChunkFlags readFromStream(ChunkInputStream stream) throws IOException {
         return new ChunkFlags(stream.readShort());
     }
 
-    public void writeToStream(IOutputStream stream) throws IOException {
+    public void writeToStream(ChunkOutputStream stream) throws IOException {
         stream.writeShort(flags);
     }
 

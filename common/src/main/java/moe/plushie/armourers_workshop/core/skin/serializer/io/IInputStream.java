@@ -8,20 +8,29 @@ import moe.plushie.armourers_workshop.core.math.Rectangle3f;
 import moe.plushie.armourers_workshop.core.math.Rectangle3i;
 import moe.plushie.armourers_workshop.core.math.Vector3f;
 import moe.plushie.armourers_workshop.core.math.Vector3i;
-import moe.plushie.armourers_workshop.core.skin.paint.texture.TextureAnimation;
-import moe.plushie.armourers_workshop.core.skin.paint.texture.TextureProperties;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperties;
+import moe.plushie.armourers_workshop.core.skin.texture.TextureAnimation;
+import moe.plushie.armourers_workshop.core.skin.texture.TextureProperties;
 import moe.plushie.armourers_workshop.core.utils.TagSerializer;
 import net.minecraft.nbt.CompoundTag;
 
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.FloatBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.function.Function;
 
 public interface IInputStream {
+
+    static IInputStream of(InputStream stream) {
+        if (stream instanceof DataInputStream dataInputStream) {
+            return of(dataInputStream);
+        }
+        return of(new DataInputStream(stream));
+    }
 
     static IInputStream of(DataInputStream stream) {
         return () -> stream;
@@ -148,6 +157,17 @@ public interface IInputStream {
 
     default <T extends Enum<?>> T readEnum(Class<T> clazz) throws IOException {
         return clazz.getEnumConstants()[readVarInt()];
+    }
+
+    default Optional<String> readOptionalString() throws IOException {
+        // 0 is null string.
+        var len = readVarInt();
+        if (len == 0) {
+            return Optional.empty();
+        }
+        // 1 is empty string.
+        var value = readString(len - 1);
+        return Optional.of(value);
     }
 
     default Vector3i readVector3i() throws IOException {

@@ -3,7 +3,7 @@ package moe.plushie.armourers_workshop.core.skin.serializer.v20.geometry;
 import moe.plushie.armourers_workshop.api.skin.geometry.ISkinGeometryType;
 import moe.plushie.armourers_workshop.core.skin.geometry.SkinGeometry;
 import moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk.ChunkGeometrySlice;
-import moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk.ChunkOutputStream;
+import moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk.ChunkDataOutputStream;
 import moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk.ChunkPaletteData;
 
 import java.io.IOException;
@@ -20,7 +20,7 @@ public abstract class ChunkGeometrySerializer {
 
         int begin(T geometry);
 
-        void end(ChunkPaletteData palette, ChunkOutputStream stream) throws IOException;
+        void end(ChunkPaletteData palette, ChunkDataOutputStream stream) throws IOException;
     }
 
     public interface Decoder<T extends SkinGeometry> {

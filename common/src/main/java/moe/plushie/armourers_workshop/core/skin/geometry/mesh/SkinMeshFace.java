@@ -5,7 +5,7 @@ import moe.plushie.armourers_workshop.core.math.OpenTransform3f;
 import moe.plushie.armourers_workshop.core.skin.geometry.SkinGeometryFace;
 import moe.plushie.armourers_workshop.core.skin.geometry.SkinGeometryTypes;
 import moe.plushie.armourers_workshop.core.skin.geometry.SkinGeometryVertex;
-import moe.plushie.armourers_workshop.core.skin.paint.texture.TexturePos;
+import moe.plushie.armourers_workshop.core.skin.texture.TexturePos;
 
 import java.util.List;
 

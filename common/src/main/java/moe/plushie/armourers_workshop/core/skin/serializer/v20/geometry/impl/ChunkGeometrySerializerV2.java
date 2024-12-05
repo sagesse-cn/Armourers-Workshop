@@ -1,7 +1,7 @@
 package moe.plushie.armourers_workshop.core.skin.serializer.v20.geometry.impl;
 
 import moe.plushie.armourers_workshop.api.skin.geometry.ISkinGeometryType;
-import moe.plushie.armourers_workshop.api.skin.paint.texture.ITextureProvider;
+import moe.plushie.armourers_workshop.api.skin.texture.ITextureProvider;
 import moe.plushie.armourers_workshop.core.math.OpenTransform3f;
 import moe.plushie.armourers_workshop.core.math.Rectangle3f;
 import moe.plushie.armourers_workshop.core.math.Vector2f;
@@ -9,12 +9,12 @@ import moe.plushie.armourers_workshop.core.skin.geometry.SkinGeometryTypes;
 import moe.plushie.armourers_workshop.core.skin.geometry.cube.SkinCube;
 import moe.plushie.armourers_workshop.core.skin.geometry.cube.SkinCubeFace;
 import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
-import moe.plushie.armourers_workshop.core.skin.paint.texture.TextureBox;
-import moe.plushie.armourers_workshop.core.skin.paint.texture.TextureOptions;
-import moe.plushie.armourers_workshop.core.skin.paint.texture.TexturePos;
+import moe.plushie.armourers_workshop.core.skin.texture.TextureBox;
+import moe.plushie.armourers_workshop.core.skin.texture.TextureOptions;
+import moe.plushie.armourers_workshop.core.skin.texture.TexturePos;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IOConsumer2;
 import moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk.ChunkGeometrySlice;
-import moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk.ChunkOutputStream;
+import moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk.ChunkDataOutputStream;
 import moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk.ChunkPaletteData;
 import moe.plushie.armourers_workshop.core.skin.serializer.v20.geometry.ChunkGeometrySerializer;
 import moe.plushie.armourers_workshop.core.utils.OpenDirection;
@@ -216,7 +216,7 @@ public class ChunkGeometrySerializerV2 extends ChunkGeometrySerializer {
         }
 
         @Override
-        public void end(ChunkPaletteData palette, ChunkOutputStream stream) throws IOException {
+        public void end(ChunkPaletteData palette, ChunkDataOutputStream stream) throws IOException {
             // rectangle(24B) + transform(64b)
             stream.writeRectangle3f(boundingBox);
             stream.writeTransformf(transform);

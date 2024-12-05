@@ -8,7 +8,7 @@ import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintType;
 import moe.plushie.armourers_workshop.api.skin.part.ISkinPartType;
 import moe.plushie.armourers_workshop.core.client.other.SkinRenderType;
 import moe.plushie.armourers_workshop.core.client.texture.PlayerTextureLoader;
-import moe.plushie.armourers_workshop.core.client.texture.TextureManager;
+import moe.plushie.armourers_workshop.core.client.texture.SmartTextureManager;
 import moe.plushie.armourers_workshop.core.data.color.ColorDescriptor;
 import moe.plushie.armourers_workshop.core.math.OpenMath;
 import moe.plushie.armourers_workshop.core.math.OpenTransform3f;
@@ -19,7 +19,7 @@ import moe.plushie.armourers_workshop.core.skin.geometry.cube.SkinCubeVertex;
 import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
 import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintScheme;
 import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintTypes;
-import moe.plushie.armourers_workshop.core.skin.paint.texture.TexturePos;
+import moe.plushie.armourers_workshop.core.skin.texture.TexturePos;
 import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.core.utils.OpenResourceLocation;
 import net.fabricmc.api.EnvType;
@@ -205,7 +205,7 @@ public class BakedGeometryFace {
     private RenderType resolveRenderType(SkinGeometryFace face) {
         var texturePos = face.getTexturePos();
         if (texturePos != null && texturePos.getProvider() != null) {
-            return TextureManager.getInstance().register(texturePos.getProvider(), face.getType());
+            return SmartTextureManager.getInstance().register(texturePos.getProvider(), face.getType());
         }
         return SkinRenderType.by(face.getType());
     }
@@ -222,7 +222,7 @@ public class BakedGeometryFace {
             if (properties.isNormal() || properties.isSpecular()) {
                 continue; // normal/specular map, only use from shader mod.
             }
-            renderTypes.add(TextureManager.getInstance().register(variant, face.getType()));
+            renderTypes.add(SmartTextureManager.getInstance().register(variant, face.getType()));
         }
         return renderTypes;
     }

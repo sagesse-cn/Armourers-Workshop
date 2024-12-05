@@ -2,23 +2,27 @@ package moe.plushie.armourers_workshop.core.skin.serializer.v20;
 
 import moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk.ChunkContext;
 import moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk.ChunkFlags;
-import moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk.ChunkInputStream;
-import moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk.ChunkOutputStream;
+import moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk.ChunkDataInputStream;
+import moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk.ChunkDataOutputStream;
 import moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk.ChunkType;
 import moe.plushie.armourers_workshop.core.utils.Objects;
 
 import java.io.IOException;
 import java.util.Collection;
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 public abstract class ChunkSerializer<V, C> {
 
     protected final ChunkType chunkType;
-    protected final LinkedHashMap<String, Decoder<V, C>> encoders = new LinkedHashMap<>();
+    protected final Map<String, Decoder<V, C>> decoders = new LinkedHashMap<>();
 
-    public ChunkSerializer(ChunkType chunkType) {
+    protected final V defaultValue;
+
+    public ChunkSerializer(ChunkType chunkType, V defaultValue) {
         this.chunkType = chunkType;
-        this.encoders.put(chunkType.getName(), this::read);
+        this.defaultValue = defaultValue;
+        this.decoders.put(chunkType.getName(), this::read);
         this.config();
     }
 
@@ -28,14 +32,9 @@ public abstract class ChunkSerializer<V, C> {
     protected void config(ChunkFlags flags, V value, ChunkContext context) {
     }
 
-    public abstract V read(ChunkInputStream stream, C obj) throws IOException;
+    public abstract V read(ChunkDataInputStream stream, C obj) throws IOException;
 
-    public abstract void write(V value, C obj, ChunkOutputStream stream) throws IOException;
-
-
-    public V getDefaultValue() {
-        return null;
-    }
+    public abstract void write(V value, C obj, ChunkDataOutputStream stream) throws IOException;
 
     public ChunkFlags getChunkFlags(V value, ChunkContext context) {
         var flags = context.createSerializerFlags(this, value);
@@ -47,8 +46,12 @@ public abstract class ChunkSerializer<V, C> {
         return chunkType;
     }
 
+    public V getDefaultValue() {
+        return defaultValue;
+    }
+
     public Decoder<V, C> createDecoder(String name) {
-        return encoders.get(name);
+        return decoders.get(name);
     }
 
     public Encoder<V, C> createEncoder(V value, C obj, ChunkContext context) {
@@ -61,7 +64,7 @@ public abstract class ChunkSerializer<V, C> {
             }
             return this::write;
         }
-        if (Objects.equals(value, getDefaultValue())) {
+        if (Objects.equals(value, defaultValue)) {
             return null;
         }
         return this::write;
@@ -69,11 +72,10 @@ public abstract class ChunkSerializer<V, C> {
 
 
     public interface Encoder<V, C> {
-        void encode(V value, C obj, ChunkOutputStream stream) throws IOException;
-
+        void encode(V value, C obj, ChunkDataOutputStream stream) throws IOException;
     }
 
     public interface Decoder<V, C> {
-        V decode(ChunkInputStream stream, C obj) throws IOException;
+        V decode(ChunkDataInputStream stream, C obj) throws IOException;
     }
 }

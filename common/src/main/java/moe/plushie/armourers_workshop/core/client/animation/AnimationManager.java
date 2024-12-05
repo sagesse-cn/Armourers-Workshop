@@ -318,6 +318,7 @@ public class AnimationManager {
             var oldPlayState = removePlayState(animationController);
             if (oldPlayState != null) {
                 debugLog("stop play {}", animationController);
+                oldPlayState.reset();
                 removeOnCompletion.removeIf(it -> it.getLeft() == oldPlayState);
             }
         }

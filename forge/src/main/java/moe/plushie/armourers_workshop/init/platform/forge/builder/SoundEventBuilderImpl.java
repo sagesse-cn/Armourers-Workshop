@@ -12,8 +12,8 @@ public class SoundEventBuilderImpl<T extends SoundEvent> implements ISoundEventB
 
     @Override
     public IRegistryHolder<T> build(String name) {
-        IResourceLocation registryName = ModConstants.key(name);
-        SoundEvent event = SoundEvent.createVariableRangeEvent(registryName.toLocation());
+        var registryName = ModConstants.key(name);
+        var event = SoundEvent.createVariableRangeEvent(registryName.toLocation());
         AbstractForgeRegistries.SOUND_EVENTS.register(name, () -> event);
         return TypedRegistry.Entry.cast(registryName, () -> event);
     }

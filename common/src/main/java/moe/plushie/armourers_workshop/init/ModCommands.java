@@ -14,8 +14,8 @@ import moe.plushie.armourers_workshop.core.capability.SkinWardrobe;
 import moe.plushie.armourers_workshop.core.data.DataDomain;
 import moe.plushie.armourers_workshop.core.data.UserNotifications;
 import moe.plushie.armourers_workshop.core.data.slot.ItemOverrideType;
-import moe.plushie.armourers_workshop.core.menu.SkinSlotType;
 import moe.plushie.armourers_workshop.core.math.OpenMath;
+import moe.plushie.armourers_workshop.core.menu.SkinSlotType;
 import moe.plushie.armourers_workshop.core.network.UpdateAnimationPacket;
 import moe.plushie.armourers_workshop.core.skin.SkinDescriptor;
 import moe.plushie.armourers_workshop.core.skin.SkinLoader;
@@ -23,6 +23,7 @@ import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintScheme;
 import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintTypes;
 import moe.plushie.armourers_workshop.core.skin.serializer.exporter.SkinExportManager;
 import moe.plushie.armourers_workshop.core.utils.Collections;
+import moe.plushie.armourers_workshop.core.utils.TypedRegistry;
 import moe.plushie.armourers_workshop.init.command.ColorArgumentType;
 import moe.plushie.armourers_workshop.init.command.ColorSchemeArgumentType;
 import moe.plushie.armourers_workshop.init.command.FileArgumentType;
@@ -34,7 +35,6 @@ import moe.plushie.armourers_workshop.init.platform.NetworkManager;
 import moe.plushie.armourers_workshop.init.platform.event.common.RegisterCommandsEvent;
 import moe.plushie.armourers_workshop.library.data.SkinLibraryManager;
 import moe.plushie.armourers_workshop.utils.TranslateUtils;
-import moe.plushie.armourers_workshop.core.utils.TypedRegistry;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.CompoundTagArgument;
@@ -102,7 +102,7 @@ public class ModCommands {
 
     static ArgumentBuilder<CommandSourceStack, ?> animationCommands(ArgumentBuilder<CommandSourceStack, ?> parent) {
         return parent
-                .then(literal("play").then(name().then(animationProperties().executes(Executor::playAnimation)).executes(Executor::playAnimation)))
+                .then(literal("play").then(name().then(properties().executes(Executor::playAnimation)).executes(Executor::playAnimation)))
                 .then(literal("stop").then(name().executes(Executor::stopAnimation)).executes(Executor::stopAnimation))
                 .then(literal("map").then(string("from").then(string("to").executes(Executor::mappingAnimation))));
     }
@@ -151,7 +151,7 @@ public class ModCommands {
         return Commands.argument("name", StringArgumentType.string());
     }
 
-    static ArgumentBuilder<CommandSourceStack, ?> animationProperties() {
+    static ArgumentBuilder<CommandSourceStack, ?> properties() {
         return Commands.argument("properties", CompoundTagArgument.compoundTag());
     }
 

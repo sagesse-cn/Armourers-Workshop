@@ -2,7 +2,7 @@ package moe.plushie.armourers_workshop.core.skin.paint;
 
 import moe.plushie.armourers_workshop.api.core.IResourceLocation;
 import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintType;
-import moe.plushie.armourers_workshop.core.skin.paint.texture.TexturePos;
+import moe.plushie.armourers_workshop.core.skin.texture.TexturePos;
 
 public class SkinPaintType implements ISkinPaintType {
 

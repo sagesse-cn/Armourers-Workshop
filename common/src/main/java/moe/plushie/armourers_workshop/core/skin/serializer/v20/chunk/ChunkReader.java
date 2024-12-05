@@ -1,7 +1,6 @@
 package moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk;
 
 import io.netty.buffer.ByteBuf;
-import moe.plushie.armourers_workshop.core.skin.serializer.io.IOutputStream;
 import moe.plushie.armourers_workshop.core.skin.serializer.v20.ChunkSerializer;
 
 import java.io.DataInputStream;
@@ -12,12 +11,12 @@ import java.util.function.Predicate;
 
 public class ChunkReader {
 
-    protected final ChunkInputStream stream;
+    protected final ChunkDataInputStream stream;
     protected final Predicate<String> chunkFilter;
 
     protected final ArrayList<Entry> entries = new ArrayList<>();
 
-    public ChunkReader(ChunkInputStream stream, Predicate<String> chunkFilter) {
+    public ChunkReader(ChunkDataInputStream stream, Predicate<String> chunkFilter) {
         this.stream = stream;
         this.chunkFilter = chunkFilter;
     }
@@ -100,7 +99,7 @@ public class ChunkReader {
         protected final int length;
         protected final ByteBuf buffer;
 
-        protected ChunkInputStream inputStream;
+        protected ChunkDataInputStream inputStream;
 
         protected final ChunkContext context;
         protected final Object extra;
@@ -115,7 +114,7 @@ public class ChunkReader {
         }
 
         @Override
-        public void writeToStream(IOutputStream stream) throws IOException {
+        public void writeToStream(ChunkOutputStream stream) throws IOException {
             stream.writeBytes(buffer);
         }
 
@@ -134,9 +133,9 @@ public class ChunkReader {
             return flags;
         }
 
-        public ChunkInputStream getInputStream() throws IOException {
+        public ChunkDataInputStream getInputStream() throws IOException {
             if (inputStream == null) {
-                inputStream = new ChunkInputStream(new DataInputStream(context.createInputStream(buffer, flags)), context, null);
+                inputStream = new ChunkDataInputStream(new DataInputStream(context.createInputStream(buffer, flags)), context, null);
             }
             return inputStream;
         }

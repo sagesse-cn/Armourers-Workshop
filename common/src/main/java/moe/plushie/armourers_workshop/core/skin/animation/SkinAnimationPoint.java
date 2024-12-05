@@ -1,40 +1,9 @@
 package moe.plushie.armourers_workshop.core.skin.animation;
 
-import moe.plushie.armourers_workshop.core.skin.serializer.io.IInputStream;
-import moe.plushie.armourers_workshop.core.skin.serializer.io.IOFunction;
-import moe.plushie.armourers_workshop.core.skin.serializer.io.IOutputStream;
-import moe.plushie.armourers_workshop.core.utils.Collections;
+import moe.plushie.armourers_workshop.core.skin.sound.SoundData;
 import moe.plushie.armourers_workshop.core.utils.Objects;
-import org.apache.commons.lang3.tuple.Pair;
-
-import java.io.IOException;
-import java.util.Map;
 
 public abstract class SkinAnimationPoint {
-
-    private static final Map<Integer, Pair<Class<?>, IOFunction<IInputStream, SkinAnimationPoint>>> CODERS = Collections.immutableMap(builder -> {
-        builder.put(8, Pair.of(Bone.class, Bone::new));
-        builder.put(9, Pair.of(Instruction.class, Instruction::new));
-    });
-
-    public static int getType(SkinAnimationPoint point) {
-        for (var entry : CODERS.entrySet()) {
-            if (entry.getValue().getKey().isInstance(point)) {
-                return entry.getKey();
-            }
-        }
-        return 0;
-    }
-
-    public static IOFunction<IInputStream, SkinAnimationPoint> getDecoder(int type) {
-        var entry = CODERS.get(type);
-        if (entry != null) {
-            return entry.getValue();
-        }
-        return null;
-    }
-
-    public abstract void writeToStream(IOutputStream stream) throws IOException;
 
     public static class Bone extends SkinAnimationPoint {
 
@@ -46,19 +15,6 @@ public abstract class SkinAnimationPoint {
             this.x = x;
             this.y = y;
             this.z = z;
-        }
-
-        public Bone(IInputStream stream) throws IOException {
-            this.x = readField(stream);
-            this.y = readField(stream);
-            this.z = readField(stream);
-        }
-
-        @Override
-        public void writeToStream(IOutputStream stream) throws IOException {
-            writeField(x, stream);
-            writeField(y, stream);
-            writeField(z, stream);
         }
 
         public Object getX() {
@@ -77,44 +33,14 @@ public abstract class SkinAnimationPoint {
         public String toString() {
             return Objects.toString(this, "x", x, "y", y, "z", z);
         }
-
-        private static Object readField(IInputStream stream) throws IOException {
-            var len = stream.readVarInt();
-            if (len == 0) {
-                return stream.readFloat();
-            }
-            return stream.readString(len);
-        }
-
-        private static void writeField(Object value, IOutputStream stream) throws IOException {
-            if (value instanceof String script) {
-                stream.writeVarInt(script.length());
-                stream.writeString(script, script.length());
-            } else if (value instanceof Number number) {
-                stream.writeVarInt(0);
-                stream.writeFloat(number.floatValue());
-            } else {
-                stream.writeVarInt(0);
-                stream.writeFloat(0);
-            }
-        }
     }
 
-    public static class Instruction extends SkinAnimationPoint {
+    public static class Instruct extends SkinAnimationPoint {
 
         private final String script;
 
-        public Instruction(String script) {
+        public Instruct(String script) {
             this.script = script;
-        }
-
-        public Instruction(IInputStream stream) throws IOException {
-            this.script = stream.readString();
-        }
-
-        @Override
-        public void writeToStream(IOutputStream stream) throws IOException {
-            stream.writeString(script);
         }
 
         public String getScript() {
@@ -124,6 +50,38 @@ public abstract class SkinAnimationPoint {
         @Override
         public String toString() {
             return Objects.toString(this, "script", script);
+        }
+    }
+
+    public static class Sound extends SkinAnimationPoint {
+
+        private final String effect;
+        private final SoundData provider;
+
+        public Sound(String effect, SoundData provider) {
+            this.effect = effect;
+            this.provider = provider;
+        }
+
+        public String getEffect() {
+            return effect;
+        }
+
+        public SoundData getProvider() {
+            return provider;
+        }
+
+        @Override
+        public String toString() {
+            return Objects.toString(this, "effect", effect, "sound", provider);
+        }
+    }
+
+    public static class Particle extends SkinAnimationPoint {
+
+        @Override
+        public String toString() {
+            return Objects.toString(this);
         }
     }
 }

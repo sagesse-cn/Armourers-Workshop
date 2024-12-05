@@ -1,8 +1,6 @@
 package moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk;
 
 import moe.plushie.armourers_workshop.api.skin.geometry.ISkinGeometryType;
-import moe.plushie.armourers_workshop.core.skin.serializer.io.IInputStream;
-import moe.plushie.armourers_workshop.core.skin.serializer.io.IOutputStream;
 import moe.plushie.armourers_workshop.core.skin.serializer.v20.geometry.ChunkGeometrySerializer;
 import moe.plushie.armourers_workshop.core.skin.serializer.v20.geometry.ChunkGeometrySerializers;
 
@@ -23,7 +21,7 @@ public abstract class ChunkGeometrySection {
         this.geometryType = geometryType;
     }
 
-    public abstract void writeToStream(IOutputStream stream) throws IOException;
+    public abstract void writeToStream(ChunkOutputStream stream) throws IOException;
 
     public void freeze(int index) {
         this.index = index;
@@ -68,12 +66,12 @@ public abstract class ChunkGeometrySection {
             this.palette = palette;
         }
 
-        public void readFromStream(IInputStream stream) throws IOException {
+        public void readFromStream(ChunkInputStream stream) throws IOException {
             stream.read(bytes);
         }
 
         @Override
-        public void writeToStream(IOutputStream stream) throws IOException {
+        public void writeToStream(ChunkOutputStream stream) throws IOException {
             stream.write(bytes);
         }
 
@@ -88,11 +86,11 @@ public abstract class ChunkGeometrySection {
 
     public static class Mutable extends ChunkGeometrySection {
 
-        private final ChunkOutputStream outputStream;
+        private final ChunkDataOutputStream outputStream;
 
         public Mutable(int options, ISkinGeometryType geometryType, ChunkContext context) {
             super(0, options, geometryType);
-            this.outputStream = new ChunkOutputStream(context);
+            this.outputStream = new ChunkDataOutputStream(context);
         }
 
         public void write(ChunkGeometrySerializer.Encoder<?> encoder, ChunkPaletteData palette) throws IOException {
@@ -101,7 +99,7 @@ public abstract class ChunkGeometrySection {
         }
 
         @Override
-        public void writeToStream(IOutputStream stream) throws IOException {
+        public void writeToStream(ChunkOutputStream stream) throws IOException {
             outputStream.transferTo(stream.getOutputStream());
         }
     }

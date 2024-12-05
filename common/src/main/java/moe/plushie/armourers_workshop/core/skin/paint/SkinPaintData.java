@@ -2,7 +2,7 @@ package moe.plushie.armourers_workshop.core.skin.paint;
 
 import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintColor;
 import moe.plushie.armourers_workshop.core.math.Vector2i;
-import moe.plushie.armourers_workshop.core.skin.paint.texture.EntityTextureModel;
+import moe.plushie.armourers_workshop.core.skin.texture.EntityTextureModel;
 
 import java.util.ArrayList;
 

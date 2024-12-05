@@ -3,7 +3,7 @@ package moe.plushie.armourers_workshop.core.client.texture;
 import moe.plushie.armourers_workshop.core.client.other.SkinRenderType;
 import moe.plushie.armourers_workshop.core.math.OpenMath;
 import moe.plushie.armourers_workshop.core.math.OpenMatrix4f;
-import moe.plushie.armourers_workshop.core.skin.paint.texture.TextureAnimation;
+import moe.plushie.armourers_workshop.core.skin.texture.TextureAnimation;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.RenderType;
@@ -37,7 +37,7 @@ public class TextureAnimationController {
             return DEFAULT;
         }
         // is custom?
-        var storage = TextureManager.Entry.of(renderType);
+        var storage = SmartTexture.of(renderType);
         if (storage != null) {
             return storage.getAnimationController();
         }

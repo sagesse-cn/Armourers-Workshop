@@ -31,6 +31,10 @@ public class EntitySelectorImpl<T extends Entity> implements EntitySelector, Var
         return this;
     }
 
+    public T getEntity() {
+        return entity;
+    }
+
     @Override
     public double getEyeYaw() {
         return entity.getViewXRot(getPartialTick());

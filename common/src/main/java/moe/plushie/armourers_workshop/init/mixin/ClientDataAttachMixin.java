@@ -7,9 +7,10 @@ import moe.plushie.armourers_workshop.utils.DataContainer;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.sounds.SoundEvent;
 import org.spongepowered.asm.mixin.Mixin;
 
-@Mixin({Model.class, EntityRenderer.class, PoseStack.class, PoseStack.Pose.class, RenderType.class})
+@Mixin({Model.class, EntityRenderer.class, PoseStack.class, PoseStack.Pose.class, RenderType.class, SoundEvent.class})
 public abstract class ClientDataAttachMixin implements IAssociatedContainerProvider {
 
     private IAssociatedContainerProvider aw2$associatedContainer;

@@ -3,8 +3,8 @@ package moe.plushie.armourers_workshop.core.skin.serializer;
 import moe.plushie.armourers_workshop.core.skin.Skin;
 import moe.plushie.armourers_workshop.core.skin.serializer.exception.UnsupportedFileFormatException;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IInputStream;
-import moe.plushie.armourers_workshop.core.skin.serializer.io.IOutputStream;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IOSerializer;
+import moe.plushie.armourers_workshop.core.skin.serializer.io.IOutputStream;
 import moe.plushie.armourers_workshop.core.skin.serializer.v12.SkinSerializerV12;
 import moe.plushie.armourers_workshop.core.skin.serializer.v13.SkinSerializerV13;
 import moe.plushie.armourers_workshop.core.skin.serializer.v20.SkinSerializerV20;
@@ -31,7 +31,6 @@ public class SkinSerializer {
     public static void writeToStream(Skin skin, @Nullable SkinFileOptions options, OutputStream outputStream) throws IOException {
         try (var dataOutputStream = new DataOutputStream(new BufferedOutputStream(outputStream))) {
             writeToStream(skin, options, IOutputStream.of(dataOutputStream));
-            dataOutputStream.flush();
         }
     }
 
@@ -41,8 +40,8 @@ public class SkinSerializer {
         options1.merge(options); // merge if needed
         for (var serializer : REGISTERED_SERIALIZERS) {
             if (serializer.isSupportedVersion(options1)) {
-                if (options1.getFileVersion() >= SkinSerializerV20.FILE_MIN_VERSION) {
-                    stream.writeInt(Versions.HEADER); // add the header (>=20)
+                if (serializer.isRequiresHeader()) {
+                    stream.writeInt(Versions.HEADER);
                 }
                 stream.writeInt(serializer.getVersion());
                 serializer.writeToStream(skin, stream, options1);
@@ -101,6 +100,8 @@ public class SkinSerializer {
 
         public static final int V12 = SkinSerializerV12.FILE_VERSION;
         public static final int V13 = SkinSerializerV13.FILE_VERSION;
-        public static final int V20 = SkinSerializerV20.FILE_VERSION;
+        public static final int V20 = SkinSerializerV20.FILE_MIN_VERSION;
+
+        public static final int LATEST = SkinSerializerV20.FILE_LATEST_VERSION;
     }
 }

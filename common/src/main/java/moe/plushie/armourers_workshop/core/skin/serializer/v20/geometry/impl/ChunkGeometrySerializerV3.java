@@ -1,16 +1,16 @@
 package moe.plushie.armourers_workshop.core.skin.serializer.v20.geometry.impl;
 
 import moe.plushie.armourers_workshop.api.skin.geometry.ISkinGeometryType;
-import moe.plushie.armourers_workshop.api.skin.paint.texture.ITexturePos;
-import moe.plushie.armourers_workshop.api.skin.paint.texture.ITextureProvider;
+import moe.plushie.armourers_workshop.api.skin.texture.ITexturePos;
+import moe.plushie.armourers_workshop.api.skin.texture.ITextureProvider;
 import moe.plushie.armourers_workshop.core.math.OpenTransform3f;
 import moe.plushie.armourers_workshop.core.math.Vector2f;
 import moe.plushie.armourers_workshop.core.skin.geometry.SkinGeometryVertex;
 import moe.plushie.armourers_workshop.core.skin.geometry.mesh.SkinMesh;
 import moe.plushie.armourers_workshop.core.skin.geometry.mesh.SkinMeshFace;
-import moe.plushie.armourers_workshop.core.skin.paint.texture.TexturePos;
+import moe.plushie.armourers_workshop.core.skin.texture.TexturePos;
 import moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk.ChunkGeometrySlice;
-import moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk.ChunkOutputStream;
+import moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk.ChunkDataOutputStream;
 import moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk.ChunkPaletteData;
 import moe.plushie.armourers_workshop.core.skin.serializer.v20.geometry.ChunkGeometrySerializer;
 
@@ -201,7 +201,7 @@ public class ChunkGeometrySerializerV3 extends ChunkGeometrySerializer {
         }
 
         @Override
-        public void end(ChunkPaletteData palette, ChunkOutputStream stream) throws IOException {
+        public void end(ChunkPaletteData palette, ChunkDataOutputStream stream) throws IOException {
             // type(4b) + transform(64b) + vertex count(4B) + index count(4B) + reserved(52B)
             stream.writeInt(0);
             stream.writeTransformf(transform);

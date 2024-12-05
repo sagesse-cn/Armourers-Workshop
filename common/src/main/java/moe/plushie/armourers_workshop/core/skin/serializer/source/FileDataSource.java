@@ -2,6 +2,7 @@ package moe.plushie.armourers_workshop.core.skin.serializer.source;
 
 import moe.plushie.armourers_workshop.core.skin.Skin;
 import moe.plushie.armourers_workshop.core.skin.serializer.SkinSerializer;
+import moe.plushie.armourers_workshop.core.utils.Executors;
 import moe.plushie.armourers_workshop.core.utils.FileUtils;
 import moe.plushie.armourers_workshop.core.utils.Objects;
 import moe.plushie.armourers_workshop.core.utils.OpenUUID;
@@ -9,7 +10,6 @@ import moe.plushie.armourers_workshop.core.utils.StreamUtils;
 import moe.plushie.armourers_workshop.core.utils.TagSerializer;
 import moe.plushie.armourers_workshop.init.ModConfig;
 import moe.plushie.armourers_workshop.init.ModLog;
-import moe.plushie.armourers_workshop.core.utils.Executors;
 import net.minecraft.nbt.CompoundTag;
 
 import java.io.ByteArrayInputStream;
@@ -318,6 +318,9 @@ public abstract class FileDataSource {
 
         private Node loadNode(File parent) {
             try {
+                if (!parent.isDirectory()) {
+                    return null; // only work the directory.
+                }
                 var indexFile = new File(parent, "0");
                 var tag = TagSerializer.readFromStream(new FileInputStream(indexFile));
                 if (tag != null) {

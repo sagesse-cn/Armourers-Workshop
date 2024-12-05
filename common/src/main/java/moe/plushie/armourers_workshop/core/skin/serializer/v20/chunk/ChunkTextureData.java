@@ -1,16 +1,14 @@
 package moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk;
 
-import moe.plushie.armourers_workshop.api.skin.paint.texture.ITextureProvider;
+import moe.plushie.armourers_workshop.api.skin.texture.ITextureProvider;
 import moe.plushie.armourers_workshop.core.math.OpenMath;
 import moe.plushie.armourers_workshop.core.math.Rectangle2f;
 import moe.plushie.armourers_workshop.core.math.Vector2f;
-import moe.plushie.armourers_workshop.core.skin.paint.texture.TextureAnimation;
-import moe.plushie.armourers_workshop.core.skin.paint.texture.TextureData;
-import moe.plushie.armourers_workshop.core.skin.paint.texture.TextureOptions;
-import moe.plushie.armourers_workshop.core.skin.paint.texture.TextureProperties;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperty;
-import moe.plushie.armourers_workshop.core.skin.serializer.io.IInputStream;
-import moe.plushie.armourers_workshop.core.skin.serializer.io.IOutputStream;
+import moe.plushie.armourers_workshop.core.skin.texture.TextureAnimation;
+import moe.plushie.armourers_workshop.core.skin.texture.TextureData;
+import moe.plushie.armourers_workshop.core.skin.texture.TextureOptions;
+import moe.plushie.armourers_workshop.core.skin.texture.TextureProperties;
 import moe.plushie.armourers_workshop.core.utils.Collections;
 
 import java.io.IOException;
@@ -42,7 +40,7 @@ public class ChunkTextureData {
         this.provider = provider;
     }
 
-    public void readFromStream(IInputStream stream) throws IOException {
+    public void readFromStream(ChunkInputStream stream) throws IOException {
         if (proxy != null) {
             return; // ignore, when proxied.
         }
@@ -56,17 +54,16 @@ public class ChunkTextureData {
         this.usedRect = rect;
         var animation = stream.readTextureAnimation();
         var properties = readAdditionalData(stream.readTextureProperties());
-        var byteSize = stream.readInt();
-        var provider = new TextureData(String.valueOf(id), width, height, animation, properties);
-        provider.load(stream.readBytes(byteSize));
+        var file = stream.readFile();
+        var provider = new TextureData(file.getName(), width, height, animation, properties);
+        provider.load(file.getBytes());
         this.provider = provider;
     }
 
-    public void writeToStream(IOutputStream stream) throws IOException {
+    public void writeToStream(ChunkOutputStream stream) throws IOException {
         if (proxy != null) {
             return; // ignore, when proxied.
         }
-        var buffer = provider.getBuffer();
         stream.writeVarInt(id);
         stream.writeVarInt(parentId);
         stream.writeFloat(rect.getX());
@@ -75,8 +72,7 @@ public class ChunkTextureData {
         stream.writeFloat(rect.getHeight());
         stream.writeTextureAnimation((TextureAnimation) provider.getAnimation());
         stream.writeTextureProperties(writeAdditionalData((TextureProperties) provider.getProperties()));
-        stream.writeInt(buffer.remaining());
-        stream.writeBytes(buffer);
+        stream.writeFile(ChunkFile.image(provider.getName(), provider.getBuffer()));
     }
 
     public void freeze(float x, float y, Function<ITextureProvider, ChunkTextureData> childProvider) {
@@ -191,7 +187,7 @@ public class ChunkTextureData {
         }
 
         @Override
-        public void writeToStream(IOutputStream stream) throws IOException {
+        public void writeToStream(ChunkOutputStream stream) throws IOException {
             var rect = list.getRect();
             stream.writeFixedFloat(rect.getX() + uv.getX(), section.textureIndexBytes);
             stream.writeFixedFloat(rect.getY() + uv.getY(), section.textureIndexBytes);
@@ -230,7 +226,7 @@ public class ChunkTextureData {
         }
 
         @Override
-        public void writeToStream(IOutputStream stream) throws IOException {
+        public void writeToStream(ChunkOutputStream stream) throws IOException {
             long value = textureOptions.asLong();
             stream.writeFixedInt((int) (value), section.textureIndexBytes);
             stream.writeFixedInt((int) (value >> 32), section.textureIndexBytes);

@@ -32,9 +32,15 @@ public class ChunkContext {
     private byte[] securityKey = null;
     private List<ChunkType> securityTypes;
 
+    private final ChunkFileData fileProvider;
+    private final ChunkPaletteData paletteProvider;
+
     private final SkinFileOptions options;
 
     public ChunkContext(SkinFileOptions options) {
+        this.fileProvider = new ChunkFileData();
+        this.paletteProvider = new ChunkPaletteData(fileProvider);
+
         this.options = options;
         try {
             this.setupWithOptions(options);
@@ -125,6 +131,14 @@ public class ChunkContext {
 
     public String getSecurityData() {
         return options.getSecurityData();
+    }
+
+    public ChunkFileData getFileProvider() {
+        return fileProvider;
+    }
+
+    public ChunkPaletteData getPaletteProvider() {
+        return paletteProvider;
     }
 
     public SkinFileOptions getOptions() {

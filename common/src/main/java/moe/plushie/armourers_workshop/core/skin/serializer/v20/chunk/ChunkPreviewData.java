@@ -17,7 +17,7 @@ public class ChunkPreviewData {
         this.geometryData = geometryData;
     }
 
-    public SkinPreviewData readFromStream(ChunkInputStream stream) throws IOException {
+    public SkinPreviewData readFromStream(ChunkDataInputStream stream) throws IOException {
         var chunkTransform = new ChunkTransform();
         var sections = new ArrayList<Pair<ITransform, SkinGeometrySet<?>>>();
         while (true) {
@@ -35,7 +35,7 @@ public class ChunkPreviewData {
         return new SkinPreviewData(sections);
     }
 
-    public void writeToStream(SkinPreviewData previewData, ChunkOutputStream stream) throws IOException {
+    public void writeToStream(SkinPreviewData previewData, ChunkDataOutputStream stream) throws IOException {
         // freeze and combine the transform/geometries data.
         var sections = new LinkedHashMap<ChunkTransform, ArrayList<SkinGeometrySet<?>>>();
         previewData.forEach((transform, geometries) -> {

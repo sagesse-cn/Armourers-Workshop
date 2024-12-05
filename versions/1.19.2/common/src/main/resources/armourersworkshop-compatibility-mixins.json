@@ -19,6 +19,7 @@
     "ModelBakeryMixin$ModelPatch",
     "ModelBakeryMixin$BakeryPatch",
     "CameraMixin",
+    "SoundManagerMixin",
     "ClientEntityTickMixin",
     "patch/ArrowRendererMixin",
     "patch/BoatRendererMixin",

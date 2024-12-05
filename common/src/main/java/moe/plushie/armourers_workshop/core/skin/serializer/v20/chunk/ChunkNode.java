@@ -17,7 +17,7 @@ public class ChunkNode {
         this.index = index;
     }
 
-    public static ChunkNode of(int index, ChunkVariable var, ChunkOutputStream stream) {
+    public static ChunkNode of(int index, ChunkVariable var, ChunkDataOutputStream stream) {
         if (var != null) {
             return new Variable(index, var, stream);
         }
@@ -61,13 +61,13 @@ public class ChunkNode {
     public static class Variable extends ChunkNode {
 
         private final ChunkVariable var;
-        private ChunkOutputStream stream;
+        private ChunkDataOutputStream stream;
 
         private int varStart;
         private int varEnd;
         private boolean resolved;
 
-        public Variable(int index, ChunkVariable var, ChunkOutputStream stream) {
+        public Variable(int index, ChunkVariable var, ChunkDataOutputStream stream) {
             super(index);
             this.var = var;
             this.stream = stream;
@@ -169,9 +169,9 @@ public class ChunkNode {
 
         private int length = 0;
         private ByteBuf buf;
-        private ChunkOutputStream stream;
+        private ChunkDataOutputStream stream;
 
-        public Compressed(int index, ChunkNode start, ChunkFlags flags, ChunkOutputStream stream) {
+        public Compressed(int index, ChunkNode start, ChunkFlags flags, ChunkDataOutputStream stream) {
             super(index);
             this.start = start;
             this.flags = flags;

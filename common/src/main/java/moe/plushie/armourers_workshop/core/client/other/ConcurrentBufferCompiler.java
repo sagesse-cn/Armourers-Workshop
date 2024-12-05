@@ -8,10 +8,10 @@ import moe.plushie.armourers_workshop.core.client.bake.BakedSkin;
 import moe.plushie.armourers_workshop.core.client.bake.BakedSkinPart;
 import moe.plushie.armourers_workshop.core.client.buffer.BufferBuilder;
 import moe.plushie.armourers_workshop.core.client.buffer.OutlineBufferBuilder;
-import moe.plushie.armourers_workshop.core.client.texture.TextureManager;
+import moe.plushie.armourers_workshop.core.client.texture.SmartTexture;
 import moe.plushie.armourers_workshop.core.data.cache.CacheQueue;
 import moe.plushie.armourers_workshop.core.data.cache.ObjectPool;
-import moe.plushie.armourers_workshop.core.data.cache.ReferenceCounted;
+import moe.plushie.armourers_workshop.core.utils.ReferenceCounted;
 import moe.plushie.armourers_workshop.core.math.OpenPoseStack;
 import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintScheme;
 import moe.plushie.armourers_workshop.core.utils.Collections;
@@ -110,7 +110,7 @@ public class ConcurrentBufferCompiler {
                 buildingTasks.add(compiledTask);
             });
             task.mergedTasks = mergedTasks;
-            task.usingTypes = Collections.compactMap(usingTypes, TextureManager.Entry::of);
+            task.usingTypes = Collections.compactMap(usingTypes, SmartTexture::of);
         }
         link(pendingTasks, buildingTasks);
         //long totalTime = System.nanoTime() - startTime;

@@ -1,6 +1,5 @@
 package moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk;
 
-import moe.plushie.armourers_workshop.core.skin.serializer.io.IOutputStream;
 import moe.plushie.armourers_workshop.core.skin.serializer.v20.ChunkSerializer;
 import org.jetbrains.annotations.Nullable;
 
@@ -10,9 +9,9 @@ import java.util.function.IntConsumer;
 
 public class ChunkWriter {
 
-    protected final ChunkOutputStream stream;
+    protected final ChunkDataOutputStream stream;
 
-    public ChunkWriter(ChunkOutputStream stream) {
+    public ChunkWriter(ChunkDataOutputStream stream) {
         this.stream = stream;
     }
 
@@ -72,7 +71,7 @@ public class ChunkWriter {
         }
 
         @Override
-        public void writeToStream(IOutputStream stream) throws IOException {
+        public void writeToStream(ChunkOutputStream stream) throws IOException {
             stream.writeInt(length + 4);
         }
 

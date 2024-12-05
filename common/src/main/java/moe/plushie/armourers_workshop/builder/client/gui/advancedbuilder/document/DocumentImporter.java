@@ -162,7 +162,7 @@ public class DocumentImporter {
         builder.settings(settings);
         builder.properties(properties);
         builder.animations(resolvedAnimations);
-        builder.version(SkinSerializer.Versions.V20);
+        builder.version(SkinSerializer.Versions.LATEST);
         return builder.build();
     }
 

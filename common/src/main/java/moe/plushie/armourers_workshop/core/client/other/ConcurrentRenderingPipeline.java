@@ -3,7 +3,7 @@ package moe.plushie.armourers_workshop.core.client.other;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import moe.plushie.armourers_workshop.core.client.shader.ShaderVertexObject;
 import moe.plushie.armourers_workshop.core.data.cache.ObjectPool;
-import moe.plushie.armourers_workshop.core.data.cache.ReferenceCounted;
+import moe.plushie.armourers_workshop.core.utils.ReferenceCounted;
 import moe.plushie.armourers_workshop.core.math.OpenPoseStack;
 import net.minecraft.client.renderer.RenderType;
 

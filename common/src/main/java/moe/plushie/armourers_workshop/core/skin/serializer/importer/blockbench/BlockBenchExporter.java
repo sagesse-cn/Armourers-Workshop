@@ -1,7 +1,8 @@
 package moe.plushie.armourers_workshop.core.skin.serializer.importer.blockbench;
 
+import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import moe.plushie.armourers_workshop.api.skin.paint.texture.ITextureProvider;
+import moe.plushie.armourers_workshop.api.skin.texture.ITextureProvider;
 import moe.plushie.armourers_workshop.core.math.OpenMath;
 import moe.plushie.armourers_workshop.core.math.OpenPoseStack;
 import moe.plushie.armourers_workshop.core.math.OpenTransform3f;
@@ -22,26 +23,31 @@ import moe.plushie.armourers_workshop.core.skin.animation.molang.runtime.Optimiz
 import moe.plushie.armourers_workshop.core.skin.geometry.SkinGeometryVertex;
 import moe.plushie.armourers_workshop.core.skin.geometry.collection.SkinGeometrySetV2;
 import moe.plushie.armourers_workshop.core.skin.geometry.mesh.SkinMeshFace;
-import moe.plushie.armourers_workshop.core.skin.paint.texture.TextureAnimation;
-import moe.plushie.armourers_workshop.core.skin.paint.texture.TextureBox;
-import moe.plushie.armourers_workshop.core.skin.paint.texture.TextureData;
-import moe.plushie.armourers_workshop.core.skin.paint.texture.TextureOptions;
-import moe.plushie.armourers_workshop.core.skin.paint.texture.TexturePos;
-import moe.plushie.armourers_workshop.core.skin.paint.texture.TextureProperties;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPart;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPartTypes;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperties;
 import moe.plushie.armourers_workshop.core.skin.property.SkinSettings;
 import moe.plushie.armourers_workshop.core.skin.serializer.SkinSerializer;
+import moe.plushie.armourers_workshop.core.skin.sound.SoundData;
+import moe.plushie.armourers_workshop.core.skin.texture.TextureAnimation;
+import moe.plushie.armourers_workshop.core.skin.texture.TextureBox;
+import moe.plushie.armourers_workshop.core.skin.texture.TextureData;
+import moe.plushie.armourers_workshop.core.skin.texture.TextureOptions;
+import moe.plushie.armourers_workshop.core.skin.texture.TexturePos;
+import moe.plushie.armourers_workshop.core.skin.texture.TextureProperties;
 import moe.plushie.armourers_workshop.core.utils.Collections;
+import moe.plushie.armourers_workshop.core.utils.FileUtils;
+import moe.plushie.armourers_workshop.core.utils.Objects;
 import moe.plushie.armourers_workshop.core.utils.OpenDirection;
 import moe.plushie.armourers_workshop.core.utils.OpenItemDisplayContext;
 import moe.plushie.armourers_workshop.core.utils.OpenItemTransforms;
+import moe.plushie.armourers_workshop.core.utils.StreamUtils;
 import moe.plushie.armourers_workshop.init.ModLog;
 import org.jetbrains.annotations.Nullable;
 
 import javax.imageio.ImageIO;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -117,7 +123,7 @@ public class BlockBenchExporter {
         builder.settings(settings);
         builder.properties(properties);
         builder.animations(animations);
-        builder.version(SkinSerializer.Versions.V20);
+        builder.version(SkinSerializer.Versions.LATEST);
         return builder.build();
     }
 
@@ -598,14 +604,41 @@ public class BlockBenchExporter {
                     switch (channel) {
                         case "timeline" -> {
                             for (var point : keyframe.getPoints()) {
-                                var value = point.get("script");
-                                if (value instanceof String script) {
-                                    points.add(new SkinAnimationPoint.Instruction(script));
+                                var script = toAnimationScript(point.get("script"));
+                                if (script == null || script.isEmpty()) {
+                                    continue; // ignore empty instruct.
                                 }
+                                points.add(new SkinAnimationPoint.Instruct(script));
+                            }
+                        }
+                        case "sound" -> {
+                            for (var point : keyframe.getPoints()) {
+                                var effect = Objects.safeCast(point.get("effect"), String.class);
+                                var filePath = Objects.safeCast(point.get("file"), String.class);
+                                if (effect == null && filePath == null) {
+                                    continue; // ignore empty sound.
+                                }
+                                // used vanilla sound?
+                                if (effect != null && effect.contains(":")) {
+                                    ModLog.warn("a unknown sound effect: {}", effect);
+                                    continue;
+                                }
+                                // load from file
+                                var fileBytes = loadExtraFile(filePath);
+                                if (fileBytes == null) {
+                                    ModLog.warn("can't load data of: '{}', file: '{}'", effect, filePath);
+                                    continue;
+                                }
+                                var fileName = FileUtils.getBaseName(filePath);
+                                var soundProvider = new SoundData(null, fileBytes);
+                                // must provide a name.
+                                if (effect == null || effect.isEmpty()) {
+                                    effect = fileName;
+                                }
+                                points.add(new SkinAnimationPoint.Sound(effect, soundProvider));
                             }
                         }
                         case "particle" -> ModLog.warn("a unknown effect channel of '{}'", "particle");
-                        case "sound" -> ModLog.warn("a unknown effect channel of '{}'", "sound");
                         default -> ModLog.warn("a unknown effect channel of '{}'", channel);
                     }
                 }
@@ -627,7 +660,8 @@ public class BlockBenchExporter {
                     }
                     return (float) expr.compute(OptimizeContext.DEFAULT);
                 } catch (Exception exception) {
-                    throw new RuntimeException("can't parse \"" + script + "\" in model!", exception);
+                    //throw new RuntimeException("can't parse \"" + script + "\" in model!", exception);
+                    exception.printStackTrace();
                 }
             }
             if (value instanceof Number number) {
@@ -664,6 +698,32 @@ public class BlockBenchExporter {
             };
         }
 
+        private String toAnimationScript(Object value) {
+            try {
+                if (value instanceof String script) {
+                    var expr = virtualMachine.compile(script);
+                    if (expr.isMutable()) {
+                        return script;
+                    }
+                }
+            } catch (Exception exception) {
+                exception.printStackTrace();
+            }
+            return null;
+        }
+
+        private ByteBuf loadExtraFile(String path) {
+            try {
+                if (path == null || path.isEmpty()) {
+                    return null;
+                }
+                var bytes = StreamUtils.readFileToByteArray(new File(path));
+                return Unpooled.wrappedBuffer(bytes);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
     }
 
     protected static class TextureSet {

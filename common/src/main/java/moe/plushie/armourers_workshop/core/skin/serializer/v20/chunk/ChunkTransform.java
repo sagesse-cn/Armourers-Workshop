@@ -71,7 +71,7 @@ public class ChunkTransform {
     }
 
 
-    public void readFromStream(ChunkInputStream stream) throws IOException {
+    public void readFromStream(ChunkDataInputStream stream) throws IOException {
         int flags = stream.readByte();
         if ((flags & 0x10) != 0) {
             setIdentity();
@@ -91,7 +91,7 @@ public class ChunkTransform {
         pivot = readVector(buffer, 12);
     }
 
-    public void writeToStream(ChunkOutputStream stream) throws IOException {
+    public void writeToStream(ChunkDataOutputStream stream) throws IOException {
         if (isIdentity()) {
             stream.writeByte(0x10);
             return;
@@ -150,7 +150,7 @@ public class ChunkTransform {
     }
 
 
-    private static void readZippedBuffer(ChunkInputStream stream, FloatBuffer bufferOut, float[] bufferDef) throws IOException {
+    private static void readZippedBuffer(ChunkDataInputStream stream, FloatBuffer bufferOut, float[] bufferDef) throws IOException {
         int flags = stream.readShort();
         for (int i = 0; i < bufferDef.length; ++i) {
             if ((flags & (1 << i)) == 0) {
@@ -162,7 +162,7 @@ public class ChunkTransform {
         bufferOut.rewind();
     }
 
-    private static void writeZippedBuffer(ChunkOutputStream stream, FloatBuffer bufferIn, float[] bufferDef) throws IOException {
+    private static void writeZippedBuffer(ChunkDataOutputStream stream, FloatBuffer bufferIn, float[] bufferDef) throws IOException {
         int flags = 0;
         for (int i = 0; i < bufferDef.length; ++i) {
             if (bufferDef[i] == bufferIn.get(i)) {

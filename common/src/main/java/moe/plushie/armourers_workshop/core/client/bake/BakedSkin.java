@@ -37,7 +37,7 @@ import moe.plushie.armourers_workshop.core.skin.serializer.SkinUsedCounter;
 import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.core.utils.Objects;
 import moe.plushie.armourers_workshop.core.utils.OpenItemDisplayContext;
-import moe.plushie.armourers_workshop.core.utils.OpenSequenceSource;
+import moe.plushie.armourers_workshop.core.utils.OpenRandomSource;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.world.entity.Entity;
@@ -51,7 +51,7 @@ import java.util.Map;
 @Environment(EnvType.CLIENT)
 public class BakedSkin implements IBakedSkin {
 
-    private final int id = OpenSequenceSource.nextInt(BakedSkinPart.class);
+    private final int id = OpenRandomSource.nextInt(BakedSkin.class);
 
     private final String identifier;
     private final Skin skin;

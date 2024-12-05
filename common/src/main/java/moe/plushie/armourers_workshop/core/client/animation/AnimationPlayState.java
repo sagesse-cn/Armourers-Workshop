@@ -2,6 +2,9 @@ package moe.plushie.armourers_workshop.core.client.animation;
 
 import moe.plushie.armourers_workshop.core.utils.Objects;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public abstract class AnimationPlayState {
 
     protected float time = 0.0f;
@@ -12,7 +15,7 @@ public abstract class AnimationPlayState {
     protected float adjustedTime = 0.0f;
     protected boolean isCompleted = false;
 
-    protected AnimatedPointValue lastInstructionValue;
+    protected final Map<String, AnimationEffectState> effects = new HashMap<>();
 
     public static AnimationPlayState create(float time, int loopCount, float speed, AnimationController controller) {
         // ..
@@ -48,7 +51,7 @@ public abstract class AnimationPlayState {
     }
 
     protected void reset() {
-        lastInstructionValue = null;
+        effects.forEach((name, effectState) -> effectState.reset());
     }
 
     public void tick(float animationTime) {
@@ -106,6 +109,10 @@ public abstract class AnimationPlayState {
 
     public boolean isCompleted() {
         return isCompleted;
+    }
+
+    public AnimationEffectState getEffect(String name) {
+        return effects.computeIfAbsent(name, AnimationEffectState::new);
     }
 
     @Override

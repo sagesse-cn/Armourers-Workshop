@@ -1,13 +1,11 @@
 package moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk;
 
-import moe.plushie.armourers_workshop.api.skin.paint.texture.ITextureProvider;
+import moe.plushie.armourers_workshop.api.skin.texture.ITextureProvider;
 import moe.plushie.armourers_workshop.core.math.Vector2f;
 import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
 import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintType;
 import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintTypes;
-import moe.plushie.armourers_workshop.core.skin.paint.texture.TextureOptions;
-import moe.plushie.armourers_workshop.core.skin.serializer.io.IInputStream;
-import moe.plushie.armourers_workshop.core.skin.serializer.io.IOutputStream;
+import moe.plushie.armourers_workshop.core.skin.texture.TextureOptions;
 import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.core.utils.OpenSliceAccessor;
 
@@ -32,6 +30,11 @@ public class ChunkPaletteData implements ChunkVariable {
     private int reserved = 0;
 
     private boolean resolved = false;
+
+    public ChunkPaletteData(ChunkFileData fileProvider) {
+        // add dependency resolve.
+        fileProvider.addDependency(() -> resolved);
+    }
 
     public void copyFrom(ChunkPaletteData palette) {
         sections.clear();
@@ -66,7 +69,7 @@ public class ChunkPaletteData implements ChunkVariable {
         return paintColor;
     }
 
-    public SkinPaintColor readColor(ChunkInputStream stream) throws IOException {
+    public SkinPaintColor readColor(ChunkDataInputStream stream) throws IOException {
         return readColor(stream.readFixedInt(colorUsedIndex));
     }
 
@@ -119,7 +122,7 @@ public class ChunkPaletteData implements ChunkVariable {
         return true;
     }
 
-    public void readFromStream(IInputStream stream) throws IOException {
+    public void readFromStream(ChunkInputStream stream) throws IOException {
         int offset = 0;
         int colorOffset = 0;
         flags = stream.readVarInt();
@@ -145,7 +148,7 @@ public class ChunkPaletteData implements ChunkVariable {
     }
 
     @Override
-    public void writeToStream(IOutputStream stream) throws IOException {
+    public void writeToStream(ChunkOutputStream stream) throws IOException {
         // we need to make sure section in offset order.
         var sortedSections = new ArrayList<>(sections.values());
         sortedSections.sort(Comparator.comparing(ChunkColorSection::getStartIndex));
@@ -157,7 +160,7 @@ public class ChunkPaletteData implements ChunkVariable {
         writeSectionToStream(null, stream);
     }
 
-    private ChunkColorSection readSectionFromStream(IInputStream stream) throws IOException {
+    private ChunkColorSection readSectionFromStream(ChunkInputStream stream) throws IOException {
         var total = stream.readVarInt();
         if (total == 0) {
             return null;
@@ -169,7 +172,7 @@ public class ChunkPaletteData implements ChunkVariable {
         return section;
     }
 
-    private void writeSectionToStream(ChunkColorSection section, IOutputStream stream) throws IOException {
+    private void writeSectionToStream(ChunkColorSection section, ChunkOutputStream stream) throws IOException {
         if (section == null) {
             stream.writeVarInt(0);
             return;

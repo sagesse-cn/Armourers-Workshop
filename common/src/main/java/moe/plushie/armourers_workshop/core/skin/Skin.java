@@ -2,7 +2,6 @@ package moe.plushie.armourers_workshop.core.skin;
 
 import moe.plushie.armourers_workshop.api.skin.ISkin;
 import moe.plushie.armourers_workshop.api.skin.ISkinType;
-import moe.plushie.armourers_workshop.core.utils.OpenItemTransforms;
 import moe.plushie.armourers_workshop.core.math.Rectangle3f;
 import moe.plushie.armourers_workshop.core.math.Rectangle3i;
 import moe.plushie.armourers_workshop.core.math.Vector3i;
@@ -14,7 +13,8 @@ import moe.plushie.armourers_workshop.core.skin.property.SkinProperty;
 import moe.plushie.armourers_workshop.core.skin.property.SkinSettings;
 import moe.plushie.armourers_workshop.core.skin.serializer.SkinSerializer;
 import moe.plushie.armourers_workshop.core.utils.Objects;
-import moe.plushie.armourers_workshop.core.utils.OpenSequenceSource;
+import moe.plushie.armourers_workshop.core.utils.OpenItemTransforms;
+import moe.plushie.armourers_workshop.core.utils.OpenRandomSource;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -39,7 +39,7 @@ public class Skin implements ISkin {
 
     private Map<Vector3i, Rectangle3f> blockBounds;
 
-    protected Skin(int id, int version, ISkinType type, SkinProperties properties, SkinSettings settings, SkinPaintData paintData, SkinPreviewData previewData, List<SkinAnimation> skinAnimations, List<SkinPart> skinParts, Object blobs) {
+    protected Skin(int id, int version, ISkinType type, SkinProperties properties, SkinSettings settings, SkinPaintData paintData, SkinPreviewData previewData, List<SkinAnimation> animations, List<SkinPart> parts, Object blobs) {
         this.id = id;
         this.version = version;
         this.type = type;
@@ -48,8 +48,8 @@ public class Skin implements ISkin {
         this.blobs = blobs;
         this.paintData = paintData;
         this.previewData = previewData;
-        this.animations = new ArrayList<>(skinAnimations);
-        this.parts = new ArrayList<>(skinParts);
+        this.animations = new ArrayList<>(animations);
+        this.parts = new ArrayList<>(parts);
     }
 
     public int getId() {
@@ -180,7 +180,7 @@ public class Skin implements ISkin {
         private final ISkinType type;
 
         private ArrayList<SkinPart> skinParts = new ArrayList<>();
-        private ArrayList<SkinAnimation> skinAnimations = new ArrayList<>();
+        private ArrayList<SkinAnimation> animations = new ArrayList<>();
 
         private SkinPaintData paintData;
         private SkinPreviewData previewData;
@@ -200,7 +200,7 @@ public class Skin implements ISkin {
         }
 
         public static int generateId() {
-            return OpenSequenceSource.nextInt(Skin.class);
+            return OpenRandomSource.nextInt(Skin.class);
         }
 
         public Builder properties(SkinProperties properties) {
@@ -236,7 +236,7 @@ public class Skin implements ISkin {
 
         public Builder animations(List<SkinAnimation> animations) {
             if (animations != null) {
-                this.skinAnimations = new ArrayList<>(animations);
+                this.animations = new ArrayList<>(animations);
             }
             return this;
         }
@@ -260,7 +260,7 @@ public class Skin implements ISkin {
             updateIdIfNeeded();
             updateSettingIfNeeded();
             updatePropertiesIfNeeded();
-            return new Skin(id, version, type, properties, settings, paintData, previewData, skinAnimations, skinParts, blobs);
+            return new Skin(id, version, type, properties, settings, paintData, previewData, animations, skinParts, blobs);
         }
 
         private void updateIdIfNeeded() {

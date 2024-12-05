@@ -86,7 +86,7 @@ public class SkinDocumentExporter {
         settings.setItemTransforms(itemTransforms);
         //settings.setCollisionBox(Collections.newList(new Rectangle3f(0, 0, 0, 2, 2, 2)));
 
-        builder.version(SkinSerializer.Versions.V20);
+        builder.version(SkinSerializer.Versions.LATEST);
         builder.settings(settings);
         builder.properties(properties);
         builder.parts(parts);

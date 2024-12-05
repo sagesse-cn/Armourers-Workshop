@@ -6,13 +6,7 @@ import java.io.IOException;
 
 public class ChunkPaintData {
 
-    private final ChunkPaletteData palette;
-
-    public ChunkPaintData(ChunkPaletteData palette) {
-        this.palette = palette;
-    }
-
-    public SkinPaintData readFromStream(ChunkInputStream stream) throws IOException {
+    public SkinPaintData readFromStream(ChunkDataInputStream stream) throws IOException {
         int flags = stream.readVarInt();
         int totalWidth = stream.readVarInt();
         int totalHeight = stream.readVarInt();
@@ -20,6 +14,7 @@ public class ChunkPaintData {
         if (paintData == null) {
             return null; // we can't support it.
         }
+        var palette = stream.getPaletteProvider();
         while (true) {
             int width = stream.readVarInt();
             if (width == 0) {
@@ -35,7 +30,7 @@ public class ChunkPaintData {
         return paintData;
     }
 
-    public void writeToStream(SkinPaintData paintData, ChunkOutputStream stream) throws IOException {
+    public void writeToStream(SkinPaintData paintData, ChunkDataOutputStream stream) throws IOException {
         int flags = _flags(paintData);
         stream.writeVarInt(flags);
         stream.writeVarInt(paintData.getWidth());
@@ -45,6 +40,7 @@ public class ChunkPaintData {
         int height = paintData.getHeight();
         stream.writeVarInt(width);
         stream.writeVarInt(height);
+        var palette = stream.getPaletteProvider();
         for (int y = 0; y < height; ++y) {
             for (int x = 0; x < width; ++x) {
                 stream.writeVariable(palette.writeColor(paintData.getColor(x, y)));

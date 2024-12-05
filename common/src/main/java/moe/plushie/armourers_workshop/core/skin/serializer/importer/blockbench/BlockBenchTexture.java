@@ -1,8 +1,8 @@
 package moe.plushie.armourers_workshop.core.skin.serializer.importer.blockbench;
 
 import moe.plushie.armourers_workshop.core.math.Size2f;
-import moe.plushie.armourers_workshop.core.skin.paint.texture.TextureAnimation;
-import moe.plushie.armourers_workshop.core.skin.paint.texture.TextureProperties;
+import moe.plushie.armourers_workshop.core.skin.texture.TextureAnimation;
+import moe.plushie.armourers_workshop.core.skin.texture.TextureProperties;
 
 import java.util.ArrayList;
 

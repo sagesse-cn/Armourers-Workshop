@@ -5,9 +5,9 @@ import moe.plushie.armourers_workshop.core.math.Rectangle3f;
 import moe.plushie.armourers_workshop.core.math.Vector3i;
 import moe.plushie.armourers_workshop.core.skin.geometry.cube.SkinCube;
 import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
-import moe.plushie.armourers_workshop.core.skin.paint.texture.TexturePos;
+import moe.plushie.armourers_workshop.core.skin.texture.TexturePos;
 import moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk.ChunkGeometrySlice;
-import moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk.ChunkOutputStream;
+import moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk.ChunkDataOutputStream;
 import moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk.ChunkPaletteData;
 import moe.plushie.armourers_workshop.core.skin.serializer.v20.geometry.ChunkGeometrySerializer;
 import moe.plushie.armourers_workshop.core.utils.OpenDirection;
@@ -118,7 +118,7 @@ public class ChunkGeometrySerializerV1 extends ChunkGeometrySerializer {
         }
 
         @Override
-        public void end(ChunkPaletteData palette, ChunkOutputStream stream) throws IOException {
+        public void end(ChunkPaletteData palette, ChunkDataOutputStream stream) throws IOException {
             // position(3B)
             stream.writeByte(pos.getX());
             stream.writeByte(pos.getY());

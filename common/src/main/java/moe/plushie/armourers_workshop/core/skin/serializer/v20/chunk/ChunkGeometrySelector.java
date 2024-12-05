@@ -1,7 +1,5 @@
 package moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk;
 
-import moe.plushie.armourers_workshop.core.skin.serializer.io.IOutputStream;
-
 import java.io.IOException;
 
 public class ChunkGeometrySelector implements ChunkVariable {
@@ -18,7 +16,7 @@ public class ChunkGeometrySelector implements ChunkVariable {
     }
 
     @Override
-    public void writeToStream(IOutputStream stream) throws IOException {
+    public void writeToStream(ChunkOutputStream stream) throws IOException {
         stream.writeInt(section.getIndex() + index);
         stream.writeInt(count);
     }

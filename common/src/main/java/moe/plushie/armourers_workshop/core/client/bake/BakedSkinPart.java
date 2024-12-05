@@ -9,7 +9,7 @@ import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintTypes;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPart;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPartTransform;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperties;
-import moe.plushie.armourers_workshop.core.utils.OpenSequenceSource;
+import moe.plushie.armourers_workshop.core.utils.OpenRandomSource;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import org.jetbrains.annotations.Nullable;
@@ -19,7 +19,7 @@ import java.util.ArrayList;
 @Environment(EnvType.CLIENT)
 public class BakedSkinPart {
 
-    private final int id = OpenSequenceSource.nextInt(BakedSkinPart.class);
+    private final int id = OpenRandomSource.nextInt(BakedSkinPart.class);
 
     private final SkinPart part;
     private final BakedGeometryQuads quads;

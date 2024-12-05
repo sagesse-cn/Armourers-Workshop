@@ -6,7 +6,7 @@ public class ChunkPartWriter extends ChunkWriter {
 
     protected int id = 0;
 
-    public ChunkPartWriter(ChunkOutputStream stream) {
+    public ChunkPartWriter(ChunkDataOutputStream stream) {
         super(stream);
     }
 

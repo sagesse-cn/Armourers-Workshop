@@ -21,7 +21,7 @@ public class ChunkPartData {
         this.geometryData = geometryData;
     }
 
-    public List<SkinPart> readFromStream(ChunkInputStream stream, IOConsumer2<ChunkReader, SkinPart.Builder> consumer) throws IOException {
+    public List<SkinPart> readFromStream(ChunkDataInputStream stream, IOConsumer2<ChunkReader, SkinPart.Builder> consumer) throws IOException {
         var chunkTransform = new ChunkTransform();
         var pairs = new ArrayList<Pair<Integer, SkinPart.Builder>>();
         var relationship = new LinkedHashMap<Integer, Integer>();
@@ -62,7 +62,7 @@ public class ChunkPartData {
         });
     }
 
-    public void writeToStream(ChunkOutputStream stream, List<SkinPart> parts, IOConsumer2<ChunkWriter, SkinPart> consumer) throws IOException {
+    public void writeToStream(ChunkDataOutputStream stream, List<SkinPart> parts, IOConsumer2<ChunkWriter, SkinPart> consumer) throws IOException {
         var relationship = new HashMap<Integer, Integer>();
         var pairs = new ArrayList<Pair<Integer, SkinPart>>();
         eachPart(parts, 0, (parent, part) -> {

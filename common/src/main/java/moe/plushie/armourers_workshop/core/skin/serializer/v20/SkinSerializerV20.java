@@ -12,16 +12,16 @@ import java.io.IOException;
 
 public final class SkinSerializerV20 implements IOSerializer {
 
-    public static final int FILE_VERSION = 20;
     public static final int FILE_MIN_VERSION = 20;
+    public static final int FILE_LATEST_VERSION = 22;
 
     public SkinSerializerV20() {
     }
 
     @Override
     public void writeToStream(Skin skin, IOutputStream stream, SkinFileOptions options) throws IOException {
-        // CheckedOutputStream checksum = new CheckedOutputStream(stream.stream(), new CRC32());
-        // stream = IDataOutputStream.of(new DataOutputStream(checksum));
+        // var checksum = new CheckedOutputStream(stream.stream(), new CRC32());
+        // stream = IOutputStream.of(new DataOutputStream(checksum));
         stream.writeInt(0); // reserved data 1
         stream.writeInt(0); // reserved data 2
         var context = ChunkGeometrySerializers.createEncodeContext(skin, options);
@@ -53,6 +53,11 @@ public final class SkinSerializerV20 implements IOSerializer {
 
     @Override
     public int getVersion() {
-        return FILE_VERSION;
+        return FILE_LATEST_VERSION;
+    }
+
+    @Override
+    public boolean isRequiresHeader() {
+        return true;
     }
 }

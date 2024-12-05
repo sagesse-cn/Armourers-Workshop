@@ -9,7 +9,7 @@ import moe.plushie.armourers_workshop.core.math.Rectangle2f;
 import moe.plushie.armourers_workshop.core.math.Rectangle3f;
 import moe.plushie.armourers_workshop.core.skin.serializer.document.SkinDocument;
 import moe.plushie.armourers_workshop.core.skin.geometry.cube.SkinCubeFace;
-import moe.plushie.armourers_workshop.core.skin.paint.texture.TextureData;
+import moe.plushie.armourers_workshop.core.skin.texture.TextureData;
 import moe.plushie.armourers_workshop.core.utils.OpenDirection;
 import moe.plushie.armourers_workshop.core.utils.OpenResourceLocation;
 import moe.plushie.armourers_workshop.core.utils.ColorUtils;

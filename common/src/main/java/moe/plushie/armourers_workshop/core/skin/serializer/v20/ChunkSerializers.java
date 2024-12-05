@@ -17,9 +17,10 @@ import moe.plushie.armourers_workshop.core.skin.serializer.io.IInputStream;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IOutputStream;
 import moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk.ChunkAnimationData;
 import moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk.ChunkContext;
+import moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk.ChunkDataInputStream;
+import moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk.ChunkDataOutputStream;
+import moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk.ChunkFileData;
 import moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk.ChunkGeometryData;
-import moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk.ChunkInputStream;
-import moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk.ChunkOutputStream;
 import moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk.ChunkPaintData;
 import moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk.ChunkPaletteData;
 import moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk.ChunkPartData;
@@ -42,6 +43,7 @@ import java.util.List;
  * geometry data:         | length | CCBO | flag |< id(VB) | opt(VB) >[ geometry entry(VB) ]|
  * geometry data preview: | length | VCBO | flag |< id(VB) | transform(VB) >[ geometry sel(8B) ]|
  * animation data:        | length | ANIM | flag |[ id(VB) | duration(4B) | loop(VB) |< bone(VB) | channel(VB) >[ time(4B) | opt(VB) |[ type(1B) | value(VB) ]|]|]|
+ * file data:             | length | FILE | flag |[ type(VB) | name(VB) | properties(VB) | size(VB) | bytes(VB) ]|
  * skin part:             | length | SKPR | flag |[ id(VB) | pid(VB) | name(VB) | type(VB) | transform(VB) |[ geometry sel(8B) ]]|{ part chunk }|
  * skin part markers:     | length | PRMK | flag |[ x(1B)/y(1B)/z(1B) | meta(1B) ]|
  * skin paint data:       | length | PADT | flag | opt(VB)/total width(VB)/total height(VB) |< width(VB) | height(VB) >[ color index ]|
@@ -60,10 +62,10 @@ import java.util.List;
 @SuppressWarnings("unused")
 public class ChunkSerializers {
 
-    public static final ChunkSerializer<Skin, Void> SKIN = register(new ChunkSerializer<Skin, Void>(ChunkType.SKIN) {
+    public static final ChunkSerializer<Skin, Void> SKIN = register(new ChunkSerializer<>(ChunkType.SKIN, null) {
 
         @Override
-        public Skin read(ChunkInputStream stream, Void obj) throws IOException {
+        public Skin read(ChunkDataInputStream stream, Void obj) throws IOException {
             var context = stream.getContext();
             var skinType = stream.readType(SkinTypes::byName);
             return stream.readChunk(it -> {
@@ -72,12 +74,13 @@ public class ChunkSerializers {
                 if (settings.getSecurityData() != null && !settings.getSecurityData().equals(context.getSecurityData())) {
                     throw new IOException("Can't decrypt skin by the security key.");
                 }
-                var palette = it.read(SKIN_TEXTURE_DATA);
-                var geometryData = it.read(SKIN_GEOMETRY_DATA, palette);
+                var fileData = it.read(SKIN_FILE_DATA);
+                var paletteData = it.read(SKIN_PALETTE_DATA);
+                var geometryData = it.read(SKIN_GEOMETRY_DATA);
                 var builder = new Skin.Builder(skinType);
                 builder.properties(it.read(SKIN_PROPERTIES));
                 builder.settings(settings);
-                builder.paintData(it.read(SKIN_PAINT_DATA, palette));
+                builder.paintData(it.read(SKIN_PAINT_DATA));
                 builder.previewData(it.read(SKIN_PREVIEW_DATA, geometryData));
                 builder.parts(it.read(SKIN_PART, geometryData));
                 builder.animations(it.read(SKIN_ANIMATION_DATA));
@@ -89,19 +92,21 @@ public class ChunkSerializers {
         }
 
         @Override
-        public void write(Skin skin, Void obj, ChunkOutputStream stream) throws IOException {
+        public void write(Skin skin, Void obj, ChunkDataOutputStream stream) throws IOException {
             var context = stream.getContext();
             stream.writeType(skin.getType());
             stream.writeChunk(it -> {
-                var palette = new ChunkPaletteData();
-                var geometryData = new ChunkGeometryData(skin.getId(), palette);
+                var fileData = context.getFileProvider();
+                var paletteData = context.getPaletteProvider();
+                var geometryData = new ChunkGeometryData(skin.getId(), paletteData);
                 it.write(SKIN_PROPERTIES, skin.getProperties());
                 it.write(SKIN_SETTINGS, skin.getSettings().copyWithOptions(context.getOptions()));
-                it.write(SKIN_TEXTURE_DATA, palette);
-                it.write(SKIN_PAINT_DATA, skin.getPaintData(), palette);
-                it.write(SKIN_GEOMETRY_DATA, geometryData, palette);
+                it.write(SKIN_PALETTE_DATA, paletteData);
+                it.write(SKIN_PAINT_DATA, skin.getPaintData());
+                it.write(SKIN_GEOMETRY_DATA, geometryData);
                 it.write(SKIN_ANIMATION_DATA, skin.getAnimations());
                 it.write(SKIN_PART, skin.getParts(), geometryData);
+                it.write(SKIN_FILE_DATA, fileData);
                 // whether to enable preview data by the options.
                 if (context.isEnablePreviewData()) {
                     it.write(SKIN_PREVIEW_DATA, SkinPreviewData.of(skin), geometryData);
@@ -111,10 +116,10 @@ public class ChunkSerializers {
         }
     });
 
-    public static final ChunkSerializer<Pair<ISkinType, SkinProperties>, Void> SKIN_INFO = register(new ChunkSerializer<>(ChunkType.SKIN) {
+    public static final ChunkSerializer<Pair<ISkinType, SkinProperties>, Void> SKIN_INFO = register(new ChunkSerializer<>(ChunkType.SKIN, null) {
 
         @Override
-        public Pair<ISkinType, SkinProperties> read(ChunkInputStream stream, Void obj) throws IOException {
+        public Pair<ISkinType, SkinProperties> read(ChunkDataInputStream stream, Void obj) throws IOException {
             var skinType = stream.readType(SkinTypes::byName);
             return stream.readChunk(it -> {
                 var properties = it.read(SKIN_PROPERTIES);
@@ -128,19 +133,19 @@ public class ChunkSerializers {
         }
 
         @Override
-        public void write(Pair<ISkinType, SkinProperties> info, Void obj, ChunkOutputStream stream) throws IOException {
+        public void write(Pair<ISkinType, SkinProperties> info, Void obj, ChunkDataOutputStream stream) throws IOException {
             // we never call write method!!!
         }
     });
 
-    public static final ChunkSerializer<List<SkinPart>, ChunkGeometryData> SKIN_PART = register(new ChunkSerializer<>(ChunkType.SKIN_PART) {
+    public static final ChunkSerializer<List<SkinPart>, ChunkGeometryData> SKIN_PART = register(new ChunkSerializer<>(ChunkType.SKIN_PART, null) {
 
         @Override
-        public List<SkinPart> read(ChunkInputStream stream, ChunkGeometryData geometryData) throws IOException {
+        public List<SkinPart> read(ChunkDataInputStream stream, ChunkGeometryData geometryData) throws IOException {
             var partData = new ChunkPartData(geometryData);
             return partData.readFromStream(stream, (it, builder) -> {
                 builder.markers(it.read(SKIN_MARKERS));
-                // TODO: impl @SAGESSE
+                // TODO: not impl @SAGESSE
 //                builder.paintData(it.read(SKIN_PAINT_DATA, palette));
 //                builder.properties(it.read(SKIN_PROPERTIES));
                 builder.blobs(it.readBlobs());
@@ -148,11 +153,11 @@ public class ChunkSerializers {
         }
 
         @Override
-        public void write(List<SkinPart> parts, ChunkGeometryData geometryData, ChunkOutputStream stream) throws IOException {
+        public void write(List<SkinPart> parts, ChunkGeometryData geometryData, ChunkDataOutputStream stream) throws IOException {
             var partData = new ChunkPartData(geometryData);
             partData.writeToStream(stream, parts, (it, part) -> {
                 it.write(SKIN_MARKERS, part.getMarkers());
-                // TODO: impl @SAGESSE
+                // TODO: not impl @SAGESSE
 //                it.write(SKIN_PAINT_DATA, part.getPaintData(), palette);
 //                it.write(SKIN_PROPERTIES, part.getProperties());
                 it.writeBlobs(part.getBlobs());
@@ -160,10 +165,10 @@ public class ChunkSerializers {
         }
     });
 
-    public static final ChunkSerializer<List<SkinMarker>, Void> SKIN_MARKERS = register(new ChunkSerializer<>(ChunkType.MARKER) {
+    public static final ChunkSerializer<List<SkinMarker>, Void> SKIN_MARKERS = register(new ChunkSerializer<>(ChunkType.MARKER, null) {
 
         @Override
-        public List<SkinMarker> read(ChunkInputStream stream, Void obj) throws IOException {
+        public List<SkinMarker> read(ChunkDataInputStream stream, Void obj) throws IOException {
             int size = stream.readInt();
             var markers = new ArrayList<SkinMarker>();
             for (int i = 0; i < size; ++i) {
@@ -173,7 +178,7 @@ public class ChunkSerializers {
         }
 
         @Override
-        public void write(List<SkinMarker> value, Void obj, ChunkOutputStream stream) throws IOException {
+        public void write(List<SkinMarker> value, Void obj, ChunkDataOutputStream stream) throws IOException {
             stream.writeInt(value.size());
             for (var marker : value) {
                 marker.writeToStream(stream);
@@ -182,105 +187,119 @@ public class ChunkSerializers {
     });
 
 
-    public static final ChunkSerializer<ChunkGeometryData, ChunkPaletteData> SKIN_GEOMETRY_DATA = register(new ChunkSerializer<>(ChunkType.GEOMETRY_DATA) {
+    public static final ChunkSerializer<ChunkGeometryData, Void> SKIN_GEOMETRY_DATA = register(new ChunkSerializer<>(ChunkType.GEOMETRY_DATA, null) {
 
         @Override
-        public ChunkGeometryData read(ChunkInputStream stream, ChunkPaletteData palette) throws IOException {
+        public ChunkGeometryData read(ChunkDataInputStream stream, Void obj) throws IOException {
+            var palette = stream.getPaletteProvider();
             var geometryData = new ChunkGeometryData(Skin.Builder.generateId(), palette);
             geometryData.readFromStream(stream);
             return geometryData;
         }
 
         @Override
-        public void write(ChunkGeometryData geometryData, ChunkPaletteData palette, ChunkOutputStream stream) throws IOException {
+        public void write(ChunkGeometryData geometryData, Void obj, ChunkDataOutputStream stream) throws IOException {
             stream.writeVariable(geometryData);
         }
     });
 
-    public static final ChunkSerializer<SkinPaintData, ChunkPaletteData> SKIN_PAINT_DATA = register(new ChunkSerializer<>(ChunkType.PAINT_DATA) {
+    public static final ChunkSerializer<SkinPaintData, Void> SKIN_PAINT_DATA = register(new ChunkSerializer<>(ChunkType.PAINT_DATA, null) {
 
         @Override
-        public SkinPaintData read(ChunkInputStream stream, ChunkPaletteData palette) throws IOException {
-            var chunkPaintData = new ChunkPaintData(palette);
+        public SkinPaintData read(ChunkDataInputStream stream, Void obj) throws IOException {
+            var chunkPaintData = new ChunkPaintData();
             return chunkPaintData.readFromStream(stream);
         }
 
         @Override
-        public void write(SkinPaintData value, ChunkPaletteData palette, ChunkOutputStream stream) throws IOException {
-            var chunkPaintData = new ChunkPaintData(palette);
+        public void write(SkinPaintData value, Void obj, ChunkDataOutputStream stream) throws IOException {
+            var chunkPaintData = new ChunkPaintData();
             chunkPaintData.writeToStream(value, stream);
         }
     });
 
-    public static final ChunkSerializer<SkinPreviewData, ChunkGeometryData> SKIN_PREVIEW_DATA = register(new ChunkSerializer<>(ChunkType.PREVIEW_DATA) {
+    public static final ChunkSerializer<SkinPreviewData, ChunkGeometryData> SKIN_PREVIEW_DATA = register(new ChunkSerializer<>(ChunkType.PREVIEW_DATA, null) {
 
         @Override
-        public SkinPreviewData read(ChunkInputStream stream, ChunkGeometryData geometryData) throws IOException {
+        public SkinPreviewData read(ChunkDataInputStream stream, ChunkGeometryData geometryData) throws IOException {
             var chunkPreviewData = new ChunkPreviewData(geometryData);
             return chunkPreviewData.readFromStream(stream);
         }
 
         @Override
-        public void write(SkinPreviewData previewData, ChunkGeometryData geometryData, ChunkOutputStream stream) throws IOException {
+        public void write(SkinPreviewData previewData, ChunkGeometryData geometryData, ChunkDataOutputStream stream) throws IOException {
             var chunkPreviewData = new ChunkPreviewData(geometryData);
             chunkPreviewData.writeToStream(previewData, stream);
         }
     });
 
-    public static final ChunkSerializer<ChunkPaletteData, Void> SKIN_TEXTURE_DATA = register(new ChunkSerializer<>(ChunkType.PALETTE) {
+    public static final ChunkSerializer<ChunkPaletteData, Void> SKIN_PALETTE_DATA = register(new ChunkSerializer<>(ChunkType.PALETTE_DATA, null) {
 
         @Override
-        public ChunkPaletteData read(ChunkInputStream stream, Void obj) throws IOException {
-            var palette = new ChunkPaletteData();
+        public ChunkPaletteData read(ChunkDataInputStream stream, Void file) throws IOException {
+            var palette = stream.getPaletteProvider();
             palette.readFromStream(stream);
             return palette;
         }
 
         @Override
-        public void write(ChunkPaletteData value, Void obj, ChunkOutputStream stream) throws IOException {
+        public void write(ChunkPaletteData value, Void obj, ChunkDataOutputStream stream) throws IOException {
             stream.writeVariable(value);
         }
     });
 
-    public static final ChunkSerializer<List<SkinAnimation>, Void> SKIN_ANIMATION_DATA = register(new ChunkSerializer<>(ChunkType.ANIMATION_DATA) {
+    public static final ChunkSerializer<List<SkinAnimation>, Void> SKIN_ANIMATION_DATA = register(new ChunkSerializer<>(ChunkType.ANIMATION_DATA, null) {
 
         @Override
-        public List<SkinAnimation> read(ChunkInputStream stream, Void obj) throws IOException {
-            return ChunkAnimationData.readFromStream(stream);
+        public List<SkinAnimation> read(ChunkDataInputStream stream, Void obj) throws IOException {
+            var animationData = new ChunkAnimationData(new ArrayList<>());
+            animationData.readFromStream(stream);
+            return animationData.getAnimations();
         }
 
         @Override
-        public void write(List<SkinAnimation> value, Void obj, ChunkOutputStream stream) throws IOException {
-            ChunkAnimationData.writeToStream(value, stream);
+        public void write(List<SkinAnimation> value, Void obj, ChunkDataOutputStream stream) throws IOException {
+            var animationData = new ChunkAnimationData(value);
+            animationData.writeToStream(stream);
         }
     });
 
-    public static final ChunkSerializer<SkinProperties, Void> SKIN_PROPERTIES = register(new ChunkSerializer<>(ChunkType.PROPERTIES) {
+    public static final ChunkSerializer<ChunkFileData, Void> SKIN_FILE_DATA = register(new ChunkSerializer<>(ChunkType.FILE_DATA, ChunkFileData.EMPTY) {
 
         @Override
-        public SkinProperties read(ChunkInputStream stream, Void obj) throws IOException {
+        public ChunkFileData read(ChunkDataInputStream stream, Void obj) throws IOException {
+            var file = stream.getFileProvider();
+            file.readFromStream(stream);
+            return file;
+        }
+
+        @Override
+        public void write(ChunkFileData value, Void obj, ChunkDataOutputStream stream) throws IOException {
+            stream.writeVariable(value);
+        }
+    });
+
+    public static final ChunkSerializer<SkinProperties, Void> SKIN_PROPERTIES = register(new ChunkSerializer<>(ChunkType.PROPERTIES, SkinProperties.EMPTY) {
+
+        @Override
+        public SkinProperties read(ChunkDataInputStream stream, Void obj) throws IOException {
             var properties = new SkinProperties();
             properties.readFromStream(stream);
             return properties;
         }
 
         @Override
-        public void write(SkinProperties value, Void obj, ChunkOutputStream stream) throws IOException {
+        public void write(SkinProperties value, Void obj, ChunkDataOutputStream stream) throws IOException {
             value.writeToStream(stream);
-        }
-
-        @Override
-        public SkinProperties getDefaultValue() {
-            return SkinProperties.EMPTY;
         }
     });
 
-    public static final ChunkSerializer<SkinSettings, Void> SKIN_SETTINGS = register(new ChunkSerializer<>(ChunkType.SKIN_SETTINGS) {
+    public static final ChunkSerializer<SkinSettings, Void> SKIN_SETTINGS = register(new ChunkSerializer<>(ChunkType.SKIN_SETTINGS, SkinSettings.EMPTY) {
 
         @Override
         public void config() {
             // DEPRECATED: "3.0.0-beta.1"
-            encoders.put("SET2", (stream, obj) -> {
+            decoders.put("SET2", (stream, obj) -> {
                 OpenItemTransforms itemTransforms = null;
                 int size1 = stream.readVarInt();
                 if (size1 != 0) {
@@ -300,7 +319,7 @@ public class ChunkSerializers {
                 return settings;
             });
             // DEPRECATED: "3.0.0-beta.14"
-            encoders.put("SET3", (stream, obj) -> {
+            decoders.put("SET3", (stream, obj) -> {
                 OpenItemTransforms itemTransforms = null;
                 int dataVersion = stream.readVarInt();
                 int size1 = stream.readVarInt();
@@ -333,37 +352,32 @@ public class ChunkSerializers {
         }
 
         @Override
-        public SkinSettings read(ChunkInputStream stream, Void obj) throws IOException {
+        public SkinSettings read(ChunkDataInputStream stream, Void obj) throws IOException {
             var settings = new SkinSettings();
             settings.readFromStream(stream);
             return settings;
         }
 
         @Override
-        public void write(SkinSettings value, Void obj, ChunkOutputStream stream) throws IOException {
+        public void write(SkinSettings value, Void obj, ChunkDataOutputStream stream) throws IOException {
             value.writeToStream(stream);
-        }
-
-        @Override
-        public SkinSettings getDefaultValue() {
-            return SkinSettings.EMPTY;
         }
     });
 
     public static void writeToStream(Skin skin, IOutputStream stream, ChunkContext context) throws IOException {
-        var stream1 = new ChunkOutputStream(context);
+        var stream1 = new ChunkDataOutputStream(context);
         SKIN.write(skin, null, stream1);
         stream1.transferTo(stream.getOutputStream());
     }
 
     public static Skin readFromStream(IInputStream stream, ChunkContext context) throws IOException {
-        var stream1 = new ChunkInputStream(stream.getInputStream(), context, null);
+        var stream1 = new ChunkDataInputStream(stream.getInputStream(), context, null);
         return SKIN.read(stream1, null);
     }
 
     public static Pair<ISkinType, SkinProperties> readInfoFromStream(IInputStream stream, ChunkContext context) throws IOException {
         var allows = Collections.newList(ChunkType.PROPERTIES.getName(), ChunkType.SKIN_SETTINGS.getName());
-        var stream1 = new ChunkInputStream(stream.getInputStream(), context, allows::contains);
+        var stream1 = new ChunkDataInputStream(stream.getInputStream(), context, allows::contains);
         return SKIN_INFO.read(stream1, null);
     }
 

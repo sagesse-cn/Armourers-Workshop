@@ -3,7 +3,6 @@ package moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk;
 import moe.plushie.armourers_workshop.api.skin.geometry.ISkinGeometryType;
 import moe.plushie.armourers_workshop.core.skin.geometry.SkinGeometrySet;
 import moe.plushie.armourers_workshop.core.skin.geometry.SkinGeometryTypes;
-import moe.plushie.armourers_workshop.core.skin.serializer.io.IOutputStream;
 import moe.plushie.armourers_workshop.core.skin.serializer.v20.geometry.ChunkGeometrySerializer;
 import moe.plushie.armourers_workshop.core.skin.serializer.v20.geometry.ChunkGeometrySerializers;
 import moe.plushie.armourers_workshop.core.utils.Objects;
@@ -55,7 +54,7 @@ public class ChunkGeometryData implements ChunkVariable {
         return true;
     }
 
-    public void readFromStream(ChunkInputStream stream) throws IOException {
+    public void readFromStream(ChunkDataInputStream stream) throws IOException {
         int offset = 0;
         while (true) {
             var section = readSectionFromStream(stream);
@@ -69,7 +68,7 @@ public class ChunkGeometryData implements ChunkVariable {
     }
 
     @Override
-    public void writeToStream(IOutputStream stream) throws IOException {
+    public void writeToStream(ChunkOutputStream stream) throws IOException {
         // we need to make sure section in offset order.
         var sortedSections = new ArrayList<>(sections.values());
         sortedSections.sort(Comparator.comparing(ChunkGeometrySection::getIndex));
@@ -79,7 +78,7 @@ public class ChunkGeometryData implements ChunkVariable {
         writeSectionToStream(null, stream);
     }
 
-    public SkinGeometrySet<?> readReferenceFromStream(ChunkInputStream stream) throws IOException {
+    public SkinGeometrySet<?> readReferenceFromStream(ChunkDataInputStream stream) throws IOException {
         var selectors = new ArrayList<ChunkGeometrySelector>();
         int count = stream.readVarInt();
         for (int i = 0; i < count; ++i) {
@@ -94,7 +93,7 @@ public class ChunkGeometryData implements ChunkVariable {
         return new ChunkGeometrySliceSet(id, selectors, palette);
     }
 
-    public void writeReferenceToStream(SkinGeometrySet<?> geometries, ChunkOutputStream streamIn) throws IOException {
+    public void writeReferenceToStream(SkinGeometrySet<?> geometries, ChunkDataOutputStream streamIn) throws IOException {
         // for the fast encoder mode,
         // we will reuse the geometry data.
         if (streamIn.getContext().isEnableFastEncoder() && geometries instanceof ChunkGeometrySliceSet slices) {
@@ -127,7 +126,7 @@ public class ChunkGeometryData implements ChunkVariable {
         }
     }
 
-    private ChunkGeometrySection.Immutable readSectionFromStream(ChunkInputStream stream) throws IOException {
+    private ChunkGeometrySection.Immutable readSectionFromStream(ChunkDataInputStream stream) throws IOException {
         int geometryTotal = stream.readVarInt();
         if (geometryTotal == 0) {
             return null;
@@ -139,7 +138,7 @@ public class ChunkGeometryData implements ChunkVariable {
         return section;
     }
 
-    private void writeSectionToStream(ChunkGeometrySection section, IOutputStream stream) throws IOException {
+    private void writeSectionToStream(ChunkGeometrySection section, ChunkOutputStream stream) throws IOException {
         // when an empty section, write 0 to indicate skip.
         if (section == null || section.isEmpty()) {
             stream.writeVarInt(0);
@@ -190,6 +189,6 @@ public class ChunkGeometryData implements ChunkVariable {
     }
 
     private ChunkGeometrySerializer.Encoder<?> _encoderByType(ISkinGeometryType geometryType) {
-        return encoders.computeIfAbsent(geometryType, it -> ChunkGeometrySerializers.createEncoder(it));
+        return encoders.computeIfAbsent(geometryType, ChunkGeometrySerializers::createEncoder);
     }
 }

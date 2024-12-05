@@ -1,7 +1,7 @@
 package moe.plushie.armourers_workshop.compatibility.core.data;
 
 import moe.plushie.armourers_workshop.api.annotation.Available;
-import moe.plushie.armourers_workshop.core.client.texture.SmartResourceManager;
+import moe.plushie.armourers_workshop.core.client.other.SmartResourceManager;
 import moe.plushie.armourers_workshop.core.utils.OpenResourceLocation;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -11,6 +11,7 @@ import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.metadata.MetadataSectionSerializer;
 import net.minecraft.server.packs.repository.PackSource;
 import net.minecraft.server.packs.resources.IoSupplier;
+import net.minecraft.server.packs.resources.Resource;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
@@ -23,10 +24,12 @@ public class AbstractPackResources implements PackResources {
 
     private final PackLocationInfo location;
     private final SmartResourceManager resourceManager;
+    private final PackType packType;
 
     public AbstractPackResources(SmartResourceManager resourceManager, PackType packType) {
         this.location = new PackLocationInfo(resourceManager.getId(), Component.empty(), PackSource.DEFAULT, Optional.empty());
         this.resourceManager = resourceManager;
+        this.packType = packType;
     }
 
     public static boolean isModResources(PackResources resources) {
@@ -50,6 +53,16 @@ public class AbstractPackResources implements PackResources {
         var supplier = resourceManager.getResource(packType, OpenResourceLocation.create(location));
         if (supplier != null) {
             return supplier::get;
+        }
+        return null;
+    }
+
+
+    @Nullable
+    public final Resource getResource(ResourceLocation location) {
+        var stream = getResource(packType, location);
+        if (stream != null) {
+            return new Resource(this, stream);
         }
         return null;
     }

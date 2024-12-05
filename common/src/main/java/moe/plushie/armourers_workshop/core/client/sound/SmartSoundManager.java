@@ -1,0 +1,77 @@
+package moe.plushie.armourers_workshop.core.client.sound;
+
+import moe.plushie.armourers_workshop.api.skin.sound.ISoundProvider;
+import moe.plushie.armourers_workshop.compatibility.client.AbstractSimpleSound;
+import moe.plushie.armourers_workshop.compatibility.client.AbstractSoundManagerImpl;
+import moe.plushie.armourers_workshop.core.utils.OpenResourceLocation;
+import moe.plushie.armourers_workshop.init.ModLog;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.client.Minecraft;
+import net.minecraft.sounds.SoundEvent;
+
+import java.util.IdentityHashMap;
+
+@Environment(EnvType.CLIENT)
+public class SmartSoundManager {
+
+    private static final SmartSoundManager INSTANCE = new SmartSoundManager();
+
+    protected final IdentityHashMap<Object, SmartSound> sounds = new IdentityHashMap<>();
+
+    public static SmartSoundManager getInstance() {
+        return INSTANCE;
+    }
+
+    public synchronized void start() {
+    }
+
+    public synchronized void stop() {
+        // release all registered sounds.
+        sounds.values().forEach(SmartSound::unbind);
+        sounds.clear();
+    }
+
+    public void open(SoundEvent soundEvent) {
+        var sound = SmartSound.of(soundEvent);
+        if (sound != null) {
+            sound.retain();
+        }
+    }
+
+    public void close(SoundEvent soundEvent) {
+        var sound = SmartSound.of(soundEvent);
+        if (sound != null) {
+            sound.release();
+        }
+    }
+
+    public synchronized SoundEvent register(ISoundProvider provider) {
+        var sound = sounds.get(provider);
+        if (sound == null) {
+            sound = new SmartSound(provider);
+            sounds.put(provider, sound);
+
+            sound.retain();
+        }
+        return sound.getSoundEvent();
+    }
+
+    public AbstractSoundManagerImpl getSoundManager() {
+        return (AbstractSoundManagerImpl) Minecraft.getInstance().getSoundManager();
+    }
+
+    protected void uploadSound(SmartSound sound) {
+        var name = sound.getName();
+        var location = sound.getLocation();
+        var id = OpenResourceLocation.create(location.getNamespace(), location.getPath().replaceFirst("sounds/(.+)\\.ogg", "$1"));
+        getSoundManager().register(location.toLocation(), new AbstractSimpleSound(id.toLocation(), name));
+        ModLog.debug("Registering Sound '{}'", location);
+    }
+
+    protected void releaseSound(SmartSound sound) {
+        var location = sound.getLocation();
+        getSoundManager().unregister(location.toLocation());
+        ModLog.debug("Unregistering Sound '{}'", location);
+    }
+}

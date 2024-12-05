@@ -74,7 +74,7 @@ public class SkinLibrarySettingWindow extends ConfirmDialog {
             values.remove(Option.ENCRYPTED_KEY);
         }
         if (!values.isEmpty()) {
-            options.setFileVersion(SkinSerializer.Versions.V20);
+            options.setFileVersion(SkinSerializer.Versions.LATEST);
         }
         return options;
     }
