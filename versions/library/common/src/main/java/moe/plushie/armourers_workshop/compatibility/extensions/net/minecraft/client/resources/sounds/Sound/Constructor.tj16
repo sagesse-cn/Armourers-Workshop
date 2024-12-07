@@ -18,6 +18,6 @@ public class Constructor {
         var pitch = sound.getPitch();
         var weight = sound.getWeight();
         var attenuationDistance = sound.getAttenuationDistance();
-        return new Sound(location.toString(), volume, pitch, weight, type, stream, preload, attenuationDistance);
+        return new Sound(location.toString(), volume, pitch, weight, Sound.Type.FILE, false, false, attenuationDistance);
     }
 }

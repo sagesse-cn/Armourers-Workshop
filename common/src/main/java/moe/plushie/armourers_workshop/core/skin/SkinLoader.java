@@ -9,13 +9,13 @@ import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintScheme;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPart;
 import moe.plushie.armourers_workshop.core.skin.serializer.SkinFileOptions;
 import moe.plushie.armourers_workshop.core.skin.serializer.SkinSerializer;
-import moe.plushie.armourers_workshop.core.utils.OpenDistributionType;
 import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.core.utils.Constants;
 import moe.plushie.armourers_workshop.core.utils.Executors;
 import moe.plushie.armourers_workshop.core.utils.FileUtils;
 import moe.plushie.armourers_workshop.core.utils.Objects;
 import moe.plushie.armourers_workshop.core.utils.OpenCipher;
+import moe.plushie.armourers_workshop.core.utils.OpenDistributionType;
 import moe.plushie.armourers_workshop.core.utils.OpenResourceLocation;
 import moe.plushie.armourers_workshop.core.utils.StreamUtils;
 import moe.plushie.armourers_workshop.init.ModConfig;
@@ -297,7 +297,7 @@ public class SkinLoader {
         ASYNC, SOFT_SYNC, SYNC
     }
 
-    public static class Entry {
+    private static class Entry {
 
         public final String identifier;
 
@@ -371,7 +371,7 @@ public class SkinLoader {
         }
     }
 
-    public static class GlobalEntry implements IResultHandler<Skin> {
+    private static class GlobalEntry implements IResultHandler<Skin> {
 
         private boolean isFinished = false;
         private boolean isRequested = false;
@@ -421,7 +421,7 @@ public class SkinLoader {
         }
     }
 
-    public static class Request {
+    private static class Request {
 
         private final String identifier;
         private final SkinFileOptions options;
@@ -458,7 +458,7 @@ public class SkinLoader {
         }
     }
 
-    public static abstract class Session {
+    private static abstract class Session {
 
         protected final HashMap<String, Request> requests = new HashMap<>();
 
@@ -496,7 +496,7 @@ public class SkinLoader {
 
         protected void run() {
             while (true) {
-                Request task = pollRequest();
+                var task = pollRequest();
                 if (task != null) {
                     run(task);
                 } else {
@@ -532,9 +532,14 @@ public class SkinLoader {
 
         private void syncRequest(Request request) {
             try {
+                // when the delegate is released, we consider the request is completed.
+                var delegate = request.delegate;
+                if (delegate == null) {
+                    return;
+                }
                 ModLog.debug("'{}' => await load skin", request.identifier);
                 var semaphore = new Semaphore(0);
-                request.delegate.listen((skin, exception) -> semaphore.release());
+                delegate.listen((skin, exception) -> semaphore.release());
                 semaphore.acquire();
                 ModLog.debug("'{}' => await load skin completed", request.identifier);
             } catch (Exception exception) {
@@ -559,7 +564,7 @@ public class SkinLoader {
         }
     }
 
-    public static abstract class LoadingSession extends Session {
+    private static abstract class LoadingSession extends Session {
 
         public LoadingSession(String name) {
             super(name);
@@ -581,7 +586,7 @@ public class SkinLoader {
         public abstract InputStream loadData(String identifier) throws Exception;
     }
 
-    public static class LocalDataSession extends LoadingSession {
+    private static class LocalDataSession extends LoadingSession {
 
         public LocalDataSession() {
             super("AW-SKIN-LD");
@@ -616,7 +621,7 @@ public class SkinLoader {
         }
     }
 
-    public static class ResourcePackSession extends LoadingSession {
+    private static class ResourcePackSession extends LoadingSession {
 
         public ResourcePackSession() {
             super("AW-SKIN-RS");
@@ -652,7 +657,7 @@ public class SkinLoader {
         }
     }
 
-    public static class ProxySession extends Session {
+    private static class ProxySession extends Session {
 
         private final Semaphore available = new Semaphore(0, true);
 
@@ -734,7 +739,7 @@ public class SkinLoader {
         }
     }
 
-    public static class DownloadSession extends LoadingSession {
+    private static class DownloadSession extends LoadingSession {
 
         private final CacheSession caching = new CacheSession();
 
@@ -783,7 +788,7 @@ public class SkinLoader {
         }
     }
 
-    public static class CacheSession extends LoadingSession {
+    private static class CacheSession extends LoadingSession {
 
         public CacheSession() {
             super("AW-SKIN-CH");
@@ -940,7 +945,7 @@ public class SkinLoader {
         }
     }
 
-    public static class SliceSession extends Session {
+    private static class SliceSession extends Session {
 
         public SliceSession() {
             super("AW-SKIN-SL");
@@ -1012,7 +1017,7 @@ public class SkinLoader {
         }
     }
 
-    public static class TaskQueue {
+    private static class TaskQueue {
 
         private boolean isPaused = true;
         private final ArrayList<Runnable> values = new ArrayList<>();

@@ -8,8 +8,8 @@ release_path="build/release/$mod_version"
 
 if [[ "$1" == "" ]]; then
   for minecraft_version in $minecraft_versions; do
-    ./gradlew -p versions/$minecraft_version
-    ./gradlew build
+    ./gradlew --no-daemon -p versions/$minecraft_version
+    ./gradlew --no-daemon build
   done
   exit 0
 fi
@@ -20,9 +20,8 @@ mkdir -p "$release_path/sources"
 
 # build all versions
 for minecraft_version in $minecraft_versions; do
-  echo switch of $minecraft_version
-  ./gradlew --no-daemon -Pversion=$mod_version -p versions/$minecraft_version
   echo build of $minecraft_version
+  ./gradlew --no-daemon -Pversion=$mod_version -p versions/$minecraft_version
   ./gradlew --no-daemon -Pversion=$mod_version build
 
   echo archive fabric of $minecraft_version
