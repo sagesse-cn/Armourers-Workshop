@@ -1,4 +1,4 @@
-package moe.plushie.armourers_workshop.core.skin.exporter;
+package moe.plushie.armourers_workshop.core.skin.serializer.exporter;
 
 //import java.io.File;
 //import java.io.FileOutputStream;

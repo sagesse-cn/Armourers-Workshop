@@ -5,6 +5,7 @@ import io.netty.buffer.ByteBufInputStream;
 import moe.plushie.armourers_workshop.api.core.IResourceLocation;
 import moe.plushie.armourers_workshop.compatibility.core.data.AbstractPackResources;
 import moe.plushie.armourers_workshop.core.utils.Collections;
+import moe.plushie.armourers_workshop.init.ModConfig;
 import moe.plushie.armourers_workshop.init.ModConstants;
 import moe.plushie.armourers_workshop.init.ModLog;
 import net.minecraft.server.packs.PackType;
@@ -32,13 +33,17 @@ public class SmartResourceManager {
     }
 
     public void register(IResourceLocation location, ByteBuf buffer) {
-        ModLog.debug("Registering Resource '{}'", location);
         resources.put(location, buffer);
+        if (ModConfig.Client.enableResourceDebug) {
+            ModLog.debug("Registering Resource '{}'", location);
+        }
     }
 
     public void unregister(IResourceLocation location) {
-        ModLog.debug("Unregistering Resource '{}'", location);
         resources.remove(location);
+        if (ModConfig.Client.enableResourceDebug) {
+            ModLog.debug("Unregistering Resource '{}'", location);
+        }
     }
 
     public Supplier<InputStream> getResource(PackType packType, IResourceLocation location) {

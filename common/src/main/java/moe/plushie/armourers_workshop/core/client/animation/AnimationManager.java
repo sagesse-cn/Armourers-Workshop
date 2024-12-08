@@ -127,7 +127,9 @@ public class AnimationManager {
         if (!triggerableEntries.isEmpty() && source instanceof Entity entity) {
             var actionSet = entity.getActionSet();
             if (actionSet != null && !actionSet.equals(lastActionSet)) {
-                debugLog("{} action did change: {}", entity, actionSet);
+                if (ModConfig.Client.enableAnimationDebug) {
+                    ModLog.debug("{} action did change: {}", entity, actionSet);
+                }
                 triggerableEntries.forEach(entry -> entry.autoplay(actionSet, animationTicks));
                 lastActionSet = actionSet.copy();
             }
@@ -190,12 +192,6 @@ public class AnimationManager {
     private void rebuildTriggerableEntities() {
         triggerableEntries.clear();
         triggerableEntries.addAll(Collections.filter(allEntries.values(), Entry::hasTriggerableAnimation));
-    }
-
-    protected void debugLog(String message, Object... arguments) {
-        if (ModConfig.Client.enableAnimationDebug) {
-            ModLog.debug(message, arguments);
-        }
     }
 
     protected class Entry extends AnimationContext {
@@ -308,7 +304,9 @@ public class AnimationManager {
             stopPlayIfNeeded(animationController);
             var newPlayState = AnimationPlayState.create(time, playCount, speed, animationController);
             addPlayState(animationController, newPlayState);
-            debugLog("start play {}", animationController);
+            if (ModConfig.Client.enableAnimationDebug) {
+                ModLog.debug("start play {}", animationController);
+            }
             if (newPlayState.getLoopCount() > 0) {
                 removeOnCompletion.add(Pair.of(newPlayState, () -> stop(animationController)));
             }
@@ -317,7 +315,9 @@ public class AnimationManager {
         private void stopPlayIfNeeded(AnimationController animationController) {
             var oldPlayState = removePlayState(animationController);
             if (oldPlayState != null) {
-                debugLog("stop play {}", animationController);
+                if (ModConfig.Client.enableAnimationDebug) {
+                    ModLog.debug("stop play {}", animationController);
+                }
                 oldPlayState.reset();
                 removeOnCompletion.removeIf(it -> it.getLeft() == oldPlayState);
             }
@@ -480,7 +480,9 @@ public class AnimationManager {
                     return; // can't play
                 }
             }
-            debugLog("resume animation {}", name);
+            if (ModConfig.Client.enableAnimationDebug) {
+                ModLog.debug("resume animation {}", name);
+            }
             entry.play(animationController, time, tag);
         }
     }

@@ -45,6 +45,10 @@ public class BlockBenchAnimator extends BlockBenchObject {
         }
 
         public BlockBenchAnimator build() {
+            // block bench will i18n the effects name, which means it is a dynamic name.
+            if (type.equals("effect")) {
+                name = "effects";
+            }
             return new BlockBenchAnimator(uuid, name, type, keyframes);
         }
     }

@@ -7,6 +7,7 @@ import moe.plushie.armourers_workshop.core.skin.animation.engine.bind.BlockEntit
 import moe.plushie.armourers_workshop.core.skin.animation.engine.bind.EntitySelectorImpl;
 import moe.plushie.armourers_workshop.core.skin.animation.molang.core.ExecutionContext;
 import moe.plushie.armourers_workshop.core.utils.Objects;
+import moe.plushie.armourers_workshop.init.ModConfig;
 import moe.plushie.armourers_workshop.init.ModLog;
 import moe.plushie.armourers_workshop.utils.RenderSystem;
 import net.minecraft.client.Minecraft;
@@ -36,13 +37,17 @@ public class AnimationSoundHandler implements AnimatedPointValue.Effect {
     }
 
     private void playSound(SoundInstance sound) {
-        ModLog.debug("start play {}", this);
         getSoundManager().play(sound);
+        if (ModConfig.Client.enableAnimationDebug) {
+            ModLog.debug("start play {}", this);
+        }
     }
 
     private void stopSound(SoundInstance sound) {
-        ModLog.debug("stop play {}", this);
         getSoundManager().stop(sound);
+        if (ModConfig.Client.enableAnimationDebug) {
+            ModLog.debug("stop play {}", this);
+        }
     }
 
     private void open() {

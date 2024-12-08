@@ -4,6 +4,7 @@ import moe.plushie.armourers_workshop.api.skin.sound.ISoundProvider;
 import moe.plushie.armourers_workshop.compatibility.client.AbstractSimpleSound;
 import moe.plushie.armourers_workshop.compatibility.client.AbstractSoundManagerImpl;
 import moe.plushie.armourers_workshop.core.utils.OpenResourceLocation;
+import moe.plushie.armourers_workshop.init.ModConfig;
 import moe.plushie.armourers_workshop.init.ModLog;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -66,12 +67,16 @@ public class SmartSoundManager {
         var location = sound.getLocation();
         var id = OpenResourceLocation.create(location.getNamespace(), location.getPath().replaceFirst("sounds/(.+)\\.ogg", "$1"));
         getSoundManager().register(location.toLocation(), new AbstractSimpleSound(id.toLocation(), name));
-        ModLog.debug("Registering Sound '{}'", location);
+        if (ModConfig.Client.enableResourceDebug) {
+            ModLog.debug("Registering Sound '{}'", location);
+        }
     }
 
     protected void releaseSound(SmartSound sound) {
         var location = sound.getLocation();
         getSoundManager().unregister(location.toLocation());
-        ModLog.debug("Unregistering Sound '{}'", location);
+        if (ModConfig.Client.enableResourceDebug) {
+            ModLog.debug("Unregistering Sound '{}'", location);
+        }
     }
 }

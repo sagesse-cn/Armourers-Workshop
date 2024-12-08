@@ -3,6 +3,7 @@ package moe.plushie.armourers_workshop.core.client.texture;
 import moe.plushie.armourers_workshop.api.skin.geometry.ISkinGeometryType;
 import moe.plushie.armourers_workshop.api.skin.texture.ITextureProvider;
 import moe.plushie.armourers_workshop.compatibility.client.AbstractSimpleTexture;
+import moe.plushie.armourers_workshop.init.ModConfig;
 import moe.plushie.armourers_workshop.init.ModLog;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -62,12 +63,16 @@ public class SmartTextureManager {
     protected void uploadTexture(SmartTexture texture) {
         var location = texture.getLocation();
         getTextureManager().register(location.toLocation(), new AbstractSimpleTexture(location));
-        ModLog.debug("Registering Texture '{}'", location);
+        if (ModConfig.Client.enableResourceDebug) {
+            ModLog.debug("Registering Texture '{}'", location);
+        }
     }
 
     protected void releaseTexture(SmartTexture texture) {
         var location = texture.getLocation();
         getTextureManager().unregister(location.toLocation());
-        ModLog.debug("Unregistering Texture '{}'", location);
+        if (ModConfig.Client.enableResourceDebug) {
+            ModLog.debug("Unregistering Texture '{}'", location);
+        }
     }
 }

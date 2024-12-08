@@ -58,7 +58,7 @@ public class AnimationController {
             if (partTransform != null) {
                 this.animators.add(new Animator.Bone(partName, AnimationController.toTime(duration), linkedValues, new LinkedOutput(resolveAnimatedTransform(partTransform), mode)));
             }
-            if (partName.equals("Effects")) {
+            if (partName.equals("effects")) {
                 this.animators.add(new Animator.Effect(partName, AnimationController.toTime(duration), linkedValues));
             }
         });

@@ -4,6 +4,7 @@ import moe.plushie.armourers_workshop.core.client.animation.AnimatedPointValue;
 import moe.plushie.armourers_workshop.core.skin.animation.molang.core.ExecutionContext;
 import moe.plushie.armourers_workshop.core.skin.animation.molang.core.Expression;
 import moe.plushie.armourers_workshop.core.utils.Objects;
+import moe.plushie.armourers_workshop.init.ModConfig;
 import moe.plushie.armourers_workshop.init.ModLog;
 
 public class AnimationInstructHandler implements AnimatedPointValue.Effect {
@@ -16,7 +17,9 @@ public class AnimationInstructHandler implements AnimatedPointValue.Effect {
 
     @Override
     public Runnable apply(ExecutionContext context) {
-        ModLog.debug("execute {}", this);
+        if (ModConfig.Client.enableAnimationDebug) {
+            ModLog.debug("execute {}", this);
+        }
         expression.evaluate(context);
         return null;
     }

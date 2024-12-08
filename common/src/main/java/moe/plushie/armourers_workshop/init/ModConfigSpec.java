@@ -64,6 +64,7 @@ public class ModConfigSpec {
             });
             defineCategory("debug", "Debug Settings.", () -> {
                 define("shader", false, "Shows shader mixin results in logs.").bind(v -> enableShaderDebug = v, () -> enableShaderDebug);
+                define("resource", false, "Shows resource register/unregister in logs.").bind(v -> enableResourceDebug = v, () -> enableResourceDebug);
                 define("animation", false, "Shows animation running states in logs.").bind(v -> enableAnimationDebug = v, () -> enableAnimationDebug);
                 define("molang", false, "Shows molang compile states in logs.").bind(v -> enableMolangDebug = v, () -> enableMolangDebug);
                 define("showF3DebugInfo", true, "Shows extra info on the F3 debug screen.").bind(v -> showF3DebugInfo = v, () -> showF3DebugInfo);
