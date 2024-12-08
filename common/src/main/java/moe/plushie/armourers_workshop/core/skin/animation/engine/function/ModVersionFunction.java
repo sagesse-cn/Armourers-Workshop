@@ -8,12 +8,12 @@ import moe.plushie.armourers_workshop.init.platform.EnvironmentManager;
 
 import java.util.List;
 
-public class ModVersion extends Function {
+public class ModVersionFunction extends Function {
 
     private final Expression modId;
 
-    public ModVersion(Expression name, List<Expression> arguments) {
-        super(name, 1, arguments);
+    public ModVersionFunction(Expression receiver, List<Expression> arguments) {
+        super(receiver, 1, arguments);
         this.modId = arguments.get(0);
     }
 

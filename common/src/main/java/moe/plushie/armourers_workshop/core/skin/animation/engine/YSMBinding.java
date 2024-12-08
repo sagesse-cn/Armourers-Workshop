@@ -2,7 +2,7 @@ package moe.plushie.armourers_workshop.core.skin.animation.engine;
 
 import moe.plushie.armourers_workshop.core.skin.animation.engine.function.BoneAccessFunction;
 import moe.plushie.armourers_workshop.core.skin.animation.engine.function.DumpFunction;
-import moe.plushie.armourers_workshop.core.skin.animation.engine.function.ModVersion;
+import moe.plushie.armourers_workshop.core.skin.animation.engine.function.ModVersionFunction;
 import moe.plushie.armourers_workshop.core.skin.animation.molang.bind.ContextBinding;
 import moe.plushie.armourers_workshop.core.skin.animation.molang.bind.selector.ContextSelector;
 import moe.plushie.armourers_workshop.core.skin.animation.molang.bind.selector.EntitySelector;
@@ -84,7 +84,7 @@ public class YSMBinding extends ContextBinding {
         variable("projectile_owner", ProjectileEntitySelector::getOwner);
         variable("delta_movement_length", ProjectileEntitySelector::distanceFromMove);
 
-        function("mod_version", ModVersion::new);
+        function("mod_version", ModVersionFunction::new);
         function("equipped_enchantment_level", ItemEnchantmentLevel::new);
         function("effect_level", EffectLevel::new);
         function("relative_block_name", RelativeBlockName::new);

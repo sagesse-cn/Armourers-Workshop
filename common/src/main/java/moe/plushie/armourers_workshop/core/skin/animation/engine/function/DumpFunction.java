@@ -8,8 +8,8 @@ import java.util.List;
 
 public class DumpFunction extends Function {
 
-    public DumpFunction(Expression name, List<Expression> arguments) {
-        super(name, 0, arguments);
+    public DumpFunction(Expression receiver, List<Expression> arguments) {
+        super(receiver, 0, arguments);
     }
 
     public static DumpFunction items(Expression name, List<Expression> arguments) {
