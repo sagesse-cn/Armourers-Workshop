@@ -149,7 +149,7 @@ public class BakedAttachmentTransform {
                 mat.scale(1 / 16f, 1 / 16f, 1 / 16f);
                 mat.multiply(poseStack1.last().pose());
                 var offset = Vector3f.ZERO.transforming(mat);
-            double d0 = OpenMath.lerp(partialTicks, entity.xOld, entity.getX()) + offset.getX() - cameraPos.getX();
+                double d0 = OpenMath.lerp(partialTicks, entity.xOld, entity.getX()) + offset.getX() - cameraPos.getX();
                 double d1 = OpenMath.lerp(partialTicks, entity.yOld, entity.getY()) + offset.getY() - cameraPos.getY();
                 double d2 = OpenMath.lerp(partialTicks, entity.zOld, entity.getZ()) + offset.getZ() - cameraPos.getZ();
                 poseStack.translate((float) d0, (float) d1, (float) d2);

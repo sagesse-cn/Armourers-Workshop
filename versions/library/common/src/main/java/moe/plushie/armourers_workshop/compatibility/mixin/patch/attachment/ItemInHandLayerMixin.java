@@ -2,7 +2,7 @@ package moe.plushie.armourers_workshop.compatibility.mixin.patch.attachment;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import moe.plushie.armourers_workshop.api.annotation.Available;
-import moe.plushie.armourers_workshop.init.client.ClientWardrobeHandler;
+import moe.plushie.armourers_workshop.init.client.ClientAttachmentHandler;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.entity.layers.ItemInHandLayer;
@@ -21,6 +21,6 @@ public class ItemInHandLayerMixin {
 
     @Inject(method = "renderArmWithItem", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/vertex/PoseStack;translate(FFF)V", shift = At.Shift.AFTER))
     private void aw$translateToHand(LivingEntity livingEntity, ItemStack itemStack, ItemDisplayContext itemDisplayContext, HumanoidArm humanoidArm, PoseStack poseStackIn, MultiBufferSource bufferSourceIn, int i, CallbackInfo ci) {
-        ClientWardrobeHandler.onRenderHandAttachment(livingEntity, itemStack, ItemTransforms.ofType(itemDisplayContext), poseStackIn, bufferSourceIn);
+        ClientAttachmentHandler.onRenderHand(livingEntity, itemStack, ItemTransforms.ofType(itemDisplayContext), poseStackIn, bufferSourceIn);
     }
 }

@@ -22,12 +22,9 @@ import moe.plushie.armourers_workshop.core.client.skinrender.patch.FallbackEntit
 import moe.plushie.armourers_workshop.core.client.skinrender.patch.LivingEntityRenderPatch;
 import moe.plushie.armourers_workshop.core.data.ticket.Tickets;
 import moe.plushie.armourers_workshop.core.entity.MannequinEntity;
-import moe.plushie.armourers_workshop.core.math.OpenTransform3f;
 import moe.plushie.armourers_workshop.core.math.Vector3f;
 import moe.plushie.armourers_workshop.core.skin.SkinDescriptor;
 import moe.plushie.armourers_workshop.core.skin.SkinTypes;
-import moe.plushie.armourers_workshop.core.skin.attachment.SkinAttachmentType;
-import moe.plushie.armourers_workshop.core.skin.attachment.SkinAttachmentTypes;
 import moe.plushie.armourers_workshop.core.utils.OpenItemDisplayContext;
 import moe.plushie.armourers_workshop.init.ModConfig;
 import moe.plushie.armourers_workshop.init.ModDebugger;
@@ -79,43 +76,6 @@ public class ClientWardrobeHandler {
 
     public static void endRenderGuiItem(ItemStack itemStack) {
         RENDERING_GUI_ITEM = null;
-    }
-
-    public static void onRenderAttachment(Entity entity, ItemStack itemStack, SkinAttachmentType attachmentType, PoseStack poseStackIn, MultiBufferSource buffersIn, OpenTransform3f offset) {
-        var renderData = EntityRenderData.of(entity);
-        if (renderData == null) {
-            return;
-        }
-        var attachmentPose = renderData.getAttachmentPose(attachmentType, 0);
-        if (attachmentPose == null) {
-            return; // pass, use vanilla behavior.
-        }
-        var poseStack = AbstractPoseStack.wrap(poseStackIn);
-        poseStack.last().set(attachmentPose);
-        offset.apply(poseStack);
-    }
-
-    // euler angles xyz(-90, 180, 0) => euler angles zyx(-90, 0, -180)
-    // https://www.andre-gaschler.com/rotationconverter/
-    private static final OpenTransform3f HAND_OFFSET = OpenTransform3f.createRotationTransform(new Vector3f(-90, 0, -180));
-    private static final OpenTransform3f SHOULDER_OFFSET = OpenTransform3f.createTranslateTransform(new Vector3f(0, -1.5f, 0));
-
-    public static void onRenderHandAttachment(Entity entity, ItemStack itemStack, OpenItemDisplayContext displayContext, PoseStack poseStackIn, MultiBufferSource bufferSourceIn) {
-        var attachmentType = switch (displayContext) {
-            case FIRST_PERSON_LEFT_HAND, THIRD_PERSON_LEFT_HAND -> SkinAttachmentTypes.LEFT_HAND;
-            case FIRST_PERSON_RIGHT_HAND, THIRD_PERSON_RIGHT_HAND -> SkinAttachmentTypes.RIGHT_HAND;
-            default -> SkinAttachmentTypes.UNKNOWN;
-        };
-        onRenderAttachment(entity, itemStack, attachmentType, poseStackIn, bufferSourceIn, HAND_OFFSET);
-    }
-
-
-    public static void onRenderParrotAttachment(Entity entity, boolean isLeft, PoseStack poseStackIn, MultiBufferSource bufferSourceIn) {
-        var attachmentType = SkinAttachmentTypes.RIGHT_SHOULDER;
-        if (isLeft) {
-            attachmentType = SkinAttachmentTypes.LEFT_SHOULDER;
-        }
-        ClientWardrobeHandler.onRenderAttachment(entity, ItemStack.EMPTY, attachmentType, poseStackIn, bufferSourceIn, SHOULDER_OFFSET);
     }
 
     public static void onRenderSpecificHand(LivingEntity entity, float partialTicks, int packedLight, OpenItemDisplayContext displayContext, PoseStack poseStackIn, MultiBufferSource buffersIn, Runnable cancelHandler) {

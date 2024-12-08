@@ -3,7 +3,7 @@ package moe.plushie.armourers_workshop.compatibility.mixin.patch.attachment;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import moe.plushie.armourers_workshop.api.annotation.Available;
-import moe.plushie.armourers_workshop.init.client.ClientWardrobeHandler;
+import moe.plushie.armourers_workshop.init.client.ClientAttachmentHandler;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.layers.ParrotOnShoulderLayer;
 import net.minecraft.nbt.CompoundTag;
@@ -21,6 +21,6 @@ public class ParrotOnShoulderLayerMixin {
     // lambda$render$1
     @Inject(method = "method_17958", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/vertex/PoseStack;translate(FFF)V", shift = At.Shift.AFTER))
     private void aw$renderOnShoulder(PoseStack poseStackIn, boolean bl, Player player, CompoundTag tag, MultiBufferSource bufferSourceIn, int i, float f, float g, float h, float j, EntityType<?> entityType, CallbackInfo ci) {
-        ClientWardrobeHandler.onRenderParrotAttachment(player, bl, poseStackIn, bufferSourceIn);
+        ClientAttachmentHandler.onRenderParrot(player, bl, poseStackIn, bufferSourceIn);
     }
 }

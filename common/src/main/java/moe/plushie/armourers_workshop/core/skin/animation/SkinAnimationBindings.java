@@ -8,7 +8,7 @@ public class SkinAnimationBindings {
 
     public static void init() {
         // add aw molang support.
-        MolangVirtualMachine.register("aw", new AWBinding());
+        MolangVirtualMachine.register("aw2", new AWBinding());
 
         // add `Yes Steve Model` molang compat.
         MolangVirtualMachine.register("ysm", new YSMBinding());
