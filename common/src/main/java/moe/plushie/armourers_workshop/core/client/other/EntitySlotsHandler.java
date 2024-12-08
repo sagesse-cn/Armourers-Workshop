@@ -1,5 +1,6 @@
 package moe.plushie.armourers_workshop.core.client.other;
 
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import moe.plushie.armourers_workshop.api.data.IAssociatedContainerKey;
 import moe.plushie.armourers_workshop.api.data.IAssociatedContainerProvider;
 import moe.plushie.armourers_workshop.api.skin.ISkinToolType;
@@ -326,6 +327,10 @@ public class EntitySlotsHandler<T> implements IAssociatedContainerProvider, Skin
             return SkinAttachmentPose.EMPTY;
         }
         return null;
+    }
+
+    public Int2ObjectMap<SkinAttachmentPose> getAttachmentPoses(SkinAttachmentType attachmentType) {
+        return attachmentStorage.get(attachmentType);
     }
 
     @Override

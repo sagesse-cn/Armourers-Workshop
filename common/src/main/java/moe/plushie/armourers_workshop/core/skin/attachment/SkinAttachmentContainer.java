@@ -30,6 +30,10 @@ public class SkinAttachmentContainer {
         return fallbacks.get(attachmentType);
     }
 
+    public Int2ObjectMap<SkinAttachmentPose> get(SkinAttachmentType attachmentType) {
+        return variants.get(attachmentType);
+    }
+
     public void clear() {
         fallbacks.clear();
         variants.clear();

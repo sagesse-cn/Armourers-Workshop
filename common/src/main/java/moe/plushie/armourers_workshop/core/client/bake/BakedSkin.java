@@ -274,7 +274,7 @@ public class BakedSkin implements IBakedSkin {
         Collections.eachTree(skinParts, BakedSkinPart::getChildren, part -> {
             var partType = part.getType();
             var partName = partType.getName();
-            if (partType == SkinPartTypes.ADVANCED) {
+            if (partType == SkinPartTypes.ADVANCED || partType == SkinPartTypes.ADVANCED_LOCATOR) {
                 partName = part.getName();
             }
             namedParts.put(partName, part.getTransform());

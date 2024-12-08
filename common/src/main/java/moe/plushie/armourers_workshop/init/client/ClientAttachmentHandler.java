@@ -16,7 +16,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 
-import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 @SuppressWarnings("unused")
 @Environment(EnvType.CLIENT)
@@ -27,7 +27,7 @@ public class ClientAttachmentHandler {
     private static final Vector3f GUN_BACKPACK_ORIGIN = new Vector3f(0, 24, 2);
 
     public static void onRenderName(Entity entity, Component name, PoseStack poseStackIn, MultiBufferSource bufferSourceIn) {
-        apply(entity, SkinAttachmentTypes.NAME, poseStackIn, bufferSourceIn, (poseStack, attachmentPose) -> {
+        apply(entity, SkinAttachmentTypes.NAME, 0, poseStackIn, bufferSourceIn, (poseStack, attachmentPose, index) -> {
             // calculate the distance from target.
             var offset1 = Vector3f.ZERO.transforming(poseStack.last().pose());
             var offset2 = Vector3f.ZERO.transforming(attachmentPose.pose());
@@ -40,16 +40,20 @@ public class ClientAttachmentHandler {
         });
     }
 
-    public static void onRenderHand(Entity entity, ItemStack itemStack, OpenItemDisplayContext displayContext, PoseStack poseStackIn, MultiBufferSource bufferSourceIn) {
+    public static void onRenderHand(Entity entity, ItemStack itemStack, OpenItemDisplayContext displayContext, PoseStack poseStackIn, MultiBufferSource bufferSourceIn, Consumer<ItemStack> handler) {
         var attachmentType = switch (displayContext) {
             case FIRST_PERSON_LEFT_HAND, THIRD_PERSON_LEFT_HAND -> SkinAttachmentTypes.LEFT_HAND;
             case FIRST_PERSON_RIGHT_HAND, THIRD_PERSON_RIGHT_HAND -> SkinAttachmentTypes.RIGHT_HAND;
             default -> SkinAttachmentTypes.UNKNOWN;
         };
-        apply(entity, attachmentType, poseStackIn, bufferSourceIn, (poseStack, attachmentPose) -> {
-            poseStack.last().set(attachmentPose);
-            poseStack.rotate(Vector3f.XP.rotationDegrees(-90));
-            poseStack.rotate(Vector3f.YP.rotationDegrees(180));
+        applyMultiple(entity, attachmentType, poseStackIn, bufferSourceIn, (poseStack, attachmentPose, index) -> {
+            // ..
+            if (poseStack != null && attachmentPose != null) {
+                poseStack.last().set(attachmentPose);
+                poseStack.rotate(Vector3f.XP.rotationDegrees(-90));
+                poseStack.rotate(Vector3f.YP.rotationDegrees(180));
+            }
+            handler.accept(itemStack);
         });
     }
 
@@ -58,7 +62,7 @@ public class ClientAttachmentHandler {
         if (isLeft) {
             attachmentType = SkinAttachmentTypes.LEFT_SHOULDER;
         }
-        apply(entity, attachmentType, poseStackIn, bufferSourceIn, (poseStack, attachmentPose) -> {
+        apply(entity, attachmentType, 0, poseStackIn, bufferSourceIn, (poseStack, attachmentPose, index) -> {
             poseStack.last().set(attachmentPose);
             poseStack.translate(0, -1.5f, 0);
         });
@@ -85,22 +89,53 @@ public class ClientAttachmentHandler {
         float dy = (ty - attachmentOrigin.getY()) / 16f;
         float dz = (tz - attachmentOrigin.getZ()) / 16f;
 
-        apply(entity, attachmentType, poseStackIn, bufferSourceIn, (poseStack, attachmentPose) -> {
+        apply(entity, attachmentType, 0, poseStackIn, bufferSourceIn, (poseStack, attachmentPose, index) -> {
             poseStack.last().set(attachmentPose);
             poseStack.translate(-dx, -dy, dz);
         });
     }
 
-    private static void apply(Entity entity, SkinAttachmentType attachmentType, PoseStack poseStackIn, MultiBufferSource buffersIn, BiConsumer<IPoseStack, SkinAttachmentPose> transform) {
+    private static void apply(Entity entity, SkinAttachmentType attachmentType, int index, PoseStack poseStackIn, MultiBufferSource buffersIn, Applier applier) {
         var renderData = EntityRenderData.of(entity);
         if (renderData == null) {
             return;
         }
-        var attachmentPose = renderData.getAttachmentPose(attachmentType, 0);
+        var attachmentPose = renderData.getAttachmentPose(attachmentType, index);
         if (attachmentPose == null) {
             return; // pass, use vanilla behavior.
         }
         var poseStack = AbstractPoseStack.wrap(poseStackIn);
-        transform.accept(poseStack, attachmentPose);
+        applier.apply(poseStack, attachmentPose, index);
+    }
+
+    private static void applyMultiple(Entity entity, SkinAttachmentType attachmentType, PoseStack poseStackIn, MultiBufferSource buffersIn, Applier applier) {
+        var renderData = EntityRenderData.of(entity);
+        if (renderData == null) {
+            applier.apply(null, null, 0);
+            return;
+        }
+        var poseStack = AbstractPoseStack.wrap(poseStackIn);
+        var attachmentPoses = renderData.getAttachmentPoses(attachmentType);
+        if (attachmentPoses != null) {
+            attachmentPoses.forEach((index, attachmentPose) -> {
+                poseStack.pushPose();
+                applier.apply(poseStack, attachmentPose, index);
+                poseStack.popPose();
+            });
+            if (attachmentPoses.containsKey(0)) {
+                return; // all is rendering.
+            }
+        }
+        var attachmentPose = renderData.getAttachmentPose(attachmentType, 0);
+        if (attachmentPose == null) {
+            applier.apply(null, null, 0);
+            return;  // pass, use vanilla behavior.
+        }
+        applier.apply(poseStack, attachmentPose, 0);
+    }
+
+    private interface Applier {
+
+        void apply(IPoseStack poseStack, SkinAttachmentPose pose, int index);
     }
 }
