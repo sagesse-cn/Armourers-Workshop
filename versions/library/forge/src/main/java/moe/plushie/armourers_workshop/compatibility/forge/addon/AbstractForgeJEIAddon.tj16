@@ -12,7 +12,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.resources.ResourceLocation;
 
-@Available("[1.19, 1.21)")
+@Available("[1.16, 1.21)")
 @JeiPlugin
 public class AbstractForgeJEIAddon implements IModPlugin {
 
