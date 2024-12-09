@@ -90,6 +90,10 @@ public abstract class AnimationPlayState {
         return time;
     }
 
+    public float getAdjustedTime() {
+        return adjustedTime;
+    }
+
     public void setDuration(float duration) {
         this.duration = duration;
     }

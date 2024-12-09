@@ -27,6 +27,7 @@ public class AnimationEngine {
 
     public static void apply(@Nullable Object source, int skinId, float partialTick, float animationTime, AnimationContext context) {
         context.beginUpdates(animationTime);
+        var executionContext = context.getExecutionContext();
         for (var animationController : context.getAnimationControllers()) {
             // query the current play state of the animation controller.
             var playState = context.getPlayState(animationController);
@@ -35,7 +36,6 @@ public class AnimationEngine {
             }
             // we only bind it when transformer use the molang environment.
             var adjustedTime = playState.getAdjustedTime(animationTime);
-            var executionContext = context.getExecutionContext();
             if (animationController.isRequiresVirtualMachine()) {
                 executionContext.upload(skinId, playState.getTime(), adjustedTime, animationTime, partialTick);
             }

@@ -6,24 +6,24 @@ import net.minecraft.world.entity.Entity;
 
 public class ContextSelectorImpl implements ContextSelector {
 
-    private int skinId = 0;
+    private int id = 0;
 
-    private float startAnimTime = 0;
+    private float lifeTime = 0;
     private float animTime = 0;
 
     private float animationTicks = 0;
     private float partialTicks = 0;
 
-    public void upload(int skinId, float startAnimTime, float animTime, float animationTicks, float partialTicks) {
-        this.skinId = skinId;
-        this.startAnimTime = startAnimTime;
+    public void upload(int id, float lifeTime, float animTime, float animationTicks, float partialTicks) {
+        this.id = id;
+        this.lifeTime = lifeTime;
         this.animTime = animTime;
         this.animationTicks = animationTicks;
         this.partialTicks = partialTicks;
     }
 
-    public int getSkinId() {
-        return skinId;
+    public int getId() {
+        return id;
     }
 
     @Override
@@ -38,17 +38,17 @@ public class ContextSelectorImpl implements ContextSelector {
 
     @Override
     public float getAnimTime() {
-        return startAnimTime;
-    }
-
-    @Override
-    public float getLifeTime() {
         return animTime;
     }
 
     @Override
+    public float getLifeTime() {
+        return lifeTime;
+    }
+
+    @Override
     public double getFPS() {
-        return 0;
+        return -1;
     }
 
 
