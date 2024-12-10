@@ -106,7 +106,7 @@ public class ItemModelManager {
                     return;
                 }
                 var path = FileUtils.getRegistryName(location.getPath(), "models/");
-                var location1 = OpenResourceLocation.create(location.getNamespace(), FileUtils.removeExtension(path));
+                var location1 = location.setPath(FileUtils.removeExtension(path));
                 var builder = builders.computeIfAbsent(location1, SimpleBuilder::new);
                 object.get("parent").ifPresent(it -> {
                     var key = OpenResourceLocation.parse(it.stringValue());

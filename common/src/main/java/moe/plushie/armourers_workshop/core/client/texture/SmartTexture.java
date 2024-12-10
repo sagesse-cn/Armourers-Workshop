@@ -1,6 +1,7 @@
 package moe.plushie.armourers_workshop.core.client.texture;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import moe.plushie.armourers_workshop.api.core.IResourceLocation;
 import moe.plushie.armourers_workshop.api.skin.geometry.ISkinGeometryType;
 import moe.plushie.armourers_workshop.api.skin.texture.ITextureProperties;
@@ -105,16 +106,49 @@ public class SmartTexture extends ReferenceCounted {
 
     private Map<IResourceLocation, ByteBuf> resolveTextureBuffers(IResourceLocation location, ITextureProvider provider) {
         var path = FileUtils.removeExtension(location.getPath());
-        var results = new LinkedHashMap<IResourceLocation, ByteBuf>();
-        results.put(location, provider.getBuffer());
+        var builder = new TextureBufferBuilder(provider.getProperties());
+        builder.addData(location, provider);
         for (var variant : provider.getVariants()) {
             if (variant.getProperties().isNormal()) {
-                results.put(ModConstants.key(path + "_n.png"), variant.getBuffer());
+                builder.addData(location.setPath(path + "_n.png"), variant);
             }
             if (variant.getProperties().isSpecular()) {
-                results.put(ModConstants.key(path + "_s.png"), variant.getBuffer());
+                builder.addData(location.setPath(path + "_s.png"), variant);
             }
         }
-        return results;
+        return builder.build();
+    }
+
+    private static class TextureBufferBuilder {
+
+        private final Map<IResourceLocation, ByteBuf> buffers = new LinkedHashMap<IResourceLocation, ByteBuf>();
+
+        private final ITextureProperties parentProperties;
+
+        private TextureBufferBuilder(ITextureProperties parentProperties) {
+            this.parentProperties = parentProperties;
+        }
+
+        public void addData(IResourceLocation location, ITextureProvider provider) {
+            buffers.put(location, provider.getBuffer());
+            addMeta(location, provider.getProperties());
+        }
+
+        private void addMeta(IResourceLocation location, ITextureProperties properties) {
+            var isBlurFilter = properties.isBlurFilter() || parentProperties.isBlurFilter();
+            var isClampToEdge = properties.isClampToEdge() || parentProperties.isClampToEdge();
+            if (!isBlurFilter && !isClampToEdge) {
+                return; // not needs.
+            }
+            // https://minecraft.wiki/w/Resource_pack#Properties
+            var blur = String.valueOf(isBlurFilter);
+            var clamp = String.valueOf(isClampToEdge);
+            var meta = String.format("{\"texture\":{\"blur\":%s,\"clamp\":%s}}", blur, clamp);
+            buffers.put(location.setPath(location.getPath() + ".mcmeta"), Unpooled.wrappedBuffer(meta.getBytes()));
+        }
+
+        public Map<IResourceLocation, ByteBuf> build() {
+            return buffers;
+        }
     }
 }

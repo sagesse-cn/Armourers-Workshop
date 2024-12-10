@@ -193,7 +193,7 @@ public class BlockBenchExporter {
         var sequence = new AtomicInteger();
         mesh.faces.stream().sorted(Comparator.comparingInt(it -> it.vertices.size())).forEachOrdered(it -> {
             // ignore all not use texture face.
-            var texturePos = texture.read(Vector2f.ZERO, it);
+            var texturePos = texture.read(it);
             if (texturePos == null) {
                 return;
             }
@@ -205,6 +205,7 @@ public class BlockBenchExporter {
                 var normal = it2.normal;
                 var textureCoords = it2.textureCoords;
                 vertices.add(new SkinGeometryVertex(vertexId, position, normal, textureCoords));
+                TextureResolution.applyBoundary(texturePos.getProvider(), textureCoords.getX(), textureCoords.getY());
             });
             faces.add(new SkinMeshFace(faceId, transform, texturePos, vertices));
             defaultTexturePos[0] = texturePos;
@@ -794,7 +795,8 @@ public class BlockBenchExporter {
         public TextureBox read(Cube cube) {
             var uv = cube.uv;
             var size = cube.size;
-            var skyBox = new TextureBox(size.getX(), size.getY(), size.getZ(), cube.mirror, uv.getBase(), getTextureData(uv));
+            var textureData = getTextureData(uv);
+            var skyBox = new TextureBox(size.getX(), size.getY(), size.getZ(), cube.mirror, uv.getBase(), textureData);
             uv.forEach((dir, rect) -> {
                 skyBox.putTextureRect(dir, rect);
                 skyBox.putTextureProvider(dir, getTextureData(uv, dir));
@@ -804,13 +806,20 @@ public class BlockBenchExporter {
                 options.setRotation(rot);
                 skyBox.putTextureOptions(dir, options);
             });
+            // check texture coords is beyond?
+            for (var dir : OpenDirection.values()) {
+                var pos = skyBox.getTexture(dir);
+                if (pos != null) {
+                    TextureResolution.applyBoundary(pos.getProvider(), pos.getU(), pos.getV());
+                }
+            }
             return skyBox;
         }
 
-        public TexturePos read(Vector2f pos, MeshFace meshFace) {
+        public TexturePos read(MeshFace meshFace) {
             var textureData = allTexture.get(meshFace.textureId);
             if (textureData != null) {
-                return new TexturePos(pos.getX(), pos.getY(), 0, 0, textureData);
+                return new TexturePos(0, 0, 0, 0, textureData);
             }
             return null;
         }
@@ -1112,6 +1121,14 @@ public class BlockBenchExporter {
                 key |= 0x02;
             }
             return key;
+        }
+
+        public static void applyBoundary(ITextureProvider textureProvider, float u, float v) {
+            // the uv is over boundary?
+            if (u < 0 || v < 0 || u > textureProvider.getWidth() || v > textureProvider.getHeight()) {
+                var properties = (TextureProperties) textureProvider.getProperties();
+                properties.setClampToEdge(true);
+            }
         }
     }
 }

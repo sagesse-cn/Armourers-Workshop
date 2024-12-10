@@ -29,7 +29,6 @@ import moe.plushie.armourers_workshop.core.entity.EntityProfile;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IODataObject;
 import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.core.utils.FileUtils;
-import moe.plushie.armourers_workshop.core.utils.OpenResourceLocation;
 import moe.plushie.armourers_workshop.init.ModEntityProfiles;
 import moe.plushie.armourers_workshop.init.ModLog;
 import moe.plushie.armourers_workshop.init.platform.DataPackManager;
@@ -314,7 +313,7 @@ public class SkinRendererManager {
 
         public TransformerLoaderImpl(IResourceLocation location) {
             var path = FileUtils.getRegistryName(location.getPath(), "skin/transformers/");
-            this.registryName = OpenResourceLocation.create(location.getNamespace(), path);
+            this.registryName = location.setPath(path);
         }
 
         @Override

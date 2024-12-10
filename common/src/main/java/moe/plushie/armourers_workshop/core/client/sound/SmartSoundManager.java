@@ -3,7 +3,6 @@ package moe.plushie.armourers_workshop.core.client.sound;
 import moe.plushie.armourers_workshop.api.skin.sound.ISoundProvider;
 import moe.plushie.armourers_workshop.compatibility.client.AbstractSimpleSound;
 import moe.plushie.armourers_workshop.compatibility.client.AbstractSoundManagerImpl;
-import moe.plushie.armourers_workshop.core.utils.OpenResourceLocation;
 import moe.plushie.armourers_workshop.init.ModConfig;
 import moe.plushie.armourers_workshop.init.ModLog;
 import net.fabricmc.api.EnvType;
@@ -65,7 +64,7 @@ public class SmartSoundManager {
     protected void uploadSound(SmartSound sound) {
         var name = sound.getName();
         var location = sound.getLocation();
-        var id = OpenResourceLocation.create(location.getNamespace(), location.getPath().replaceFirst("sounds/(.+)\\.ogg", "$1"));
+        var id = location.setPath(location.getPath().replaceFirst("sounds/(.+)\\.ogg", "$1"));
         getSoundManager().register(location.toLocation(), new AbstractSimpleSound(id.toLocation(), name));
         if (ModConfig.Client.enableResourceDebug) {
             ModLog.debug("Registering Sound '{}'", location);

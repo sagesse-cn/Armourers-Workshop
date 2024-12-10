@@ -97,7 +97,7 @@ public class FindableSkinManager {
     private Entry loadSkinProvider(IResourceLocation id) {
         try {
             var resourceManager = EnvironmentManager.getResourceManager();
-            var location = OpenResourceLocation.create(id.getNamespace(), "models/" + id.getPath() + ".json");
+            var location = id.setPath("models/" + id.getPath() + ".json");
             var rootObject = JsonSerializer.readFromResource(resourceManager.readResource(location));
             if (rootObject == null) {
                 return null;

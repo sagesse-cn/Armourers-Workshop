@@ -1,20 +1,18 @@
 package moe.plushie.armourers_workshop.core.skin.texture;
 
-import moe.plushie.armourers_workshop.api.skin.texture.ITextureProperties;
 import moe.plushie.armourers_workshop.api.skin.property.ISkinProperty;
+import moe.plushie.armourers_workshop.api.skin.texture.ITextureProperties;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperties;
-import moe.plushie.armourers_workshop.core.skin.property.SkinProperty;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IInputStream;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IOutputStream;
 import moe.plushie.armourers_workshop.core.utils.Objects;
 
 import java.io.IOException;
 
+@SuppressWarnings("unused")
 public class TextureProperties implements ITextureProperties {
 
     public static final TextureProperties EMPTY = new TextureProperties();
-
-    private static final SkinProperty<String> NAME_KEY = SkinProperty.normal("name", "");
 
     private int flags = 0;
     private final SkinProperties storage = new SkinProperties();
@@ -44,14 +42,6 @@ public class TextureProperties implements ITextureProperties {
 
     public <T> T get(ISkinProperty<T> property) {
         return storage.get(property);
-    }
-
-    public void setName(String name) {
-        storage.put(NAME_KEY, name);
-    }
-
-    public String getName() {
-        return storage.get(NAME_KEY);
     }
 
     public void setEmissive(boolean isEmissive) {
@@ -90,6 +80,24 @@ public class TextureProperties implements ITextureProperties {
         return getFlag(3);
     }
 
+    public void setBlurFilter(boolean isBlurFilter) {
+        setFlag(4, isBlurFilter);
+    }
+
+    @Override
+    public boolean isBlurFilter() {
+        return getFlag(4);
+    }
+
+    public void setClampToEdge(boolean isClampToEdge) {
+        setFlag(5, isClampToEdge);
+    }
+
+    @Override
+    public boolean isClampToEdge() {
+        return getFlag(5);
+    }
+
     public TextureProperties copy() {
         var properties = new TextureProperties();
         properties.flags = flags;
@@ -111,6 +119,12 @@ public class TextureProperties implements ITextureProperties {
         }
         if (isSpecular()) {
             properties.put("isSpecular", true);
+        }
+        if (isBlurFilter()) {
+            properties.put("isBlurFilter", true);
+        }
+        if (isClampToEdge()) {
+            properties.put("isClampToEdge", true);
         }
         return properties.toString();
     }

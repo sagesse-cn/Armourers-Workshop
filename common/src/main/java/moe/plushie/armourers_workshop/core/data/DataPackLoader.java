@@ -5,7 +5,6 @@ import moe.plushie.armourers_workshop.api.core.IResourceManager;
 import moe.plushie.armourers_workshop.api.data.IDataPackBuilder;
 import moe.plushie.armourers_workshop.core.utils.FileUtils;
 import moe.plushie.armourers_workshop.core.utils.JsonSerializer;
-import moe.plushie.armourers_workshop.core.utils.OpenResourceLocation;
 import moe.plushie.armourers_workshop.init.ModConstants;
 import moe.plushie.armourers_workshop.init.ModLog;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
@@ -80,7 +79,7 @@ public class DataPackLoader implements PreparableReloadListener {
                         return;
                     }
                     var path = FileUtils.removeExtension(location.getPath());
-                    var location1 = OpenResourceLocation.create(location.getNamespace(), path);
+                    var location1 = location.setPath(path);
                     ModLog.debug("Load entry '{}' in '{}'", location1, resource.getSource());
                     results.computeIfAbsent(location1, provider).append(object, location);
                 });

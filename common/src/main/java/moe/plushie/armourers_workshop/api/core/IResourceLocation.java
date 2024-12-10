@@ -4,7 +4,11 @@ import net.minecraft.resources.ResourceLocation;
 
 public interface IResourceLocation {
 
+    IResourceLocation setNamespace(String namespace);
+
     String getNamespace();
+
+    IResourceLocation setPath(String path);
 
     String getPath();
 
