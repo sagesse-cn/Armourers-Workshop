@@ -2,9 +2,9 @@ package moe.plushie.armourers_workshop.core.client.animation;
 
 import moe.plushie.armourers_workshop.core.math.Vector3f;
 import moe.plushie.armourers_workshop.core.skin.animation.SkinAnimationPoint;
-import moe.plushie.armourers_workshop.core.skin.animation.molang.core.ExecutionContext;
-import moe.plushie.armourers_workshop.core.skin.animation.molang.core.Expression;
-import moe.plushie.armourers_workshop.core.skin.animation.molang.runtime.OptimizeContext;
+import moe.plushie.armourers_workshop.core.skin.molang.core.ExecutionContext;
+import moe.plushie.armourers_workshop.core.skin.molang.core.Expression;
+import moe.plushie.armourers_workshop.core.skin.molang.runtime.OptimizeContext;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;

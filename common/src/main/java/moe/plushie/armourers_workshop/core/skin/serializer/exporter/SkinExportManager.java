@@ -1,6 +1,5 @@
 package moe.plushie.armourers_workshop.core.skin.serializer.exporter;
 
-import moe.plushie.armourers_workshop.api.skin.ISkinExporter;
 import moe.plushie.armourers_workshop.core.skin.Skin;
 import moe.plushie.armourers_workshop.core.utils.FileUtils;
 import moe.plushie.armourers_workshop.init.ModLog;
@@ -17,7 +16,7 @@ public final class SkinExportManager {
     public static final DecimalFormat FLOAT_FORMAT = new DecimalFormat("#.#####");
     public static final DecimalFormat DOUBLE_FORMAT = new DecimalFormat("#.############");
 
-    private static final ArrayList<ISkinExporter> SKIN_EXPORTERS;
+    private static final ArrayList<SkinExporter> SKIN_EXPORTERS;
 
     static {
         SKIN_EXPORTERS = new ArrayList<>();
@@ -25,7 +24,7 @@ public final class SkinExportManager {
         SKIN_EXPORTERS.add(new SkinExporterPolygon());
     }
 
-    public static ISkinExporter getSkinExporter(String fileExtension) {
+    public static SkinExporter getSkinExporter(String fileExtension) {
         if (fileExtension.isEmpty()) {
             return null;
         }
@@ -48,7 +47,7 @@ public final class SkinExportManager {
         }
     }
 
-    public static void exportSkin(Skin skin, ISkinExporter skinExporter, String filename, float scale) throws Exception {
+    public static void exportSkin(Skin skin, SkinExporter skinExporter, String filename, float scale) throws Exception {
         var filePath = new File(EnvironmentManager.getRootDirectory(), "model-exports");
         FileUtils.forceMkdir(filePath);
         skinExporter.exportSkin(skin, filePath, filename, scale);

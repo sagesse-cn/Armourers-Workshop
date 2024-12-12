@@ -19,7 +19,7 @@ public class BlockBenchObject {
         return uuid;
     }
 
-    public static class Builder {
+    protected static class Builder {
 
         protected String name = "";
         protected String uuid = "";

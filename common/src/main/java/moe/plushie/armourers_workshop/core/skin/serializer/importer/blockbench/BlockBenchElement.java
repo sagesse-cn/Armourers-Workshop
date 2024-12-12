@@ -20,7 +20,7 @@ public class BlockBenchElement extends BlockBenchObject {
         return allowExport;
     }
 
-    public static class Builder extends BlockBenchObject.Builder {
+    protected static class Builder extends BlockBenchObject.Builder {
 
         protected String type = "cube";
 

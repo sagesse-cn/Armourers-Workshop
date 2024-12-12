@@ -1,8 +1,8 @@
 package moe.plushie.armourers_workshop.core.skin.serializer;
 
 import moe.plushie.armourers_workshop.api.skin.geometry.ISkinGeometryType;
-import moe.plushie.armourers_workshop.api.skin.paint.ISkinDyeType;
-import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintType;
+import moe.plushie.armourers_workshop.api.skin.texture.ISkinDyeType;
+import moe.plushie.armourers_workshop.api.skin.texture.ISkinPaintType;
 import moe.plushie.armourers_workshop.core.skin.geometry.SkinGeometryTypes;
 
 import java.util.Arrays;

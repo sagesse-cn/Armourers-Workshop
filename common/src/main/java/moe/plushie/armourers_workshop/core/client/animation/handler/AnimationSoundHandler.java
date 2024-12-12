@@ -3,9 +3,9 @@ package moe.plushie.armourers_workshop.core.client.animation.handler;
 import moe.plushie.armourers_workshop.core.client.animation.AnimatedPointValue;
 import moe.plushie.armourers_workshop.core.client.sound.SmartSoundManager;
 import moe.plushie.armourers_workshop.core.skin.animation.SkinAnimationPoint;
-import moe.plushie.armourers_workshop.core.skin.animation.engine.bind.BlockEntitySelectorImpl;
-import moe.plushie.armourers_workshop.core.skin.animation.engine.bind.EntitySelectorImpl;
-import moe.plushie.armourers_workshop.core.skin.animation.molang.core.ExecutionContext;
+import moe.plushie.armourers_workshop.core.skin.molang.core.ExecutionContext;
+import moe.plushie.armourers_workshop.core.skin.molang.thirdparty.bind.BlockEntitySelectorImpl;
+import moe.plushie.armourers_workshop.core.skin.molang.thirdparty.bind.EntitySelectorImpl;
 import moe.plushie.armourers_workshop.core.utils.Objects;
 import moe.plushie.armourers_workshop.init.ModConfig;
 import moe.plushie.armourers_workshop.init.ModLog;
@@ -20,14 +20,21 @@ public class AnimationSoundHandler implements AnimatedPointValue.Effect {
     private final String name;
     private final SoundEvent soundEvent;
 
+    private final float volume;
+    private final float pitch;
+
     public AnimationSoundHandler(SkinAnimationPoint.Sound sound) {
+        var soundProvider = sound.getProvider();
+        var soundProperties = soundProvider.getProperties();
         this.name = sound.getEffect();
-        this.soundEvent = SmartSoundManager.getInstance().register(sound.getProvider());
+        this.volume = soundProperties.getVolume();
+        this.pitch = soundProperties.getPitch();
+        this.soundEvent = SmartSoundManager.getInstance().register(soundProvider);
     }
 
     @Override
     public Runnable apply(ExecutionContext context) {
-        var sound = createSound(context, 1.0f, 1.0f);
+        var sound = createSound(context);
         open();
         playSound(sound);
         return () -> {
@@ -58,7 +65,7 @@ public class AnimationSoundHandler implements AnimatedPointValue.Effect {
         SmartSoundManager.getInstance().close(soundEvent);
     }
 
-    private SoundInstance createSound(ExecutionContext context, float volume, float pitch) {
+    private SoundInstance createSound(ExecutionContext context) {
         // this current entity is block entity?
         if (context instanceof BlockEntitySelectorImpl<?> entity) {
             return SoundInstance.forBlockEntity(soundEvent, entity.getEntity(), volume, pitch);

@@ -1,22 +1,22 @@
 package moe.plushie.armourers_workshop.core.skin.serializer.v20.geometry.impl;
 
 import moe.plushie.armourers_workshop.api.skin.geometry.ISkinGeometryType;
-import moe.plushie.armourers_workshop.api.skin.texture.ITextureProvider;
 import moe.plushie.armourers_workshop.core.math.OpenTransform3f;
 import moe.plushie.armourers_workshop.core.math.Rectangle3f;
 import moe.plushie.armourers_workshop.core.math.Vector2f;
 import moe.plushie.armourers_workshop.core.skin.geometry.SkinGeometryTypes;
 import moe.plushie.armourers_workshop.core.skin.geometry.cube.SkinCube;
 import moe.plushie.armourers_workshop.core.skin.geometry.cube.SkinCubeFace;
-import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
-import moe.plushie.armourers_workshop.core.skin.texture.TextureBox;
-import moe.plushie.armourers_workshop.core.skin.texture.TextureOptions;
-import moe.plushie.armourers_workshop.core.skin.texture.TexturePos;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IOConsumer2;
-import moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk.ChunkGeometrySlice;
 import moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk.ChunkDataOutputStream;
+import moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk.ChunkGeometrySlice;
 import moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk.ChunkPaletteData;
 import moe.plushie.armourers_workshop.core.skin.serializer.v20.geometry.ChunkGeometrySerializer;
+import moe.plushie.armourers_workshop.core.skin.texture.SkinTextureBox;
+import moe.plushie.armourers_workshop.core.skin.texture.SkinTextureData;
+import moe.plushie.armourers_workshop.core.skin.texture.SkinTextureOptions;
+import moe.plushie.armourers_workshop.core.skin.texture.SkinTexturePos;
+import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintColor;
 import moe.plushie.armourers_workshop.core.utils.OpenDirection;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -51,8 +51,8 @@ public class ChunkGeometrySerializerV2 extends ChunkGeometrySerializer {
 
         private final EnumMap<OpenDirection, Vector2f> startUVs = new EnumMap<>(OpenDirection.class);
         private final EnumMap<OpenDirection, Vector2f> endUVs = new EnumMap<>(OpenDirection.class);
-        private final EnumMap<OpenDirection, TextureOptions> optionsValues = new EnumMap<>(OpenDirection.class);
-        private final EnumMap<OpenDirection, TexturePos> texturePoss = new EnumMap<>(OpenDirection.class);
+        private final EnumMap<OpenDirection, SkinTextureOptions> optionsValues = new EnumMap<>(OpenDirection.class);
+        private final EnumMap<OpenDirection, SkinTexturePos> texturePoss = new EnumMap<>(OpenDirection.class);
 
         private OpenTransform3f transform = OpenTransform3f.IDENTITY;
 
@@ -103,7 +103,7 @@ public class ChunkGeometrySerializerV2 extends ChunkGeometrySerializer {
         }
 
         @Override
-        public TexturePos getTexture(OpenDirection dir) {
+        public SkinTexturePos getTexture(OpenDirection dir) {
             if (slice.once(2)) {
                 parseTextures();
             }
@@ -124,7 +124,7 @@ public class ChunkGeometrySerializerV2 extends ChunkGeometrySerializer {
             endUVs.clear();
             optionsValues.clear();
             texturePoss.clear();
-            TextureBox textureBox = null;
+            SkinTextureBox textureBox = null;
             int usedBytes = palette.getTextureIndexBytes();
             for (int i = 0; i < faceCount; ++i) {
                 int index = calcStride(usedBytes, i);
@@ -152,7 +152,7 @@ public class ChunkGeometrySerializerV2 extends ChunkGeometrySerializer {
                     float width = rect.getWidth();
                     float height = rect.getHeight();
                     float depth = rect.getDepth();
-                    textureBox = new TextureBox(width, height, depth, false, ref.getPos(), ref.getProvider());
+                    textureBox = new SkinTextureBox(width, height, depth, false, ref.getPos(), ref.getProvider());
                 }
             }
             for (var dir : OpenDirection.values()) {
@@ -168,7 +168,7 @@ public class ChunkGeometrySerializerV2 extends ChunkGeometrySerializer {
                     float v = ref.getV();
                     float width = end.getX() - start.getX();
                     float height = end.getY() - start.getY();
-                    texturePoss.put(dir, new TexturePos(u, v, width, height, opt, ref.getProvider()));
+                    texturePoss.put(dir, new SkinTexturePos(u, v, width, height, opt, ref.getProvider()));
                 } else if (textureBox != null) {
                     texturePoss.put(dir, textureBox.getTexture(dir));
                 }
@@ -183,7 +183,7 @@ public class ChunkGeometrySerializerV2 extends ChunkGeometrySerializer {
 
         private final SortedMap<Vector2f> startValues = new SortedMap<>();
         private final SortedMap<Vector2f> endValues = new SortedMap<>();
-        private final SortedMap<TextureOptions> optionsValues = new SortedMap<>();
+        private final SortedMap<SkinTextureOptions> optionsValues = new SortedMap<>();
 
         @Override
         public int begin(SkinCube geometry) {
@@ -194,7 +194,7 @@ public class ChunkGeometrySerializerV2 extends ChunkGeometrySerializer {
                     continue;
                 }
                 var provider = value.getProvider();
-                if (value instanceof TextureBox.Entry entry) {
+                if (value instanceof SkinTextureBox.Entry entry) {
                     startValues.put(0x80, entry.getParent(), provider);
                     // box need options?
                     continue;
@@ -206,8 +206,8 @@ public class ChunkGeometrySerializerV2 extends ChunkGeometrySerializer {
                 float t = value.getHeight();
                 startValues.put(face, new Vector2f(u, v), provider);
                 endValues.put(face, new Vector2f(u + s, v + t), provider);
-                if (value.getOptions() instanceof TextureOptions textureOptions) {
-                    optionsValues.put(face, textureOptions, provider);
+                if (value.getOptions() != null) {
+                    optionsValues.put(face, value.getOptions(), provider);
                 }
             }
             transform = geometry.getTransform();
@@ -243,15 +243,15 @@ public class ChunkGeometrySerializerV2 extends ChunkGeometrySerializer {
 
     protected static class SortedMap<T> {
 
-        private final LinkedHashMap<Pair<T, ITextureProvider>, Integer> impl = new LinkedHashMap<>();
+        private final LinkedHashMap<Pair<T, SkinTextureData>, Integer> impl = new LinkedHashMap<>();
 
-        public void forEach(IOConsumer2<Pair<T, ITextureProvider>, Integer> consumer) throws IOException {
+        public void forEach(IOConsumer2<Pair<T, SkinTextureData>, Integer> consumer) throws IOException {
             for (var entry : impl.entrySet()) {
                 consumer.accept(entry.getKey(), entry.getValue());
             }
         }
 
-        public void put(int face, T pos, ITextureProvider provider) {
+        public void put(int face, T pos, SkinTextureData provider) {
             var index = Pair.of(pos, provider);
             int newFace = impl.getOrDefault(index, 0);
             newFace |= face;

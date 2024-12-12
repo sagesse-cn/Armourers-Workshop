@@ -6,9 +6,9 @@ import moe.plushie.armourers_workshop.core.math.OpenTransform3f;
 import moe.plushie.armourers_workshop.core.math.Rectangle2f;
 import moe.plushie.armourers_workshop.core.math.Vector2f;
 import moe.plushie.armourers_workshop.core.math.Vector3f;
-import moe.plushie.armourers_workshop.core.skin.texture.TextureBox;
-import moe.plushie.armourers_workshop.core.skin.texture.TextureData;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IODataObject;
+import moe.plushie.armourers_workshop.core.skin.texture.SkinTextureBox;
+import moe.plushie.armourers_workshop.core.skin.texture.SkinTextureData;
 import moe.plushie.armourers_workshop.core.utils.OpenDirection;
 import moe.plushie.armourers_workshop.core.utils.OpenResourceLocation;
 
@@ -88,8 +88,8 @@ public class ArmatureSerializers {
                     u = -u;
                     mirror = true;
                 }
-                var textureData = new TextureData("", 255, 255);
-                var textureBox = new TextureBox(size.getX(), size.getY(), size.getZ(), mirror, new Vector2f(u, v), textureData);
+                var textureData = new SkinTextureData("", 255, 255);
+                var textureBox = new SkinTextureBox(size.getX(), size.getY(), size.getZ(), mirror, new Vector2f(u, v), textureData);
                 var uvs = new EnumMap<OpenDirection, Rectangle2f>(OpenDirection.class);
                 for (var dir : OpenDirection.values()) {
                     var key = textureBox.getTexture(dir);
@@ -100,8 +100,8 @@ public class ArmatureSerializers {
                 return uvs;
             }
             case DICTIONARY: {
-                var textureData = new TextureData("", 255, 255);
-                var textureBox = new TextureBox(size.getX(), size.getY(), size.getZ(), false, null, textureData);
+                var textureData = new SkinTextureData("", 255, 255);
+                var textureBox = new SkinTextureBox(size.getX(), size.getY(), size.getZ(), false, null, textureData);
                 for (var dir : OpenDirection.values()) {
                     var ob = object.get(dir.getName());
                     if (ob.size() >= 4) {

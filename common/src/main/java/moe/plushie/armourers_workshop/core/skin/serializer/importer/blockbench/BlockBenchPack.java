@@ -107,7 +107,7 @@ public class BlockBenchPack {
         return objects.get(uuid);
     }
 
-    public static class Builder {
+    protected static class Builder {
 
         private String name;
         private String description;

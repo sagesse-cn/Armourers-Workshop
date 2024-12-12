@@ -61,7 +61,7 @@ public class BlockBenchMesh extends BlockBenchElement {
         return vertices;
     }
 
-    public static class Builder extends BlockBenchElement.Builder {
+    protected static class Builder extends BlockBenchElement.Builder {
 
         protected boolean boxUV = false;
         protected boolean mirrorUV = false;

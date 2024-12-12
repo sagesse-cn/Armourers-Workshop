@@ -15,7 +15,7 @@ import moe.plushie.armourers_workshop.builder.client.gui.widget.PaletteEditingWi
 import moe.plushie.armourers_workshop.builder.menu.ColorMixerMenu;
 import moe.plushie.armourers_workshop.builder.network.UpdateColorMixerPacket;
 import moe.plushie.armourers_workshop.core.client.gui.widget.HSBSliderBox;
-import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintTypes;
+import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintTypes;
 import moe.plushie.armourers_workshop.init.ModTextures;
 import moe.plushie.armourers_workshop.init.platform.NetworkManager;
 import moe.plushie.armourers_workshop.utils.TranslateUtils;

@@ -12,6 +12,10 @@ public interface ChunkOutputStream extends IOutputStream {
 
     ChunkContext getContext();
 
+    default int getFileVersion() {
+        return getContext().getFileVersion();
+    }
+
     default ChunkFileData getFileProvider() {
         return getContext().getFileProvider();
     }

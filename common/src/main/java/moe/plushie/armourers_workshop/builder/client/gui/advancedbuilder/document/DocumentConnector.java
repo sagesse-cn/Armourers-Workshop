@@ -5,11 +5,11 @@ import moe.plushie.armourers_workshop.api.skin.property.ISkinProperty;
 import moe.plushie.armourers_workshop.builder.data.properties.DataProperty;
 import moe.plushie.armourers_workshop.builder.data.properties.VectorProperty;
 import moe.plushie.armourers_workshop.core.skin.SkinDescriptor;
+import moe.plushie.armourers_workshop.core.skin.property.SkinProperties;
+import moe.plushie.armourers_workshop.core.skin.property.SkinProperty;
 import moe.plushie.armourers_workshop.core.skin.serializer.document.SkinDocument;
 import moe.plushie.armourers_workshop.core.skin.serializer.document.SkinDocumentNode;
 import moe.plushie.armourers_workshop.core.skin.serializer.document.SkinDocumentSettings;
-import moe.plushie.armourers_workshop.core.skin.property.SkinProperties;
-import moe.plushie.armourers_workshop.core.skin.property.SkinProperty;
 
 import java.util.ArrayList;
 import java.util.function.BiConsumer;

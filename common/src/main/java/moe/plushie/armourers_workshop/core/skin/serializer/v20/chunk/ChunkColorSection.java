@@ -1,12 +1,11 @@
 package moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk;
 
-import moe.plushie.armourers_workshop.api.skin.texture.ITextureProvider;
 import moe.plushie.armourers_workshop.core.math.OpenMath;
 import moe.plushie.armourers_workshop.core.math.Vector2f;
-import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
-import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintType;
-import moe.plushie.armourers_workshop.core.skin.texture.TextureData;
-import moe.plushie.armourers_workshop.core.skin.texture.TextureOptions;
+import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintColor;
+import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintType;
+import moe.plushie.armourers_workshop.core.skin.texture.SkinTextureData;
+import moe.plushie.armourers_workshop.core.skin.texture.SkinTextureOptions;
 import moe.plushie.armourers_workshop.core.utils.Collections;
 
 import java.io.IOException;
@@ -105,15 +104,13 @@ public abstract class ChunkColorSection {
                 }
                 // restore the parent -> child.
                 for (var parent : textureLists) {
-                    var variants = new ArrayList<ITextureProvider>(parent.provider.getVariants());
+                    var variants = new ArrayList<>(parent.provider.getVariants());
                     for (var child : textureLists) {
                         if (parent.id == child.parentId) {
                             variants.add(child.provider);
                         }
                     }
-                    if (parent.provider instanceof TextureData textureData) {
-                        textureData.setVariants(variants);
-                    }
+                    parent.provider.setVariants(variants);
                 }
             }
         }
@@ -158,7 +155,7 @@ public abstract class ChunkColorSection {
         private final ArrayList<Integer> colorLists = new ArrayList<>();
 
         private final LinkedHashMap<Integer, ColorRef> indexes = new LinkedHashMap<>();
-        private final LinkedHashMap<ITextureProvider, ChunkTextureData> textureLists = new LinkedHashMap<>();
+        private final LinkedHashMap<SkinTextureData, ChunkTextureData> textureLists = new LinkedHashMap<>();
 
         public Mutable(int colorBytes, SkinPaintType paintType) {
             super(0, colorBytes, paintType);
@@ -222,14 +219,14 @@ public abstract class ChunkColorSection {
             });
         }
 
-        public ChunkTextureData.TextureRef putTexture(Vector2f uv, ITextureProvider provider) {
+        public ChunkTextureData.TextureRef putTexture(Vector2f uv, SkinTextureData provider) {
             // we're also adding all variant textures.
             var textureList = getOrCreateTextureList(provider);
-            Collections.eachTree(provider.getVariants(), ITextureProvider::getVariants, this::getOrCreateTextureList);
+            Collections.eachTree(provider.getVariants(), SkinTextureData::getVariants, this::getOrCreateTextureList);
             return textureList.add(uv, this);
         }
 
-        public ChunkTextureData.OptionsRef putTextureOptions(TextureOptions options) {
+        public ChunkTextureData.OptionsRef putTextureOptions(SkinTextureOptions options) {
             return new ChunkTextureData.OptionsRef(this, options);
         }
 
@@ -243,11 +240,11 @@ public abstract class ChunkColorSection {
             return null;
         }
 
-        protected ChunkTextureData getOrCreateTextureList(ITextureProvider provider) {
+        protected ChunkTextureData getOrCreateTextureList(SkinTextureData provider) {
             // ..
             return textureLists.computeIfAbsent(provider, it -> {
                 var list = new ChunkTextureData(it);
-                list.id = textureLists.size() + 1;
+                list.setId(textureLists.size() + 1);
                 return list;
             });
         }

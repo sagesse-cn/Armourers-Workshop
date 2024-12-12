@@ -12,6 +12,10 @@ public interface ChunkInputStream extends IInputStream {
 
     ChunkContext getContext();
 
+    default int getFileVersion() {
+        return getContext().getFileVersion();
+    }
+
     default ChunkFileData getFileProvider() {
         return getContext().getFileProvider();
     }

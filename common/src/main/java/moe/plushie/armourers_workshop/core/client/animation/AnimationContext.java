@@ -1,7 +1,7 @@
 package moe.plushie.armourers_workshop.core.client.animation;
 
 import moe.plushie.armourers_workshop.core.math.OpenMath;
-import moe.plushie.armourers_workshop.core.skin.animation.engine.bind.ExecutionContextImpl;
+import moe.plushie.armourers_workshop.core.skin.molang.thirdparty.bind.ExecutionContextImpl;
 import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.core.utils.Objects;
 import org.jetbrains.annotations.Nullable;

@@ -4,8 +4,8 @@ import moe.plushie.armourers_workshop.api.client.IVertexConsumer;
 import moe.plushie.armourers_workshop.api.core.math.IPoseStack;
 import moe.plushie.armourers_workshop.api.core.math.ITransform3f;
 import moe.plushie.armourers_workshop.api.skin.geometry.ISkinGeometryType;
-import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintType;
 import moe.plushie.armourers_workshop.api.skin.part.ISkinPartType;
+import moe.plushie.armourers_workshop.api.skin.texture.ISkinPaintType;
 import moe.plushie.armourers_workshop.core.client.other.SkinRenderType;
 import moe.plushie.armourers_workshop.core.client.texture.PlayerTextureLoader;
 import moe.plushie.armourers_workshop.core.client.texture.SmartTextureManager;
@@ -16,10 +16,10 @@ import moe.plushie.armourers_workshop.core.skin.geometry.SkinGeometryFace;
 import moe.plushie.armourers_workshop.core.skin.geometry.SkinGeometryTypes;
 import moe.plushie.armourers_workshop.core.skin.geometry.SkinGeometryVertex;
 import moe.plushie.armourers_workshop.core.skin.geometry.cube.SkinCubeVertex;
-import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
-import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintScheme;
-import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintTypes;
-import moe.plushie.armourers_workshop.core.skin.texture.TexturePos;
+import moe.plushie.armourers_workshop.core.skin.texture.SkinTexturePos;
+import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintColor;
+import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintScheme;
+import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintTypes;
 import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.core.utils.OpenResourceLocation;
 import net.fabricmc.api.EnvType;
@@ -44,7 +44,7 @@ public class BakedGeometryFace {
     private final List<? extends SkinGeometryVertex> vertices;
 
     private final SkinGeometryVertex defaultVertex;
-    private final TexturePos defaultTexturePos;
+    private final SkinTexturePos defaultTexturePos;
 
     public BakedGeometryFace(SkinGeometryFace geometryFace) {
         this.priority = geometryFace.getPriority();

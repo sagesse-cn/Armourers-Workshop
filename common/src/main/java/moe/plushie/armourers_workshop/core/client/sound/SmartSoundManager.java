@@ -1,8 +1,8 @@
 package moe.plushie.armourers_workshop.core.client.sound;
 
-import moe.plushie.armourers_workshop.api.skin.sound.ISoundProvider;
 import moe.plushie.armourers_workshop.compatibility.client.AbstractSimpleSound;
 import moe.plushie.armourers_workshop.compatibility.client.AbstractSoundManagerImpl;
+import moe.plushie.armourers_workshop.core.skin.sound.SkinSoundData;
 import moe.plushie.armourers_workshop.init.ModConfig;
 import moe.plushie.armourers_workshop.init.ModLog;
 import net.fabricmc.api.EnvType;
@@ -46,13 +46,11 @@ public class SmartSoundManager {
         }
     }
 
-    public synchronized SoundEvent register(ISoundProvider provider) {
+    public synchronized SoundEvent register(SkinSoundData provider) {
         var sound = sounds.get(provider);
         if (sound == null) {
             sound = new SmartSound(provider);
             sounds.put(provider, sound);
-
-            sound.retain();
         }
         return sound.getSoundEvent();
     }

@@ -1,6 +1,6 @@
 package moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk;
 
-import moe.plushie.armourers_workshop.core.skin.sound.SoundData;
+import moe.plushie.armourers_workshop.core.skin.sound.SkinSoundData;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -8,8 +8,8 @@ import java.util.List;
 
 public class ChunkSoundData {
 
-    public static List<SoundData> readFromStream(ChunkInputStream stream) throws IOException {
-        var results = new ArrayList<SoundData>();
+    public static List<SkinSoundData> readFromStream(ChunkInputStream stream) throws IOException {
+        var results = new ArrayList<SkinSoundData>();
         var count = stream.readVarInt();
         for (int i = 0; i < count; i++) {
 //            var section = readSectionFromStream(stream);
@@ -18,7 +18,7 @@ public class ChunkSoundData {
         return results;
     }
 
-    public static void writeToStream(List<SoundData> sounds, ChunkOutputStream stream) throws IOException {
+    public static void writeToStream(List<SkinSoundData> sounds, ChunkOutputStream stream) throws IOException {
         stream.writeVarInt(sounds.size());
         for (var sound : sounds) {
 //            var section = new ChunkAnimationData.Section(animation);

@@ -2,8 +2,8 @@ package moe.plushie.armourers_workshop.core.data.color;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
-import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintType;
+import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintColor;
+import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintType;
 
 public class TexturedPaintColor extends SkinPaintColor {
 

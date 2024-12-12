@@ -2,8 +2,8 @@ package moe.plushie.armourers_workshop.core.client.render;
 
 import moe.plushie.armourers_workshop.api.client.IVertexConsumer;
 import moe.plushie.armourers_workshop.api.core.math.IPoseStack;
-import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintColor;
-import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintTypes;
+import moe.plushie.armourers_workshop.api.skin.texture.ISkinPaintColor;
+import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintTypes;
 import net.minecraft.core.Direction;
 
 public class ExtendedFaceRenderer {

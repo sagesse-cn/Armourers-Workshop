@@ -1,7 +1,7 @@
 package moe.plushie.armourers_workshop.api.skin.geometry;
 
 import moe.plushie.armourers_workshop.api.core.math.ITransform3f;
-import moe.plushie.armourers_workshop.api.skin.texture.ITexturePos;
+import moe.plushie.armourers_workshop.api.skin.texture.ISkinTexturePos;
 
 public interface ISkinGeometryFace {
 
@@ -23,7 +23,7 @@ public interface ISkinGeometryFace {
     /**
      * Get the face used texture key.
      */
-    ITexturePos getTexturePos();
+    ISkinTexturePos getTexturePos();
 
     /**
      * Gets the all vertices of the face.

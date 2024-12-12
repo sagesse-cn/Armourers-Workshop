@@ -1,18 +1,17 @@
 package moe.plushie.armourers_workshop.core.skin.serializer.v20.geometry.impl;
 
 import moe.plushie.armourers_workshop.api.skin.geometry.ISkinGeometryType;
-import moe.plushie.armourers_workshop.api.skin.texture.ITexturePos;
-import moe.plushie.armourers_workshop.api.skin.texture.ITextureProvider;
 import moe.plushie.armourers_workshop.core.math.OpenTransform3f;
 import moe.plushie.armourers_workshop.core.math.Vector2f;
 import moe.plushie.armourers_workshop.core.skin.geometry.SkinGeometryVertex;
 import moe.plushie.armourers_workshop.core.skin.geometry.mesh.SkinMesh;
 import moe.plushie.armourers_workshop.core.skin.geometry.mesh.SkinMeshFace;
-import moe.plushie.armourers_workshop.core.skin.texture.TexturePos;
-import moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk.ChunkGeometrySlice;
 import moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk.ChunkDataOutputStream;
+import moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk.ChunkGeometrySlice;
 import moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk.ChunkPaletteData;
 import moe.plushie.armourers_workshop.core.skin.serializer.v20.geometry.ChunkGeometrySerializer;
+import moe.plushie.armourers_workshop.core.skin.texture.SkinTextureData;
+import moe.plushie.armourers_workshop.core.skin.texture.SkinTexturePos;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -44,7 +43,7 @@ public class ChunkGeometrySerializerV3 extends ChunkGeometrySerializer {
         private final ArrayList<SkinMeshFace> faces = new ArrayList<>();
         private final ArrayList<SkinGeometryVertex> vertices = new ArrayList<>();
 
-        private ITextureProvider textureProvider;
+        private SkinTextureData textureProvider;
 
         public Decoder(ISkinGeometryType type, ChunkGeometrySlice slice) {
             this.palette = slice.getPalette();
@@ -69,11 +68,11 @@ public class ChunkGeometrySerializerV3 extends ChunkGeometrySerializer {
         }
 
         @Override
-        public TexturePos getTexturePos() {
+        public SkinTexturePos getTexturePos() {
             if (slice.once(1)) {
                 getVertices();
                 if (textureProvider != null) {
-                    texturePos = new TexturePos(0, 0, 0, 0, textureProvider);
+                    texturePos = new SkinTexturePos(0, 0, 0, 0, textureProvider);
                 }
             }
             return texturePos;
@@ -129,7 +128,7 @@ public class ChunkGeometrySerializerV3 extends ChunkGeometrySerializer {
             }
         }
 
-        protected SkinMeshFace parseFace(int faceId, int offset, int vertexCount, OpenTransform3f transform, TexturePos texturePos, List<SkinGeometryVertex> vertices) {
+        protected SkinMeshFace parseFace(int faceId, int offset, int vertexCount, OpenTransform3f transform, SkinTexturePos texturePos, List<SkinGeometryVertex> vertices) {
             var faceVertices = new ArrayList<SkinGeometryVertex>(vertexCount);
             for (int i = 0; i < vertexCount; i++) {
                 faceVertices.add(vertices.get(offset + i));
@@ -167,7 +166,7 @@ public class ChunkGeometrySerializerV3 extends ChunkGeometrySerializer {
         private static final int VERTEX_STRIDE = 32; // vertex(12B) + normal(12B) + uv(VB)
 
         private OpenTransform3f transform = OpenTransform3f.IDENTITY;
-        private ITexturePos texturePos;
+        private SkinTexturePos texturePos;
 
         private final List<Integer> indices = new ArrayList<>();
         private final List<SkinGeometryVertex> vertices = new ArrayList<>();

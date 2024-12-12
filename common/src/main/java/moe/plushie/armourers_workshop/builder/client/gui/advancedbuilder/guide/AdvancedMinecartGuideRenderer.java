@@ -2,7 +2,7 @@ package moe.plushie.armourers_workshop.builder.client.gui.advancedbuilder.guide;
 
 import moe.plushie.armourers_workshop.core.armature.Armatures;
 import moe.plushie.armourers_workshop.core.client.bake.BakedArmature;
-import moe.plushie.armourers_workshop.core.skin.texture.TextureData;
+import moe.plushie.armourers_workshop.core.skin.texture.SkinTextureData;
 import moe.plushie.armourers_workshop.init.ModTextures;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -19,7 +19,7 @@ public class AdvancedMinecartGuideRenderer extends AdvancedEntityGuideRenderer {
     }
 
     @Override
-    public TextureData getTexture() {
-        return new TextureData(ModTextures.MINECART_DEFAULT.toString(), 64, 32);
+    public SkinTextureData getTexture() {
+        return new SkinTextureData(ModTextures.MINECART_DEFAULT.toString(), 64, 32);
     }
 }

@@ -35,6 +35,13 @@ public class ChunkFile {
         return new ChunkFile(1, name, properties, bytes);
     }
 
+    public static ChunkFile particle(@Nullable String name, ByteBuf bytes) {
+        return particle(name, SkinProperties.EMPTY, bytes);
+    }
+
+    public static ChunkFile particle(@Nullable String name, SkinProperties properties, ByteBuf bytes) {
+        return new ChunkFile(2, name, properties, bytes);
+    }
 
     @Nullable
     public String getName() {

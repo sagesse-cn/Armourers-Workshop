@@ -11,9 +11,9 @@ import moe.plushie.armourers_workshop.core.skin.animation.SkinAnimationFunction;
 import moe.plushie.armourers_workshop.core.skin.animation.SkinAnimationKeyframe;
 import moe.plushie.armourers_workshop.core.skin.animation.SkinAnimationLoop;
 import moe.plushie.armourers_workshop.core.skin.animation.SkinAnimationPoint;
-import moe.plushie.armourers_workshop.core.skin.animation.molang.ast.Constant;
-import moe.plushie.armourers_workshop.core.skin.animation.molang.core.ExecutionContext;
-import moe.plushie.armourers_workshop.core.skin.animation.molang.core.Expression;
+import moe.plushie.armourers_workshop.core.skin.molang.core.ExecutionContext;
+import moe.plushie.armourers_workshop.core.skin.molang.core.Expression;
+import moe.plushie.armourers_workshop.core.skin.molang.core.ast.Constant;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPartTransform;
 import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.core.utils.Objects;
@@ -58,7 +58,8 @@ public class AnimationController {
             if (partTransform != null) {
                 this.animators.add(new Animator.Bone(partName, AnimationController.toTime(duration), linkedValues, new LinkedOutput(resolveAnimatedTransform(partTransform), mode)));
             }
-            if (partName.equals("effects")) {
+            // TODO: remove "effects" in the future (23-rename-effect-part).
+            if (partName.equals("armourers:effects") || partName.equals("effects")) {
                 this.animators.add(new Animator.Effect(partName, AnimationController.toTime(duration), linkedValues));
             }
         });

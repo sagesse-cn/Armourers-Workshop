@@ -15,7 +15,7 @@ public class BlockBenchNull extends BlockBenchElement {
         return position;
     }
 
-    public static class Builder extends BlockBenchElement.Builder {
+    protected static class Builder extends BlockBenchElement.Builder {
 
         protected Vector3f position = Vector3f.ZERO;
 

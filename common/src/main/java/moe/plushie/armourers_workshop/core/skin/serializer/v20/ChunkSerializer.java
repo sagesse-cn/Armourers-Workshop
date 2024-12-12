@@ -1,9 +1,9 @@
 package moe.plushie.armourers_workshop.core.skin.serializer.v20;
 
 import moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk.ChunkContext;
-import moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk.ChunkFlags;
 import moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk.ChunkDataInputStream;
 import moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk.ChunkDataOutputStream;
+import moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk.ChunkFlags;
 import moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk.ChunkType;
 import moe.plushie.armourers_workshop.core.utils.Objects;
 

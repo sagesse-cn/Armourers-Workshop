@@ -8,7 +8,7 @@ import moe.plushie.armourers_workshop.compatibility.client.AbstractRenderSystem;
 import moe.plushie.armourers_workshop.core.math.OpenMatrix3f;
 import moe.plushie.armourers_workshop.core.math.OpenMatrix4f;
 import moe.plushie.armourers_workshop.core.math.Vector4f;
-import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
+import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintColor;
 import moe.plushie.armourers_workshop.core.utils.MatrixUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;

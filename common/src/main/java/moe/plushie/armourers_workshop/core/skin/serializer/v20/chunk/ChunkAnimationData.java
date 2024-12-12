@@ -5,7 +5,8 @@ import moe.plushie.armourers_workshop.core.skin.animation.SkinAnimationFunction;
 import moe.plushie.armourers_workshop.core.skin.animation.SkinAnimationKeyframe;
 import moe.plushie.armourers_workshop.core.skin.animation.SkinAnimationLoop;
 import moe.plushie.armourers_workshop.core.skin.animation.SkinAnimationPoint;
-import moe.plushie.armourers_workshop.core.skin.sound.SoundData;
+import moe.plushie.armourers_workshop.core.skin.sound.SkinSoundData;
+import moe.plushie.armourers_workshop.core.skin.sound.SkinSoundProperties;
 import moe.plushie.armourers_workshop.core.utils.Objects;
 
 import java.io.IOException;
@@ -27,8 +28,8 @@ public class ChunkAnimationData {
     }
 
     public void readFromStream(ChunkInputStream stream) throws IOException {
-        // TODO: remove in the future.
-        if (stream.getContext().getFileVersion() < 22) {
+        // TODO: remove in the future (22-refactor-file).
+        if (stream.getFileVersion() < 22) {
             animations.addAll(LegacyHelperV20.readFromStream(stream));
             return;
         }
@@ -206,17 +207,28 @@ public class ChunkAnimationData {
 
             @Override
             public SkinAnimationPoint.Sound readFromStream(ChunkInputStream stream) throws IOException {
+                // TODO: remove in the future (23-builtin-sound).
+                if (stream.getFileVersion() < 23) {
+                    var effect = stream.readString();
+                    var file = stream.readFile();
+                    var sound = new SkinSoundData(file.getName(), file.getBytes(), SkinSoundProperties.EMPTY);
+                    return new SkinAnimationPoint.Sound(effect, sound);
+                }
                 var effect = stream.readString();
+                var properties = new SkinSoundProperties();
+                properties.readFromStream(stream);
                 var file = stream.readFile();
-                var soundProvider = new SoundData(file.getName(), file.getBytes());
-                return new SkinAnimationPoint.Sound(effect, soundProvider);
+                var sound = new SkinSoundData(file.getName(), file.getBytes(), properties);
+                return new SkinAnimationPoint.Sound(effect, sound);
             }
 
             @Override
             public void writeToStream(SkinAnimationPoint.Sound value, ChunkOutputStream stream) throws IOException {
-                var soundProvider = value.getProvider();
+                var sound = value.getProvider();
+                var properties = sound.getProperties();
                 stream.writeString(value.getEffect());
-                stream.writeFile(ChunkFile.audio(soundProvider.getName(), soundProvider.getBuffer()));
+                properties.writeToStream(stream);
+                stream.writeFile(ChunkFile.audio(sound.getName(), sound.getBuffer()));
             }
         };
 
@@ -224,12 +236,22 @@ public class ChunkAnimationData {
 
             @Override
             public SkinAnimationPoint.Particle readFromStream(ChunkInputStream stream) throws IOException {
-                throw new IOException("not implemented yet");
+                var effect = stream.readString();
+                var locator = stream.readOptionalString();
+                var script = stream.readOptionalString();
+                var particleData = new ChunkParticleData();
+                particleData.readFromStream(stream);
+                return new SkinAnimationPoint.Particle(effect, locator.orElse(null), script.orElse(null), particleData.getParticle());
             }
 
             @Override
             public void writeToStream(SkinAnimationPoint.Particle value, ChunkOutputStream stream) throws IOException {
-                throw new IOException("not implemented yet");
+                var particle = value.getProvider();
+                stream.writeString(value.getEffect());
+                stream.writeOptionalString(value.getLocator());
+                stream.writeOptionalString(value.getScript());
+                var particleData = new ChunkParticleData(particle);
+                particleData.writeToStream(stream);
             }
         };
 

@@ -5,9 +5,9 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
-import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintType;
-import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
-import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintTypes;
+import moe.plushie.armourers_workshop.api.skin.texture.ISkinPaintType;
+import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintColor;
+import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintTypes;
 import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
 

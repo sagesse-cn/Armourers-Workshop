@@ -2,7 +2,6 @@ package moe.plushie.armourers_workshop.core.skin.serializer.importer.blockbench;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import moe.plushie.armourers_workshop.api.skin.texture.ITextureProvider;
 import moe.plushie.armourers_workshop.core.math.OpenMath;
 import moe.plushie.armourers_workshop.core.math.OpenPoseStack;
 import moe.plushie.armourers_workshop.core.math.OpenTransform3f;
@@ -18,23 +17,28 @@ import moe.plushie.armourers_workshop.core.skin.animation.SkinAnimationFunction;
 import moe.plushie.armourers_workshop.core.skin.animation.SkinAnimationKeyframe;
 import moe.plushie.armourers_workshop.core.skin.animation.SkinAnimationLoop;
 import moe.plushie.armourers_workshop.core.skin.animation.SkinAnimationPoint;
-import moe.plushie.armourers_workshop.core.skin.animation.molang.MolangVirtualMachine;
-import moe.plushie.armourers_workshop.core.skin.animation.molang.runtime.OptimizeContext;
 import moe.plushie.armourers_workshop.core.skin.geometry.SkinGeometryVertex;
 import moe.plushie.armourers_workshop.core.skin.geometry.collection.SkinGeometrySetV2;
 import moe.plushie.armourers_workshop.core.skin.geometry.mesh.SkinMeshFace;
+import moe.plushie.armourers_workshop.core.skin.molang.MolangVirtualMachine;
+import moe.plushie.armourers_workshop.core.skin.molang.runtime.OptimizeContext;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPart;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPartTypes;
+import moe.plushie.armourers_workshop.core.skin.particle.SkinParticleData;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperties;
 import moe.plushie.armourers_workshop.core.skin.property.SkinSettings;
 import moe.plushie.armourers_workshop.core.skin.serializer.SkinSerializer;
-import moe.plushie.armourers_workshop.core.skin.sound.SoundData;
-import moe.plushie.armourers_workshop.core.skin.texture.TextureAnimation;
-import moe.plushie.armourers_workshop.core.skin.texture.TextureBox;
-import moe.plushie.armourers_workshop.core.skin.texture.TextureData;
-import moe.plushie.armourers_workshop.core.skin.texture.TextureOptions;
-import moe.plushie.armourers_workshop.core.skin.texture.TexturePos;
-import moe.plushie.armourers_workshop.core.skin.texture.TextureProperties;
+import moe.plushie.armourers_workshop.core.skin.serializer.importer.bedrock.BedrockExporter;
+import moe.plushie.armourers_workshop.core.skin.serializer.importer.bedrock.BedrockParticle;
+import moe.plushie.armourers_workshop.core.skin.serializer.importer.bedrock.BedrockParticleReader;
+import moe.plushie.armourers_workshop.core.skin.sound.SkinSoundData;
+import moe.plushie.armourers_workshop.core.skin.sound.SkinSoundProperties;
+import moe.plushie.armourers_workshop.core.skin.texture.SkinTextureAnimation;
+import moe.plushie.armourers_workshop.core.skin.texture.SkinTextureBox;
+import moe.plushie.armourers_workshop.core.skin.texture.SkinTextureData;
+import moe.plushie.armourers_workshop.core.skin.texture.SkinTextureOptions;
+import moe.plushie.armourers_workshop.core.skin.texture.SkinTexturePos;
+import moe.plushie.armourers_workshop.core.skin.texture.SkinTextureProperties;
 import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.core.utils.FileUtils;
 import moe.plushie.armourers_workshop.core.utils.Objects;
@@ -68,15 +72,20 @@ public class BlockBenchExporter {
     protected SkinSettings settings = new SkinSettings();
     protected SkinProperties properties = new SkinProperties();
 
-    protected MolangVirtualMachine virtualMachine = new MolangVirtualMachine();
 
     protected Vector3f offset = Vector3f.ZERO;
     protected Vector3f displayOffset = Vector3f.ZERO;
 
     protected final BlockBenchPack pack;
+    protected final MolangVirtualMachine virtualMachine;
 
     public BlockBenchExporter(BlockBenchPack pack) {
+        this(pack, new MolangVirtualMachine());
+    }
+
+    public BlockBenchExporter(BlockBenchPack pack, MolangVirtualMachine virtualMachine) {
         this.pack = pack;
+        this.virtualMachine = virtualMachine;
     }
 
     public Skin export() throws IOException {
@@ -189,7 +198,7 @@ public class BlockBenchExporter {
     protected SkinGeometrySetV2.Mesh exportMesh(Mesh mesh, TextureSet texture) {
         var faces = new ArrayList<SkinMeshFace>();
         var transform = OpenTransform3f.create(mesh.origin, mesh.rotation, Vector3f.ONE, Vector3f.ZERO, Vector3f.ZERO);
-        var defaultTexturePos = new TexturePos[1];
+        var defaultTexturePos = new SkinTexturePos[1];
         var sequence = new AtomicInteger();
         mesh.faces.stream().sorted(Comparator.comparingInt(it -> it.vertices.size())).forEachOrdered(it -> {
             // ignore all not use texture face.
@@ -280,10 +289,6 @@ public class BlockBenchExporter {
 
     public SkinProperties getProperties() {
         return properties;
-    }
-
-    public void setVirtualMachine(MolangVirtualMachine virtualMachine) {
-        this.virtualMachine = virtualMachine;
     }
 
     public MolangVirtualMachine getVirtualMachine() {
@@ -619,27 +624,31 @@ public class BlockBenchExporter {
                                 if (effect == null && filePath == null) {
                                     continue; // ignore empty sound.
                                 }
-                                // used vanilla sound?
-                                if (effect != null && effect.contains(":")) {
-                                    ModLog.warn("a unknown sound effect: {}", effect);
-                                    continue;
+                                var soundBuilder = new SoundBuilder(virtualMachine);
+                                var sound = soundBuilder.build(effect, filePath);
+                                if (sound == null) {
+                                    continue; // can't resolve the sound.
                                 }
-                                // load from file
-                                var fileBytes = loadExtraFile(filePath);
-                                if (fileBytes == null) {
-                                    ModLog.warn("can't load data of: '{}', file: '{}'", effect, filePath);
-                                    continue;
-                                }
-                                var fileName = FileUtils.getBaseName(filePath);
-                                var soundProvider = new SoundData(null, fileBytes);
-                                // must provide a name.
-                                if (effect == null || effect.isEmpty()) {
-                                    effect = fileName;
-                                }
-                                points.add(new SkinAnimationPoint.Sound(effect, soundProvider));
+                                points.add(sound);
                             }
                         }
-                        case "particle" -> ModLog.warn("a unknown effect channel of '{}'", "particle");
+                        case "particle" -> {
+                            for (var point : keyframe.getPoints()) {
+                                var effect = Objects.safeCast(point.get("effect"), String.class);
+                                var locator = Objects.safeCast(point.get("locator"), String.class);
+                                var script = Objects.safeCast(point.get("script"), String.class);
+                                var filePath = Objects.safeCast(point.get("file"), String.class);
+                                if (effect == null && filePath == null) {
+                                    continue; // ignore empty sound.
+                                }
+                                var particleBuilder = new ParticleBuilder(virtualMachine);
+                                var particle = particleBuilder.build(effect, locator, filePath, script);
+                                if (particle == null) {
+                                    continue; // can't resolve the particle.
+                                }
+                                points.add(particle);
+                            }
+                        }
                         default -> ModLog.warn("a unknown effect channel of '{}'", channel);
                     }
                 }
@@ -713,16 +722,133 @@ public class BlockBenchExporter {
             return null;
         }
 
-        private ByteBuf loadExtraFile(String path) {
-            try {
-                if (path == null || path.isEmpty()) {
+        protected static class SoundBuilder {
+
+            private final MolangVirtualMachine virtualMachine;
+
+            public SoundBuilder(MolangVirtualMachine virtualMachine) {
+                this.virtualMachine = virtualMachine;
+            }
+
+            public SkinAnimationPoint.Sound build(String effect, String filePath) {
+                // mod_id:sound_id|volume|pitch
+                if (effect != null && effect.contains(":")) {
+                    var properties = resolveSoundProperties(effect);
+                    var soundProvider = new SkinSoundData(null, Unpooled.EMPTY_BUFFER, properties);
+                    return new SkinAnimationPoint.Sound(effect, soundProvider);
+                }
+                var soundBytes = resolveSoundData(filePath);
+                if (soundBytes == null) {
+                    ModLog.warn("can't load data of: '{}', file: '{}'", effect, filePath);
                     return null;
                 }
-                var bytes = StreamUtils.readFileToByteArray(new File(path));
-                return Unpooled.wrappedBuffer(bytes);
-            } catch (Exception e) {
-                e.printStackTrace();
-                return null;
+                // file_name|volume|pitch
+                var fileName = FileUtils.getBaseName(filePath);
+                var properties = resolveSoundProperties(effect);
+                var soundProvider = new SkinSoundData(null, soundBytes, properties);
+                // must provide a name.
+                if (effect == null || effect.isEmpty()) {
+                    effect = fileName;
+                }
+                return new SkinAnimationPoint.Sound(effect, soundProvider);
+            }
+
+            private SkinSoundProperties resolveSoundProperties(String name) {
+                // can't read properties from the effect?
+                if (name == null || !name.contains("|")) {
+                    return SkinSoundProperties.EMPTY;
+                }
+                // mod_id:sound_name|volume|pitch
+                var parts = name.split("\\|");
+                var properties = new SkinSoundProperties();
+                try {
+                    if (parts.length > 1) {
+                        properties.setVolume(Float.parseFloat(parts[1]));
+                    }
+                    if (parts.length > 2) {
+                        properties.setPitch(Float.parseFloat(parts[2]));
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return properties;
+            }
+
+            private ByteBuf resolveSoundData(String path) {
+                try {
+                    if (path == null || path.isEmpty()) {
+                        return null;
+                    }
+                    var bytes = StreamUtils.readFileToByteArray(new File(path));
+                    return Unpooled.wrappedBuffer(bytes);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return null;
+                }
+            }
+        }
+
+        protected static class ParticleBuilder {
+
+            private final MolangVirtualMachine virtualMachine;
+
+            public ParticleBuilder(MolangVirtualMachine virtualMachine) {
+                this.virtualMachine = virtualMachine;
+            }
+
+            public SkinAnimationPoint.Particle build(String effect, String locator, String filePath, String script) {
+                // mod_id:sound_id|volume|pitch
+                if (effect != null && effect.contains(":")) {
+                    ModLog.warn("can't support builtin particle '{}' now", effect);
+                    return null;
+                }
+                var resolvedParticle = resolveParticleFile(filePath);
+                if (resolvedParticle == null) {
+                    ModLog.warn("can't load data of: '{}', file: '{}'", effect, filePath);
+                    return null;
+                }
+                // file_name|volume|pitch
+                var fileName = FileUtils.getBaseName(filePath);
+                var particleProvider = exportParticle(resolvedParticle);
+                // must provide a name.
+                if (effect == null || effect.isEmpty()) {
+                    effect = fileName;
+                }
+                return new SkinAnimationPoint.Particle(effect, locator, resolveScript(script), particleProvider);
+            }
+
+            protected SkinParticleData exportParticle(BedrockParticle particle) {
+                var exporter = new BedrockExporter(null, virtualMachine);
+                return exporter.exportParticle(particle);
+            }
+
+            private BedrockParticle resolveParticleFile(String path) {
+                try {
+                    if (path == null || path.isEmpty()) {
+                        return null;
+                    }
+                    var reader = new BedrockParticleReader(new File(path));
+                    return reader.readPack();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return null;
+                }
+            }
+
+            private String resolveScript(String script) {
+                try {
+                    if (script == null) {
+                        return null;
+                    }
+                    var expr = virtualMachine.compile(script);
+                    if (!expr.isMutable()) {
+                        return null; // no needs.
+                    }
+                    return script;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return null;
+                }
             }
         }
     }
@@ -733,11 +859,11 @@ public class BlockBenchExporter {
 
         private final Size2f resolution;
         private final List<BlockBenchTexture> inputs;
-        private final HashMap<Integer, TextureData> allTexture = new HashMap<>();
-        private final HashMap<String, TextureData> loadedTextures = new HashMap<>();
+        private final HashMap<Integer, SkinTextureData> allTexture = new HashMap<>();
+        private final HashMap<String, SkinTextureData> loadedTextures = new HashMap<>();
 
-        protected TextureData textureData;
-        protected TextureData defaultTextureData;
+        protected SkinTextureData textureData;
+        protected SkinTextureData defaultTextureData;
 
         public TextureSet(Size2f resolution, List<BlockBenchTexture> textureInputs, HashSet<Integer> usedTextureIds) throws IOException {
             this.resolution = resolution;
@@ -764,9 +890,9 @@ public class BlockBenchExporter {
             }
         }
 
-        public TextureData loadTextureData(BlockBenchTexture texture) throws IOException {
+        public SkinTextureData loadTextureData(BlockBenchTexture texture) throws IOException {
             var data = resolveTextureData(texture);
-            var variants = new ArrayList<ITextureProvider>();
+            var variants = new ArrayList<SkinTextureData>();
             var parentName = texture.getName().replaceAll(PATTERN, "$1$3");
             var parentAttributes = getTextureAttributes(texture.getName());
             // single texture model: bedrock_entity/bedrock_entity_old/geckolib_armour/geckolib_entity/geckolib_block/modded_entity/optifine_entity
@@ -792,17 +918,17 @@ public class BlockBenchExporter {
             return data;
         }
 
-        public TextureBox read(Cube cube) {
+        public SkinTextureBox read(Cube cube) {
             var uv = cube.uv;
             var size = cube.size;
             var textureData = getTextureData(uv);
-            var skyBox = new TextureBox(size.getX(), size.getY(), size.getZ(), cube.mirror, uv.getBase(), textureData);
+            var skyBox = new SkinTextureBox(size.getX(), size.getY(), size.getZ(), cube.mirror, uv.getBase(), textureData);
             uv.forEach((dir, rect) -> {
                 skyBox.putTextureRect(dir, rect);
                 skyBox.putTextureProvider(dir, getTextureData(uv, dir));
             });
             uv.forEachRotations((dir, rot) -> {
-                var options = new TextureOptions();
+                var options = new SkinTextureOptions();
                 options.setRotation(rot);
                 skyBox.putTextureOptions(dir, options);
             });
@@ -816,24 +942,24 @@ public class BlockBenchExporter {
             return skyBox;
         }
 
-        public TexturePos read(MeshFace meshFace) {
+        public SkinTexturePos read(MeshFace meshFace) {
             var textureData = allTexture.get(meshFace.textureId);
             if (textureData != null) {
-                return new TexturePos(0, 0, 0, 0, textureData);
+                return new SkinTexturePos(0, 0, 0, 0, textureData);
             }
             return null;
         }
 
 
-        protected TextureData getTextureData(TextureUV uv) {
+        protected SkinTextureData getTextureData(TextureUV uv) {
             return allTexture.get(uv.getDefaultTextureId());
         }
 
-        protected TextureData getTextureData(TextureUV uv, OpenDirection dir) {
+        protected SkinTextureData getTextureData(TextureUV uv, OpenDirection dir) {
             return allTexture.get(uv.getTextureId(dir));
         }
 
-        private TextureData resolveTextureData(BlockBenchTexture texture) throws IOException {
+        private SkinTextureData resolveTextureData(BlockBenchTexture texture) throws IOException {
             var textureData = loadedTextures.get(texture.getUUID());
             if (textureData != null) {
                 return textureData;
@@ -848,7 +974,7 @@ public class BlockBenchExporter {
             var size = resolveTextureSize(texture, imageFrame);
             var animation = resolveTextureAnimation(texture, imageFrame);
             var properties = resolveTextureProperties(texture);
-            textureData = new TextureData(texture.getName(), size.getWidth(), size.getHeight(), animation, properties);
+            textureData = new SkinTextureData(texture.getName(), size.getWidth(), size.getHeight(), animation, properties);
             textureData.load(Unpooled.wrappedBuffer(imageBytes));
             loadedTextures.put(texture.getUUID(), textureData);
             return textureData;
@@ -891,17 +1017,17 @@ public class BlockBenchExporter {
             return new Size2f(width, height);
         }
 
-        private TextureAnimation resolveTextureAnimation(BlockBenchTexture texture, int frameCount) {
+        private SkinTextureAnimation resolveTextureAnimation(BlockBenchTexture texture, int frameCount) {
             if (frameCount > 1) {
                 var time = texture.getFrameTime() * 50; // 1/20s
                 var interpolate = texture.getFrameInterpolate();
                 var mode = texture.getFrameMode();
-                return new TextureAnimation(time, frameCount, mode, interpolate);
+                return new SkinTextureAnimation(time, frameCount, mode, interpolate);
             }
-            return TextureAnimation.EMPTY;
+            return SkinTextureAnimation.EMPTY;
         }
 
-        private TextureProperties resolveTextureProperties(BlockBenchTexture texture) {
+        private SkinTextureProperties resolveTextureProperties(BlockBenchTexture texture) {
             var properties = texture.getProperties();
             for (var attrib : getTextureAttributes(texture.getName())) {
                 switch (attrib) {
@@ -1064,15 +1190,15 @@ public class BlockBenchExporter {
 
     protected static class TextureResolution {
 
-        public static void apply(TextureData data) {
+        public static void apply(SkinTextureData data) {
             var base = by(data);
             var variants = data.getVariants();
             if (variants.isEmpty()) {
                 data.setVariants(Collections.emptyList());
                 return;
             }
-            var secondaryTextures = new LinkedHashMap<Integer, ITextureProvider>();
-            var additionalTextures = new LinkedHashMap<Integer, List<ITextureProvider>>();
+            var secondaryTextures = new LinkedHashMap<Integer, SkinTextureData>();
+            var additionalTextures = new LinkedHashMap<Integer, List<SkinTextureData>>();
             secondaryTextures.put(base & 0xf0, data);
             for (var variant : variants) {
                 var key = by(variant);
@@ -1085,19 +1211,17 @@ public class BlockBenchExporter {
                 }
             }
             secondaryTextures.forEach((key, provider) -> {
-                if (provider instanceof TextureData data1) {
-                    var used = by(data1) & 0x0f;
-                    var values = additionalTextures.getOrDefault(key, new ArrayList<>());
-                    var iterator = values.iterator();
-                    while (iterator.hasNext()) {
-                        var ck = by(iterator.next()) & 0x0f;
-                        if ((used & ck) == ck) {
-                            iterator.remove();
-                        }
-                        used |= ck;
+                var used = by(provider) & 0x0f;
+                var values = additionalTextures.getOrDefault(key, new ArrayList<>());
+                var iterator = values.iterator();
+                while (iterator.hasNext()) {
+                    var ck = by(iterator.next()) & 0x0f;
+                    if ((used & ck) == ck) {
+                        iterator.remove();
                     }
-                    data1.setVariants(values);
+                    used |= ck;
                 }
+                provider.setVariants(values);
             });
             var newVariants = new ArrayList<>(secondaryTextures.values());
             newVariants.remove(data);
@@ -1105,7 +1229,7 @@ public class BlockBenchExporter {
             data.setVariants(newVariants);
         }
 
-        public static int by(ITextureProvider data) {
+        public static int by(SkinTextureData data) {
             int key = 0;
             var properties = data.getProperties();
             if (properties.isEmissive()) {
@@ -1123,10 +1247,10 @@ public class BlockBenchExporter {
             return key;
         }
 
-        public static void applyBoundary(ITextureProvider textureProvider, float u, float v) {
+        public static void applyBoundary(SkinTextureData textureProvider, float u, float v) {
             // the uv is over boundary?
             if (u < 0 || v < 0 || u > textureProvider.getWidth() || v > textureProvider.getHeight()) {
-                var properties = (TextureProperties) textureProvider.getProperties();
+                var properties = (SkinTextureProperties) textureProvider.getProperties();
                 properties.setClampToEdge(true);
             }
         }

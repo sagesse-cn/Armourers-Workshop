@@ -1,11 +1,11 @@
 package moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk;
 
-import moe.plushie.armourers_workshop.api.skin.texture.ITextureProvider;
 import moe.plushie.armourers_workshop.core.math.Vector2f;
-import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
-import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintType;
-import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintTypes;
-import moe.plushie.armourers_workshop.core.skin.texture.TextureOptions;
+import moe.plushie.armourers_workshop.core.skin.texture.SkinTextureData;
+import moe.plushie.armourers_workshop.core.skin.texture.SkinTextureOptions;
+import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintColor;
+import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintType;
+import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintTypes;
 import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.core.utils.OpenSliceAccessor;
 
@@ -74,7 +74,7 @@ public class ChunkPaletteData implements ChunkVariable {
     }
 
 
-    public ChunkTextureData.TextureRef writeTexture(Vector2f uv, ITextureProvider provider) {
+    public ChunkTextureData.TextureRef writeTexture(Vector2f uv, SkinTextureData provider) {
         // texture + black(0x000000) + 0(used bytes)
         return _mutableSectionAt(SkinPaintTypes.TEXTURE, 0).putTexture(uv, provider);
     }
@@ -84,7 +84,7 @@ public class ChunkPaletteData implements ChunkVariable {
         return _sectionAt(SkinPaintTypes.TEXTURE, 0).getTexture(uv);
     }
 
-    public ChunkTextureData.OptionsRef writeTextureOptions(TextureOptions options, ITextureProvider provider) {
+    public ChunkTextureData.OptionsRef writeTextureOptions(SkinTextureOptions options, SkinTextureData provider) {
         // texture + black(0x000000) + 0(used bytes)
         return _mutableSectionAt(SkinPaintTypes.TEXTURE, 0).putTextureOptions(options);
     }

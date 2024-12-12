@@ -12,7 +12,6 @@ import moe.plushie.armourers_workshop.core.client.bake.BakedSkinPart;
 import moe.plushie.armourers_workshop.core.math.ClamppedVector3f;
 import moe.plushie.armourers_workshop.core.math.OpenBoundingBox;
 import moe.plushie.armourers_workshop.core.math.OpenMatrix4f;
-import moe.plushie.armourers_workshop.core.math.OpenNearPlane;
 import moe.plushie.armourers_workshop.core.math.Vector3f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;

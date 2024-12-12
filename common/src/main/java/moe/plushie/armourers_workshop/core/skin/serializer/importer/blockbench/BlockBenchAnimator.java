@@ -22,7 +22,7 @@ public class BlockBenchAnimator extends BlockBenchObject {
         return keyframes;
     }
 
-    public static class Builder extends BlockBenchObject.Builder {
+    protected static class Builder extends BlockBenchObject.Builder {
 
         private String type = "bone";
         private final List<BlockBenchKeyframe> keyframes = new ArrayList<>();
@@ -47,7 +47,7 @@ public class BlockBenchAnimator extends BlockBenchObject {
         public BlockBenchAnimator build() {
             // block bench will i18n the effects name, which means it is a dynamic name.
             if (type.equals("effect")) {
-                name = "effects";
+                name = "armourers:effects";
             }
             return new BlockBenchAnimator(uuid, name, type, keyframes);
         }

@@ -7,10 +7,10 @@ import moe.plushie.armourers_workshop.core.math.Vector2f;
 import moe.plushie.armourers_workshop.core.math.Vector3f;
 import moe.plushie.armourers_workshop.core.skin.geometry.SkinGeometryFace;
 import moe.plushie.armourers_workshop.core.skin.geometry.SkinGeometryVertex;
-import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
-import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintType;
-import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintTypes;
-import moe.plushie.armourers_workshop.core.skin.texture.TexturePos;
+import moe.plushie.armourers_workshop.core.skin.texture.SkinTexturePos;
+import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintColor;
+import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintType;
+import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintTypes;
 import moe.plushie.armourers_workshop.core.utils.OpenDirection;
 
 import java.util.ArrayList;
@@ -25,7 +25,7 @@ public class SkinCubeFace extends SkinGeometryFace {
 
     private final Rectangle3f boundingBox;
 
-    public SkinCubeFace(int id, ISkinGeometryType type, OpenTransform3f transform, TexturePos texturePos, Rectangle3f boundingBox, OpenDirection direction, SkinPaintColor color, int alpha) {
+    public SkinCubeFace(int id, ISkinGeometryType type, OpenTransform3f transform, SkinTexturePos texturePos, Rectangle3f boundingBox, OpenDirection direction, SkinPaintColor color, int alpha) {
         this.id = id;
         this.type = type;
         this.transform = transform;
@@ -75,7 +75,7 @@ public class SkinCubeFace extends SkinGeometryFace {
     }
 
     @Override
-    public TexturePos getTexturePos() {
+    public SkinTexturePos getTexturePos() {
         if (texturePos != null) {
             return texturePos;
         }
@@ -143,7 +143,7 @@ public class SkinCubeFace extends SkinGeometryFace {
         }
     }
 
-    private int getTextureRotation(TexturePos key) {
+    private int getTextureRotation(SkinTexturePos key) {
         var options = key.getOptions();
         if (options != null) {
             return options.getRotation();

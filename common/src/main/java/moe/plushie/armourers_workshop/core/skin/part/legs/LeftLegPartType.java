@@ -23,21 +23,6 @@ public class LeftLegPartType extends SkinPartType implements ISkinPartTypeTextur
     }
 
     @Override
-    public boolean isTextureMirrored() {
-        return true;
-    }
-
-    @Override
-    public Vector2i getTextureBasePos() {
-        return new Vector2i(16, 48);
-    }
-
-    @Override
-    public Vector2i getTextureOverlayPos() {
-        return new Vector2i(0, 48);
-    }
-
-    @Override
     public Vector3i getTextureModelSize() {
         return new Vector3i(4, 12, 4);
     }

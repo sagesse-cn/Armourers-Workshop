@@ -6,7 +6,6 @@ import com.apple.library.coregraphics.CGRect;
 import com.apple.library.coregraphics.CGSize;
 import com.apple.library.uikit.UIEvent;
 import com.apple.library.uikit.UIView;
-import com.apple.library.uikit.UIWindow;
 import moe.plushie.armourers_workshop.compatibility.client.gui.AbstractMenuScreen;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;

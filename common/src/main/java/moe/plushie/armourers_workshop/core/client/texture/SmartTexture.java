@@ -4,12 +4,11 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import moe.plushie.armourers_workshop.api.core.IResourceLocation;
 import moe.plushie.armourers_workshop.api.skin.geometry.ISkinGeometryType;
-import moe.plushie.armourers_workshop.api.skin.texture.ITextureProperties;
-import moe.plushie.armourers_workshop.api.skin.texture.ITextureProvider;
 import moe.plushie.armourers_workshop.core.client.other.SkinRenderType;
 import moe.plushie.armourers_workshop.core.client.other.SmartResourceManager;
 import moe.plushie.armourers_workshop.core.skin.geometry.SkinGeometryTypes;
-import moe.plushie.armourers_workshop.core.skin.texture.TextureAnimation;
+import moe.plushie.armourers_workshop.core.skin.texture.SkinTextureData;
+import moe.plushie.armourers_workshop.core.skin.texture.SkinTextureProperties;
 import moe.plushie.armourers_workshop.core.utils.FileUtils;
 import moe.plushie.armourers_workshop.core.utils.OpenRandomSource;
 import moe.plushie.armourers_workshop.core.utils.ReferenceCounted;
@@ -25,8 +24,8 @@ import java.util.Map;
 public class SmartTexture extends ReferenceCounted {
 
     private final IResourceLocation location;
-    private final ITextureProperties properties;
 
+    private final SkinTextureProperties properties;
     private final TextureAnimationController animationController;
 
     private final Map<IResourceLocation, ByteBuf> textureBuffers;
@@ -34,11 +33,11 @@ public class SmartTexture extends ReferenceCounted {
     private RenderType cubeRenderType;
     private RenderType meshRenderType;
 
-    public SmartTexture(ITextureProvider provider) {
+    public SmartTexture(SkinTextureData provider) {
         this.location = ModConstants.key("textures/dynamic/" + OpenRandomSource.nextInt(SmartTexture.class) + ".png");
         this.properties = provider.getProperties();
         this.textureBuffers = resolveTextureBuffers(location, provider);
-        this.animationController = new TextureAnimationController((TextureAnimation) provider.getAnimation());
+        this.animationController = new TextureAnimationController(provider.getAnimation());
     }
 
     @Nullable
@@ -104,7 +103,7 @@ public class SmartTexture extends ReferenceCounted {
         }
     }
 
-    private Map<IResourceLocation, ByteBuf> resolveTextureBuffers(IResourceLocation location, ITextureProvider provider) {
+    private Map<IResourceLocation, ByteBuf> resolveTextureBuffers(IResourceLocation location, SkinTextureData provider) {
         var path = FileUtils.removeExtension(location.getPath());
         var builder = new TextureBufferBuilder(provider.getProperties());
         builder.addData(location, provider);
@@ -123,18 +122,18 @@ public class SmartTexture extends ReferenceCounted {
 
         private final Map<IResourceLocation, ByteBuf> buffers = new LinkedHashMap<IResourceLocation, ByteBuf>();
 
-        private final ITextureProperties parentProperties;
+        private final SkinTextureProperties parentProperties;
 
-        private TextureBufferBuilder(ITextureProperties parentProperties) {
+        private TextureBufferBuilder(SkinTextureProperties parentProperties) {
             this.parentProperties = parentProperties;
         }
 
-        public void addData(IResourceLocation location, ITextureProvider provider) {
+        public void addData(IResourceLocation location, SkinTextureData provider) {
             buffers.put(location, provider.getBuffer());
             addMeta(location, provider.getProperties());
         }
 
-        private void addMeta(IResourceLocation location, ITextureProperties properties) {
+        private void addMeta(IResourceLocation location, SkinTextureProperties properties) {
             var isBlurFilter = properties.isBlurFilter() || parentProperties.isBlurFilter();
             var isClampToEdge = properties.isClampToEdge() || parentProperties.isClampToEdge();
             if (!isBlurFilter && !isClampToEdge) {

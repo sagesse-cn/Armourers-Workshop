@@ -2,10 +2,10 @@ package moe.plushie.armourers_workshop.core.skin.serializer.v12;
 
 import moe.plushie.armourers_workshop.api.skin.part.ISkinPartType;
 import moe.plushie.armourers_workshop.core.skin.SkinMarker;
-import moe.plushie.armourers_workshop.core.skin.serializer.exception.InvalidCubeTypeException;
 import moe.plushie.armourers_workshop.core.skin.geometry.collection.SkinGeometrySetV1;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPart;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPartTypes;
+import moe.plushie.armourers_workshop.core.skin.serializer.exception.InvalidCubeTypeException;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IInputStream;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IOutputStream;
 import moe.plushie.armourers_workshop.init.ModLog;

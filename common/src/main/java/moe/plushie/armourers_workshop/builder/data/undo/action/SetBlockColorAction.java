@@ -2,8 +2,8 @@ package moe.plushie.armourers_workshop.builder.data.undo.action;
 
 import moe.plushie.armourers_workshop.api.action.IUserAction;
 import moe.plushie.armourers_workshop.api.common.IPaintable;
-import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintColor;
-import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
+import moe.plushie.armourers_workshop.api.skin.texture.ISkinPaintColor;
+import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintColor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;

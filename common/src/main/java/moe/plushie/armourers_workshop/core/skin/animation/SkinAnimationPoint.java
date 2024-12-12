@@ -1,7 +1,9 @@
 package moe.plushie.armourers_workshop.core.skin.animation;
 
-import moe.plushie.armourers_workshop.core.skin.sound.SoundData;
+import moe.plushie.armourers_workshop.core.skin.particle.SkinParticleData;
+import moe.plushie.armourers_workshop.core.skin.sound.SkinSoundData;
 import moe.plushie.armourers_workshop.core.utils.Objects;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class SkinAnimationPoint {
 
@@ -56,9 +58,9 @@ public abstract class SkinAnimationPoint {
     public static class Sound extends SkinAnimationPoint {
 
         private final String effect;
-        private final SoundData provider;
+        private final SkinSoundData provider;
 
-        public Sound(String effect, SoundData provider) {
+        public Sound(String effect, SkinSoundData provider) {
             this.effect = effect;
             this.provider = provider;
         }
@@ -67,7 +69,7 @@ public abstract class SkinAnimationPoint {
             return effect;
         }
 
-        public SoundData getProvider() {
+        public SkinSoundData getProvider() {
             return provider;
         }
 
@@ -79,9 +81,39 @@ public abstract class SkinAnimationPoint {
 
     public static class Particle extends SkinAnimationPoint {
 
+        private final String effect;
+        private final String locator;
+        private final SkinParticleData provider;
+        private final String script;
+
+        public Particle(String effect, String locator, String script, SkinParticleData provider) {
+            this.effect = effect;
+            this.locator = locator;
+            this.provider = provider;
+            this.script = script;
+        }
+
+        public String getEffect() {
+            return effect;
+        }
+
+        @Nullable
+        public String getLocator() {
+            return locator;
+        }
+
+        @Nullable
+        public String getScript() {
+            return script;
+        }
+
+        public SkinParticleData getProvider() {
+            return provider;
+        }
+
         @Override
         public String toString() {
-            return Objects.toString(this);
+            return Objects.toString(this, "effect", effect, "locator", locator, "script", script, "particle", provider);
         }
     }
 }

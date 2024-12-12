@@ -2,9 +2,9 @@ package moe.plushie.armourers_workshop.core.client.animation;
 
 import moe.plushie.armourers_workshop.core.client.bake.BakedSkin;
 import moe.plushie.armourers_workshop.core.client.other.SkinRenderContext;
-import moe.plushie.armourers_workshop.core.skin.animation.molang.MolangVirtualMachine;
-import moe.plushie.armourers_workshop.core.skin.animation.molang.core.Expression;
-import moe.plushie.armourers_workshop.core.skin.animation.molang.runtime.SyntaxException;
+import moe.plushie.armourers_workshop.core.skin.molang.MolangVirtualMachine;
+import moe.plushie.armourers_workshop.core.skin.molang.core.Expression;
+import moe.plushie.armourers_workshop.core.skin.molang.runtime.SyntaxException;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import org.jetbrains.annotations.Nullable;

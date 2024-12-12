@@ -4,7 +4,7 @@ import moe.plushie.armourers_workshop.core.capability.SkinWardrobe;
 import moe.plushie.armourers_workshop.core.capability.SkinWardrobeJS;
 import moe.plushie.armourers_workshop.core.client.other.BlockEntityRenderData;
 import moe.plushie.armourers_workshop.core.client.other.EntityRenderData;
-import moe.plushie.armourers_workshop.core.skin.animation.engine.bind.EntityVariableStorageImpl;
+import moe.plushie.armourers_workshop.core.skin.molang.thirdparty.bind.EntityVariableStorageImpl;
 import moe.plushie.armourers_workshop.core.utils.LazyOptional;
 import moe.plushie.armourers_workshop.init.ModCapabilities;
 import moe.plushie.armourers_workshop.init.environment.EnvironmentExecutor;

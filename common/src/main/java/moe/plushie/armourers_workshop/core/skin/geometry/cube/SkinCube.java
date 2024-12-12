@@ -6,8 +6,8 @@ import moe.plushie.armourers_workshop.core.math.Rectangle3f;
 import moe.plushie.armourers_workshop.core.math.Vector3i;
 import moe.plushie.armourers_workshop.core.skin.geometry.SkinGeometry;
 import moe.plushie.armourers_workshop.core.skin.geometry.SkinGeometryTypes;
-import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
-import moe.plushie.armourers_workshop.core.skin.texture.TexturePos;
+import moe.plushie.armourers_workshop.core.skin.texture.SkinTexturePos;
+import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintColor;
 import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.core.utils.OpenDirection;
 import org.jetbrains.annotations.Nullable;
@@ -41,7 +41,7 @@ public abstract class SkinCube extends SkinGeometry {
         return paintColors.getOrDefault(dir, SkinPaintColor.CLEAR);
     }
 
-    public abstract TexturePos getTexture(OpenDirection dir);
+    public abstract SkinTexturePos getTexture(OpenDirection dir);
 
     @Nullable
     public SkinCubeFace getFace(OpenDirection dir) {

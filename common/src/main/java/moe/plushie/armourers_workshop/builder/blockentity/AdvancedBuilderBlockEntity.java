@@ -5,7 +5,6 @@ import moe.plushie.armourers_workshop.api.common.IBlockEntityHandler;
 import moe.plushie.armourers_workshop.api.core.IDataSerializer;
 import moe.plushie.armourers_workshop.core.blockentity.UpdatableBlockEntity;
 import moe.plushie.armourers_workshop.core.data.UserNotifications;
-import moe.plushie.armourers_workshop.core.utils.OpenItemTransforms;
 import moe.plushie.armourers_workshop.core.math.Rectangle3f;
 import moe.plushie.armourers_workshop.core.math.Vector3f;
 import moe.plushie.armourers_workshop.core.skin.Skin;
@@ -19,6 +18,7 @@ import moe.plushie.armourers_workshop.core.skin.serializer.document.SkinDocument
 import moe.plushie.armourers_workshop.core.skin.serializer.document.SkinDocumentProvider;
 import moe.plushie.armourers_workshop.core.skin.serializer.document.SkinDocumentSynchronizer;
 import moe.plushie.armourers_workshop.core.skin.serializer.exception.TranslatableException;
+import moe.plushie.armourers_workshop.core.utils.OpenItemTransforms;
 import moe.plushie.armourers_workshop.init.environment.EnvironmentExecutor;
 import moe.plushie.armourers_workshop.utils.BlockUtils;
 import moe.plushie.armourers_workshop.utils.SkinUtils;

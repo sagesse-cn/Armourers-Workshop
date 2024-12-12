@@ -1,12 +1,12 @@
 package moe.plushie.armourers_workshop.builder.data;
 
-import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintColor;
 import moe.plushie.armourers_workshop.api.skin.part.ISkinPartType;
+import moe.plushie.armourers_workshop.api.skin.texture.ISkinPaintColor;
 import moe.plushie.armourers_workshop.core.math.Rectangle3i;
 import moe.plushie.armourers_workshop.core.math.Vector2i;
 import moe.plushie.armourers_workshop.core.math.Vector3i;
-import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
 import moe.plushie.armourers_workshop.core.skin.texture.EntityTextureModel;
+import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintColor;
 import moe.plushie.armourers_workshop.core.utils.OpenDirection;
 import net.minecraft.core.Direction;
 

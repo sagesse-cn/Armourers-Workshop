@@ -8,7 +8,7 @@ import moe.plushie.armourers_workshop.api.skin.ISkinDescriptor;
 import moe.plushie.armourers_workshop.api.skin.ISkinToolType;
 import moe.plushie.armourers_workshop.api.skin.ISkinType;
 import moe.plushie.armourers_workshop.core.data.ItemStackStorage;
-import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintScheme;
+import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintScheme;
 import moe.plushie.armourers_workshop.core.utils.Objects;
 import moe.plushie.armourers_workshop.core.utils.TagSerializer;
 import moe.plushie.armourers_workshop.init.ModConfig;

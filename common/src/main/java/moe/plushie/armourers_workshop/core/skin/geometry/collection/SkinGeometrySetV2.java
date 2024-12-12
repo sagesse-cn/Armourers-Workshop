@@ -10,9 +10,9 @@ import moe.plushie.armourers_workshop.core.skin.geometry.cube.SkinCube;
 import moe.plushie.armourers_workshop.core.skin.geometry.cube.SkinCubeFace;
 import moe.plushie.armourers_workshop.core.skin.geometry.mesh.SkinMesh;
 import moe.plushie.armourers_workshop.core.skin.geometry.mesh.SkinMeshFace;
-import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
-import moe.plushie.armourers_workshop.core.skin.texture.TextureBox;
-import moe.plushie.armourers_workshop.core.skin.texture.TexturePos;
+import moe.plushie.armourers_workshop.core.skin.texture.SkinTextureBox;
+import moe.plushie.armourers_workshop.core.skin.texture.SkinTexturePos;
+import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintColor;
 import moe.plushie.armourers_workshop.core.utils.OpenDirection;
 
 import java.util.ArrayList;
@@ -49,9 +49,9 @@ public class SkinGeometrySetV2 extends SkinGeometrySet<SkinGeometry> {
 
     public static class Box extends SkinCube {
 
-        private final TextureBox skyBox;
+        private final SkinTextureBox skyBox;
 
-        public Box(Rectangle3f boundingBox, OpenTransform3f transform, TextureBox skyBox) {
+        public Box(Rectangle3f boundingBox, OpenTransform3f transform, SkinTextureBox skyBox) {
             this.transform = transform;
             this.boundingBox = boundingBox;
             this.skyBox = skyBox;
@@ -68,7 +68,7 @@ public class SkinGeometrySetV2 extends SkinGeometrySet<SkinGeometry> {
         }
 
         @Override
-        public TexturePos getTexture(OpenDirection dir) {
+        public SkinTexturePos getTexture(OpenDirection dir) {
             return skyBox.getTexture(dir);
         }
 
@@ -85,7 +85,7 @@ public class SkinGeometrySetV2 extends SkinGeometrySet<SkinGeometry> {
 
         private final List<SkinMeshFace> faces;
 
-        public Mesh(OpenTransform3f transform, TexturePos texturePos, List<SkinMeshFace> faces) {
+        public Mesh(OpenTransform3f transform, SkinTexturePos texturePos, List<SkinMeshFace> faces) {
             this.transform = transform;
             this.texturePos = texturePos;
             this.faces = faces;

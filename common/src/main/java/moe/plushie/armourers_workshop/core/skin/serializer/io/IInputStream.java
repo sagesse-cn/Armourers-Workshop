@@ -9,8 +9,9 @@ import moe.plushie.armourers_workshop.core.math.Rectangle3i;
 import moe.plushie.armourers_workshop.core.math.Vector3f;
 import moe.plushie.armourers_workshop.core.math.Vector3i;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperties;
-import moe.plushie.armourers_workshop.core.skin.texture.TextureAnimation;
-import moe.plushie.armourers_workshop.core.skin.texture.TextureProperties;
+import moe.plushie.armourers_workshop.core.skin.texture.SkinTextureAnimation;
+import moe.plushie.armourers_workshop.core.skin.texture.SkinTextureProperties;
+import moe.plushie.armourers_workshop.core.utils.OpenPrimitive;
 import moe.plushie.armourers_workshop.core.utils.TagSerializer;
 import net.minecraft.nbt.CompoundTag;
 
@@ -170,6 +171,21 @@ public interface IInputStream {
         return Optional.of(value);
     }
 
+    default OpenPrimitive readPrimitiveObject() throws IOException {
+        var len = readVarInt();
+        return switch (len) {
+            case 0 -> OpenPrimitive.NULL;
+            case 1 -> OpenPrimitive.FALSE;
+            case 2 -> OpenPrimitive.TRUE;
+            case 3 -> OpenPrimitive.of(readVarInt());
+            case 4 -> OpenPrimitive.of(readInt());
+            case 5 -> OpenPrimitive.of(readLong());
+            case 6 -> OpenPrimitive.of(readFloat());
+            case 7 -> OpenPrimitive.of(readDouble());
+            default -> OpenPrimitive.of(readString(len - 8));
+        };
+    }
+
     default Vector3i readVector3i() throws IOException {
         var stream = getInputStream();
         int x = stream.readInt();
@@ -228,14 +244,14 @@ public interface IInputStream {
         return properties;
     }
 
-    default TextureAnimation readTextureAnimation() throws IOException {
-        var animation = new TextureAnimation();
+    default SkinTextureAnimation readTextureAnimation() throws IOException {
+        var animation = new SkinTextureAnimation();
         animation.readFromStream(this);
         return animation;
     }
 
-    default TextureProperties readTextureProperties() throws IOException {
-        var properties = new TextureProperties();
+    default SkinTextureProperties readTextureProperties() throws IOException {
+        var properties = new SkinTextureProperties();
         properties.readFromStream(this);
         return properties;
     }

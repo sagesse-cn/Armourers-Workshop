@@ -1,8 +1,8 @@
 package moe.plushie.armourers_workshop.core.data.color;
 
-import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintType;
-import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
-import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintTypes;
+import moe.plushie.armourers_workshop.api.skin.texture.ISkinPaintType;
+import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintColor;
+import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintTypes;
 
 import java.util.HashMap;
 import java.util.Set;

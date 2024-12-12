@@ -1,7 +1,7 @@
 package moe.plushie.armourers_workshop.core.holiday;
 
-import moe.plushie.armourers_workshop.core.skin.texture.EntityTextureDescriptor;
 import moe.plushie.armourers_workshop.core.entity.MannequinEntity;
+import moe.plushie.armourers_workshop.core.skin.texture.EntityTextureDescriptor;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 

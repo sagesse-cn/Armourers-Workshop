@@ -3,7 +3,7 @@ package moe.plushie.armourers_workshop.core.skin.geometry;
 import moe.plushie.armourers_workshop.api.skin.geometry.ISkinGeometryVertex;
 import moe.plushie.armourers_workshop.core.math.Vector2f;
 import moe.plushie.armourers_workshop.core.math.Vector3f;
-import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
+import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintColor;
 import moe.plushie.armourers_workshop.core.utils.Objects;
 
 public class SkinGeometryVertex implements ISkinGeometryVertex {

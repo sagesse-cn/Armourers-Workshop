@@ -2,11 +2,11 @@ package moe.plushie.armourers_workshop.builder.other;
 
 import moe.plushie.armourers_workshop.api.common.IItemColorProvider;
 import moe.plushie.armourers_workshop.api.common.IPaintable;
-import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintColor;
+import moe.plushie.armourers_workshop.api.skin.texture.ISkinPaintColor;
 import moe.plushie.armourers_workshop.builder.block.SkinCubeBlock;
 import moe.plushie.armourers_workshop.builder.item.SkinCubeItem;
 import moe.plushie.armourers_workshop.core.data.color.BlockPaintColor;
-import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
+import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintColor;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;

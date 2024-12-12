@@ -36,7 +36,7 @@ public class BlockBenchKeyframe extends BlockBenchObject {
         return points;
     }
 
-    public static class Builder extends BlockBenchObject.Builder {
+    protected static class Builder extends BlockBenchObject.Builder {
 
         private float time = 0;
 

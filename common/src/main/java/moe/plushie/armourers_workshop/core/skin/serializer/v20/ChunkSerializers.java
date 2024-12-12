@@ -8,7 +8,6 @@ import moe.plushie.armourers_workshop.core.skin.SkinMarker;
 import moe.plushie.armourers_workshop.core.skin.SkinPreviewData;
 import moe.plushie.armourers_workshop.core.skin.SkinTypes;
 import moe.plushie.armourers_workshop.core.skin.animation.SkinAnimation;
-import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintData;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPart;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperties;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperty;
@@ -26,6 +25,7 @@ import moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk.ChunkPalett
 import moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk.ChunkPartData;
 import moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk.ChunkPreviewData;
 import moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk.ChunkType;
+import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintData;
 import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.core.utils.OpenItemTransforms;
 import org.apache.commons.lang3.tuple.Pair;

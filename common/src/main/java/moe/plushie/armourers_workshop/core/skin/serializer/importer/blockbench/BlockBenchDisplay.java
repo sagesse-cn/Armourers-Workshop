@@ -26,7 +26,7 @@ public class BlockBenchDisplay {
         return scale;
     }
 
-    public static class Builder {
+    protected static class Builder {
 
         private Vector3f translation = Vector3f.ZERO;
         private Vector3f rotation = Vector3f.ZERO;

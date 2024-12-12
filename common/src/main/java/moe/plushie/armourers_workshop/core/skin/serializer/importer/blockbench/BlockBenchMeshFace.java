@@ -32,7 +32,7 @@ public class BlockBenchMeshFace {
         return vertices;
     }
 
-    public static class Builder {
+    protected static class Builder {
 
         protected final Map<String, Vector2f> uv = new LinkedHashMap<>();
         protected final List<String> vertices = new ArrayList<>();

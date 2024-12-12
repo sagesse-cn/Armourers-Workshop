@@ -1,45 +1,33 @@
 package moe.plushie.armourers_workshop.core.skin.serializer.importer.blockbench;
 
-import com.google.gson.JsonElement;
-import moe.plushie.armourers_workshop.core.math.Rectangle2f;
 import moe.plushie.armourers_workshop.core.math.Size2f;
-import moe.plushie.armourers_workshop.core.math.Size3f;
-import moe.plushie.armourers_workshop.core.math.Vector2f;
-import moe.plushie.armourers_workshop.core.math.Vector2i;
 import moe.plushie.armourers_workshop.core.math.Vector3f;
+import moe.plushie.armourers_workshop.core.skin.serializer.importer.PackObject;
+import moe.plushie.armourers_workshop.core.skin.serializer.importer.PackResourceSet;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IOConsumer;
-import moe.plushie.armourers_workshop.core.skin.serializer.io.IOConsumer2;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IODataObject;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IOFunction;
-import moe.plushie.armourers_workshop.core.utils.FileUtils;
-import moe.plushie.armourers_workshop.core.utils.JsonSerializer;
 import moe.plushie.armourers_workshop.core.utils.OpenDirection;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.function.Supplier;
-import java.util.regex.Pattern;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
-import java.util.zip.ZipInputStream;
 
-/// https://www.blockbench.net/wiki/docs/bbmodel
-/// https://github.com/JannisX11/blockbench/blob/master/js/io/formats/bbmodel.js
+/**
+ * <a href="https://www.blockbench.net/wiki/docs/bbmodel">The .bbmodel format</a>
+ * <a href="https://github.com/JannisX11/blockbench/blob/master/js/io/formats/bbmodel.js">bbmodel.js</a>
+ */
 public class BlockBenchPackReader {
 
     protected final String name;
-    protected final ResourceSet resourceSet;
+    protected final PackResourceSet resourceSet;
 
     public BlockBenchPackReader(File file) throws IOException {
         this.name = file.getName();
-        this.resourceSet = new ResourceSet(file);
+        this.resourceSet = new PackResourceSet(file);
     }
 
     public BlockBenchPack readPack() throws IOException {
@@ -75,7 +63,7 @@ public class BlockBenchPackReader {
     }
 
     protected BlockBenchElement parseElementObject(PackObject object) throws IOException {
-        var transformer = switch (object.get("type").stringValue()) {
+        return (switch (object.get("type").stringValue()) {
             case "cube" -> parseElementObject(BlockBenchCube.Builder::new, builder -> {
                 object.at("from", it -> builder.from(it.vector3fValue()));
                 object.at("to", it -> builder.to(it.vector3fValue()));
@@ -133,8 +121,7 @@ public class BlockBenchPackReader {
                 object.at("position", it -> builder.position(it.vector3fValue()));
             });
             default -> parseElementObject(BlockBenchElement.Builder::new, null);
-        };
-        return transformer.apply(object);
+        }).apply(object);
     }
 
     protected <T extends BlockBenchElement.Builder> IOFunction<PackObject, BlockBenchElement> parseElementObject(Supplier<T> supplier, @Nullable IOConsumer<T> consumer) {
@@ -283,256 +270,5 @@ public class BlockBenchPackReader {
 
     public String getName() {
         return name;
-    }
-
-    protected static class PackObject implements IODataObject {
-
-        private final JsonElement element;
-
-        public PackObject(IODataObject object) {
-            this.element = object.jsonValue();
-        }
-
-        @Nullable
-        public static PackObject from(Resource resource) throws IOException {
-            if (resource == null) {
-                return null;
-            }
-            try (var inputStream = new BufferedInputStream(resource.getInputStream())) {
-                return new PackObject(JsonSerializer.readFromStream(inputStream));
-            } catch (Exception exception) {
-                throw new IOException(exception);
-            }
-        }
-
-        public Vector2i Vector2iValue() {
-            var values = allValues();
-            if (values.size() >= 2) {
-                var iterator = values.iterator();
-                return new Vector2i(iterator.next().intValue(), iterator.next().intValue());
-            }
-            return Vector2i.ZERO;
-        }
-
-        public Vector2f vector2fValue() {
-            var values = allValues();
-            if (values.size() >= 2) {
-                var iterator = values.iterator();
-                return new Vector2f(iterator.next().floatValue(), iterator.next().floatValue());
-            }
-            return Vector2f.ZERO;
-        }
-
-        public Size2f size2fValue() {
-            var values = allValues();
-            if (values.size() >= 2) {
-                var iterator = values.iterator();
-                return new Size2f(iterator.next().floatValue(), iterator.next().floatValue());
-            }
-            return Size2f.ZERO;
-        }
-
-        public Rectangle2f rectangle2fValue() {
-            var values = allValues();
-            if (values.size() >= 4) {
-                var iterator = values.iterator();
-                var x1 = iterator.next().floatValue();
-                var y1 = iterator.next().floatValue();
-                var x2 = iterator.next().floatValue();
-                var y2 = iterator.next().floatValue();
-                return new Rectangle2f(x1, y1, x2 - x1, y2 - y1);
-            }
-            return Rectangle2f.ZERO;
-        }
-
-        public Size3f size3fValue() {
-            var values = allValues();
-            if (values.size() >= 3) {
-                var iterator = values.iterator();
-                return new Size3f(iterator.next().floatValue(), iterator.next().floatValue(), iterator.next().floatValue());
-            }
-            return Size3f.ZERO;
-        }
-
-        public Vector3f vector3fValue() {
-            var values = allValues();
-            if (values.size() >= 3) {
-                var iterator = values.iterator();
-                return new Vector3f(iterator.next().floatValue(), iterator.next().floatValue(), iterator.next().floatValue());
-            }
-            return Vector3f.ZERO;
-        }
-
-        public void at(String keyPath, IOConsumer<PackObject> consumer) throws IOException {
-            var object = by(keyPath);
-            if (object.isNull()) {
-                return;
-            }
-            consumer.accept(new PackObject(by(keyPath)));
-        }
-
-        public void each(String keyPath, IOConsumer<PackObject> consumer) throws IOException {
-            var object = by(keyPath);
-            if (object.isNull()) {
-                return;
-            }
-            for (var value : object.allValues()) {
-                consumer.accept(new PackObject(value));
-            }
-        }
-
-        public void each(String keyPath, IOConsumer2<String, PackObject> consumer) throws IOException {
-            var object = by(keyPath);
-            if (object.isNull()) {
-                return;
-            }
-            for (var pair : object.entrySet()) {
-                consumer.accept(pair.getKey(), new PackObject(pair.getValue()));
-            }
-        }
-
-        @Override
-        public PackObject get(String key) {
-            return new PackObject(IODataObject.super.get(key));
-        }
-
-        public PackObject by(String keyPath) {
-            // when this is a full key, ignore.
-            if (has(keyPath)) {
-                return get(keyPath);
-            }
-            var keys = keyPath.split("\\.");
-            PackObject object = this;
-            for (String key : keys) {
-                object = object.get(key);
-            }
-            return object;
-        }
-
-        @Override
-        public JsonElement jsonValue() {
-            return element;
-        }
-    }
-
-    protected static abstract class Resource {
-
-        public abstract String getName();
-
-        public abstract InputStream getInputStream() throws IOException;
-    }
-
-    protected static class ResourceSet {
-
-        private final Collection<Resource> resources;
-
-        public ResourceSet(File file) throws IOException {
-            this.resources = getResourcesFromFile(file);
-        }
-
-        @Nullable
-        public Resource findResource(String regex) {
-            var pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
-            for (var resource : resources) {
-                if (pattern.matcher(resource.getName()).find()) {
-                    return resource;
-                }
-            }
-            return null;
-        }
-
-        @Nullable
-        public Resource getResource(String name) {
-            for (var resource : resources) {
-                if (resource.getName().equalsIgnoreCase(name)) {
-                    return resource;
-                }
-            }
-            return null;
-        }
-
-        public Collection<Resource> getResources() {
-            return resources;
-        }
-
-        protected Collection<Resource> getResourcesFromFile(File file) throws IOException {
-            if (file.isDirectory()) {
-                return getResourcesFromDirectory(file);
-            }
-            if (file.getName().toLowerCase().endsWith(".zip")) {
-                return getResourcesFromZip(file);
-            }
-            return getResourcesFromSet(file);
-        }
-
-        protected Collection<Resource> getResourcesFromZip(File zipFile) throws IOException {
-            var resources = new ArrayList<Resource>();
-            var file = new ZipFile(zipFile);
-            var zip = new ZipInputStream(new BufferedInputStream(new FileInputStream(zipFile)));
-            ZipEntry entry;
-            while ((entry = zip.getNextEntry()) != null) {
-                if (entry.isDirectory()) {
-                    continue;
-                }
-                var fileName = entry.getName();
-                var fileEntry = entry;
-                resources.add(new Resource() {
-                    @Override
-                    public String getName() {
-                        return fileName;
-                    }
-
-                    @Override
-                    public InputStream getInputStream() throws IOException {
-                        return file.getInputStream(fileEntry);
-                    }
-                });
-            }
-            return resources;
-        }
-
-        protected Collection<Resource> getResourcesFromDirectory(File rootPath) throws IOException {
-            var resources = new ArrayList<Resource>();
-            for (var entry : FileUtils.listFilesRecursive(rootPath)) {
-                if (entry.isDirectory()) {
-                    continue;
-                }
-                var fileName = FileUtils.getRelativePath(entry, rootPath, true).substring(1);
-                resources.add(new Resource() {
-                    @Override
-                    public String getName() {
-                        return fileName;
-                    }
-
-                    @Override
-                    public InputStream getInputStream() throws IOException {
-                        return new FileInputStream(entry);
-                    }
-                });
-            }
-            return resources;
-        }
-
-        protected Collection<Resource> getResourcesFromSet(File... entries) throws IOException {
-            var resources = new ArrayList<Resource>();
-            for (var entry : entries) {
-                if (entry.isDirectory()) {
-                    continue;
-                }
-                var fileName = entry.getName();
-                resources.add(new Resource() {
-                    @Override
-                    public String getName() {
-                        return fileName;
-                    }
-
-                    @Override
-                    public InputStream getInputStream() throws IOException {
-                        return new FileInputStream(entry);
-                    }
-                });
-            }
-            return resources;
-        }
     }
 }

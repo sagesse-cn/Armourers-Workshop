@@ -7,8 +7,8 @@ import moe.plushie.armourers_workshop.api.network.IFriendlyByteBuf;
 import moe.plushie.armourers_workshop.core.skin.Skin;
 import moe.plushie.armourers_workshop.core.skin.SkinLoader;
 import moe.plushie.armourers_workshop.core.skin.serializer.SkinSerializer;
-import moe.plushie.armourers_workshop.init.ModConfig;
 import moe.plushie.armourers_workshop.core.utils.StreamUtils;
+import moe.plushie.armourers_workshop.init.ModConfig;
 import net.minecraft.world.entity.player.Player;
 
 import java.io.InputStream;

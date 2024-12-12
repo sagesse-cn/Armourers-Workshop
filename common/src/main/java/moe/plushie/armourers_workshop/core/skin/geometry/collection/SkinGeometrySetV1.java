@@ -1,20 +1,20 @@
 package moe.plushie.armourers_workshop.core.skin.geometry.collection;
 
 import moe.plushie.armourers_workshop.api.skin.geometry.ISkinGeometryType;
-import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintColor;
 import moe.plushie.armourers_workshop.api.skin.part.ISkinPartType;
+import moe.plushie.armourers_workshop.api.skin.texture.ISkinPaintColor;
 import moe.plushie.armourers_workshop.core.math.Rectangle3f;
 import moe.plushie.armourers_workshop.core.math.Vector3i;
-import moe.plushie.armourers_workshop.core.skin.serializer.exception.InvalidCubeTypeException;
 import moe.plushie.armourers_workshop.core.skin.geometry.SkinGeometrySet;
 import moe.plushie.armourers_workshop.core.skin.geometry.SkinGeometryTypes;
 import moe.plushie.armourers_workshop.core.skin.geometry.cube.SkinCube;
-import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
-import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintTypes;
-import moe.plushie.armourers_workshop.core.skin.texture.TexturePos;
+import moe.plushie.armourers_workshop.core.skin.serializer.exception.InvalidCubeTypeException;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IInputStream;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IOutputStream;
 import moe.plushie.armourers_workshop.core.skin.serializer.v12.LegacyCubeHelper;
+import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintColor;
+import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintTypes;
+import moe.plushie.armourers_workshop.core.skin.texture.SkinTexturePos;
 import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.core.utils.OpenDirection;
 
@@ -63,7 +63,7 @@ public class SkinGeometrySetV1 extends SkinGeometrySet<SkinCube> {
     }
 
     public static SkinGeometrySetV1 readFromStream(IInputStream stream, int version, ISkinPartType skinPart) throws IOException, InvalidCubeTypeException {
-        int size = stream.readInt();
+        var size = stream.readInt();
         var geometries = new SkinGeometrySetV1(size);
         var bufferSlice = geometries.bufferSlice.get();
         if (version >= 10) {
@@ -252,7 +252,7 @@ public class SkinGeometrySetV1 extends SkinGeometrySet<SkinCube> {
         }
 
         @Override
-        public TexturePos getTexture(OpenDirection dir) {
+        public SkinTexturePos getTexture(OpenDirection dir) {
             return null;
         }
 

@@ -38,7 +38,7 @@ public class BlockBenchOutliner extends BlockBenchObject {
         return children;
     }
 
-    public static class Builder extends BlockBenchObject.Builder {
+    protected static class Builder extends BlockBenchObject.Builder {
 
         private boolean allowExport = true;
 

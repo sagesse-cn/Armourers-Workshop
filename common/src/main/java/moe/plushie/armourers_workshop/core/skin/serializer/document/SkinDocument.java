@@ -3,11 +3,11 @@ package moe.plushie.armourers_workshop.core.skin.serializer.document;
 import moe.plushie.armourers_workshop.api.core.IDataSerializer;
 import moe.plushie.armourers_workshop.api.core.IDataSerializerKey;
 import moe.plushie.armourers_workshop.api.skin.property.ISkinProperty;
-import moe.plushie.armourers_workshop.core.utils.OpenItemTransforms;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPartTypes;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperties;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperty;
 import moe.plushie.armourers_workshop.core.utils.Objects;
+import moe.plushie.armourers_workshop.core.utils.OpenItemTransforms;
 import net.minecraft.nbt.CompoundTag;
 
 import java.util.List;

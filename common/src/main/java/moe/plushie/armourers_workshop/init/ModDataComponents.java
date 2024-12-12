@@ -6,7 +6,7 @@ import moe.plushie.armourers_workshop.api.core.IRegistryHolder;
 import moe.plushie.armourers_workshop.api.registry.IDataComponentTypeBuilder;
 import moe.plushie.armourers_workshop.core.holiday.Holiday;
 import moe.plushie.armourers_workshop.core.skin.SkinDescriptor;
-import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
+import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintColor;
 import moe.plushie.armourers_workshop.init.platform.BuilderManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;

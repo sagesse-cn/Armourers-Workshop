@@ -1,10 +1,10 @@
 package moe.plushie.armourers_workshop.core.skin.serializer.v13;
 
 import moe.plushie.armourers_workshop.core.skin.SkinMarker;
-import moe.plushie.armourers_workshop.core.skin.serializer.exception.InvalidCubeTypeException;
 import moe.plushie.armourers_workshop.core.skin.geometry.collection.SkinGeometrySetV1;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPart;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPartTypes;
+import moe.plushie.armourers_workshop.core.skin.serializer.exception.InvalidCubeTypeException;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IInputStream;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IOutputStream;
 import moe.plushie.armourers_workshop.init.ModLog;
@@ -18,7 +18,7 @@ public final class SkinPartSerializerV13 {
     }
 
     public SkinPart loadSkinPart(IInputStream stream, int version) throws IOException, InvalidCubeTypeException {
-        String regName = stream.readString();
+        var regName = stream.readString();
         if (regName.equals("armourers:skirt.base")) {
             regName = "armourers:legs.skirt";
         }

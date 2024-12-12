@@ -1,7 +1,7 @@
 package moe.plushie.armourers_workshop.api.library;
 
-import moe.plushie.armourers_workshop.api.skin.serializer.ISkinFileHeader;
 import moe.plushie.armourers_workshop.api.skin.ISkinType;
+import moe.plushie.armourers_workshop.api.skin.serializer.ISkinFileHeader;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.Collection;

@@ -18,23 +18,8 @@ public class RightFootPartType extends SkinPartType implements ISkinPartTypeText
     }
 
     @Override
-    public boolean isTextureMirrored() {
-        return false;
-    }
-
-    @Override
     public Vector2i getTextureSkinPos() {
         return new Vector2i(0, 16);
-    }
-
-    @Override
-    public Vector2i getTextureBasePos() {
-        return new Vector2i(0, 16);
-    }
-
-    @Override
-    public Vector2i getTextureOverlayPos() {
-        return new Vector2i(0, 32);
     }
 
     @Override

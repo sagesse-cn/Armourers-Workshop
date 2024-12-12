@@ -1,6 +1,6 @@
 package moe.plushie.armourers_workshop.api.common;
 
-import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintColor;
+import moe.plushie.armourers_workshop.api.skin.texture.ISkinPaintColor;
 import net.minecraft.core.Direction;
 
 import java.util.Map;

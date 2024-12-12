@@ -1,10 +1,10 @@
 package moe.plushie.armourers_workshop.core.skin;
 
 import moe.plushie.armourers_workshop.api.core.math.ITransform;
-import moe.plushie.armourers_workshop.core.skin.part.SkinPartTransform;
 import moe.plushie.armourers_workshop.core.math.OpenTransform3f;
 import moe.plushie.armourers_workshop.core.skin.geometry.SkinGeometrySet;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPart;
+import moe.plushie.armourers_workshop.core.skin.part.SkinPartTransform;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;

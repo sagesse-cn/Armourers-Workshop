@@ -3,7 +3,6 @@ package moe.plushie.armourers_workshop.core.client.bake;
 import com.google.common.collect.Range;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import moe.plushie.armourers_workshop.api.client.IBakedSkin;
 import moe.plushie.armourers_workshop.api.skin.ISkinType;
 import moe.plushie.armourers_workshop.api.skin.part.features.ICanUse;
 import moe.plushie.armourers_workshop.core.client.animation.AnimatedTransform;
@@ -28,12 +27,12 @@ import moe.plushie.armourers_workshop.core.math.Vector4f;
 import moe.plushie.armourers_workshop.core.skin.Skin;
 import moe.plushie.armourers_workshop.core.skin.SkinTypes;
 import moe.plushie.armourers_workshop.core.skin.animation.SkinAnimation;
-import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintScheme;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPartTransform;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPartTypes;
 import moe.plushie.armourers_workshop.core.skin.part.wings.WingPartTransform;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperties;
 import moe.plushie.armourers_workshop.core.skin.serializer.SkinUsedCounter;
+import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintScheme;
 import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.core.utils.Objects;
 import moe.plushie.armourers_workshop.core.utils.OpenItemDisplayContext;
@@ -49,7 +48,7 @@ import java.util.List;
 import java.util.Map;
 
 @Environment(EnvType.CLIENT)
-public class BakedSkin implements IBakedSkin {
+public class BakedSkin {
 
     private final int id = OpenRandomSource.nextInt(BakedSkin.class);
 
@@ -123,8 +122,6 @@ public class BakedSkin implements IBakedSkin {
         return identifier;
     }
 
-    @SuppressWarnings("unchecked")
-    @Override
     public Skin getSkin() {
         return skin;
     }

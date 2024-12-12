@@ -4,8 +4,8 @@ import moe.plushie.armourers_workshop.core.skin.Skin;
 import moe.plushie.armourers_workshop.core.skin.serializer.SkinFileHeader;
 import moe.plushie.armourers_workshop.core.skin.serializer.SkinFileOptions;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IInputStream;
-import moe.plushie.armourers_workshop.core.skin.serializer.io.IOutputStream;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IOSerializer;
+import moe.plushie.armourers_workshop.core.skin.serializer.io.IOutputStream;
 import moe.plushie.armourers_workshop.core.skin.serializer.v20.geometry.ChunkGeometrySerializers;
 
 import java.io.IOException;
@@ -13,7 +13,7 @@ import java.io.IOException;
 public final class SkinSerializerV20 implements IOSerializer {
 
     public static final int FILE_MIN_VERSION = 20;
-    public static final int FILE_LATEST_VERSION = 22;
+    public static final int FILE_LATEST_VERSION = 23;
 
     public SkinSerializerV20() {
     }

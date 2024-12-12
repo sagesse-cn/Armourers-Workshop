@@ -2,7 +2,7 @@ package moe.plushie.armourers_workshop.core.skin.geometry;
 
 import moe.plushie.armourers_workshop.api.skin.geometry.ISkinGeometryFace;
 import moe.plushie.armourers_workshop.core.math.OpenTransform3f;
-import moe.plushie.armourers_workshop.core.skin.texture.TexturePos;
+import moe.plushie.armourers_workshop.core.skin.texture.SkinTexturePos;
 import moe.plushie.armourers_workshop.core.utils.Objects;
 
 public abstract class SkinGeometryFace implements ISkinGeometryFace {
@@ -10,7 +10,7 @@ public abstract class SkinGeometryFace implements ISkinGeometryFace {
     protected int id;
 
     protected OpenTransform3f transform = OpenTransform3f.IDENTITY;
-    protected TexturePos texturePos = TexturePos.DEFAULT;
+    protected SkinTexturePos texturePos = SkinTexturePos.DEFAULT;
 
     @Override
     public int getId() {
@@ -23,7 +23,7 @@ public abstract class SkinGeometryFace implements ISkinGeometryFace {
     }
 
     @Override
-    public TexturePos getTexturePos() {
+    public SkinTexturePos getTexturePos() {
         return texturePos;
     }
 

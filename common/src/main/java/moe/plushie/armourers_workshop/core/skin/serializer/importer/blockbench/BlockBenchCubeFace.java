@@ -26,7 +26,7 @@ public class BlockBenchCubeFace {
         return rect;
     }
 
-    public static class Builder {
+    protected static class Builder {
 
         private int texture = -1;
         private int rotation = 0;

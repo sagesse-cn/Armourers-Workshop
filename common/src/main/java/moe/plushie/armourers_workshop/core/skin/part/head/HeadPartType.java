@@ -18,23 +18,8 @@ public class HeadPartType extends SkinPartType implements ISkinPartTypeTextured 
     }
 
     @Override
-    public boolean isTextureMirrored() {
-        return false;
-    }
-
-    @Override
     public Vector2i getTextureSkinPos() {
         return Vector2i.ZERO;
-    }
-
-    @Override
-    public Vector2i getTextureBasePos() {
-        return Vector2i.ZERO;
-    }
-
-    @Override
-    public Vector2i getTextureOverlayPos() {
-        return new Vector2i(32, 0);
     }
 
     @Override

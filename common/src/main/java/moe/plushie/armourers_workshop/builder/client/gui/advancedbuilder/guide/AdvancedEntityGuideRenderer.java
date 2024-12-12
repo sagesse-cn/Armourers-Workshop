@@ -7,12 +7,12 @@ import moe.plushie.armourers_workshop.core.client.bake.BakedArmature;
 import moe.plushie.armourers_workshop.core.client.other.SkinRenderType;
 import moe.plushie.armourers_workshop.core.math.Rectangle2f;
 import moe.plushie.armourers_workshop.core.math.Rectangle3f;
-import moe.plushie.armourers_workshop.core.skin.serializer.document.SkinDocument;
 import moe.plushie.armourers_workshop.core.skin.geometry.cube.SkinCubeFace;
-import moe.plushie.armourers_workshop.core.skin.texture.TextureData;
+import moe.plushie.armourers_workshop.core.skin.serializer.document.SkinDocument;
+import moe.plushie.armourers_workshop.core.skin.texture.SkinTextureData;
+import moe.plushie.armourers_workshop.core.utils.ColorUtils;
 import moe.plushie.armourers_workshop.core.utils.OpenDirection;
 import moe.plushie.armourers_workshop.core.utils.OpenResourceLocation;
-import moe.plushie.armourers_workshop.core.utils.ColorUtils;
 import moe.plushie.armourers_workshop.utils.ShapeTesselator;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -23,7 +23,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 public abstract class AdvancedEntityGuideRenderer extends AbstractAdvancedGuideRenderer {
 
     protected final BakedArmature armature;
-    protected final TextureData texture;
+    protected final SkinTextureData texture;
 
     protected final RenderType renderType;
 
@@ -33,7 +33,7 @@ public abstract class AdvancedEntityGuideRenderer extends AbstractAdvancedGuideR
         this.renderType = SkinRenderType.entityCutoutNoCull(OpenResourceLocation.parse(texture.getName()));
     }
 
-    public abstract TextureData getTexture();
+    public abstract SkinTextureData getTexture();
 
     public abstract BakedArmature getArmature();
 

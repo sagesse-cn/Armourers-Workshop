@@ -18,23 +18,8 @@ public class LeftArmPartType extends SkinPartType implements ISkinPartTypeTextur
     }
 
     @Override
-    public boolean isTextureMirrored() {
-        return true;
-    }
-
-    @Override
     public Vector2i getTextureSkinPos() {
         return new Vector2i(40, 16);
-    }
-
-    @Override
-    public Vector2i getTextureBasePos() {
-        return new Vector2i(32, 48);
-    }
-
-    @Override
-    public Vector2i getTextureOverlayPos() {
-        return new Vector2i(48, 48);
     }
 
     @Override

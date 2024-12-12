@@ -5,7 +5,7 @@ import moe.plushie.armourers_workshop.core.client.bake.BakedSkin;
 import moe.plushie.armourers_workshop.core.client.bake.BakedSkinPart;
 import moe.plushie.armourers_workshop.core.math.OpenVoxelShape;
 import moe.plushie.armourers_workshop.core.math.Vector3f;
-import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintScheme;
+import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintScheme;
 
 public interface ConcurrentBufferBuilder {
 

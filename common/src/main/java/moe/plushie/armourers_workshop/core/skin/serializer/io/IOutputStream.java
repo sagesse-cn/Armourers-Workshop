@@ -5,12 +5,14 @@ import moe.plushie.armourers_workshop.api.core.IRegistryEntry;
 import moe.plushie.armourers_workshop.api.core.math.IRectangle3f;
 import moe.plushie.armourers_workshop.api.core.math.IRectangle3i;
 import moe.plushie.armourers_workshop.api.core.math.ITransform3f;
+import moe.plushie.armourers_workshop.api.core.math.IVector2f;
 import moe.plushie.armourers_workshop.api.core.math.IVector3f;
 import moe.plushie.armourers_workshop.api.core.math.IVector3i;
 import moe.plushie.armourers_workshop.core.math.OpenTransform3f;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperties;
-import moe.plushie.armourers_workshop.core.skin.texture.TextureAnimation;
-import moe.plushie.armourers_workshop.core.skin.texture.TextureProperties;
+import moe.plushie.armourers_workshop.core.skin.texture.SkinTextureAnimation;
+import moe.plushie.armourers_workshop.core.skin.texture.SkinTextureProperties;
+import moe.plushie.armourers_workshop.core.utils.OpenPrimitive;
 import moe.plushie.armourers_workshop.core.utils.TagSerializer;
 import net.minecraft.nbt.CompoundTag;
 
@@ -135,6 +137,40 @@ public interface IOutputStream {
         writeVarInt(value.ordinal());
     }
 
+    default void writePrimitiveObject(OpenPrimitive value) throws IOException {
+        var rawValue = value.rawValue();
+        if (rawValue instanceof String stringValue) {
+            var len = stringValue.length();
+            writeVarInt(len + 8);
+            writeString(stringValue, len);
+        } else if (rawValue instanceof Double doubleValue) {
+            writeVarInt(7);
+            writeDouble(doubleValue);
+        } else if (rawValue instanceof Float floatValue) {
+            writeVarInt(6);
+            writeFloat(floatValue);
+        } else if (rawValue instanceof Long longValue) {
+            writeVarInt(5);
+            writeLong(longValue);
+        } else if (rawValue instanceof Integer integerValue && (integerValue & 0xffff0000) != 0) {
+            writeVarInt(4);
+            writeInt(integerValue);
+        } else if (rawValue instanceof Number numberValue) { // int/short/byte
+            writeVarInt(3);
+            writeVarInt(numberValue.intValue());
+        } else if (rawValue instanceof Boolean booleanValue) {
+            if (booleanValue) {
+                writeVarInt(2);
+            } else {
+                writeVarInt(1);
+            }
+        } else if (rawValue == null) {
+            writeVarInt(0);
+        } else {
+            throw new IOException("can't support primitive type: " + rawValue.getClass());
+        }
+    }
+
     default void writeOptionalString(String v) throws IOException {
         // 0 is null string.
         if (v == null) {
@@ -147,22 +183,23 @@ public interface IOutputStream {
         writeString(v, len);
     }
 
+
     default void writeVector3i(IVector3i vec) throws IOException {
-        DataOutputStream stream = getOutputStream();
+        var stream = getOutputStream();
         stream.writeInt(vec.getX());
         stream.writeInt(vec.getY());
         stream.writeInt(vec.getZ());
     }
 
     default void writeVector3f(IVector3f vec) throws IOException {
-        DataOutputStream stream = getOutputStream();
+        var stream = getOutputStream();
         stream.writeFloat(vec.getX());
         stream.writeFloat(vec.getY());
         stream.writeFloat(vec.getZ());
     }
 
     default void writeRectangle3i(IRectangle3i rect) throws IOException {
-        DataOutputStream stream = getOutputStream();
+        var stream = getOutputStream();
         stream.writeInt(rect.getX());
         stream.writeInt(rect.getY());
         stream.writeInt(rect.getZ());
@@ -172,7 +209,7 @@ public interface IOutputStream {
     }
 
     default void writeRectangle3f(IRectangle3f rect) throws IOException {
-        DataOutputStream stream = getOutputStream();
+        var stream = getOutputStream();
         stream.writeFloat(rect.getX());
         stream.writeFloat(rect.getY());
         stream.writeFloat(rect.getZ());
@@ -182,8 +219,8 @@ public interface IOutputStream {
     }
 
     default void writeTransformf(ITransform3f transform) throws IOException {
-        if (transform instanceof OpenTransform3f) {
-            ((OpenTransform3f) transform).writeToStream(this);
+        if (transform instanceof OpenTransform3f transform1) {
+            transform1.writeToStream(this);
         }
     }
 
@@ -191,11 +228,11 @@ public interface IOutputStream {
         properties.writeToStream(this);
     }
 
-    default void writeTextureAnimation(TextureAnimation animation) throws IOException {
+    default void writeTextureAnimation(SkinTextureAnimation animation) throws IOException {
         animation.writeToStream(this);
     }
 
-    default void writeTextureProperties(TextureProperties properties) throws IOException {
+    default void writeTextureProperties(SkinTextureProperties properties) throws IOException {
         properties.writeToStream(this);
     }
 

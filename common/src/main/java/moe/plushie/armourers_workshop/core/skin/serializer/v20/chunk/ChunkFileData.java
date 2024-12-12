@@ -13,8 +13,8 @@ public class ChunkFileData implements ChunkVariable {
     private final List<ChunkFile> contents = new ArrayList<>();
 
     public ChunkFile readItem(ChunkInputStream stream) throws IOException {
-        // TODO: remove in the future.
-        if (stream.getContext().getFileVersion() < 22) {
+        // TODO: remove in the future (22-refactor-file).
+        if (stream.getFileVersion() < 22) {
             var size = stream.readInt();
             var buffer = stream.readBytes(size);
             return ChunkFile.image(null, buffer); // in the older version, only image.

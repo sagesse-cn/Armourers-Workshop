@@ -6,11 +6,11 @@ import moe.plushie.armourers_workshop.builder.blockentity.AdvancedBuilderBlockEn
 import moe.plushie.armourers_workshop.core.client.gui.widget.ConfirmDialog;
 import moe.plushie.armourers_workshop.core.client.gui.widget.TreeView;
 import moe.plushie.armourers_workshop.core.skin.SkinDescriptor;
+import moe.plushie.armourers_workshop.core.skin.part.SkinPartTypes;
 import moe.plushie.armourers_workshop.core.skin.serializer.document.SkinDocument;
 import moe.plushie.armourers_workshop.core.skin.serializer.document.SkinDocumentNode;
 import moe.plushie.armourers_workshop.core.skin.serializer.document.SkinDocumentSynchronizer;
 import moe.plushie.armourers_workshop.core.skin.serializer.document.SkinDocumentType;
-import moe.plushie.armourers_workshop.core.skin.part.SkinPartTypes;
 
 import java.util.Collection;
 import java.util.HashSet;

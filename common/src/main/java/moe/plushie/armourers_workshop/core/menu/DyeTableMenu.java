@@ -1,14 +1,14 @@
 package moe.plushie.armourers_workshop.core.menu;
 
 import moe.plushie.armourers_workshop.api.common.IGlobalPos;
-import moe.plushie.armourers_workshop.api.skin.paint.ISkinDyeType;
-import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintType;
+import moe.plushie.armourers_workshop.api.skin.texture.ISkinDyeType;
+import moe.plushie.armourers_workshop.api.skin.texture.ISkinPaintType;
 import moe.plushie.armourers_workshop.core.blockentity.DyeTableBlockEntity;
 import moe.plushie.armourers_workshop.core.item.BottleItem;
 import moe.plushie.armourers_workshop.core.skin.SkinDescriptor;
-import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintColor;
-import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintScheme;
-import moe.plushie.armourers_workshop.core.skin.paint.SkinPaintTypes;
+import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintColor;
+import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintScheme;
+import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintTypes;
 import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.init.ModDataComponents;
 import moe.plushie.armourers_workshop.init.ModItems;

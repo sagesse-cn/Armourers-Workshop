@@ -1,7 +1,7 @@
 package moe.plushie.armourers_workshop.builder.other;
 
 import moe.plushie.armourers_workshop.api.common.IPaintable;
-import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintColor;
+import moe.plushie.armourers_workshop.api.skin.texture.ISkinPaintColor;
 import moe.plushie.armourers_workshop.core.utils.Objects;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

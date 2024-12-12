@@ -23,21 +23,6 @@ public class ChestPartType extends SkinPartType implements ISkinPartTypeTextured
     }
 
     @Override
-    public boolean isTextureMirrored() {
-        return false;
-    }
-
-    @Override
-    public Vector2i getTextureBasePos() {
-        return new Vector2i(16, 16);
-    }
-
-    @Override
-    public Vector2i getTextureOverlayPos() {
-        return new Vector2i(16, 32);
-    }
-
-    @Override
     public Vector3i getTextureModelSize() {
         return new Vector3i(8, 12, 4);
     }

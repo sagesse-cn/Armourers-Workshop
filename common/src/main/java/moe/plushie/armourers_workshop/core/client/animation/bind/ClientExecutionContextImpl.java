@@ -1,10 +1,10 @@
 package moe.plushie.armourers_workshop.core.client.animation.bind;
 
-import moe.plushie.armourers_workshop.core.skin.animation.engine.bind.ExecutionContextImpl;
-import moe.plushie.armourers_workshop.core.skin.animation.molang.bind.selector.LevelSelector;
-import moe.plushie.armourers_workshop.core.skin.animation.molang.core.ExecutionContext;
-import moe.plushie.armourers_workshop.core.skin.animation.molang.core.VariableStorage;
-import moe.plushie.armourers_workshop.core.skin.animation.molang.runtime.LocalVariableStorage;
+import moe.plushie.armourers_workshop.core.skin.molang.core.ExecutionContext;
+import moe.plushie.armourers_workshop.core.skin.molang.core.VariableStorage;
+import moe.plushie.armourers_workshop.core.skin.molang.runtime.LocalVariableStorage;
+import moe.plushie.armourers_workshop.core.skin.molang.runtime.bind.selector.LevelSelector;
+import moe.plushie.armourers_workshop.core.skin.molang.thirdparty.bind.ExecutionContextImpl;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.CameraType;

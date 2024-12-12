@@ -28,7 +28,7 @@ public class BlockBenchAnimation extends BlockBenchObject {
         return animators;
     }
 
-    public static class Builder extends BlockBenchObject.Builder {
+    protected static class Builder extends BlockBenchObject.Builder {
 
         private float duration = 0;
         private String loop = "loop"; // once, hold, loop

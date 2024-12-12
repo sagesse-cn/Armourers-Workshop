@@ -2,11 +2,11 @@ package moe.plushie.armourers_workshop.core.data.slot;
 
 import moe.plushie.armourers_workshop.api.common.IItemTag;
 import moe.plushie.armourers_workshop.api.core.IRegistryHolder;
+import moe.plushie.armourers_workshop.core.utils.TypedRegistry;
 import moe.plushie.armourers_workshop.init.ModConfig;
 import moe.plushie.armourers_workshop.init.ModItemMatchers;
 import moe.plushie.armourers_workshop.init.ModItemTags;
 import moe.plushie.armourers_workshop.utils.ItemMatcher;
-import moe.plushie.armourers_workshop.core.utils.TypedRegistry;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 

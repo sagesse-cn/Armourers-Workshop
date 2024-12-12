@@ -2,7 +2,6 @@ package moe.plushie.armourers_workshop.core.skin.attachment;
 
 import moe.plushie.armourers_workshop.api.core.IRegistryEntry;
 import moe.plushie.armourers_workshop.api.core.IResourceLocation;
-import moe.plushie.armourers_workshop.core.math.Vector3f;
 
 import java.util.Objects;
 

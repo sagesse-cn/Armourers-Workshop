@@ -74,7 +74,7 @@ public class BlockBenchCube extends BlockBenchElement {
         return faces;
     }
 
-    public static class Builder extends BlockBenchElement.Builder {
+    protected static class Builder extends BlockBenchElement.Builder {
 
         protected boolean boxUV = false;
         protected boolean mirrorUV = false;

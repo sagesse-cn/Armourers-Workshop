@@ -1,0 +1,204 @@
+package moe.plushie.armourers_workshop.core.skin.texture;
+
+import moe.plushie.armourers_workshop.api.core.IDataCodec;
+import moe.plushie.armourers_workshop.api.core.IDataSerializable;
+import moe.plushie.armourers_workshop.api.core.IDataSerializer;
+import moe.plushie.armourers_workshop.api.core.IDataSerializerKey;
+import moe.plushie.armourers_workshop.api.skin.texture.ISkinPaintType;
+import moe.plushie.armourers_workshop.core.utils.Collections;
+import moe.plushie.armourers_workshop.core.utils.Objects;
+import moe.plushie.armourers_workshop.core.utils.OpenResourceLocation;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Predicate;
+
+@SuppressWarnings("unused")
+public class SkinPaintScheme implements IDataSerializable.Immutable {
+
+    public final static SkinPaintScheme EMPTY = new SkinPaintScheme();
+
+    public static final IDataCodec<SkinPaintScheme> CODEC = IDataCodec.COMPOUND_TAG.serializer(SkinPaintScheme::new);
+
+    private final HashMap<ISkinPaintType, SkinPaintColor> colors = new HashMap<>();
+    private HashMap<ISkinPaintType, SkinPaintColor> resolvedColors;
+
+    private SkinPaintScheme reference;
+    private OpenResourceLocation texture;
+
+    private int hashCode;
+
+    public SkinPaintScheme() {
+    }
+
+    public SkinPaintScheme(IDataSerializer serializer) {
+        for (var entry : CodingKeys.KEYS.entrySet()) {
+            var value = serializer.read(entry.getValue());
+            if (value != null) {
+                colors.put(entry.getKey(), value);
+            }
+        }
+    }
+
+    @Override
+    public void serialize(IDataSerializer serializer) {
+        for (var entry : CodingKeys.KEYS.entrySet()) {
+            var value = colors.get(entry.getKey());
+            if (value != null) {
+                serializer.write(entry.getValue(), value);
+            }
+        }
+    }
+
+    public SkinPaintScheme copy() {
+        var scheme = new SkinPaintScheme();
+        scheme.colors.putAll(colors);
+        scheme.reference = reference;
+        scheme.texture = texture;
+        return scheme;
+    }
+
+    public boolean isEmpty() {
+        if (this == EMPTY) {
+            return true;
+        }
+        if (reference != null && !reference.isEmpty()) {
+            return false;
+        }
+        if (texture != null) {
+            return false;
+        }
+        return colors.isEmpty();
+    }
+
+    @Nullable
+    public SkinPaintColor getColor(ISkinPaintType paintType) {
+        var color = colors.get(paintType);
+        if (color != null) {
+            return color;
+        }
+        if (reference != null) {
+            return reference.getColor(paintType);
+        }
+        return null;
+    }
+
+    public void setColor(ISkinPaintType paintType, SkinPaintColor color) {
+        colors.put(paintType, color);
+        resolvedColors = null;
+        hashCode = 0;
+    }
+
+    public SkinPaintColor getResolvedColor(ISkinPaintType paintType) {
+        if (resolvedColors == null) {
+            resolvedColors = getResolvedColors();
+        }
+        return resolvedColors.get(paintType);
+    }
+
+    public OpenResourceLocation getTexture() {
+        return texture;
+    }
+
+    public void setTexture(OpenResourceLocation texture) {
+        this.texture = texture;
+    }
+
+    public SkinPaintScheme getReference() {
+        if (reference != null) {
+            return reference;
+        }
+        return SkinPaintScheme.EMPTY;
+    }
+
+    public void setReference(SkinPaintScheme reference) {
+        // referring empty scheme not have any effect.
+        if (reference != null && reference.isEmpty()) {
+            reference = null;
+        }
+        if (!Objects.equals(this.reference, reference)) {
+            this.reference = reference;
+            this.resolvedColors = null;
+            this.hashCode = 0;
+        }
+    }
+
+    private HashMap<ISkinPaintType, SkinPaintColor> getResolvedColors() {
+        var resolvedColors = new HashMap<ISkinPaintType, SkinPaintColor>();
+        var dependencies = new HashMap<ISkinPaintType, ArrayList<ISkinPaintType>>();
+        // build all reference dependencies
+        if (reference != null) {
+            resolvedColors.putAll(reference.getResolvedColors());
+        }
+        // build all item dependencies
+        Collections.concat(colors.entrySet(), getReference().colors.entrySet()).forEach(e -> {
+            var paintType = e.getKey();
+            var color = e.getValue();
+            if (color.getPaintType().getDyeType() != null) {
+                dependencies.computeIfAbsent(color.getPaintType(), k -> new ArrayList<>()).add(paintType);
+            } else {
+                resolvedColors.put(paintType, color);
+            }
+        });
+        if (resolvedColors.isEmpty()) {
+            return resolvedColors;
+        }
+        // merge all items whens dependencies
+        dependencies.forEach((key, value) -> find(dependencies.values(), v -> v.contains(key)).ifPresent(target -> {
+            if (target != value) {
+                target.addAll(value);
+            }
+            value.clear(); // clear to prevent infinite loop occurs
+        }));
+        dependencies.forEach((key, value) -> value.forEach(paintType -> resolvedColors.put(paintType, resolvedColors.get(key))));
+        return resolvedColors;
+    }
+
+    private <T> Optional<T> find(Collection<T> values, Predicate<T> predicate) {
+        for (var value : values) {
+            if (predicate.test(value)) {
+                return Optional.of(value);
+            }
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof SkinPaintScheme that)) return false;
+        return colors.equals(that.colors) && Objects.equals(texture, that.texture) && Objects.equals(reference, that.reference);
+    }
+
+    @Override
+    public int hashCode() {
+        if (hashCode == 0) {
+            hashCode = Objects.hash(colors, texture, reference);
+            if (hashCode == 0) {
+                hashCode = ~hashCode;
+            }
+        }
+        return hashCode;
+    }
+
+    @Override
+    public String toString() {
+        return "[" + getResolvedColors() + "]";
+    }
+
+    private static class CodingKeys {
+        public static final Map<SkinPaintType, IDataSerializerKey<SkinPaintColor>> KEYS = Collections.immutableMap(builder -> {
+            for (var paintType : SkinPaintTypes.values()) {
+                if (paintType != SkinPaintTypes.NONE) {
+                    var name = paintType.getRegistryName().toString();
+                    var key = IDataSerializerKey.create(name, SkinPaintColor.CODEC, null);
+                    builder.put(paintType, key);
+                }
+            }
+        });
+    }
+}

@@ -6,7 +6,6 @@ import moe.plushie.armourers_workshop.compatibility.core.data.AbstractDataSerial
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.nbt.TagParser;
-import net.minecraft.world.entity.Entity;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

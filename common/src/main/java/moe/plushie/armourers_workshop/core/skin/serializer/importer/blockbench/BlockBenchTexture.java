@@ -1,8 +1,8 @@
 package moe.plushie.armourers_workshop.core.skin.serializer.importer.blockbench;
 
 import moe.plushie.armourers_workshop.core.math.Size2f;
-import moe.plushie.armourers_workshop.core.skin.texture.TextureAnimation;
-import moe.plushie.armourers_workshop.core.skin.texture.TextureProperties;
+import moe.plushie.armourers_workshop.core.skin.texture.SkinTextureAnimation;
+import moe.plushie.armourers_workshop.core.skin.texture.SkinTextureProperties;
 
 import java.util.ArrayList;
 
@@ -57,24 +57,24 @@ public class BlockBenchTexture extends BlockBenchObject {
         return frameInterpolate;
     }
 
-    public TextureAnimation.Mode getFrameMode() {
+    public SkinTextureAnimation.Mode getFrameMode() {
         return switch (frameOrderType) {
-            case "loop" -> TextureAnimation.Mode.LOOP;
-            case "backwards" -> TextureAnimation.Mode.BACKWARDS;
-            case "back_and_forth" -> TextureAnimation.Mode.BACK_AND_FORTH;
+            case "loop" -> SkinTextureAnimation.Mode.LOOP;
+            case "backwards" -> SkinTextureAnimation.Mode.BACKWARDS;
+            case "back_and_forth" -> SkinTextureAnimation.Mode.BACK_AND_FORTH;
             case "custom" -> {
                 var frames = _parseFrameSeq(frameOrder);
                 if (frames.length >= 1) {
-                    yield new TextureAnimation.Mode(frames);
+                    yield new SkinTextureAnimation.Mode(frames);
                 }
-                yield TextureAnimation.Mode.LOOP;
+                yield SkinTextureAnimation.Mode.LOOP;
             }
-            default -> TextureAnimation.Mode.LOOP;
+            default -> SkinTextureAnimation.Mode.LOOP;
         };
     }
 
-    public TextureProperties getProperties() {
-        var properties = new TextureProperties();
+    public SkinTextureProperties getProperties() {
+        var properties = new SkinTextureProperties();
         properties.setEmissive(renderMode.equals("emissive"));
         //properties.setAdditive(renderMode.equals("additive"));
         properties.setParticle(particle);
@@ -99,7 +99,7 @@ public class BlockBenchTexture extends BlockBenchObject {
         return frames;
     }
 
-    public static class Builder extends BlockBenchObject.Builder {
+    protected static class Builder extends BlockBenchObject.Builder {
 
         private String renderMode = "default";
         private String source;

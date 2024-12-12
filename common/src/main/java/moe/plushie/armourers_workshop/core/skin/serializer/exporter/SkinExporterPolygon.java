@@ -1,9 +1,6 @@
 package moe.plushie.armourers_workshop.core.skin.serializer.exporter;
 
-import moe.plushie.armourers_workshop.api.skin.ISkin;
-import moe.plushie.armourers_workshop.api.skin.ISkinExporter;
 import moe.plushie.armourers_workshop.api.skin.geometry.ISkinGeometryType;
-import moe.plushie.armourers_workshop.api.skin.paint.ISkinPaintColor;
 import moe.plushie.armourers_workshop.core.math.OpenPoseStack;
 import moe.plushie.armourers_workshop.core.math.Rectangle3i;
 import moe.plushie.armourers_workshop.core.math.Vector3f;
@@ -13,6 +10,7 @@ import moe.plushie.armourers_workshop.core.skin.geometry.SkinGeometryTypes;
 import moe.plushie.armourers_workshop.core.skin.geometry.cube.SkinCubeFace;
 import moe.plushie.armourers_workshop.core.skin.geometry.cube.SkinCubeFaceCuller;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPart;
+import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintColor;
 import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.init.ModLog;
 
@@ -25,7 +23,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 
-public class SkinExporterPolygon implements ISkinExporter {
+public class SkinExporterPolygon implements SkinExporter {
 
     private static final String CRLF = "\n";
 
@@ -35,8 +33,7 @@ public class SkinExporterPolygon implements ISkinExporter {
     }
 
     @Override
-    public void exportSkin(ISkin skinIn, File filePath, String filename, float scale) throws Exception {
-        var skin = (Skin) skinIn;
+    public void exportSkin(Skin skin, File filePath, String filename, float scale) throws Exception {
         var partIndex = 0;
         for (var skinPart : skin.getParts()) {
             exportPart(skinPart, skin, filePath, filename, scale, partIndex++);
@@ -120,7 +117,7 @@ public class SkinExporterPolygon implements ISkinExporter {
         outputStream.close();
     }
 
-    private void writeVert(OpenPoseStack poseStack, OutputStreamWriter os, float x, float y, float z, ISkinPaintColor color) throws IOException {
+    private void writeVert(OpenPoseStack poseStack, OutputStreamWriter os, float x, float y, float z, SkinPaintColor color) throws IOException {
         var q = new Vector4f(x, y, z, 1);
         q.transform(poseStack.last().pose());
         os.write(String.format("%s %s %s %d %d %d", f2s(q.getX()), f2s(q.getY()), f2s(q.getZ()), color.getRed(), color.getGreen(), color.getBlue()) + CRLF);

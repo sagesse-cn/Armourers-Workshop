@@ -3,8 +3,8 @@ package moe.plushie.armourers_workshop.core.client.bake;
 import moe.plushie.armourers_workshop.api.armature.IJoint;
 import moe.plushie.armourers_workshop.api.skin.part.ISkinPartType;
 import moe.plushie.armourers_workshop.core.armature.Armatures;
-import moe.plushie.armourers_workshop.core.utils.OpenItemDisplayContext;
 import moe.plushie.armourers_workshop.core.utils.Collections;
+import moe.plushie.armourers_workshop.core.utils.OpenItemDisplayContext;
 
 import java.util.HashSet;
 import java.util.Map;
