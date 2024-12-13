@@ -40,7 +40,7 @@ public class ClientProxyImpl implements ClientModInitializer {
     }
 
     public ItemStack onPickItem(Player player, HitResult result) {
-        if (result instanceof EntityHitResult hitResult && hitResult instanceof IEntityHandler handler) {
+        if (result instanceof EntityHitResult hitResult && hitResult.getEntity() instanceof IEntityHandler handler) {
             return handler.getCustomPickResult(result);
         }
         return ItemStack.EMPTY;
