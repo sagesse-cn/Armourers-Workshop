@@ -1,5 +1,6 @@
 package moe.plushie.armourers_workshop.core.skin.particle.component.emitter;
 
+import moe.plushie.armourers_workshop.core.skin.particle.SkinParticleBuilder;
 import moe.plushie.armourers_workshop.core.skin.particle.SkinParticleComponent;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IInputStream;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IOutputStream;
@@ -43,5 +44,14 @@ public class EmitterInitialLocalSpace extends SkinParticleComponent {
         stream.writeBoolean(position);
         stream.writeBoolean(rotation);
         stream.writeBoolean(velocity);
+    }
+
+    @Override
+    public void applyToBuilder(SkinParticleBuilder builder) throws Exception {
+        builder.applyParticle((emitter, particle, context) -> {
+            particle.setFlags(position, rotation, velocity);
+            // TODO: NO IMPL @SAGESSE
+//            particle.setupMatrix(emitter);
+        });
     }
 }

@@ -256,28 +256,28 @@ public class BedrockParticleReader {
 
                     // static
                     it.at("uv", it2 -> {
-                        builder.u(it2.at(0).expression());
-                        builder.v(it2.at(1).expression());
+                        builder.textureCoordsX(it2.at(0).expression());
+                        builder.textureCoordsY(it2.at(1).expression());
                     });
                     it.at("uv_size", it2 -> {
-                        builder.uvWidth(it2.at(0).expression());
-                        builder.uvHeight(it2.at(1).expression());
+                        builder.textureCoordsWidth(it2.at(0).expression());
+                        builder.textureCoordsHeight(it2.at(1).expression());
                     });
 
                     // animated
                     it.at("flipbook", it1 -> builder.useAnimation(true));
                     it.at("flipbook", it1 -> {
                         it1.at("base_UV", it2 -> {
-                            builder.u(it2.at(0).expression());
-                            builder.v(it2.at(1).expression());
+                            builder.textureCoordsX(it2.at(0).expression());
+                            builder.textureCoordsY(it2.at(1).expression());
                         });
                         it1.at("size_UV", it2 -> {
-                            builder.uvWidth(it2.at(0).expression());
-                            builder.uvHeight(it2.at(1).expression());
+                            builder.textureCoordsWidth(it2.at(0).expression());
+                            builder.textureCoordsHeight(it2.at(1).expression());
                         });
                         it1.at("step_UV", it2 -> {
-                            builder.uvStepX(it2.at(0).expression());
-                            builder.uvStepY(it2.at(1).expression());
+                            builder.stepX(it2.at(0).expression());
+                            builder.stepY(it2.at(1).expression());
                         });
                         it1.at("frames_per_second", it2 -> builder.fps(it2.intValue()));
                         it1.at("max_frame", it2 -> builder.maxFrame(it2.expression()));
@@ -296,7 +296,7 @@ public class BedrockParticleReader {
                             builder.addColor(it.at(3).expression()); // A
                         }
                         case DICTIONARY -> {
-                            it.at("interpolant", it2 -> builder.interpolant(it2.expression()));
+                            it.at("interpolant", it2 -> builder.interpolation(it2.expression()));
                             it.each("gradient", (key, value) -> builder.addColor(key, value.stringValue())); // 0xAARRGGBB
                         }
                     }

@@ -36,20 +36,22 @@ public class Vector2f implements IVector2f {
         return new Vector2f(p1, p2);
     }
 
+    public void setX(float x) {
+        this.x = x;
+    }
+
+    @Override
     public float getX() {
         return this.x;
     }
 
-    protected void setX(float x) {
-        this.x = x;
+    public void setY(float y) {
+        this.y = y;
     }
 
+    @Override
     public float getY() {
         return this.y;
-    }
-
-    protected void setY(float y) {
-        this.y = y;
     }
 
     public long asLong() {

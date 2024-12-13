@@ -342,11 +342,11 @@ public class GlobalSkinLibrary extends ServerSession {
         var serverId = String.valueOf(defaultBaseURL().hashCode());
         if (!MinecraftAuth.checkAndRefeshAuth(serverId)) {
             var error = MinecraftAuth.getLastError();
-            ModLog.debug("MC Auth Failed");
+            ModLog.info("MC Auth Failed");
             error.printStackTrace();
             throw new RuntimeException(error.getMessage());
         }
-        ModLog.debug("MC Auth Done");
+        ModLog.info("MC Auth Done");
         var parameters = new HashMap<String, Object>();
         parameters.put("username", user.getName());
         parameters.put("uuid", user.getUUID());

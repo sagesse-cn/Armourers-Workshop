@@ -12,6 +12,7 @@ public class OpenPrimitive {
     public static final OpenPrimitive INT_ZERO = new OpenPrimitive(0);
     public static final OpenPrimitive FLOAT_ZERO = new OpenPrimitive(0.0f);
     public static final OpenPrimitive DOUBLE_ZERO = new OpenPrimitive(0.0d);
+    public static final OpenPrimitive EMPTY_STRING = new OpenPrimitive("");
 
     private final Object value;
 

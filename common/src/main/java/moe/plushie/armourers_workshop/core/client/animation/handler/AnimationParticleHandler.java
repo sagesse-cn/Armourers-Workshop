@@ -1,13 +1,13 @@
 package moe.plushie.armourers_workshop.core.client.animation.handler;
 
-import moe.plushie.armourers_workshop.core.client.animation.AnimatedPointValue;
 import moe.plushie.armourers_workshop.core.skin.animation.SkinAnimationPoint;
 import moe.plushie.armourers_workshop.core.skin.molang.core.ExecutionContext;
 import moe.plushie.armourers_workshop.core.utils.Objects;
+import moe.plushie.armourers_workshop.core.utils.OptimizedExpression;
 import moe.plushie.armourers_workshop.init.ModConfig;
 import moe.plushie.armourers_workshop.init.ModLog;
 
-public class AnimationParticleHandler implements AnimatedPointValue.Effect {
+public class AnimationParticleHandler implements OptimizedExpression<Object> {
 
     private final SkinAnimationPoint.Particle particle;
 
@@ -16,7 +16,7 @@ public class AnimationParticleHandler implements AnimatedPointValue.Effect {
     }
 
     @Override
-    public Runnable apply(ExecutionContext context) {
+    public Runnable evaluate(ExecutionContext context) {
         if (ModConfig.Client.enableAnimationDebug) {
             ModLog.debug("start play {}", this);
         }

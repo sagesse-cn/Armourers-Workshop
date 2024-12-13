@@ -1,5 +1,6 @@
 package moe.plushie.armourers_workshop.core.skin.particle.component.particle;
 
+import moe.plushie.armourers_workshop.core.skin.particle.SkinParticleBuilder;
 import moe.plushie.armourers_workshop.core.skin.particle.SkinParticleComponent;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IInputStream;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IOutputStream;
@@ -26,5 +27,18 @@ public class ParticleInitialSpin extends SkinParticleComponent {
     public void writeToStream(IOutputStream stream) throws IOException {
         stream.writePrimitiveObject(rotation);
         stream.writePrimitiveObject(rotationRate);
+    }
+
+    @Override
+    public void applyToBuilder(SkinParticleBuilder builder) throws Exception {
+        var rotation = builder.compile(this.rotation, 0.0);
+        var rotationRate = builder.compile(this.rotationRate, 0.0);
+        builder.applyParticle((emitter, particle, context) -> {
+            var rot = rotation.compute(context);
+            var velocity = rotationRate.compute(context);
+            // TODO: NO IMPL @SAGESSE
+//            particle.initialRotation = (float) rot;
+//            particle.rotationVelocity = (float) velocity / 20;
+        });
     }
 }

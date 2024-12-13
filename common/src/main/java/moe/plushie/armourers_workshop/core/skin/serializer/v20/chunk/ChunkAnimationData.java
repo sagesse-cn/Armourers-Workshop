@@ -8,6 +8,7 @@ import moe.plushie.armourers_workshop.core.skin.animation.SkinAnimationPoint;
 import moe.plushie.armourers_workshop.core.skin.sound.SkinSoundData;
 import moe.plushie.armourers_workshop.core.skin.sound.SkinSoundProperties;
 import moe.plushie.armourers_workshop.core.utils.Objects;
+import moe.plushie.armourers_workshop.core.utils.OpenPrimitive;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -168,21 +169,22 @@ public class ChunkAnimationData {
                 writeField(value.getZ(), stream);
             }
 
-            private static Object readField(ChunkInputStream stream) throws IOException {
+            private static OpenPrimitive readField(ChunkInputStream stream) throws IOException {
                 var len = stream.readVarInt();
                 if (len == 0) {
-                    return stream.readFloat();
+                    return OpenPrimitive.of(stream.readFloat());
                 }
-                return stream.readString(len);
+                return OpenPrimitive.of(stream.readString(len));
             }
 
-            private static void writeField(Object value, ChunkOutputStream stream) throws IOException {
-                if (value instanceof String script) {
+            private static void writeField(OpenPrimitive value, ChunkOutputStream stream) throws IOException {
+                if (value.isString()) {
+                    var script = value.stringValue();
                     stream.writeVarInt(script.length());
                     stream.writeString(script, script.length());
-                } else if (value instanceof Number number) {
+                } else if (value.isNumber()) {
                     stream.writeVarInt(0);
-                    stream.writeFloat(number.floatValue());
+                    stream.writeFloat(value.floatValue());
                 } else {
                     throw new IOException("can't write point value: " + value);
                 }
@@ -343,13 +345,13 @@ public class ChunkAnimationData {
 
         private static List<SkinAnimationPoint> readKeyframePointsFromStream(int length, ChunkInputStream stream) throws IOException {
             var points = new ArrayList<SkinAnimationPoint>();
-            var objects = new ArrayList<Object>();
+            var objects = new ArrayList<OpenPrimitive>();
             for (int i = 0; i < length; i++) {
                 var flags = stream.readVarInt();
                 if ((flags & 0x40) != 0) {
-                    objects.add(stream.readString());
+                    objects.add(OpenPrimitive.of(stream.readString()));
                 } else {
-                    objects.add(stream.readFloat());
+                    objects.add(OpenPrimitive.of(stream.readFloat()));
                 }
             }
             for (int i = 0; i < objects.size(); i += 3) {

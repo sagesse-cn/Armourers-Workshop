@@ -12,11 +12,11 @@ import moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk.ChunkDataOu
 import moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk.ChunkGeometrySlice;
 import moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk.ChunkPaletteData;
 import moe.plushie.armourers_workshop.core.skin.serializer.v20.geometry.ChunkGeometrySerializer;
+import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintColor;
 import moe.plushie.armourers_workshop.core.skin.texture.SkinTextureBox;
 import moe.plushie.armourers_workshop.core.skin.texture.SkinTextureData;
 import moe.plushie.armourers_workshop.core.skin.texture.SkinTextureOptions;
 import moe.plushie.armourers_workshop.core.skin.texture.SkinTexturePos;
-import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintColor;
 import moe.plushie.armourers_workshop.core.utils.OpenDirection;
 import org.apache.commons.lang3.tuple.Pair;
 

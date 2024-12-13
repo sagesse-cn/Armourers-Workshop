@@ -41,10 +41,10 @@ import moe.plushie.armourers_workshop.core.skin.texture.SkinTexturePos;
 import moe.plushie.armourers_workshop.core.skin.texture.SkinTextureProperties;
 import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.core.utils.FileUtils;
-import moe.plushie.armourers_workshop.core.utils.Objects;
 import moe.plushie.armourers_workshop.core.utils.OpenDirection;
 import moe.plushie.armourers_workshop.core.utils.OpenItemDisplayContext;
 import moe.plushie.armourers_workshop.core.utils.OpenItemTransforms;
+import moe.plushie.armourers_workshop.core.utils.OpenPrimitive;
 import moe.plushie.armourers_workshop.core.utils.StreamUtils;
 import moe.plushie.armourers_workshop.init.ModLog;
 import org.jetbrains.annotations.Nullable;
@@ -256,8 +256,8 @@ public class BlockBenchExporter {
         allAnimations.forEach(animation -> {
             var name = animation.getName();
             var duration = animation.getDuration();
-            var loop = animator.toAnimationLoop(animation.getLoop());
-            var values = animator.toAnimationKeyframes(animation.getAnimators());
+            var loop = animator.convertToAnimationLoop(animation.getLoop());
+            var values = animator.exportAnimationKeyframes(animation.getAnimators());
             if (values.isEmpty()) {
                 return;
             }
@@ -574,15 +574,15 @@ public class BlockBenchExporter {
             this.virtualMachine = virtualMachine;
         }
 
-        public Map<String, List<SkinAnimationKeyframe>> toAnimationKeyframes(List<BlockBenchAnimator> animators) {
+        public Map<String, List<SkinAnimationKeyframe>> exportAnimationKeyframes(List<BlockBenchAnimator> animators) {
             var results = new LinkedHashMap<String, List<SkinAnimationKeyframe>>();
             for (var animator : animators) {
                 var keyframes = results.computeIfAbsent(animator.getName(), k -> new ArrayList<>());
                 for (var keyframe : animator.getKeyframes()) {
                     var time = keyframe.getTime();
                     var channel = keyframe.getName();
-                    var function = toAnimationFunction(keyframe);
-                    var points = toAnimationPoints(keyframe, animator);
+                    var function = convertToAnimationFunction(keyframe);
+                    var points = exportAnimationPoints(keyframe, animator);
                     if (!points.isEmpty()) {
                         keyframes.add(new SkinAnimationKeyframe(time, channel, function, points));
                     }
@@ -591,105 +591,108 @@ public class BlockBenchExporter {
             return results;
         }
 
-        public List<SkinAnimationPoint> toAnimationPoints(BlockBenchKeyframe keyframe, BlockBenchAnimator animator) {
-            var points = new ArrayList<SkinAnimationPoint>();
+        public List<SkinAnimationPoint> exportAnimationPoints(BlockBenchKeyframe keyframe, BlockBenchAnimator animator) {
+            var type = animator.getType();
             var channel = keyframe.getName();
-            switch (animator.getType()) {
-                case "bone" -> {
-                    for (var point : keyframe.getPoints()) {
-                        var x = toAnimationPoint(point.getOrDefault("x", 0));
-                        var y = toAnimationPoint(point.getOrDefault("y", 0));
-                        var z = toAnimationPoint(point.getOrDefault("z", 0));
-                        if (channel.equals("position")) {
-                            y = toAnimationNegativePoint(y);
-                        }
-                        points.add(new SkinAnimationPoint.Bone(x, y, z));
-                    }
-                }
-                case "effect" -> {
-                    switch (channel) {
-                        case "timeline" -> {
-                            for (var point : keyframe.getPoints()) {
-                                var script = toAnimationScript(point.get("script"));
-                                if (script == null || script.isEmpty()) {
-                                    continue; // ignore empty instruct.
-                                }
-                                points.add(new SkinAnimationPoint.Instruct(script));
-                            }
-                        }
-                        case "sound" -> {
-                            for (var point : keyframe.getPoints()) {
-                                var effect = Objects.safeCast(point.get("effect"), String.class);
-                                var filePath = Objects.safeCast(point.get("file"), String.class);
-                                if (effect == null && filePath == null) {
-                                    continue; // ignore empty sound.
-                                }
-                                var soundBuilder = new SoundBuilder(virtualMachine);
-                                var sound = soundBuilder.build(effect, filePath);
-                                if (sound == null) {
-                                    continue; // can't resolve the sound.
-                                }
-                                points.add(sound);
-                            }
-                        }
-                        case "particle" -> {
-                            for (var point : keyframe.getPoints()) {
-                                var effect = Objects.safeCast(point.get("effect"), String.class);
-                                var locator = Objects.safeCast(point.get("locator"), String.class);
-                                var script = Objects.safeCast(point.get("script"), String.class);
-                                var filePath = Objects.safeCast(point.get("file"), String.class);
-                                if (effect == null && filePath == null) {
-                                    continue; // ignore empty sound.
-                                }
-                                var particleBuilder = new ParticleBuilder(virtualMachine);
-                                var particle = particleBuilder.build(effect, locator, filePath, script);
-                                if (particle == null) {
-                                    continue; // can't resolve the particle.
-                                }
-                                points.add(particle);
-                            }
-                        }
-                        default -> ModLog.warn("a unknown effect channel of '{}'", channel);
-                    }
-                }
-                default -> ModLog.warn("a unknown type of '{}'", animator.getType());
-            }
-            return points;
+            return Collections.compactMap(keyframe.getPoints(), it -> exportAnimationPoint(type, channel, it));
         }
 
-        public Object toAnimationPoint(Object value) {
-            if (value instanceof String script) {
+        protected SkinAnimationPoint exportAnimationPoint(String type, String channel, Map<String, OpenPrimitive> point) {
+            return switch (type) {
+                case "bone" -> exportAnimationBone(channel, point);
+                case "effect" -> switch (channel) {
+                    case "timeline" -> exportAnimationInstruct(point);
+                    case "sound" -> exportAnimationSound(point);
+                    case "particle" -> exportAnimationParticle(point);
+                    default -> throw new RuntimeException("a unknown effect channel of '" + channel + "'");
+                };
+                default -> throw new RuntimeException("a unknown type of '" + type + "'");
+            };
+        }
+
+        protected SkinAnimationPoint.Instruct exportAnimationInstruct(Map<String, OpenPrimitive> point) {
+            try {
+                var value = point.getOrDefault("script", OpenPrimitive.EMPTY_STRING);
+                if (value.isString()) {
+                    var expr = virtualMachine.compile(value.stringValue());
+                    if (expr.isMutable()) {
+                        return new SkinAnimationPoint.Instruct(value.stringValue());
+                    }
+                }
+            } catch (Exception exception) {
+                exception.printStackTrace();
+            }
+            return null;
+        }
+
+        protected SkinAnimationPoint.Bone exportAnimationBone(String channel, Map<String, OpenPrimitive> point) {
+            var x = convertToAnimationPoint(point.getOrDefault("x", OpenPrimitive.FLOAT_ZERO));
+            var y = convertToAnimationPoint(point.getOrDefault("y", OpenPrimitive.FLOAT_ZERO));
+            var z = convertToAnimationPoint(point.getOrDefault("z", OpenPrimitive.FLOAT_ZERO));
+            if (channel.equals("position")) {
+                y = convertToNegativeAnimationPoint(y);
+            }
+            return new SkinAnimationPoint.Bone(x, y, z);
+        }
+
+        protected SkinAnimationPoint.Sound exportAnimationSound(Map<String, OpenPrimitive> point) {
+            var effect = point.getOrDefault("effect", OpenPrimitive.EMPTY_STRING).stringValue();
+            var filePath = point.getOrDefault("file", OpenPrimitive.EMPTY_STRING).stringValue();
+            if (effect.isEmpty() && filePath.isEmpty()) {
+                return null; // ignore empty sound.
+            }
+            var soundBuilder = new SoundBuilder(virtualMachine);
+            return soundBuilder.build(effect, filePath);
+        }
+
+        protected SkinAnimationPoint.Particle exportAnimationParticle(Map<String, OpenPrimitive> point) {
+            var effect = point.getOrDefault("effect", OpenPrimitive.EMPTY_STRING).stringValue();
+            var locator = point.getOrDefault("locator", OpenPrimitive.EMPTY_STRING).stringValue();
+            var script = point.getOrDefault("script", OpenPrimitive.EMPTY_STRING).stringValue();
+            var filePath = point.getOrDefault("file", OpenPrimitive.EMPTY_STRING).stringValue();
+            if (effect.isEmpty() && filePath.isEmpty()) {
+                return null; // ignore empty sound.
+            }
+            var particleBuilder = new ParticleBuilder(virtualMachine);
+            return particleBuilder.build(effect, locator, filePath, script);
+        }
+
+        public OpenPrimitive convertToAnimationPoint(OpenPrimitive value) {
+            if (value.isNumber()) {
+                return value;
+            }
+            if (value.isString()) {
                 try {
                     // for blank script, we assume it to be a 0
+                    var script = value.toString();
                     if (script.isEmpty()) {
-                        return 0f;
+                        return OpenPrimitive.FLOAT_ZERO;
                     }
                     var expr = virtualMachine.compile(script);
                     if (expr.isMutable()) {
-                        return script;
+                        return OpenPrimitive.of(script);
                     }
-                    return (float) expr.compute(OptimizeContext.DEFAULT);
+                    return OpenPrimitive.of((float) expr.compute(OptimizeContext.DEFAULT));
                 } catch (Exception exception) {
                     //throw new RuntimeException("can't parse \"" + script + "\" in model!", exception);
                     exception.printStackTrace();
                 }
             }
-            if (value instanceof Number number) {
-                return number.floatValue();
-            }
-            return 0f;
+            return OpenPrimitive.FLOAT_ZERO;
         }
 
-        public Object toAnimationNegativePoint(Object point) {
-            if (point instanceof String script) {
-                point = "-(" + script + ")";
-            } else if (point instanceof Number number) {
-                point = -number.floatValue();
+        public OpenPrimitive convertToNegativeAnimationPoint(OpenPrimitive point) {
+            if (point.isNumber()) {
+                return OpenPrimitive.of(-point.floatValue());
+            }
+            if (point.isString()) {
+                var script = "-(" + point.stringValue() + ")";
+                return OpenPrimitive.of(script);
             }
             return point;
         }
 
-        public SkinAnimationLoop toAnimationLoop(String value) {
+        public SkinAnimationLoop convertToAnimationLoop(String value) {
             return switch (value) {
                 case "once" -> SkinAnimationLoop.NONE;
                 case "hold" -> SkinAnimationLoop.LAST_FRAME;
@@ -698,7 +701,7 @@ public class BlockBenchExporter {
             };
         }
 
-        public static SkinAnimationFunction toAnimationFunction(BlockBenchKeyframe keyframe) {
+        public static SkinAnimationFunction convertToAnimationFunction(BlockBenchKeyframe keyframe) {
             return switch (keyframe.getInterpolation()) {
                 case "bezier" -> SkinAnimationFunction.bezier(keyframe.getParameters());
                 case "linear" -> SkinAnimationFunction.linear();
@@ -706,20 +709,6 @@ public class BlockBenchExporter {
                 case "smooth" -> SkinAnimationFunction.smooth();
                 default -> SkinAnimationFunction.linear(); // missing
             };
-        }
-
-        private String toAnimationScript(Object value) {
-            try {
-                if (value instanceof String script) {
-                    var expr = virtualMachine.compile(script);
-                    if (expr.isMutable()) {
-                        return script;
-                    }
-                }
-            } catch (Exception exception) {
-                exception.printStackTrace();
-            }
-            return null;
         }
 
         protected static class SoundBuilder {
@@ -1234,9 +1223,6 @@ public class BlockBenchExporter {
             var properties = data.getProperties();
             if (properties.isEmissive()) {
                 key |= 0x10;
-            }
-            if (properties.isParticle()) {
-                key |= 0x20;
             }
             if (properties.isNormal()) {
                 key |= 0x01;

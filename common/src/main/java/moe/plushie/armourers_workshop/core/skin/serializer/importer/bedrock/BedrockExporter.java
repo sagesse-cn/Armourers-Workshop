@@ -6,7 +6,6 @@ import moe.plushie.armourers_workshop.core.skin.molang.core.Expression;
 import moe.plushie.armourers_workshop.core.skin.molang.runtime.OptimizeContext;
 import moe.plushie.armourers_workshop.core.skin.particle.SkinParticleComponent;
 import moe.plushie.armourers_workshop.core.skin.particle.SkinParticleData;
-import moe.plushie.armourers_workshop.core.skin.particle.SkinParticleDirection;
 import moe.plushie.armourers_workshop.core.skin.particle.SkinParticleFacing;
 import moe.plushie.armourers_workshop.core.skin.particle.SkinParticleMaterial;
 import moe.plushie.armourers_workshop.core.skin.particle.component.emitter.EmitterInitialLocalSpace;
@@ -22,12 +21,12 @@ import moe.plushie.armourers_workshop.core.skin.particle.component.emitter.shape
 import moe.plushie.armourers_workshop.core.skin.particle.component.emitter.shape.EmitterDiscShape;
 import moe.plushie.armourers_workshop.core.skin.particle.component.emitter.shape.EmitterEntityShape;
 import moe.plushie.armourers_workshop.core.skin.particle.component.emitter.shape.EmitterPointShape;
+import moe.plushie.armourers_workshop.core.skin.particle.component.emitter.shape.EmitterShapeDirection;
 import moe.plushie.armourers_workshop.core.skin.particle.component.emitter.shape.EmitterSphereShape;
 import moe.plushie.armourers_workshop.core.skin.particle.component.particle.ParticleInitialSpeed;
 import moe.plushie.armourers_workshop.core.skin.particle.component.particle.ParticleInitialSpin;
 import moe.plushie.armourers_workshop.core.skin.particle.component.particle.ParticleInitialization;
 import moe.plushie.armourers_workshop.core.skin.particle.component.particle.appearance.ParticleBillboardAppearance;
-import moe.plushie.armourers_workshop.core.skin.particle.component.particle.appearance.ParticleGradientTintingAppearance;
 import moe.plushie.armourers_workshop.core.skin.particle.component.particle.appearance.ParticleLightingAppearance;
 import moe.plushie.armourers_workshop.core.skin.particle.component.particle.appearance.ParticleTintingAppearance;
 import moe.plushie.armourers_workshop.core.skin.particle.component.particle.lifetime.ParticleEventLifetime;
@@ -42,6 +41,7 @@ import moe.plushie.armourers_workshop.core.skin.texture.SkinTextureData;
 import moe.plushie.armourers_workshop.core.utils.MolangExpression;
 import moe.plushie.armourers_workshop.core.utils.Objects;
 import moe.plushie.armourers_workshop.core.utils.OpenPrimitive;
+import moe.plushie.armourers_workshop.init.ModConstants;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -153,15 +153,19 @@ public class BedrockExporter {
             return new EmitterDiscShape(offsetX, offsetY, offsetZ, radius, planeNormalX, planeNormalY, planeNormalZ, direction, surfaceOnly);
         }
         if (component instanceof BedrockComponent.EmitterEntityShape comp) {
+            var offsetX = convertToFloatExpression(comp.getOffsetX());
+            var offsetY = convertToFloatExpression(comp.getOffsetY());
+            var offsetZ = convertToFloatExpression(comp.getOffsetZ());
             var surfaceOnly = comp.isSurfaceOnly();
             var direction = toParticleDirection(comp.getDirection());
-            return new EmitterEntityShape(direction, surfaceOnly);
+            return new EmitterEntityShape(offsetX, offsetY, offsetZ, direction, surfaceOnly);
         }
         if (component instanceof BedrockComponent.EmitterPointShape comp) {
             var offsetX = convertToFloatExpression(comp.getOffsetX());
             var offsetY = convertToFloatExpression(comp.getOffsetY());
             var offsetZ = convertToFloatExpression(comp.getOffsetZ());
-            return new EmitterPointShape(offsetX, offsetY, offsetZ);
+            var direction = toParticleDirection(comp.getDirection());
+            return new EmitterPointShape(offsetX, offsetY, offsetZ, direction);
         }
         if (component instanceof BedrockComponent.EmitterSphereShape comp) {
             var offsetX = convertToFloatExpression(comp.getOffsetX());
@@ -253,18 +257,18 @@ public class BedrockExporter {
             var height = convertToFloatExpression(comp.getHeight());
             var facingCameraMode = toParticleFacing(comp.getFacingCameraMode());
             var textureSize = comp.getTextureSize();
-            var u = convertToFloatExpression(comp.getU());
-            var v = convertToFloatExpression(comp.getV());
-            var uvWidth = convertToFloatExpression(comp.getUvWidth());
-            var uvHeight = convertToFloatExpression(comp.getUvHeight());
-            var stepX = convertToFloatExpression(comp.getUvStepX());
-            var stepY = convertToFloatExpression(comp.getUvStepY());
+            var textureCoordsX = convertToFloatExpression(comp.getTextureCoordsX());
+            var textureCoordsY = convertToFloatExpression(comp.getTextureCoordsY());
+            var textureCoordsWidth = convertToFloatExpression(comp.getTextureCoordsWidth());
+            var textureCoordsHeight = convertToFloatExpression(comp.getTextureCoordsHeight());
+            var stepX = convertToFloatExpression(comp.getStepX());
+            var stepY = convertToFloatExpression(comp.getStepY());
             var isUseAnimation = comp.isUseAnimation();
             var fps = comp.getFps();
             var maxFrame = convertToIntExpression(comp.getMaxFrame());
             var isStretchToLifetime = comp.isStretchToLifetime();
             var isLoop = comp.isLoop();
-            return new ParticleBillboardAppearance(width, height, facingCameraMode, textureSize, u, v, uvWidth, uvHeight, stepX, stepY, isUseAnimation, fps, maxFrame, isStretchToLifetime, isLoop);
+            return new ParticleBillboardAppearance(width, height, facingCameraMode, textureSize, textureCoordsX, textureCoordsY, textureCoordsWidth, textureCoordsHeight, stepX, stepY, isUseAnimation, fps, maxFrame, isStretchToLifetime, isLoop);
         }
         if (component instanceof BedrockComponent.ParticleTintingAppearance comp) {
             var colors = comp.getValues();
@@ -275,10 +279,10 @@ public class BedrockExporter {
                 var alpha = convertToFloatExpression(colors.get(3));
                 return new ParticleTintingAppearance(red, green, blue, alpha);
             }
-            var interpolant = convertToFloatExpression(comp.getInterpolant());
+            var interpolation = convertToFloatExpression(comp.getInterpolation());
             var gradientColors = new LinkedHashMap<Float, Integer>();
             comp.getGradientValues().forEach((key, value) -> gradientColors.put(Float.parseFloat(key), Integer.parseInt(value)));
-            return new ParticleGradientTintingAppearance(interpolant, gradientColors);
+            return new ParticleTintingAppearance(interpolation, gradientColors);
         }
 
         throw new RuntimeException("can't parse particle component!!");
@@ -296,26 +300,26 @@ public class BedrockExporter {
 
     private SkinTextureData toParticleTexture(String texture) {
         return switch (texture) {
-            case "textures/particle/particles" -> new SkinTextureData("armourers_workshop:textures/particle/particles", 128, 128);
-            case "textures/particle/campfire_smoke" -> new SkinTextureData("armourers_workshop:textures/particle/campfire_smoke", 16, 192);
-            case "textures/particle/flame_atlas" -> new SkinTextureData("armourers_workshop:textures/particle/flame_atlas", 16, 512);
-            case "textures/particle/soul" -> new SkinTextureData("armourers_workshop:textures/particle/soul", 16, 176);
+            case "textures/particle/particles" -> createBuiltinTexture("textures/particle/particles", 128, 128);
+            case "textures/particle/campfire_smoke" -> createBuiltinTexture("textures/particle/campfire_smoke", 16, 192);
+            case "textures/particle/flame_atlas" -> createBuiltinTexture("textures/particle/flame_atlas", 16, 512);
+            case "textures/particle/soul" -> createBuiltinTexture("textures/particle/soul", 16, 176);
             default -> throw new IllegalArgumentException("Unknown particle texture: " + texture);
         };
     }
 
-    private SkinParticleDirection toParticleDirection(Object direction) {
+    private EmitterShapeDirection toParticleDirection(Object direction) {
         if (Objects.equals(direction, "inwards")) {
-            return SkinParticleDirection.outwards();
+            return EmitterShapeDirection.outwards();
         }
         if (Objects.equals(direction, "outwards")) {
-            return SkinParticleDirection.outwards();
+            return EmitterShapeDirection.outwards();
         }
         if (direction instanceof List<?> value) {
             var x = convertToFloatExpression((MolangExpression) value.get(0));
             var y = convertToFloatExpression((MolangExpression) value.get(1));
             var z = convertToFloatExpression((MolangExpression) value.get(2));
-            return SkinParticleDirection.custom(x, y, z);
+            return EmitterShapeDirection.custom(x, y, z);
         }
         throw new IllegalArgumentException("unknown particle shape direction: " + direction);
     }
@@ -381,5 +385,9 @@ public class BedrockExporter {
             exception.printStackTrace();
         }
         return null;
+    }
+
+    private SkinTextureData createBuiltinTexture(String texture, int width, int height) {
+        return new SkinTextureData(ModConstants.key(texture).toString(), width, height);
     }
 }

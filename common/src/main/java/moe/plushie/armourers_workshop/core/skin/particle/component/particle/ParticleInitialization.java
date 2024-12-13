@@ -1,5 +1,6 @@
 package moe.plushie.armourers_workshop.core.skin.particle.component.particle;
 
+import moe.plushie.armourers_workshop.core.skin.particle.SkinParticleBuilder;
 import moe.plushie.armourers_workshop.core.skin.particle.SkinParticleComponent;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IInputStream;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IOutputStream;
@@ -26,5 +27,17 @@ public class ParticleInitialization extends SkinParticleComponent {
     public void writeToStream(IOutputStream stream) throws IOException {
         stream.writePrimitiveObject(update);
         stream.writePrimitiveObject(render);
+    }
+
+    @Override
+    public void applyToBuilder(SkinParticleBuilder builder) throws Exception {
+        var update = builder.compile(this.update, 0.0);
+        var render = builder.compile(this.render, 0.0);
+        builder.updateParticle((emitter, particle, context) -> {
+            update.evaluate(context);
+        });
+        builder.renderParticlePre((emitter, particle, partialTicks, context) -> {
+            render.evaluate(context);
+        });
     }
 }

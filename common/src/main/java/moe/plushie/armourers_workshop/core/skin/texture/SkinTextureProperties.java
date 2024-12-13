@@ -53,15 +53,6 @@ public class SkinTextureProperties implements ISkinTextureProperties {
         return getFlag(0);
     }
 
-    public void setParticle(boolean isParticle) {
-        setFlag(1, isParticle);
-    }
-
-    @Override
-    public boolean isParticle() {
-        return getFlag(1);
-    }
-
     public void setSpecular(boolean isSpecular) {
         setFlag(2, isSpecular);
     }
@@ -110,9 +101,6 @@ public class SkinTextureProperties implements ISkinTextureProperties {
         var properties = storage.copy();
         if (isEmissive()) {
             properties.put("isEmissive", true);
-        }
-        if (isParticle()) {
-            properties.put("isParticle", true);
         }
         if (isNormal()) {
             properties.put("isNormal", true);

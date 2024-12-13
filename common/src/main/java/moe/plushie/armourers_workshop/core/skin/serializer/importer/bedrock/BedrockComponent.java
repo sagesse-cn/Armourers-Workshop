@@ -373,11 +373,13 @@ public class BedrockComponent {
         private final MolangExpression offsetX;
         private final MolangExpression offsetY;
         private final MolangExpression offsetZ;
+        private final Object direction;
 
-        public EmitterPointShape(MolangExpression offsetX, MolangExpression offsetY, MolangExpression offsetZ) {
+        public EmitterPointShape(MolangExpression offsetX, MolangExpression offsetY, MolangExpression offsetZ, Object direction) {
             this.offsetX = offsetX;
             this.offsetY = offsetY;
             this.offsetZ = offsetZ;
+            this.direction = direction;
         }
 
         public MolangExpression getOffsetX() {
@@ -392,11 +394,15 @@ public class BedrockComponent {
             return offsetZ;
         }
 
+        public Object getDirection() {
+            return direction;
+        }
+
         protected static class Builder extends ShapeBuilder {
 
             @Override
             public BedrockComponent build() {
-                return new EmitterPointShape(offsetX, offsetY, offsetZ);
+                return new EmitterPointShape(offsetX, offsetY, offsetZ, direction);
             }
         }
     }
@@ -624,12 +630,31 @@ public class BedrockComponent {
 
     protected static class EmitterEntityShape extends BedrockComponent {
 
+        private final MolangExpression offsetX;
+        private final MolangExpression offsetY;
+        private final MolangExpression offsetZ;
+
         private final boolean surfaceOnly;
         private final Object direction;
 
-        public EmitterEntityShape(boolean surfaceOnly, Object direction) {
+        public EmitterEntityShape(MolangExpression offsetX, MolangExpression offsetY, MolangExpression offsetZ, boolean surfaceOnly, Object direction) {
+            this.offsetX = offsetX;
+            this.offsetY = offsetY;
+            this.offsetZ = offsetZ;
             this.surfaceOnly = surfaceOnly;
             this.direction = direction;
+        }
+
+        public MolangExpression getOffsetX() {
+            return offsetX;
+        }
+
+        public MolangExpression getOffsetY() {
+            return offsetY;
+        }
+
+        public MolangExpression getOffsetZ() {
+            return offsetZ;
         }
 
         public boolean isSurfaceOnly() {
@@ -644,7 +669,7 @@ public class BedrockComponent {
 
             @Override
             public BedrockComponent build() {
-                return new EmitterEntityShape(surfaceOnly, direction);
+                return new EmitterEntityShape(offsetX, offsetY, offsetZ, surfaceOnly, direction);
             }
         }
     }
@@ -1212,14 +1237,14 @@ public class BedrockComponent {
 
         private final Size2i textureSize;
 
-        private final MolangExpression u;
-        private final MolangExpression v;
+        private final MolangExpression textureCoordsX;
+        private final MolangExpression textureCoordsY;
 
-        private final MolangExpression uvWidth;
-        private final MolangExpression uvHeight;
+        private final MolangExpression textureCoordsWidth;
+        private final MolangExpression textureCoordsHeight;
 
-        private final MolangExpression uvStepX;
-        private final MolangExpression uvStepY;
+        private final MolangExpression stepX;
+        private final MolangExpression stepY;
 
         private final boolean useAnimation;
         private final int fps;
@@ -1227,17 +1252,17 @@ public class BedrockComponent {
         private final boolean stretchToLifetime;
         private final boolean loop;
 
-        public ParticleBillboardAppearance(MolangExpression width, MolangExpression height, String facingCameraMode, Size2i textureSize, MolangExpression u, MolangExpression v, MolangExpression uvWidth, MolangExpression uvHeight, MolangExpression uvStepX, MolangExpression uvStepY, boolean useAnimation, int fps, MolangExpression maxFrame, boolean stretchToLifetime, boolean loop) {
+        public ParticleBillboardAppearance(MolangExpression width, MolangExpression height, String facingCameraMode, Size2i textureSize, MolangExpression textureCoordsX, MolangExpression textureCoordsY, MolangExpression textureCoordsWidth, MolangExpression textureCoordsHeight, MolangExpression stepX, MolangExpression stepY, boolean useAnimation, int fps, MolangExpression maxFrame, boolean stretchToLifetime, boolean loop) {
             this.width = width;
             this.height = height;
             this.facingCameraMode = facingCameraMode;
             this.textureSize = textureSize;
-            this.u = u;
-            this.v = v;
-            this.uvWidth = uvWidth;
-            this.uvHeight = uvHeight;
-            this.uvStepX = uvStepX;
-            this.uvStepY = uvStepY;
+            this.textureCoordsX = textureCoordsX;
+            this.textureCoordsY = textureCoordsY;
+            this.textureCoordsWidth = textureCoordsWidth;
+            this.textureCoordsHeight = textureCoordsHeight;
+            this.stepX = stepX;
+            this.stepY = stepY;
             this.useAnimation = useAnimation;
             this.fps = fps;
             this.maxFrame = maxFrame;
@@ -1261,28 +1286,28 @@ public class BedrockComponent {
             return textureSize;
         }
 
-        public MolangExpression getU() {
-            return u;
+        public MolangExpression getTextureCoordsX() {
+            return textureCoordsX;
         }
 
-        public MolangExpression getV() {
-            return v;
+        public MolangExpression getTextureCoordsY() {
+            return textureCoordsY;
         }
 
-        public MolangExpression getUvWidth() {
-            return uvWidth;
+        public MolangExpression getTextureCoordsWidth() {
+            return textureCoordsWidth;
         }
 
-        public MolangExpression getUvHeight() {
-            return uvHeight;
+        public MolangExpression getTextureCoordsHeight() {
+            return textureCoordsHeight;
         }
 
-        public MolangExpression getUvStepX() {
-            return uvStepX;
+        public MolangExpression getStepX() {
+            return stepX;
         }
 
-        public MolangExpression getUvStepY() {
-            return uvStepY;
+        public MolangExpression getStepY() {
+            return stepY;
         }
 
         public boolean isUseAnimation() {
@@ -1315,12 +1340,12 @@ public class BedrockComponent {
             private int textureWidth = 0;
             private int textureHeight = 0;
 
-            private MolangExpression u;
-            private MolangExpression v;
-            private MolangExpression uvWidth;
-            private MolangExpression uvHeight;
-            private MolangExpression uvStepX;
-            private MolangExpression uvStepY;
+            private MolangExpression textureCoordsX;
+            private MolangExpression textureCoordsY;
+            private MolangExpression textureCoordsWidth;
+            private MolangExpression textureCoordsHeight;
+            private MolangExpression stepX;
+            private MolangExpression stepY;
 
             private boolean useAnimation;
             private int fps;
@@ -1348,29 +1373,29 @@ public class BedrockComponent {
                 this.textureHeight = textureHeight;
             }
 
-            public void u(MolangExpression u) {
-                this.u = u;
+            public void textureCoordsX(MolangExpression textureCoordsX) {
+                this.textureCoordsX = textureCoordsX;
             }
 
-            public void v(MolangExpression v) {
-                this.v = v;
+            public void textureCoordsY(MolangExpression textureCoordsY) {
+                this.textureCoordsY = textureCoordsY;
             }
 
 
-            public void uvWidth(MolangExpression uvWidth) {
-                this.uvWidth = uvWidth;
+            public void textureCoordsWidth(MolangExpression textureCoordsWidth) {
+                this.textureCoordsWidth = textureCoordsWidth;
             }
 
-            public void uvHeight(MolangExpression uvHeight) {
-                this.uvHeight = uvHeight;
+            public void textureCoordsHeight(MolangExpression textureCoordsHeight) {
+                this.textureCoordsHeight = textureCoordsHeight;
             }
 
-            public void uvStepX(MolangExpression uvStepX) {
-                this.uvStepX = uvStepX;
+            public void stepX(MolangExpression uvStepX) {
+                this.stepX = uvStepX;
             }
 
-            public void uvStepY(MolangExpression uvStepY) {
-                this.uvStepY = uvStepY;
+            public void stepY(MolangExpression uvStepY) {
+                this.stepY = uvStepY;
             }
 
 
@@ -1396,7 +1421,7 @@ public class BedrockComponent {
 
             @Override
             public BedrockComponent build() {
-                return new ParticleBillboardAppearance(width, height, facingCameraMode, new Size2i(textureWidth, textureHeight), u, v, uvWidth, uvHeight, uvStepX, uvStepY, useAnimation, fps, maxFrame, stretchToLifetime, loop);
+                return new ParticleBillboardAppearance(width, height, facingCameraMode, new Size2i(textureWidth, textureHeight), textureCoordsX, textureCoordsY, textureCoordsWidth, textureCoordsHeight, stepX, stepY, useAnimation, fps, maxFrame, stretchToLifetime, loop);
             }
         }
     }
@@ -1404,12 +1429,12 @@ public class BedrockComponent {
     protected static class ParticleTintingAppearance extends BedrockComponent {
 
         private final List<MolangExpression> values;
-        private final MolangExpression interpolant;
+        private final MolangExpression interpolation;
         private final Map<String, String> gradientValues;
 
-        public ParticleTintingAppearance(List<MolangExpression> values, MolangExpression interpolant, Map<String, String> gradientValues) {
+        public ParticleTintingAppearance(List<MolangExpression> values, MolangExpression interpolation, Map<String, String> gradientValues) {
             this.values = values;
-            this.interpolant = interpolant;
+            this.interpolation = interpolation;
             this.gradientValues = gradientValues;
         }
 
@@ -1417,8 +1442,8 @@ public class BedrockComponent {
             return values;
         }
 
-        public MolangExpression getInterpolant() {
-            return interpolant;
+        public MolangExpression getInterpolation() {
+            return interpolation;
         }
 
         public Map<String, String> getGradientValues() {
@@ -1427,7 +1452,7 @@ public class BedrockComponent {
 
         protected static class Builder extends BedrockComponent.Builder {
 
-            private MolangExpression interpolant;
+            private MolangExpression interpolation;
             private final List<MolangExpression> values = new ArrayList<>();
             private final Map<String, String> gradientValues = new LinkedHashMap<>();
 
@@ -1435,8 +1460,8 @@ public class BedrockComponent {
                 this.values.add(expression);
             }
 
-            public void interpolant(MolangExpression interpolant) {
-                this.interpolant = interpolant;
+            public void interpolation(MolangExpression interpolation) {
+                this.interpolation = interpolation;
             }
 
             public void addColor(String progress, String value) {
@@ -1445,7 +1470,7 @@ public class BedrockComponent {
 
             @Override
             public BedrockComponent build() {
-                return new ParticleTintingAppearance(values, interpolant, gradientValues);
+                return new ParticleTintingAppearance(values, interpolation, gradientValues);
             }
         }
     }

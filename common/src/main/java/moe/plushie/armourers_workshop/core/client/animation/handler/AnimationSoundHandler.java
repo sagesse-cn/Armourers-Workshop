@@ -1,12 +1,12 @@
 package moe.plushie.armourers_workshop.core.client.animation.handler;
 
-import moe.plushie.armourers_workshop.core.client.animation.AnimatedPointValue;
 import moe.plushie.armourers_workshop.core.client.sound.SmartSoundManager;
 import moe.plushie.armourers_workshop.core.skin.animation.SkinAnimationPoint;
 import moe.plushie.armourers_workshop.core.skin.molang.core.ExecutionContext;
 import moe.plushie.armourers_workshop.core.skin.molang.thirdparty.bind.BlockEntitySelectorImpl;
 import moe.plushie.armourers_workshop.core.skin.molang.thirdparty.bind.EntitySelectorImpl;
 import moe.plushie.armourers_workshop.core.utils.Objects;
+import moe.plushie.armourers_workshop.core.utils.OptimizedExpression;
 import moe.plushie.armourers_workshop.init.ModConfig;
 import moe.plushie.armourers_workshop.init.ModLog;
 import moe.plushie.armourers_workshop.utils.RenderSystem;
@@ -15,7 +15,7 @@ import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.sounds.SoundEvent;
 
-public class AnimationSoundHandler implements AnimatedPointValue.Effect {
+public class AnimationSoundHandler implements OptimizedExpression<Object> {
 
     private final String name;
     private final SoundEvent soundEvent;
@@ -33,7 +33,7 @@ public class AnimationSoundHandler implements AnimatedPointValue.Effect {
     }
 
     @Override
-    public Runnable apply(ExecutionContext context) {
+    public Runnable evaluate(ExecutionContext context) {
         var sound = createSound(context);
         open();
         playSound(sound);

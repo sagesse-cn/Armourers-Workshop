@@ -6,7 +6,7 @@ public class AnimationEffectState {
 
     private final String name;
 
-    private AnimatedPointValue.Effect value;
+    private Object value;
     private Object result;
 
     public AnimationEffectState(String name) {
@@ -17,13 +17,13 @@ public class AnimationEffectState {
         setValue(null, null);
     }
 
-    public void setValue(AnimatedPointValue.Effect effect, Object result) {
-        this.clean(this.result);
+    public void setValue(Object effect, Object result) {
+        this.cancel(this.result);
         this.value = effect;
         this.result = result;
     }
 
-    public AnimatedPointValue.Effect getValue() {
+    public Object getValue() {
         return this.value;
     }
 
@@ -31,11 +31,11 @@ public class AnimationEffectState {
         return name;
     }
 
-    private void clean(Object result) {
+    private void cancel(Object result) {
         // we need expand the multiple results.
         if (result instanceof List<?> list) {
             for (var value : list) {
-                clean(value);
+                cancel(value);
             }
         }
         // we need cancel it.

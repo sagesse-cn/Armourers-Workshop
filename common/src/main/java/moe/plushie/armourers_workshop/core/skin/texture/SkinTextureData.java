@@ -26,7 +26,7 @@ public class SkinTextureData implements ISkinTextureProvider {
     private SkinTextureAnimation animation;
     private SkinTextureProperties properties;
 
-    private ByteBuf bytes;
+    private ByteBuf bytes = Unpooled.EMPTY_BUFFER;
     private List<SkinTextureData> variants = Collections.emptyList();
 
     public SkinTextureData(String name, float width, float height) {

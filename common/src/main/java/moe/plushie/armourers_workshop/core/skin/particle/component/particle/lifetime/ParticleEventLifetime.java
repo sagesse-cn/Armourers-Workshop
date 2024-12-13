@@ -1,5 +1,6 @@
 package moe.plushie.armourers_workshop.core.skin.particle.component.particle.lifetime;
 
+import moe.plushie.armourers_workshop.core.skin.particle.SkinParticleBuilder;
 import moe.plushie.armourers_workshop.core.skin.particle.SkinParticleComponent;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IInputStream;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IOutputStream;
@@ -35,6 +36,10 @@ public class ParticleEventLifetime extends SkinParticleComponent {
         writeKeyedEventsToStream(timelineEvents, stream);
     }
 
+    @Override
+    public void applyToBuilder(SkinParticleBuilder builder) throws Exception {
+        // TODO: NO IMPL @SAGESSE
+    }
 
     private List<String> readEventsFromStream(IInputStream stream) throws IOException {
         var events = new ArrayList<String>();

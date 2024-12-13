@@ -8,8 +8,6 @@ public interface ISkinTextureProperties {
     // suffix _e
     boolean isEmissive();
 
-    boolean isParticle();
-
     // suffix _n
     boolean isNormal();
 

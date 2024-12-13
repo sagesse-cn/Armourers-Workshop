@@ -3,31 +3,32 @@ package moe.plushie.armourers_workshop.core.skin.animation;
 import moe.plushie.armourers_workshop.core.skin.particle.SkinParticleData;
 import moe.plushie.armourers_workshop.core.skin.sound.SkinSoundData;
 import moe.plushie.armourers_workshop.core.utils.Objects;
+import moe.plushie.armourers_workshop.core.utils.OpenPrimitive;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class SkinAnimationPoint {
 
     public static class Bone extends SkinAnimationPoint {
 
-        private final Object x;
-        private final Object y;
-        private final Object z;
+        private final OpenPrimitive x;
+        private final OpenPrimitive y;
+        private final OpenPrimitive z;
 
-        public Bone(Object x, Object y, Object z) {
+        public Bone(OpenPrimitive x, OpenPrimitive y, OpenPrimitive z) {
             this.x = x;
             this.y = y;
             this.z = z;
         }
 
-        public Object getX() {
+        public OpenPrimitive getX() {
             return x;
         }
 
-        public Object getY() {
+        public OpenPrimitive getY() {
             return y;
         }
 
-        public Object getZ() {
+        public OpenPrimitive getZ() {
             return z;
         }
 

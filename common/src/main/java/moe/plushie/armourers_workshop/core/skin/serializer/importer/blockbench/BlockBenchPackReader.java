@@ -8,6 +8,7 @@ import moe.plushie.armourers_workshop.core.skin.serializer.io.IOConsumer;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IODataObject;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IOFunction;
 import moe.plushie.armourers_workshop.core.utils.OpenDirection;
+import moe.plushie.armourers_workshop.core.utils.OpenPrimitive;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
@@ -238,13 +239,13 @@ public class BlockBenchPackReader {
                 }
             });
             fo.each("data_points", it -> {
-                var point = new LinkedHashMap<String, Object>();
+                var point = new LinkedHashMap<String, OpenPrimitive>();
                 for (var entry : it.entrySet()) {
                     var key = entry.getKey();
                     var value = entry.getValue();
                     switch (value.type()) {
-                        case NUMBER -> point.put(key, value.floatValue());
-                        case STRING -> point.put(key, value.stringValue());
+                        case NUMBER -> point.put(key, OpenPrimitive.of(value.floatValue()));
+                        case STRING -> point.put(key, OpenPrimitive.of(value.stringValue()));
                         default -> throw new IOException("a unknown point type of " + value);
                     }
                 }

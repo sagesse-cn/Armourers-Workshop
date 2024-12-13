@@ -77,7 +77,6 @@ public class BlockBenchTexture extends BlockBenchObject {
         var properties = new SkinTextureProperties();
         properties.setEmissive(renderMode.equals("emissive"));
         //properties.setAdditive(renderMode.equals("additive"));
-        properties.setParticle(particle);
         return properties;
     }
 

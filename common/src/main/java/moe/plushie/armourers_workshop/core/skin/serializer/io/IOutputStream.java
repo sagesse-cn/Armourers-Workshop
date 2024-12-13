@@ -5,7 +5,6 @@ import moe.plushie.armourers_workshop.api.core.IRegistryEntry;
 import moe.plushie.armourers_workshop.api.core.math.IRectangle3f;
 import moe.plushie.armourers_workshop.api.core.math.IRectangle3i;
 import moe.plushie.armourers_workshop.api.core.math.ITransform3f;
-import moe.plushie.armourers_workshop.api.core.math.IVector2f;
 import moe.plushie.armourers_workshop.api.core.math.IVector3f;
 import moe.plushie.armourers_workshop.api.core.math.IVector3i;
 import moe.plushie.armourers_workshop.core.math.OpenTransform3f;
