@@ -4,7 +4,7 @@ import com.apple.library.coregraphics.CGAffineTransform;
 import com.apple.library.foundation.NSRange;
 import moe.plushie.armourers_workshop.core.math.OpenMatrix3f;
 import moe.plushie.armourers_workshop.core.math.OpenMatrix4f;
-import moe.plushie.armourers_workshop.utils.TickUtils;
+import moe.plushie.armourers_workshop.core.utils.TickUtils;
 
 @SuppressWarnings("unused")
 public class ObjectUtilsImpl extends ObjectImpl {

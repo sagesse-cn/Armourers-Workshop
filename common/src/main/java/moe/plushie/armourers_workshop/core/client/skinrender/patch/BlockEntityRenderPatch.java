@@ -3,7 +3,7 @@ package moe.plushie.armourers_workshop.core.client.skinrender.patch;
 import moe.plushie.armourers_workshop.api.core.math.IPoseStack;
 import moe.plushie.armourers_workshop.core.armature.core.DefaultArmaturePluginContext;
 import moe.plushie.armourers_workshop.core.client.other.SkinRenderContext;
-import moe.plushie.armourers_workshop.utils.TickUtils;
+import moe.plushie.armourers_workshop.core.utils.TickUtils;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 public class BlockEntityRenderPatch<T extends BlockEntity> {

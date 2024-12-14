@@ -6,7 +6,7 @@ import moe.plushie.armourers_workshop.core.skin.molang.core.Expression;
 import moe.plushie.armourers_workshop.core.skin.molang.runtime.function.Function;
 import moe.plushie.armourers_workshop.core.skin.molang.thirdparty.bind.BlockEntitySelectorImpl;
 import moe.plushie.armourers_workshop.core.skin.molang.thirdparty.bind.EntitySelectorImpl;
-import moe.plushie.armourers_workshop.utils.TickUtils;
+import moe.plushie.armourers_workshop.core.utils.TickUtils;
 import net.minecraft.nbt.CompoundTag;
 
 import java.util.List;

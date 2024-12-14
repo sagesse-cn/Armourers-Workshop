@@ -8,7 +8,7 @@ import moe.plushie.armourers_workshop.core.client.other.EntityRenderData;
 import moe.plushie.armourers_workshop.core.client.other.EntityRendererContext;
 import moe.plushie.armourers_workshop.core.client.other.SkinRenderContext;
 import moe.plushie.armourers_workshop.core.utils.Objects;
-import moe.plushie.armourers_workshop.utils.TickUtils;
+import moe.plushie.armourers_workshop.core.utils.TickUtils;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.world.entity.Entity;

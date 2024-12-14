@@ -3,11 +3,10 @@ package moe.plushie.armourers_workshop.init.platform.fabric.builder;
 import moe.plushie.armourers_workshop.api.common.IArgumentSerializer;
 import moe.plushie.armourers_workshop.api.common.IArgumentType;
 import moe.plushie.armourers_workshop.api.core.IRegistryHolder;
-import moe.plushie.armourers_workshop.api.core.IResourceLocation;
 import moe.plushie.armourers_workshop.api.registry.IArgumentTypeBuilder;
 import moe.plushie.armourers_workshop.compatibility.fabric.AbstractFabricArgumentType;
-import moe.plushie.armourers_workshop.init.ModConstants;
 import moe.plushie.armourers_workshop.core.utils.TypedRegistry;
+import moe.plushie.armourers_workshop.init.ModConstants;
 
 import java.util.function.Supplier;
 

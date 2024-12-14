@@ -24,6 +24,7 @@ import moe.plushie.armourers_workshop.core.skin.SkinLoader;
 import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.core.utils.OpenItemDisplayContext;
 import moe.plushie.armourers_workshop.core.utils.Scheduler;
+import moe.plushie.armourers_workshop.core.utils.TickUtils;
 import moe.plushie.armourers_workshop.core.utils.TypedRegistry;
 import moe.plushie.armourers_workshop.init.ModConfig;
 import moe.plushie.armourers_workshop.init.ModConfigSpec;
@@ -53,7 +54,6 @@ import moe.plushie.armourers_workshop.init.platform.event.client.RenderSpecificH
 import moe.plushie.armourers_workshop.library.data.GlobalSkinLibrary;
 import moe.plushie.armourers_workshop.library.data.SkinLibraryManager;
 import moe.plushie.armourers_workshop.library.data.impl.MinecraftAuth;
-import moe.plushie.armourers_workshop.utils.TickUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;

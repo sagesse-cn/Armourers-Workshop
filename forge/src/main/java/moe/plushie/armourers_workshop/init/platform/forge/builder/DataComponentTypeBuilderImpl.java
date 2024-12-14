@@ -6,8 +6,8 @@ import moe.plushie.armourers_workshop.api.core.IRegistryHolder;
 import moe.plushie.armourers_workshop.api.registry.IDataComponentTypeBuilder;
 import moe.plushie.armourers_workshop.compatibility.core.data.AbstractDataComponentType;
 import moe.plushie.armourers_workshop.compatibility.forge.AbstractForgeRegistries;
-import moe.plushie.armourers_workshop.init.ModConstants;
 import moe.plushie.armourers_workshop.core.utils.TypedRegistry;
+import moe.plushie.armourers_workshop.init.ModConstants;
 
 public class DataComponentTypeBuilderImpl<T> implements IDataComponentTypeBuilder<T> {
 

@@ -2,7 +2,6 @@ package moe.plushie.armourers_workshop.init.platform.fabric.config;
 
 import com.electronwill.nightconfig.core.CommentedConfig;
 import com.electronwill.nightconfig.core.Config;
-import com.electronwill.nightconfig.core.ConfigSpec.CorrectionAction;
 import com.electronwill.nightconfig.core.ConfigSpec.CorrectionListener;
 import com.electronwill.nightconfig.core.EnumGetMethod;
 import com.electronwill.nightconfig.core.InMemoryFormat;

@@ -4,7 +4,7 @@ import moe.plushie.armourers_workshop.api.core.IDataCodec;
 import moe.plushie.armourers_workshop.api.core.IDataSerializer;
 import moe.plushie.armourers_workshop.api.core.IDataSerializerKey;
 import moe.plushie.armourers_workshop.compatibility.core.AbstractSavedData;
-import moe.plushie.armourers_workshop.core.data.TickTracker;
+import moe.plushie.armourers_workshop.core.utils.DeltaTracker;
 import moe.plushie.armourers_workshop.core.utils.Constants;
 import net.minecraft.server.MinecraftServer;
 import org.jetbrains.annotations.NotNull;
@@ -136,7 +136,7 @@ public class ModContext extends AbstractSavedData {
 
     @Override
     public void deserialize(IDataSerializer serializer) {
-        TickTracker.server().deserialize(serializer);
+        DeltaTracker.server().deserialize(serializer);
         int count = 0;
         t0 = serializer.read(CodingKeys.T0);
         if (t0 != null) {
@@ -154,7 +154,7 @@ public class ModContext extends AbstractSavedData {
 
     @Override
     public void serialize(IDataSerializer serializer) {
-        TickTracker.server().serialize(serializer);
+        DeltaTracker.server().serialize(serializer);
         serializer.write(CodingKeys.T0, t0);
         serializer.write(CodingKeys.T1, t1);
     }

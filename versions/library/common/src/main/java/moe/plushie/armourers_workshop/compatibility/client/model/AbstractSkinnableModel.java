@@ -7,18 +7,13 @@ import net.minecraft.client.model.ChickenModel;
 import net.minecraft.client.model.CreeperModel;
 import net.minecraft.client.model.EndermanModel;
 import net.minecraft.client.model.GhastModel;
-import net.minecraft.client.model.GuardianModel;
 import net.minecraft.client.model.HorseModel;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.IllagerModel;
 import net.minecraft.client.model.IronGolemModel;
-import net.minecraft.client.model.PhantomModel;
-import net.minecraft.client.model.PigModel;
 import net.minecraft.client.model.PlayerModel;
-import net.minecraft.client.model.ShulkerModel;
 import net.minecraft.client.model.SlimeModel;
 import net.minecraft.client.model.VillagerModel;
-import net.minecraft.client.model.WolfModel;
 import net.minecraft.client.model.ZombieVillagerModel;
 
 @SuppressWarnings("rawtypes")

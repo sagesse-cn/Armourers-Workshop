@@ -2,12 +2,11 @@ package moe.plushie.armourers_workshop.init.platform.fabric.builder;
 
 import moe.plushie.armourers_workshop.api.common.ICapabilityType;
 import moe.plushie.armourers_workshop.api.core.IRegistryHolder;
-import moe.plushie.armourers_workshop.api.core.IResourceLocation;
 import moe.plushie.armourers_workshop.api.registry.ICapabilityTypeBuilder;
 import moe.plushie.armourers_workshop.core.data.CapabilityStorage;
+import moe.plushie.armourers_workshop.core.utils.TypedRegistry;
 import moe.plushie.armourers_workshop.init.ModConstants;
 import moe.plushie.armourers_workshop.init.ModLog;
-import moe.plushie.armourers_workshop.core.utils.TypedRegistry;
 import net.minecraft.world.entity.Entity;
 
 import java.util.Optional;

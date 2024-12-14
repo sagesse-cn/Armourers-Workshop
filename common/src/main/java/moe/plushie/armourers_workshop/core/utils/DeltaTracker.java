@@ -1,4 +1,4 @@
-package moe.plushie.armourers_workshop.core.data;
+package moe.plushie.armourers_workshop.core.utils;
 
 import moe.plushie.armourers_workshop.api.core.IDataCodec;
 import moe.plushie.armourers_workshop.api.core.IDataSerializable;
@@ -6,27 +6,27 @@ import moe.plushie.armourers_workshop.api.core.IDataSerializer;
 import moe.plushie.armourers_workshop.api.core.IDataSerializerKey;
 import moe.plushie.armourers_workshop.init.ModDebugger;
 
-public class TickTracker implements IDataSerializable.Mutable {
+public class DeltaTracker implements IDataSerializable.Mutable {
 
-    private static final TickTracker CLIENT = new TickTracker();
-    private static final TickTracker SERVER = new TickTracker();
+    private static final DeltaTracker CLIENT = new DeltaTracker();
+    private static final DeltaTracker SERVER = new DeltaTracker();
 
-    private long lastTime = System.nanoTime();
+    private long lastTime = currentTimeMillis();
     private float animationTicks = 0.0f;
 
-    public static TickTracker client() {
+    public static DeltaTracker client() {
         return CLIENT;
     }
 
-    public static TickTracker server() {
+    public static DeltaTracker server() {
         return SERVER;
     }
 
     public void update(boolean isPaused) {
         // when tick is pause, ignore any time advance.
-        long time = System.nanoTime();
+        long time = currentTimeMillis();
         if (!isPaused) {
-            float delta = (time - lastTime) / 1e9f;
+            float delta = (time - lastTime) / 1000f;
             animationTicks += delta * ModDebugger.animationSpeed;
         }
         lastTime = time;
@@ -48,6 +48,12 @@ public class TickTracker implements IDataSerializable.Mutable {
     @Override
     public void deserialize(IDataSerializer serializer) {
         animationTicks = serializer.read(CodingKeys.TIME);
+    }
+
+    private static long currentTimeMillis() {
+        // we use System.nanoTime() instead of System.currentTimeMillis(),
+        // because System.currentTimeMillis() have big fluctuations (>5ms).
+        return System.nanoTime() / 1000000L;
     }
 
     private static class CodingKeys {

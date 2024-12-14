@@ -8,7 +8,7 @@ import moe.plushie.armourers_workshop.api.core.IDataSerializer;
 import moe.plushie.armourers_workshop.api.core.IDataSerializerKey;
 import moe.plushie.armourers_workshop.api.network.IClientPacketHandler;
 import moe.plushie.armourers_workshop.api.network.IFriendlyByteBuf;
-import moe.plushie.armourers_workshop.core.data.TickTracker;
+import moe.plushie.armourers_workshop.core.utils.DeltaTracker;
 import moe.plushie.armourers_workshop.core.entity.EntityProfile;
 import moe.plushie.armourers_workshop.core.network.CustomPacket;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperties;
@@ -67,7 +67,7 @@ public class UpdateContextPacket extends CustomPacket {
         if ((flags & 0x01) != 0) {
             buffer.writeUUID(ModContext.t2(owner));
             buffer.writeUUID(ModContext.t3(owner));
-            buffer.writeFloat(TickTracker.server().animationTicks());
+            buffer.writeFloat(DeltaTracker.server().animationTicks());
             buffer.writeUtf(ModConstants.MOD_NET_ID);
         }
         if ((flags & 0x02) != 0) {
@@ -86,7 +86,7 @@ public class UpdateContextPacket extends CustomPacket {
         var reader = IFriendlyByteBuf.wrap(buffer);
         if ((flags & 0x01) != 0) {
             ModContext.init(reader.readUUID(), reader.readUUID());
-            TickTracker.client().setAnimationTicks(reader.readFloat());
+            DeltaTracker.client().setAnimationTicks(reader.readFloat());
             checkNetworkVersion(reader.readUtf());
         }
         if ((flags & 0x02) != 0) {

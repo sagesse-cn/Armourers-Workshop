@@ -11,8 +11,8 @@ import moe.plushie.armourers_workshop.core.client.texture.TextureAnimationContro
 import moe.plushie.armourers_workshop.core.math.Vector3f;
 import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintColor;
 import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintTypes;
+import moe.plushie.armourers_workshop.core.utils.TickUtils;
 import moe.plushie.armourers_workshop.init.ModTextures;
-import moe.plushie.armourers_workshop.utils.TickUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 

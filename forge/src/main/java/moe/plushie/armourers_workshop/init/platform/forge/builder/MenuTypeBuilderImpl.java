@@ -10,11 +10,11 @@ import moe.plushie.armourers_workshop.api.registry.IRegistryBinder;
 import moe.plushie.armourers_workshop.compatibility.client.AbstractMenuWindowProvider;
 import moe.plushie.armourers_workshop.compatibility.forge.AbstractForgeMenuType;
 import moe.plushie.armourers_workshop.compatibility.forge.AbstractForgeRegistries;
+import moe.plushie.armourers_workshop.core.utils.TypedRegistry;
 import moe.plushie.armourers_workshop.init.environment.EnvironmentExecutor;
 import moe.plushie.armourers_workshop.init.environment.EnvironmentType;
 import moe.plushie.armourers_workshop.init.platform.EventManager;
 import moe.plushie.armourers_workshop.init.platform.event.client.RegisterScreensEvent;
-import moe.plushie.armourers_workshop.core.utils.TypedRegistry;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 

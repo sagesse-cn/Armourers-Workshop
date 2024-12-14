@@ -10,8 +10,6 @@ import moe.plushie.armourers_workshop.utils.DataContainerKey;
 import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.function.Consumer;
-
 import manifold.ext.rt.api.Extension;
 import manifold.ext.rt.api.This;
 

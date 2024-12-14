@@ -3,10 +3,8 @@ package moe.plushie.armourers_workshop.compatibility.extensions.net.minecraft.wo
 import moe.plushie.armourers_workshop.api.annotation.Available;
 import moe.plushie.armourers_workshop.core.math.OpenMath;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.block.BedBlock;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
 import manifold.ext.rt.api.Extension;
