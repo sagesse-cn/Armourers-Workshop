@@ -27,8 +27,8 @@ public class ShaderVertexGroup {
         return renderType;
     }
 
-    public OpenMatrix4f getTextureMatrix(float animationTicks) {
-        return animationController.getTextureMatrix(animationTicks);
+    public OpenMatrix4f getTextureMatrix(double animationTime) {
+        return animationController.getTextureMatrix(animationTime);
     }
 
     public int size() {

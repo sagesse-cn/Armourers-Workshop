@@ -10,7 +10,7 @@ public class DefaultArmaturePluginContext implements ArmaturePlugin.Context {
     protected int overlay = OverlayTexture.NO_OVERLAY;
     protected int lightmap = 0xf000f0;
     protected float partialTicks;
-    protected float animationTicks;
+    protected double animationTicks;
     protected IPoseStack poseStack;
 
     protected EntityRenderData renderData;
@@ -37,12 +37,12 @@ public class DefaultArmaturePluginContext implements ArmaturePlugin.Context {
         this.partialTicks = partialTicks;
     }
 
-    public void setAnimationTicks(float animationTicks) {
+    public void setAnimationTicks(double animationTicks) {
         this.animationTicks = animationTicks;
     }
 
     @Override
-    public float getAnimationTicks() {
+    public double getAnimationTicks() {
         return animationTicks;
     }
 

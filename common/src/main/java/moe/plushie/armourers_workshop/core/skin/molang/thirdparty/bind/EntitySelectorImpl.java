@@ -179,9 +179,9 @@ public class EntitySelectorImpl<T extends Entity> implements EntitySelector, Var
         if (isSleeping()) {
             return true;
         }
-        float noise = (entity.getId() * 0.05f);
-        float time = (contextSelector.getAnimationTicks() + noise) % 4.5f;
-        return time > 4.25f;
+        var noise = (entity.getId() * 0.05);
+        var time = (contextSelector.getAnimationTicks() + noise) % 4.5;
+        return time > 4.25;
     }
 
     @Override

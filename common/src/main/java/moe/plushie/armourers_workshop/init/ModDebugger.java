@@ -3,9 +3,11 @@ package moe.plushie.armourers_workshop.init;
 import com.mojang.blaze3d.vertex.PoseStack;
 import moe.plushie.armourers_workshop.api.core.math.IPoseStack;
 import moe.plushie.armourers_workshop.core.math.OpenQuaternion3f;
+import moe.plushie.armourers_workshop.core.utils.TickUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
+@SuppressWarnings("unused")
 public class ModDebugger {
 
     public static float rx = 0;
@@ -100,5 +102,9 @@ public class ModDebugger {
     }
 
     public static void init() {
+    }
+
+    public static void apply() {
+        TickUtils.setSpeed(animationSpeed);
     }
 }

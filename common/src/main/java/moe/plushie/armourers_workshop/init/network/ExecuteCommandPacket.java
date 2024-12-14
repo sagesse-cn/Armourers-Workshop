@@ -6,18 +6,14 @@ import moe.plushie.armourers_workshop.api.network.IClientPacketHandler;
 import moe.plushie.armourers_workshop.api.network.IFriendlyByteBuf;
 import moe.plushie.armourers_workshop.core.network.CustomPacket;
 import moe.plushie.armourers_workshop.core.utils.Collections;
-import moe.plushie.armourers_workshop.core.utils.StreamUtils;
 import moe.plushie.armourers_workshop.init.ModConfig;
 import moe.plushie.armourers_workshop.init.ModConfigSpec;
 import moe.plushie.armourers_workshop.init.ModDebugger;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 
-import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.OutputStream;
-import java.lang.reflect.Field;
 import java.util.List;
 
 public class ExecuteCommandPacket extends CustomPacket {
@@ -73,12 +69,12 @@ public class ExecuteCommandPacket extends CustomPacket {
             Object data = value;
             switch (mode) {
                 case GET: {
-                    Field field = object.getField(key);
+                    var field = object.getField(key);
                     data = field.get(object);
                     break;
                 }
                 case SET: {
-                    Field field = object.getField(key);
+                    var field = object.getField(key);
                     field.set(object, data);
                     break;
                 }
@@ -92,7 +88,11 @@ public class ExecuteCommandPacket extends CustomPacket {
                 }
             }
             player.sendSystemMessage(Component.literal(key + " = " + data));
-            // auto-save when change
+            // auto-apply debug config when change
+            if (ModDebugger.class == object) {
+                ModDebugger.apply();
+            }
+            // auto-save config when change
             if (ModConfig.Client.class == object) {
                 ModConfigSpec.CLIENT.save();
             }
@@ -105,16 +105,10 @@ public class ExecuteCommandPacket extends CustomPacket {
         if (mode != Mode.SET) {
             return null;
         }
-        InputStream inputStream = null;
-        ObjectInputStream objectInputStream = null;
-        try {
-            inputStream = new ByteBufInputStream(buffer.asByteBuf());
-            objectInputStream = new ObjectInputStream(inputStream);
-            return objectInputStream.readObject();
+        try (var inputStream = new ObjectInputStream(new ByteBufInputStream(buffer.asByteBuf()))) {
+            return inputStream.readObject();
         } catch (Exception exception) {
             return exception;
-        } finally {
-            StreamUtils.closeQuietly(objectInputStream, inputStream);
         }
     }
 
@@ -122,22 +116,16 @@ public class ExecuteCommandPacket extends CustomPacket {
         if (mode != Mode.SET) {
             return;
         }
-        OutputStream outputStream = null;
-        ObjectOutputStream objectOutputStream = null;
-        try {
-            outputStream = new ByteBufOutputStream(buffer.asByteBuf());
-            objectOutputStream = new ObjectOutputStream(outputStream);
-            objectOutputStream.writeObject(object);
+        try (var outputStream = new ObjectOutputStream(new ByteBufOutputStream(buffer.asByteBuf()))) {
+            outputStream.writeObject(object);
         } catch (Exception exception1) {
             exception1.printStackTrace();
-        } finally {
-            StreamUtils.closeQuietly(objectOutputStream, outputStream);
         }
     }
 
     private Class<?> readClass(IFriendlyByteBuf buffer) {
-        String name = buffer.readUtf();
-        for (Class<?> clazz : SUPPORTED_CLASSES) {
+        var name = buffer.readUtf();
+        for (var clazz : SUPPORTED_CLASSES) {
             if (name.equals(clazz.getName())) {
                 return clazz;
             }

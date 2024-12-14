@@ -2,13 +2,13 @@ package moe.plushie.armourers_workshop.core.skin.molang.runtime.bind.selector;
 
 public interface ContextSelector {
 
-    float getAnimationTicks();
-
     float getPartialTick();
 
-    float getAnimTime();
+    double getAnimationTicks();
 
-    float getLifeTime();
+    double getAnimTime();
+
+    double getLifeTime();
 
     double getFPS();
 

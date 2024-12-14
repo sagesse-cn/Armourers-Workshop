@@ -28,7 +28,7 @@ public abstract class ArmaturePlugin {
 
         float getPartialTicks();
 
-        float getAnimationTicks();
+        double getAnimationTicks();
 
         IPoseStack getPoseStack();
 

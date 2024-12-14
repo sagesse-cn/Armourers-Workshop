@@ -22,7 +22,7 @@ public class ModConfig {
         public static int renderDistanceMannequinEquipment;
         public static int modelBakingThreadCount = 4;
         public static int vertexCompileThreadCount = 2;
-        public static double lodDistance = 32F;
+        public static double lodDistance = 32;
         public static boolean multipassSkinRendering = true;
         public static int maxLodLevels = 4;
         public static int prefersSeatHoldingTick = 60;

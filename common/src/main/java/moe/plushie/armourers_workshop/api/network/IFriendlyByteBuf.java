@@ -27,6 +27,10 @@ public interface IFriendlyByteBuf {
 
     void writeInt(int value);
 
+    long readLong();
+
+    void writeLong(long value);
+
     float readFloat();
 
     void writeFloat(float value);

@@ -44,9 +44,9 @@ public class TextureAnimationController {
         return NONE;
     }
 
-    public OpenMatrix4f getTextureMatrix(float animationTicks) {
+    public OpenMatrix4f getTextureMatrix(double animationTime) {
         if (frameCount != 0) {
-            var idx = (int) (animationTicks / frameTime);
+            var idx = (int) (animationTime / frameTime);
             return frames[idx % frameCount];
         }
         return IDENTITY;

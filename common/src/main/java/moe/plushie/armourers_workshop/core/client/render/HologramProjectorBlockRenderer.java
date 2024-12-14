@@ -109,7 +109,7 @@ public class HologramProjectorBlockRenderer<T extends HologramProjectorBlockEnti
         renderPatch.deactivate(entity);
     }
 
-    private void apply(T entity, Rectangle3f rect, float animationTicks, IPoseStack poseStack, IBufferSource bufferSource) {
+    private void apply(T entity, Rectangle3f rect, double animationTime, IPoseStack poseStack, IBufferSource bufferSource) {
         var angle = entity.getModelAngle();
         var offset = entity.getModelOffset();
         var rotationOffset = entity.getRotationOffset();
@@ -118,19 +118,19 @@ public class HologramProjectorBlockRenderer<T extends HologramProjectorBlockEnti
         var rotX = angle.getX();
         var speedX = rotationSpeed.getX() / 1000f;
         if (speedX != 0) {
-            rotX += ((animationTicks % speedX) / speedX) * 360.0f;
+            rotX += (float) (((animationTime % speedX) / speedX) * 360.0);
         }
 
         var rotY = angle.getY();
         var speedY = rotationSpeed.getY() / 1000f;
         if (speedY != 0) {
-            rotY += ((animationTicks % speedY) / speedY) * 360.0f;
+            rotY += (float) (((animationTime % speedY) / speedY) * 360.0);
         }
 
         var rotZ = angle.getZ();
         var speedZ = rotationSpeed.getZ() / 1000f;
         if (speedZ != 0) {
-            rotZ += ((animationTicks % speedZ) / speedZ) * 360.0f;
+            rotZ += (float) (((animationTime % speedZ) / speedZ) * 360.0);
         }
 
         var scale = entity.getModelScale();

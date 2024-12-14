@@ -7,7 +7,6 @@ import moe.plushie.armourers_workshop.core.capability.SkinWardrobe;
 import moe.plushie.armourers_workshop.core.data.DataDomain;
 import moe.plushie.armourers_workshop.core.data.DataManager;
 import moe.plushie.armourers_workshop.core.data.DataPackType;
-import moe.plushie.armourers_workshop.core.utils.DeltaTracker;
 import moe.plushie.armourers_workshop.core.entity.MannequinEntity;
 import moe.plushie.armourers_workshop.core.entity.SeatEntity;
 import moe.plushie.armourers_workshop.core.skin.SkinLoader;
@@ -167,7 +166,6 @@ public class CommonProxy {
 
 
         EventManager.listen(ServerLevelTickEvent.Pre.class, event -> {
-            DeltaTracker.server().update(false);
             WorldUpdater.getInstance().tick(event.getLevel());
         });
 

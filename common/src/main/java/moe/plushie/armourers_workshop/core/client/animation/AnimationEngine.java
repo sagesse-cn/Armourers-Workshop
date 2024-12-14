@@ -25,7 +25,7 @@ public class AnimationEngine {
         VM.endVariableCaching();
     }
 
-    public static void apply(@Nullable Object source, int skinId, float partialTick, float animationTime, AnimationContext context) {
+    public static void apply(@Nullable Object source, int skinId, float partialTick, double animationTime, AnimationContext context) {
         context.beginUpdates(animationTime);
         var executionContext = context.getExecutionContext();
         for (var animationController : context.getAnimationControllers()) {

@@ -7,17 +7,17 @@ import java.util.Map;
 
 public abstract class AnimationPlayState {
 
-    protected float time = 0.0f;
-    protected float duration = 0.0f;
+    protected double time = 0.0;
+    protected double duration = 0.0;
 
     protected int loopCount = 0;
 
-    protected float adjustedTime = 0.0f;
+    protected double adjustedTime = 0.0;
     protected boolean isCompleted = false;
 
     protected final Map<String, AnimationEffectState> effects = new HashMap<>();
 
-    public static AnimationPlayState create(float time, int loopCount, float speed, AnimationController controller) {
+    public static AnimationPlayState create(double time, int loopCount, double speed, AnimationController controller) {
         // ..
         if (loopCount == 0) {
             loopCount = switch (controller.getLoop()) {
@@ -34,19 +34,19 @@ public abstract class AnimationPlayState {
         return playState;
     }
 
-    private static AnimationPlayState createVariant(float speed, float duration) {
+    private static AnimationPlayState createVariant(double speed, double duration) {
         // if speed or duration is zero, this means no need adjusted time.
-        if (Float.compare(speed * duration, 0.0f) == 0) {
+        if (Double.compare(speed * duration, 0.0) == 0) {
             return new None();
         }
         // If speed is one, this means no need speed adjust, we will use better performing version.
-        if (Float.compare(speed, 1.0f) == 0) {
+        if (Double.compare(speed, 1.0) == 0) {
             return new Normal();
         }
         return new Modulate(speed);
     }
 
-    protected boolean update(float animationTime) {
+    protected boolean update(double animationTime) {
         return false;
     }
 
@@ -54,7 +54,7 @@ public abstract class AnimationPlayState {
         effects.forEach((name, effectState) -> effectState.reset());
     }
 
-    public void tick(float animationTime) {
+    public void tick(double animationTime) {
         // when loop count is 0 (keep last frame), we never call reset again.
         var working = update(animationTime);
         if (working || loopCount == 0) {
@@ -72,7 +72,7 @@ public abstract class AnimationPlayState {
         reset();
     }
 
-    public float getAdjustedTime(float animationTime) {
+    public double getAdjustedTime(double animationTime) {
         // this is a future animation?
         if (animationTime < time) {
             return 0;
@@ -82,23 +82,23 @@ public abstract class AnimationPlayState {
     }
 
 
-    public void setTime(float time) {
+    public void setTime(double time) {
         this.time = time;
     }
 
-    public float getTime() {
+    public double getTime() {
         return time;
     }
 
-    public float getAdjustedTime() {
+    public double getAdjustedTime() {
         return adjustedTime;
     }
 
-    public void setDuration(float duration) {
+    public void setDuration(double duration) {
         this.duration = duration;
     }
 
-    public float getDuration() {
+    public double getDuration() {
         return duration;
     }
 
@@ -130,10 +130,10 @@ public abstract class AnimationPlayState {
 
     private static class Normal extends AnimationPlayState {
 
-        private float lastResetTime = 0.0f;
+        private double lastResetTime = 0.0;
 
         @Override
-        protected boolean update(float animationTime) {
+        protected boolean update(double animationTime) {
             adjustedTime = animationTime - lastResetTime;
             return adjustedTime < duration;
         }
@@ -147,7 +147,7 @@ public abstract class AnimationPlayState {
         }
 
         @Override
-        public void setTime(float time) {
+        public void setTime(double time) {
             this.time = time;
             this.lastResetTime = time;
         }
@@ -155,21 +155,21 @@ public abstract class AnimationPlayState {
 
     private static class Modulate extends AnimationPlayState {
 
-        private float lastResetTime = 0.0f;
-        private float adjustedDuration = 0.0f;
+        private double lastResetTime = 0.0;
+        private double adjustedDuration = 0.0;
 
-        private final float speed;
+        private final double speed;
 
-        public Modulate(float speed) {
+        public Modulate(double speed) {
             this.speed = speed;
         }
 
         @Override
-        protected boolean update(float animationTime) {
+        protected boolean update(double animationTime) {
             // convert time to progress and then remap to duration.
-            float progress = (animationTime - lastResetTime) / adjustedDuration;
+            var progress = (animationTime - lastResetTime) / adjustedDuration;
             adjustedTime = progress * duration;
-            return progress < 1.0f;
+            return progress < 1.0;
         }
 
         @Override
@@ -181,15 +181,15 @@ public abstract class AnimationPlayState {
         }
 
         @Override
-        public void setTime(float time) {
+        public void setTime(double time) {
             this.time = time;
             this.lastResetTime = time;
         }
 
         @Override
-        public void setDuration(float duration) {
+        public void setDuration(double duration) {
             this.duration = duration;
-            this.adjustedDuration = Math.max(duration / speed, 0.00001f);
+            this.adjustedDuration = Math.max(duration / speed, 0.00001);
         }
     }
 }

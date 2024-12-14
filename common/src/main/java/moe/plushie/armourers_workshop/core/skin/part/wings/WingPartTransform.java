@@ -16,7 +16,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class WingPartTransform implements ITransform {
 
-    private float animationTicks = 0;
+    private double animationTime = 0.0;
     private boolean isFallFlying = false;
 
     private final boolean isMirror;
@@ -38,8 +38,8 @@ public class WingPartTransform implements ITransform {
         return entity.isFallFlying();
     }
 
-    public void setup(@Nullable Entity entity, float animationTicks) {
-        this.animationTicks = animationTicks;
+    public void setup(@Nullable Entity entity, double animationTime) {
+        this.animationTime = animationTime;
         this.isFallFlying = entity instanceof LivingEntity livingEntity && isFlying(livingEntity);
     }
 
@@ -77,7 +77,7 @@ public class WingPartTransform implements ITransform {
         }
 
         var finalFlapTime = Math.max(flapTime / 1000f, 0.1f);
-        var angle = animationTicks % finalFlapTime;
+        var angle = animationTime % finalFlapTime;
 
         if (movementType == SkinProperty.MovementType.EASE) {
             angle = Math.sin(angle / finalFlapTime * Math.PI * 2);

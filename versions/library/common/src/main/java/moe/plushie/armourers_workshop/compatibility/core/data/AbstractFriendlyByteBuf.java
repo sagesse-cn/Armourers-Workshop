@@ -40,6 +40,16 @@ public class AbstractFriendlyByteBuf extends AbstractFriendlyByteBufImpl {
     }
 
     @Override
+    public long readLong() {
+        return source.readLong();
+    }
+
+    @Override
+    public void writeLong(long value) {
+        source.writeLong(value);
+    }
+
+    @Override
     public float readFloat() {
         return source.readFloat();
     }

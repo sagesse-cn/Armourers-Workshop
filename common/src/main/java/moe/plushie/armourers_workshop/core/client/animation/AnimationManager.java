@@ -50,7 +50,7 @@ public class AnimationManager {
     private final HashMap<String, PlayAction> lastActions = new HashMap<>();
 
     private EntityActionSet lastActionSet;
-    private float lastAnimationTicks = 0;
+    private double lastAnimationTicks = 0;
 
     private final ClientExecutionContextImpl executionContext;
 
@@ -109,14 +109,14 @@ public class AnimationManager {
         });
     }
 
-    public void tick(Object source, float animationTicks) {
+    public void tick(Object source, double animationTime) {
         // clear invalid animation.
         if (!removeOnCompletion.isEmpty()) {
             var iterator = removeOnCompletion.iterator();
             while (iterator.hasNext()) {
                 var entry = iterator.next();
                 var state = entry.getKey();
-                state.tick(animationTicks);
+                state.tick(animationTime);
                 if (state.isCompleted()) {
                     iterator.remove();
                     entry.getValue().run();
@@ -130,14 +130,14 @@ public class AnimationManager {
                 if (ModConfig.Client.enableAnimationDebug) {
                     ModLog.debug("{} action did change: {}", entity, actionSet);
                 }
-                triggerableEntries.forEach(entry -> entry.autoplay(actionSet, animationTicks));
+                triggerableEntries.forEach(entry -> entry.autoplay(actionSet, animationTime));
                 lastActionSet = actionSet.copy();
             }
         }
-        lastAnimationTicks = animationTicks;
+        lastAnimationTicks = animationTime;
     }
 
-    public void play(String name, float atTime, CompoundTag tag) {
+    public void play(String name, double atTime, CompoundTag tag) {
         lastActions.put(name, new PlayAction(name, atTime, tag));
         for (var entry : activeEntries.values()) {
             for (var animationController : entry.getAnimationControllers()) {
@@ -225,7 +225,7 @@ public class AnimationManager {
             });
         }
 
-        public void autoplay(EntityActionSet actionSet, float time) {
+        public void autoplay(EntityActionSet actionSet, double time) {
             // If it's already locked, we won't switch.
             if (isLocking && playing != null) {
                 return;
@@ -236,7 +236,7 @@ public class AnimationManager {
             }
         }
 
-        public void play(AnimationController animationController, float time, CompoundTag tag) {
+        public void play(AnimationController animationController, double time, CompoundTag tag) {
             // play parallel animation (simple).
             var properties = new Properties(new TagSerializer(tag));
             if (animationController.isParallel()) {
@@ -280,7 +280,7 @@ public class AnimationManager {
             return !triggerableControllers.isEmpty();
         }
 
-        private void play(TriggerableController newValue, @Nullable TriggerableController oldValue, float time, float speed, int playCount, boolean needLock) {
+        private void play(TriggerableController newValue, @Nullable TriggerableController oldValue, double time, double speed, int playCount, boolean needLock) {
             var toAnimationController = newValue.animationController;
             var fromAnimationController = Objects.flatMap(oldValue, it -> it.animationController);
 
@@ -300,7 +300,7 @@ public class AnimationManager {
             applyTransiting(fromAnimationController, toAnimationController, time, speed, duration);
         }
 
-        private void startPlay(AnimationController animationController, float time, float speed, int playCount) {
+        private void startPlay(AnimationController animationController, double time, double speed, int playCount) {
             stopPlayIfNeeded(animationController);
             var newPlayState = AnimationPlayState.create(time, playCount, speed, animationController);
             addPlayState(animationController, newPlayState);
@@ -323,7 +323,7 @@ public class AnimationManager {
             }
         }
 
-        private void applyTransiting(AnimationController fromAnimationController, AnimationController toAnimationController, float time, float speed, float duration) {
+        private void applyTransiting(AnimationController fromAnimationController, AnimationController toAnimationController, double time, double speed, double duration) {
             // we need to ignore the first transition animation, because have some very strange effects.
             if (isFirstTransitionAnimation) {
                 isFirstTransitionAnimation = false;
@@ -446,7 +446,7 @@ public class AnimationManager {
             return target.getPriority();
         }
 
-        public float getTransitionDuration() {
+        public double getTransitionDuration() {
             return target.getTransitionDuration();
         }
 
@@ -462,11 +462,11 @@ public class AnimationManager {
 
     protected class PlayAction {
 
-        private final float time;
+        private final double time;
         private final String name;
         private final CompoundTag tag;
 
-        public PlayAction(String name, float time, CompoundTag tag) {
+        public PlayAction(String name, double time, CompoundTag tag) {
             this.name = name;
             this.time = time;
             this.tag = tag;
@@ -475,7 +475,7 @@ public class AnimationManager {
         public void resume(Entry entry, AnimationController animationController) {
             // check it still playing.
             if (animationController.getLoop() == SkinAnimationLoop.NONE) {
-                float endTime = time + animationController.getDuration();
+                var endTime = time + animationController.getDuration();
                 if (endTime < lastAnimationTicks) {
                     return; // can't play
                 }

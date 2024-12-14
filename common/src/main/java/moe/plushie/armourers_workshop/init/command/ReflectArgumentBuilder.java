@@ -28,11 +28,11 @@ import java.util.function.Function;
 public class ReflectArgumentBuilder<S> extends LiteralArgumentBuilder<S> {
 
     private static final Map<Class<?>, Function<Pair<Object, Field>, ArgumentBuilder<CommandSourceStack, ?>>> FIELD_BUILDERS = Collections.immutableMap(builder -> {
-        builder.put(boolean.class, pair -> argument(pair, BoolArgumentType.bool(), BoolArgumentType::getBool));
-        builder.put(int.class, pair -> argument(pair, IntegerArgumentType.integer(), IntegerArgumentType::getInteger));
-        builder.put(double.class, pair -> argument(pair, DoubleArgumentType.doubleArg(), DoubleArgumentType::getDouble));
-        builder.put(float.class, pair -> argument(pair, FloatArgumentType.floatArg(), FloatArgumentType::getFloat));
-        builder.put(String.class, pair -> argument(pair, StringArgumentType.string(), StringArgumentType::getString));
+        builder.put(boolean.class, pair -> field(pair, BoolArgumentType.bool(), BoolArgumentType::getBool));
+        builder.put(int.class, pair -> field(pair, IntegerArgumentType.integer(), IntegerArgumentType::getInteger));
+        builder.put(double.class, pair -> field(pair, DoubleArgumentType.doubleArg(), DoubleArgumentType::getDouble));
+        builder.put(float.class, pair -> field(pair, FloatArgumentType.floatArg(), FloatArgumentType::getFloat));
+        builder.put(String.class, pair -> field(pair, StringArgumentType.string(), StringArgumentType::getString));
     });
 
     private final Class<?> object;
@@ -46,7 +46,7 @@ public class ReflectArgumentBuilder<S> extends LiteralArgumentBuilder<S> {
         return new ReflectArgumentBuilder<>(name, object);
     }
 
-    public static <R> ArgumentBuilder<CommandSourceStack, ?> argument(Pair<Object, Field> pair, ArgumentType<R> argumentType, BiFunction<CommandContext<?>, String, R> argumentParser) {
+    private static <R> ArgumentBuilder<CommandSourceStack, ?> field(Pair<Object, Field> pair, ArgumentType<R> argumentType, BiFunction<CommandContext<?>, String, R> argumentParser) {
         return Commands.literal(pair.getValue().getName())
                 .then(Commands.argument("value", argumentType).executes(context -> {
                     var value = argumentParser.apply(context, "value");
@@ -65,12 +65,12 @@ public class ReflectArgumentBuilder<S> extends LiteralArgumentBuilder<S> {
                 });
     }
 
-//    public static <R> ArgumentBuilder<CommandSourceStack, ?> call(Pair<Object, Method> pair) {
+//    private static <R> ArgumentBuilder<CommandSourceStack, ?> getter(Pair<Object, Method> pair) {
 //        return Commands.literal(pair.getValue().getName() + "()")
 //                .executes(context -> {
-//                    String name = pair.getValue().getName();
-//                    Class<?> object = (Class<?>) pair.getKey();
-//                    ServerPlayer player = context.getSource().getPlayerOrException();
+//                    var name = pair.getValue().getName();
+//                    var object = (Class<?>) pair.getKey();
+//                    var player = context.getSource().getPlayerOrException();
 //                    NetworkManager.sendTo(ExecuteCommandPacket.invoke(object, name), player);
 //                    return 0;
 //                });
@@ -85,9 +85,9 @@ public class ReflectArgumentBuilder<S> extends LiteralArgumentBuilder<S> {
                 nodes.add(Objects.unsafeCast(function.apply(Pair.of(object, field)).build()));
             }
         }
-//        for (Method method : object.getMethods()) {
+//        for (var method : object.getMethods()) {
 //            if (method.getParameterCount() == 0 && Modifier.isStatic(method.getModifiers())) {
-//                nodes.add(Objects.unsafeCast(ReflectArgumentBuilder.call(Pair.of(object, method)).build()));
+//                nodes.add(Objects.unsafeCast(ReflectArgumentBuilder.getter(Pair.of(object, method)).build()));
 //            }
 //        }
         return nodes;

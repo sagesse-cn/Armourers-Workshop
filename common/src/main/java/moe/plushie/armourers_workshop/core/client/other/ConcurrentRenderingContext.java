@@ -19,7 +19,7 @@ public interface ConcurrentRenderingContext {
 
     float getPartialTicks();
 
-    float getAnimationTicks();
+    double getAnimationTicks();
 
     float getRenderPriority();
 

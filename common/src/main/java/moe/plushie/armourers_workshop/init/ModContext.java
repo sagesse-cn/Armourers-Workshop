@@ -4,7 +4,7 @@ import moe.plushie.armourers_workshop.api.core.IDataCodec;
 import moe.plushie.armourers_workshop.api.core.IDataSerializer;
 import moe.plushie.armourers_workshop.api.core.IDataSerializerKey;
 import moe.plushie.armourers_workshop.compatibility.core.AbstractSavedData;
-import moe.plushie.armourers_workshop.core.utils.DeltaTracker;
+import moe.plushie.armourers_workshop.core.utils.OpenClock;
 import moe.plushie.armourers_workshop.core.utils.Constants;
 import net.minecraft.server.MinecraftServer;
 import org.jetbrains.annotations.NotNull;
@@ -16,7 +16,8 @@ import java.util.UUID;
 
 public class ModContext extends AbstractSavedData {
 
-    private static ModContext current;
+    private static final OpenClock CLOCK = new OpenClock();
+    private static ModContext CURRENT;
 
     private UUID t0;
     private UUID t1;
@@ -29,28 +30,28 @@ public class ModContext extends AbstractSavedData {
     }
 
     public static void init(MinecraftServer server) {
-        current = server.overworld().getDataStorage().computeIfAbsent(ModContext::new, 0, Constants.Key.SKIN);
+        CURRENT = server.overworld().getDataStorage().computeIfAbsent(ModContext::new, 0, Constants.Key.SKIN);
     }
 
     public static void init(UUID t0, UUID t1) {
-        current = new ModContext();
-        current.apply(t0, t1);
+        CURRENT = new ModContext();
+        CURRENT.apply(t0, t1);
     }
 
     public static void reset() {
-        current = null;
+        CURRENT = null;
     }
 
     public static UUID t0() {
-        if (current != null) {
-            return current.t0;
+        if (CURRENT != null) {
+            return CURRENT.t0;
         }
         return null;
     }
 
     public static UUID t1() {
-        if (current != null) {
-            return current.t1;
+        if (CURRENT != null) {
+            return CURRENT.t1;
         }
         return null;
     }
@@ -64,17 +65,21 @@ public class ModContext extends AbstractSavedData {
     }
 
     public static byte[] x0() {
-        if (current != null) {
-            return current.x0;
+        if (CURRENT != null) {
+            return CURRENT.x0;
         }
         return null;
     }
 
     public static byte[] x1() {
-        if (current != null) {
-            return current.x1;
+        if (CURRENT != null) {
+            return CURRENT.x1;
         }
         return null;
+    }
+
+    public static long time() {
+        return CLOCK.getTime();
     }
 
     @NotNull
@@ -136,7 +141,7 @@ public class ModContext extends AbstractSavedData {
 
     @Override
     public void deserialize(IDataSerializer serializer) {
-        DeltaTracker.server().deserialize(serializer);
+        CLOCK.setTime(serializer.read(CodingKeys.CLOCK));
         int count = 0;
         t0 = serializer.read(CodingKeys.T0);
         if (t0 != null) {
@@ -154,7 +159,7 @@ public class ModContext extends AbstractSavedData {
 
     @Override
     public void serialize(IDataSerializer serializer) {
-        DeltaTracker.server().serialize(serializer);
+        serializer.write(CodingKeys.CLOCK, CLOCK.getTime());
         serializer.write(CodingKeys.T0, t0);
         serializer.write(CodingKeys.T1, t1);
     }
@@ -163,5 +168,7 @@ public class ModContext extends AbstractSavedData {
 
         public static final IDataSerializerKey<UUID> T0 = IDataSerializerKey.create("t0", IDataCodec.UUID, null);
         public static final IDataSerializerKey<UUID> T1 = IDataSerializerKey.create("t1", IDataCodec.UUID, null);
+
+        public static final IDataSerializerKey<Long> CLOCK = IDataSerializerKey.create("clock", IDataCodec.LONG, 0L);
     }
 }

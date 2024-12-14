@@ -25,7 +25,7 @@ public class ToastWindow extends UIWindow {
     protected final UILabel titleLabel = new UILabel(CGRect.ZERO);
     protected final UILabel messageLabel = new UILabel(CGRect.ZERO);
 
-    private double duration = 5000f;
+    private double duration = 5000;
 
     private Object icon;
     private final CGRect iconRect = new CGRect(8, 8, 18, 18);

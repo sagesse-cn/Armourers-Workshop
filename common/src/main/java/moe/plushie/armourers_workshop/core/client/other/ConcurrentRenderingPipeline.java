@@ -104,8 +104,6 @@ public class ConcurrentRenderingPipeline {
         int lightmap;
         int outlineColor;
 
-        float animationTicks;
-
         float polygonOffset;
 
         OpenPoseStack poseStack;
@@ -123,7 +121,6 @@ public class ConcurrentRenderingPipeline {
             this.overlay = context.getOverlay();
             this.lightmap = context.getLightmap();
             this.outlineColor = context.getOutlineColor();
-            this.animationTicks = context.getAnimationTicks();
             this.polygonOffset = compiledTask.polygonOffset + context.getRenderPriority();
             this.retain();
             return this;

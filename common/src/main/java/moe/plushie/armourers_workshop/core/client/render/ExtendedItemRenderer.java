@@ -53,13 +53,13 @@ public final class ExtendedItemRenderer {
         if (bakedSkin == null) {
             return;
         }
-        float t = TickUtils.animationTicks();
-        float si = Math.min(width, height);
+        var t = TickUtils.animationTicks();
+        var si = Math.min(width, height);
         poseStack.pushPose();
         poseStack.translate(x + width / 2f, y + height / 2f, z);
         poseStack.scale(1, -1, 1);
         poseStack.rotate(Vector3f.XP.rotationDegrees(rx));
-        poseStack.rotate(Vector3f.YP.rotationDegrees(ry + ((t * 100) % 360)));
+        poseStack.rotate(Vector3f.YP.rotationDegrees(ry + (float) ((t * 100) % 360)));
         poseStack.scale(0.625f, 0.625f, 0.625f);
         poseStack.scale(si, si, si);
         renderSkinInBox(bakedSkin, scheme, targetBox, partialTicks, light, outlineColor, SkinItemSource.create(itemStack), poseStack, bufferSource);

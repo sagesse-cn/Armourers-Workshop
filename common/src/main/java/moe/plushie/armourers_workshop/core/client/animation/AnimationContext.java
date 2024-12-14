@@ -30,7 +30,7 @@ public class AnimationContext {
         }
     }
 
-    public void beginUpdates(float animationTime) {
+    public void beginUpdates(double animationTime) {
         for (var snapshot : snapshots) {
             snapshot.beginUpdates(animationTime);
         }
@@ -42,7 +42,7 @@ public class AnimationContext {
         }
     }
 
-    public void addAnimation(@Nullable AnimationController fromAnimationController, @Nullable AnimationController toAnimationController, float time, float speed, float duration) {
+    public void addAnimation(@Nullable AnimationController fromAnimationController, @Nullable AnimationController toAnimationController, double time, double speed, double duration) {
         // Find affected transform by from/to animation.
         var affectedTransforms = new ArrayList<AnimatedTransform>();
         affectedTransforms.addAll(Objects.flatMap(fromAnimationController, AnimationController::getAffectedTransforms, Collections.emptyList()));
@@ -90,7 +90,7 @@ public class AnimationContext {
             this.transform = transform;
         }
 
-        public void beginUpdates(float animationTicks) {
+        public void beginUpdates(double animationTicks) {
             // set snapshot to null, the transform will skip calculations.
             transform.snapshot = null;
             transform.clear();
@@ -119,7 +119,7 @@ public class AnimationContext {
             }
         }
 
-        protected void addTransitingAnimation(float time, float speed, float duration) {
+        protected void addTransitingAnimation(double time, double speed, double duration) {
             transitingAnimation = new TransitingAnimation(time, duration);
             var snapshotValue = transitingAnimation.getSnapshotValue();
             if (isExported) {
@@ -145,21 +145,21 @@ public class AnimationContext {
         private final AnimatedPoint snapshotValue = new AnimatedPoint();
         private final AnimatedPoint outputValue = new AnimatedPoint();
 
-        private final float beginTime;
-        private final float endTime;
-        private final float duration;
+        private final double beginTime;
+        private final double endTime;
+        private final double duration;
 
         private float progress;
         private boolean isCompleted;
 
-        public TransitingAnimation(float time, float duration) {
+        public TransitingAnimation(double time, double duration) {
             this.beginTime = time;
             this.endTime = time + duration;
             this.duration = duration;
         }
 
-        public void update(float time) {
-            this.progress = OpenMath.clamp((time - beginTime) / duration, 0.0f, 1.0f);
+        public void update(double time) {
+            this.progress = (float) OpenMath.clamp((time - beginTime) / duration, 0.0, 1.0);
             this.isCompleted = time > endTime;
         }
 

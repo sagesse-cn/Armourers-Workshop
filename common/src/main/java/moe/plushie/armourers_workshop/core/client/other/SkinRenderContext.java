@@ -29,7 +29,7 @@ public class SkinRenderContext implements ConcurrentRenderingContext {
     protected int overlay = OverlayTexture.NO_OVERLAY;
     protected int outlineColor = 0;
     protected float partialTicks = 0;
-    protected float animationTicks = 0;
+    protected double animationTicks = 0;
 
     protected IBufferSource bufferSource;
 
@@ -130,11 +130,11 @@ public class SkinRenderContext implements ConcurrentRenderingContext {
         return partialTicks;
     }
 
-    public void setAnimationTicks(float animationTicks) {
+    public void setAnimationTicks(double animationTicks) {
         this.animationTicks = animationTicks;
     }
 
-    public float getAnimationTicks() {
+    public double getAnimationTicks() {
         return animationTicks;
     }
 

@@ -8,10 +8,10 @@ public class EntityActionTarget {
     private final float priority;
     private final String name;
     private final List<EntityAction> actions;
-    private final float transitionDuration;
+    private final double transitionDuration;
     private final int playCount;
 
-    public EntityActionTarget(String name, float priority, List<EntityAction> actions, float transitionDuration, int playCount) {
+    public EntityActionTarget(String name, float priority, List<EntityAction> actions, double transitionDuration, int playCount) {
         this.priority = priority;
         this.name = name;
         this.actions = actions;
@@ -31,7 +31,7 @@ public class EntityActionTarget {
         return actions;
     }
 
-    public float getTransitionDuration() {
+    public double getTransitionDuration() {
         return transitionDuration;
     }
 
@@ -43,7 +43,7 @@ public class EntityActionTarget {
 
         private ArrayList<EntityAction> actions = new ArrayList<>();
         private float priority = 0;
-        private float transitionDuration = 0.1f;
+        private double transitionDuration = 0.1;
         private int playCount = 0;
 
         public Builder action(EntityAction action) {
@@ -61,7 +61,7 @@ public class EntityActionTarget {
             return this;
         }
 
-        public Builder transition(float transitionDuration) {
+        public Builder transition(double transitionDuration) {
             this.transitionDuration = transitionDuration;
             return this;
         }

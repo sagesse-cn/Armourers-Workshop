@@ -37,7 +37,7 @@ public class AnimationController {
     private final String name;
     private final SkinAnimation animation;
 
-    private final float duration;
+    private final double duration;
     private final SkinAnimationLoop loop;
 
     private final ArrayList<Animator<?>> animators = new ArrayList<>();
@@ -69,7 +69,7 @@ public class AnimationController {
         this.isRequiresVirtualMachine = calcRequiresVirtualMachine();
     }
 
-    public static int toTime(float time) {
+    public static int toTime(double time) {
         return (int) (time * 1000);
     }
 
@@ -87,8 +87,8 @@ public class AnimationController {
         return new Constant(defaultValue);
     }
 
-    public void process(float animationTicks, AnimationPlayState playState, ExecutionContext context) {
-        int time = AnimationController.toTime(animationTicks);
+    public void process(double animationTime, AnimationPlayState playState, ExecutionContext context) {
+        int time = AnimationController.toTime(animationTime);
         for (var animator : animators) {
             animator.process(time, playState, context);
         }
@@ -128,7 +128,7 @@ public class AnimationController {
         return loop;
     }
 
-    public float getDuration() {
+    public double getDuration() {
         return duration;
     }
 
