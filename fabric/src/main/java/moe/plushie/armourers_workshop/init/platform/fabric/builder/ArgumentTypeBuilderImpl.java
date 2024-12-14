@@ -1,7 +1,7 @@
 package moe.plushie.armourers_workshop.init.platform.fabric.builder;
 
+import com.mojang.brigadier.arguments.ArgumentType;
 import moe.plushie.armourers_workshop.api.common.IArgumentSerializer;
-import moe.plushie.armourers_workshop.api.common.IArgumentType;
 import moe.plushie.armourers_workshop.api.core.IRegistryHolder;
 import moe.plushie.armourers_workshop.api.registry.IArgumentTypeBuilder;
 import moe.plushie.armourers_workshop.compatibility.fabric.AbstractFabricArgumentType;
@@ -10,7 +10,7 @@ import moe.plushie.armourers_workshop.init.ModConstants;
 
 import java.util.function.Supplier;
 
-public class ArgumentTypeBuilderImpl<T extends IArgumentType<?>> implements IArgumentTypeBuilder<T> {
+public class ArgumentTypeBuilderImpl<T extends ArgumentType<?>> implements IArgumentTypeBuilder<T> {
 
     private final Class<T> argumentType;
     private Supplier<IArgumentSerializer<T>> argumentSerializer;

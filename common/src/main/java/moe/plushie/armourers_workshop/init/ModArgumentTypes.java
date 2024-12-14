@@ -1,6 +1,6 @@
 package moe.plushie.armourers_workshop.init;
 
-import moe.plushie.armourers_workshop.api.common.IArgumentType;
+import com.mojang.brigadier.arguments.ArgumentType;
 import moe.plushie.armourers_workshop.api.core.IRegistryHolder;
 import moe.plushie.armourers_workshop.api.registry.IArgumentTypeBuilder;
 import moe.plushie.armourers_workshop.init.command.ColorArgumentType;
@@ -17,7 +17,7 @@ public class ModArgumentTypes {
     public static IRegistryHolder<?> DYE = normal(ColorSchemeArgumentType.class).serializer(ColorSchemeArgumentType.Serializer::new).build("dye");
     public static IRegistryHolder<?> COLOR = normal(ColorArgumentType.class).serializer(ColorArgumentType.Serializer::new).build("color");
 
-    private static <T extends IArgumentType<?>> IArgumentTypeBuilder<T> normal(Class<T> clazz) {
+    private static <T extends ArgumentType<?>> IArgumentTypeBuilder<T> normal(Class<T> clazz) {
         return BuilderManager.getInstance().createArgumentTypeBuilder(clazz);
     }
 

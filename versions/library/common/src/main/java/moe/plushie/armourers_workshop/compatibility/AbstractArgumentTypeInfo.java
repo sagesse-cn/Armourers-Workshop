@@ -1,16 +1,16 @@
 package moe.plushie.armourers_workshop.compatibility;
 
 import com.google.gson.JsonObject;
+import com.mojang.brigadier.arguments.ArgumentType;
 import moe.plushie.armourers_workshop.api.annotation.Available;
 import moe.plushie.armourers_workshop.api.common.IArgumentSerializer;
-import moe.plushie.armourers_workshop.api.common.IArgumentType;
 import moe.plushie.armourers_workshop.api.network.IFriendlyByteBuf;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.synchronization.ArgumentTypeInfo;
 import net.minecraft.network.FriendlyByteBuf;
 
 @Available("[1.19, )")
-public class AbstractArgumentTypeInfo<A extends IArgumentType<?>> implements ArgumentTypeInfo<A, AbstractArgumentTypeInfo.Template<A>> {
+public class AbstractArgumentTypeInfo<A extends ArgumentType<?>> implements ArgumentTypeInfo<A, AbstractArgumentTypeInfo.Template<A>> {
 
     private final IArgumentSerializer<A> serializer;
 
@@ -38,7 +38,7 @@ public class AbstractArgumentTypeInfo<A extends IArgumentType<?>> implements Arg
         return new Template<>(argumentType, this);
     }
 
-    public static class Template<A extends IArgumentType<?>> implements ArgumentTypeInfo.Template<A> {
+    public static class Template<A extends ArgumentType<?>> implements ArgumentTypeInfo.Template<A> {
 
         private final A instance;
         private final AbstractArgumentTypeInfo<A> argumentType;

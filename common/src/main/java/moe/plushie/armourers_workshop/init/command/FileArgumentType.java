@@ -3,6 +3,7 @@ package moe.plushie.armourers_workshop.init.command;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.mojang.brigadier.StringReader;
+import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -10,7 +11,6 @@ import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import moe.plushie.armourers_workshop.api.common.IArgumentSerializer;
-import moe.plushie.armourers_workshop.api.common.IArgumentType;
 import moe.plushie.armourers_workshop.api.network.IFriendlyByteBuf;
 import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.core.utils.Constants;
@@ -27,7 +27,7 @@ import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
 // /path/name.armour
-public class FileArgumentType implements IArgumentType<String> {
+public class FileArgumentType implements ArgumentType<String> {
 
     public static final SimpleCommandExceptionType ERROR_START = new SimpleCommandExceptionType(Component.literal("File must start with '/'"));
     public static final SimpleCommandExceptionType ERROR_NOT_FOUND = new SimpleCommandExceptionType(Component.literal("Not found any file"));

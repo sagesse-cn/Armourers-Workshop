@@ -1,8 +1,8 @@
 package moe.plushie.armourers_workshop.init.platform.fabric;
 
+import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.serialization.MapCodec;
 import moe.plushie.armourers_workshop.api.client.key.IKeyBinding;
-import moe.plushie.armourers_workshop.api.common.IArgumentType;
 import moe.plushie.armourers_workshop.api.common.IBlockEntityType;
 import moe.plushie.armourers_workshop.api.common.IEntitySerializer;
 import moe.plushie.armourers_workshop.api.common.IEntityType;
@@ -108,7 +108,7 @@ public class BuilderManagerImpl implements BuilderManager.Impl {
     }
 
     @Override
-    public <T extends IArgumentType<?>> IArgumentTypeBuilder<T> createArgumentTypeBuilder(Class<T> argumentType) {
+    public <T extends ArgumentType<?>> IArgumentTypeBuilder<T> createArgumentTypeBuilder(Class<T> argumentType) {
         return new ArgumentTypeBuilderImpl<>(argumentType);
     }
 

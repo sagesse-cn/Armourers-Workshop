@@ -2,12 +2,12 @@ package moe.plushie.armourers_workshop.init.command;
 
 import com.google.gson.JsonObject;
 import com.mojang.brigadier.StringReader;
+import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import moe.plushie.armourers_workshop.api.common.IArgumentSerializer;
-import moe.plushie.armourers_workshop.api.common.IArgumentType;
 import moe.plushie.armourers_workshop.api.network.IFriendlyByteBuf;
 import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintScheme;
 import moe.plushie.armourers_workshop.core.utils.Collections;
@@ -16,7 +16,7 @@ import net.minecraft.commands.CommandSourceStack;
 import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
 
-public class ColorSchemeArgumentType implements IArgumentType<SkinPaintScheme> {
+public class ColorSchemeArgumentType implements ArgumentType<SkinPaintScheme> {
 
     private static final Collection<String> EXAMPLES = Collections.newList("<dyeIndex=[paintType:]#RRGGBB>", "<dyeIndex=[paintType:]R,G,B>");
 

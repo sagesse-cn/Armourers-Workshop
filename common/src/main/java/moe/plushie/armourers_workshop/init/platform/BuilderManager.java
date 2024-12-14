@@ -1,9 +1,9 @@
 package moe.plushie.armourers_workshop.init.platform;
 
+import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.serialization.MapCodec;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import moe.plushie.armourers_workshop.api.client.key.IKeyBinding;
-import moe.plushie.armourers_workshop.api.common.IArgumentType;
 import moe.plushie.armourers_workshop.api.common.IBlockEntityType;
 import moe.plushie.armourers_workshop.api.common.IEntitySerializer;
 import moe.plushie.armourers_workshop.api.common.IEntityType;
@@ -68,7 +68,7 @@ public class BuilderManager {
 
         <T extends AbstractContainerMenu, V> IMenuTypeBuilder<T> createMenuTypeBuilder(IMenuProvider<T, V> factory, IMenuSerializer<V> serializer);
 
-        <T extends IArgumentType<?>> IArgumentTypeBuilder<T> createArgumentTypeBuilder(Class<T> argumentType);
+        <T extends ArgumentType<?>> IArgumentTypeBuilder<T> createArgumentTypeBuilder(Class<T> argumentType);
 
         <T> ICapabilityTypeBuilder<T> createCapabilityTypeBuilder(Class<T> type, Function<Entity, Optional<T>> factory);
 
