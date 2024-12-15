@@ -7,6 +7,7 @@ import moe.plushie.armourers_workshop.api.core.math.IPoseStack;
 import moe.plushie.armourers_workshop.api.skin.ISkinType;
 import moe.plushie.armourers_workshop.builder.blockentity.AdvancedBuilderBlockEntity;
 import moe.plushie.armourers_workshop.builder.client.gui.advancedbuilder.guide.AbstractAdvancedGuideRenderer;
+import moe.plushie.armourers_workshop.builder.client.gui.advancedbuilder.guide.AdvancedBackpackGuideRenderer;
 import moe.plushie.armourers_workshop.builder.client.gui.advancedbuilder.guide.AdvancedBlockGuideRenderer;
 import moe.plushie.armourers_workshop.builder.client.gui.advancedbuilder.guide.AdvancedBoatGuideRenderer;
 import moe.plushie.armourers_workshop.builder.client.gui.advancedbuilder.guide.AdvancedHorseGuideRenderer;
@@ -65,6 +66,8 @@ public class AdvancedBuilderBlockRenderer<T extends AdvancedBuilderBlockEntity> 
         builder.put(SkinDocumentTypes.ITEM_SHIELD, new AdvancedItemGuideRenderer());
         builder.put(SkinDocumentTypes.ITEM_BOW, new AdvancedItemGuideRenderer());
         builder.put(SkinDocumentTypes.ITEM_TRIDENT, new AdvancedItemGuideRenderer());
+
+        builder.put(SkinDocumentTypes.ITEM_BACKPACK, new AdvancedBackpackGuideRenderer());
 
         builder.put(SkinDocumentTypes.ENTITY_BOAT, new AdvancedBoatGuideRenderer());
         builder.put(SkinDocumentTypes.ENTITY_MINECART, new AdvancedMinecartGuideRenderer());
@@ -140,6 +143,9 @@ public class AdvancedBuilderBlockRenderer<T extends AdvancedBuilderBlockEntity> 
             }
         }
 
+//        if (document.getType().getSkinType() == SkinTypes.ITEM_BACKPACK) {
+//            poseStack.rotate(Vector3f.YP.rotationDegrees(180));
+//        }
 
         // only item
         if (USE_ITEM_TRANSFORMERS.contains(document.getType().getSkinType())) {
@@ -235,8 +241,9 @@ public class AdvancedBuilderBlockRenderer<T extends AdvancedBuilderBlockEntity> 
     }
 
     protected void applyTransform(IPoseStack poseStack, ISkinType skinType, OpenItemTransforms itemTransforms) {
+        var displayContext = OpenItemDisplayContext.THIRD_PERSON_RIGHT_HAND;
         if (itemTransforms != null) {
-            var itemTransform = itemTransforms.get(OpenItemDisplayContext.THIRD_PERSON_RIGHT_HAND);
+            var itemTransform = itemTransforms.get(displayContext);
             if (itemTransform != null) {
                 poseStack.translate(0, -2, -2);
                 itemTransform.apply(poseStack);
@@ -245,7 +252,7 @@ public class AdvancedBuilderBlockRenderer<T extends AdvancedBuilderBlockEntity> 
             poseStack.translate(0, -2, -2);
             //var entity = PlaceholderManager.MANNEQUIN.get();
             var model = ItemModelManager.getInstance().getModel(skinType);
-            model.getTransform(OpenItemDisplayContext.THIRD_PERSON_RIGHT_HAND).apply(false, poseStack);
+            model.getTransform(displayContext).apply(false, poseStack);
         }
     }
 

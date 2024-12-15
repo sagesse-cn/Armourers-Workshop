@@ -204,7 +204,8 @@ public class ClientWardrobeHandler {
 
                 // in special case, entity hold item type skin.
                 // so we need replace it to custom renderer.
-                if (embeddedStack.getEntry() == null) {
+                var embeddedSlot = embeddedStack.getEntry();
+                if (embeddedSlot == null) {
                     if (shouldRenderInBox(embeddedStack)) {
                         counter = _renderEmbeddedSkinInBox(embeddedStack, embeddedProperties, itemDisplayContext, leftHandHackery, poseStackIn, buffersIn, packedLight, overlay, outlineColor);
                     } else {
@@ -213,6 +214,13 @@ public class ClientWardrobeHandler {
                         counter = _renderEmbeddedSkin(embeddedStack, embeddedProperties, itemDisplayContext, leftHandHackery, poseStackIn, buffersIn, packedLight, overlay, outlineColor);
                     }
                     break;
+                }
+                // the backpack skin can't apply into hand item renderer by the wardrobe,
+                // it only rendering in the entity back by third-party mods:
+                //   Sophisticated Backpacks
+                //   Traveler's Backpack
+                if (embeddedSlot.getSkinType() == SkinTypes.ITEM_BACKPACK && embeddedSlot.getSlotType() == EntitySlot.Type.IN_WARDROBE) {
+                    return;
                 }
                 var renderData = EntityRenderData.of(entity);
                 if (renderData != null) {
@@ -240,7 +248,7 @@ public class ClientWardrobeHandler {
 
                     context.setItemSource(SkinItemSource.create(800, itemStack, itemDisplayContext, embeddedProperties));
                     context.setUseItemTransforms(true);
-                    counter = render(entity, armature, context, Collections.singleton(embeddedStack.getEntry()));
+                    counter = render(entity, armature, context, Collections.singleton(embeddedSlot));
                     context.release();
 
                     poseStack.popPose();

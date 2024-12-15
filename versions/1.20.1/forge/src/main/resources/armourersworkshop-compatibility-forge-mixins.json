@@ -8,7 +8,10 @@
     "ForgeEpicFightFirstPersonRendererMixin",
     "ForgeEpicFightShieldRendererMixin",
     "ForgeCuriosAddonMixin",
-    "ForgeTacZeroItemRenderMixin"
+    "ForgeTacZeroItemRenderMixin",
+    "backpack/ForgeMrcrayfishBackpackRendererMixin",
+    "backpack/ForgeTravelersBackpackRendererMixin",
+    "backpack/ForgeSophisticatedBackpackRendererMixin"
   ],
   "mixins": [
     "ForgeBlockEntityHandlerMixin"

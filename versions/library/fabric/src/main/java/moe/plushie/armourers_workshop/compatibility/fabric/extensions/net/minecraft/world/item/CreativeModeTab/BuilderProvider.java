@@ -1,7 +1,6 @@
 package moe.plushie.armourers_workshop.compatibility.fabric.extensions.net.minecraft.world.item.CreativeModeTab;
 
 import moe.plushie.armourers_workshop.api.annotation.Available;
-import moe.plushie.armourers_workshop.api.core.IResourceLocation;
 import moe.plushie.armourers_workshop.init.ModConstants;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.minecraft.network.chat.Component;

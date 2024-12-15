@@ -5,7 +5,10 @@
   "client": [
     "ForgeEpicFightRendererMixin",
     "ForgeEpicFightFirstPersonRendererMixin",
-    "ForgeCuriosAddonMixin"
+    "ForgeCuriosAddonMixin",
+    "backpack/ForgeMrcrayfishBackpackRendererMixin",
+    "backpack/ForgeTravelersBackpackRendererMixin",
+    "backpack/ForgeSophisticatedBackpackRendererMixin"
   ],
   "mixins": [
     "ForgeBlockEntityHandlerMixin"

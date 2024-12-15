@@ -5,7 +5,8 @@
     "legs": "default_mob_slots",
     "feet": "default_mob_slots",
     "wings": "default_mob_slots",
-    "outfit": "default_mob_slots"
+    "outfit": "default_mob_slots",
+    "backpack": 1
   },
   "entities": [
     "minecraft:villager",

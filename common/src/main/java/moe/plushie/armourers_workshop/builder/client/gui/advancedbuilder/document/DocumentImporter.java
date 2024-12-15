@@ -243,6 +243,7 @@ public class DocumentImporter {
         builder.add(SkinTypes.ITEM_HOE);
 
         builder.add(SkinTypes.ITEM_FISHING);
+        builder.add(SkinTypes.ITEM_BACKPACK);
 
         builder.add(SkinTypes.ITEM);
         builder.add(SkinTypes.BLOCK);

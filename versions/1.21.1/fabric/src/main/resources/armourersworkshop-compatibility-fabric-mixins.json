@@ -9,7 +9,10 @@
     "FabricScreenMixin",
     "FabricGuiGraphicsMixin",
     "FabricRecipeComponentMixin",
-    "FabricTrinketsAddonMixin"
+    "FabricTrinketsAddonMixin",
+    "backpack/FabricMrcrayfishBackpackRendererMixin",
+    "backpack/FabricTravelersBackpackRendererMixin",
+    "backpack/FabricSophisticatedBackpackRendererMixin"
   ],
   "mixins": [
     "FabricEntitySizeMixin"

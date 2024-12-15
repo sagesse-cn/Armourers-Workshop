@@ -37,10 +37,12 @@ public enum SkinSlotType {
     OUTFIT(12, 70, 10, "outfit", SkinTypes.OUTFIT),
     DYE(13, 80, 16, "dye", null),
 
-    HORSE(14, 70, 10, "horse", SkinTypes.HORSE),
-    DEFAULT(15, 64, 6, "default", null),
+    HORSE(14, 70, 10, "horse", SkinTypes.HORSE), // the horse entity only
 
-    ANY(99, 0, 96, "any", null);
+    DEFAULT(15, 64, 6, "default", null),
+    BACKPACK(16, 96, 10, "backpack", SkinTypes.ITEM_BACKPACK),
+
+    ANY(99, 0, 106, "any", null);
 
     private final String name;
     private final int id;

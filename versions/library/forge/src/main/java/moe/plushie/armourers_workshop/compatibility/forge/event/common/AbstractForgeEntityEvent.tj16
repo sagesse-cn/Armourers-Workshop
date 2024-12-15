@@ -3,12 +3,9 @@ package moe.plushie.armourers_workshop.compatibility.forge.event.common;
 import moe.plushie.armourers_workshop.api.annotation.Available;
 import moe.plushie.armourers_workshop.api.registry.IEventHandler;
 import moe.plushie.armourers_workshop.compatibility.forge.AbstractForgeCommonEventsImpl;
-import moe.plushie.armourers_workshop.core.data.EntityDataStorage;
 import moe.plushie.armourers_workshop.init.platform.event.common.EntityEvent;
-import moe.plushie.armourers_workshop.utils.DataContainer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
-import net.minecraft.world.entity.Pose;
 
 @Available("[1.16, 1.21)")
 public class AbstractForgeEntityEvent {

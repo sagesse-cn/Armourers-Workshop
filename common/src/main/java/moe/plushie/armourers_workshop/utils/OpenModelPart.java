@@ -115,7 +115,7 @@ public class OpenModelPart {
             if (!skipDraw) {
                 compile(poseStack.last(), vertexConsumer, light, overlay, color);
             }
-            for (OpenModelPart modelPart : children.values()) {
+            for (var modelPart : children.values()) {
                 modelPart.render(poseStack, vertexConsumer, light, overlay, color);
             }
             poseStack.popPose();

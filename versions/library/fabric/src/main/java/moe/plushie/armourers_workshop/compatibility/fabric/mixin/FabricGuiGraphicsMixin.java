@@ -1,6 +1,5 @@
 package moe.plushie.armourers_workshop.compatibility.fabric.mixin;
 
-import com.apple.library.coregraphics.CGGraphicsContext;
 import moe.plushie.armourers_workshop.api.annotation.Available;
 import moe.plushie.armourers_workshop.compatibility.client.gui.AbstractGraphicsRenderer;
 import moe.plushie.armourers_workshop.core.utils.Objects;

@@ -255,6 +255,17 @@
         "translate": [ 0, 0, 2 ]
       }
     },
+    "Backpack": {
+      "parent": "Chest",
+      "id": "armourers:backpack.base",
+      "cube": {
+        "origin": [ -4, 0, 0 ],
+        "size": [ 8, 12, 4 ]
+      },
+      "transform": {
+        "translate": [ 0, 0, 2 ]
+      }
+    },
     "Float": {
       "parent": "Root",
       "id": "armourers:part.float"

@@ -13,7 +13,8 @@
     "axe": 1,
     "hoe": 1,
     "pickaxe": 1,
-    "shovel": 1
+    "shovel": 1,
+    "backpack": 1
   },
   "entities": [
     "minecraft:skeleton",

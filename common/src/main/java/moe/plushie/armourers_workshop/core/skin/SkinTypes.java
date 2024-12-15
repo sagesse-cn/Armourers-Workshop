@@ -43,6 +43,7 @@ public final class SkinTypes {
     public static final ISkinType ITEM_HOE = registerItem("hoe", 13, ItemOverrideType.HOE, SkinPartTypes.ITEM_HOE);
 
     public static final ISkinType ITEM_FISHING = registerItem("fishing", 20, ItemOverrideType.FISHING_ROD, SkinPartTypes.ITEM_FISHING_ROD, SkinPartTypes.ITEM_FISHING_HOOK);
+    public static final ISkinType ITEM_BACKPACK = registerItem("backpack", 24, ItemOverrideType.BACKPACK, SkinPartTypes.ITEM_BACKPACK);
 
     public static final ISkinType ITEM = register("item", 14, SkinPartTypes.ITEM);
     public static final ISkinType BLOCK = register("block", 15, SkinPartTypes.BLOCK, SkinPartTypes.BLOCK_MULTI);

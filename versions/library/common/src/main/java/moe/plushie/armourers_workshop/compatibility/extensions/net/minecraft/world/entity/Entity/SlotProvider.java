@@ -10,15 +10,15 @@ import manifold.ext.rt.api.This;
 @Extension
 public class SlotProvider {
 
-    public static Iterable<ItemStack> getOverrideArmorSlots(@This Entity entity) {
+    public static Iterable<ItemStack> getExtendedArmorSlots(@This Entity entity) {
         return ItemStackProvider.getInstance().getArmorSlots(entity);
     }
 
-    public static Iterable<ItemStack> getOverrideHandSlots(@This Entity entity) {
+    public static Iterable<ItemStack> getExtendedHandSlots(@This Entity entity) {
         return ItemStackProvider.getInstance().getHandSlots(entity);
     }
 
-    public static Iterable<ItemStack> getOverrideSlots(@This Entity entity) {
+    public static Iterable<ItemStack> getExtendedAllSlots(@This Entity entity) {
         return ItemStackProvider.getInstance().getAllSlots(entity);
     }
 }

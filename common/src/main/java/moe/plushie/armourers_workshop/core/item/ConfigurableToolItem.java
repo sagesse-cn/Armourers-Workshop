@@ -27,7 +27,7 @@ public abstract class ConfigurableToolItem extends FlavouredItem implements ICon
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         var itemStack = player.getItemInHand(hand);
-        if (level.isClientSide() && player.isShiftKeyDown() && openContainer(level, player, hand, itemStack)) {
+        if (level.isClientSide() && player.isSecondaryUseActive() && openContainer(level, player, hand, itemStack)) {
             return InteractionResultHolder.success(itemStack);
         }
         return super.use(level, player, hand);

@@ -10,18 +10,6 @@ import net.fabricmc.api.Environment;
 @Environment(EnvType.CLIENT)
 public class AdvancedHumanGuideRenderer extends AdvancedEntityGuideRenderer {
 
-//    private static final ImmutableMap<ISkinPartType, Function<MannequinEntity, Rotations>> RR = ImmutableMap.<ISkinPartType, Function<MannequinEntity, Rotations>>builder()
-//            .put(SkinPartTypes.BIPPED_LEFT_ARM, MannequinEntity::getLeftArmPose)
-//            .put(SkinPartTypes.BIPPED_RIGHT_ARM, MannequinEntity::getRightArmPose)
-//
-//            .put(SkinPartTypes.BIPPED_LEFT_LEG, MannequinEntity::getLeftLegPose)
-//            .put(SkinPartTypes.BIPPED_RIGHT_LEG, MannequinEntity::getRightLegPose)
-//
-//            .build();
-
-    public AdvancedHumanGuideRenderer() {
-    }
-
     @Override
     public BakedArmature getArmature() {
         return BakedArmature.defaultBy(Armatures.HUMANOID);

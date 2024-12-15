@@ -6,7 +6,6 @@ import com.apple.library.foundation.NSString;
 import com.apple.library.uikit.UIComboItem;
 import com.apple.library.uikit.UIImage;
 import moe.plushie.armourers_workshop.ArmourersWorkshop;
-import moe.plushie.armourers_workshop.api.core.IResourceLocation;
 import moe.plushie.armourers_workshop.api.skin.ISkinType;
 import moe.plushie.armourers_workshop.builder.client.gui.widget.NewComboBox;
 import moe.plushie.armourers_workshop.builder.client.gui.widget.NewComboItem;
@@ -23,7 +22,7 @@ public class DocumentTypeListView extends NewComboBox {
     public DocumentTypeListView(CGRect frame) {
         super(frame);
         SkinDocumentTypes.forEach((category, items) -> {
-            AdvancedTypeSection section = new AdvancedTypeSection(category);
+            var section = new AdvancedTypeSection(category);
             items.forEach(section::add);
             allSections.add(section);
         });
@@ -35,9 +34,9 @@ public class DocumentTypeListView extends NewComboBox {
     }
 
     public SkinDocumentType selectedType() {
-        NSIndexPath indexPath = super.selectedIndex();
-        AdvancedTypeSection section = allSections.get(indexPath.section);
-        AdvancedTypeItem item = section.get(indexPath.row);
+        var indexPath = super.selectedIndex();
+        var section = allSections.get(indexPath.section);
+        var item = section.get(indexPath.row);
         if (item != null) {
             return item.category;
         }
@@ -50,9 +49,9 @@ public class DocumentTypeListView extends NewComboBox {
 
     private NSIndexPath findCategoryIndexPath(SkinDocumentType category) {
         for (int j = 0; j < allSections.size(); ++j) {
-            AdvancedTypeSection section = allSections[j];
+            var section = allSections[j];
             for (int i = 0; i < section.size(); ++i) {
-                AdvancedTypeItem item = section.get(i);
+                var item = section.get(i);
                 if (item.category == category) {
                     return new NSIndexPath(i, j);
                 }
@@ -69,10 +68,10 @@ public class DocumentTypeListView extends NewComboBox {
         }
 
         public AdvancedTypeItem add(SkinDocumentType category) {
-            ISkinType skinType = category.getSkinType();
-            IResourceLocation rl = ArmourersWorkshop.getItemIcon(skinType);
-            UIImage icon = UIImage.of(rl).resize(12, 12, 16, 16).limit(16, 16).build();
-            AdvancedTypeItem item = new AdvancedTypeItem(icon, category);
+            var skinType = category.getSkinType();
+            var rl = ArmourersWorkshop.getItemIcon(skinType);
+            var icon = UIImage.of(rl).resize(12, 12, 16, 16).limit(16, 16).build();
+            var item = new AdvancedTypeItem(icon, category);
             add(item);
             return item;
         }

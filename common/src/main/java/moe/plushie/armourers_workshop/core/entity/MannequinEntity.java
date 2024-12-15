@@ -185,7 +185,7 @@ public class MannequinEntity extends AbstractLivingEntity.ArmorStand implements 
     public ItemStack getCustomPickResult(HitResult target) {
         var itemStack = new ItemStack(ModItems.MANNEQUIN.get());
         // yep, we need copy the fully model info when ctrl down.
-        if (EnvironmentExecutorIO.hasSprintDown()) {
+        if (EnvironmentExecutorIO.hasControlDown()) {
             var entityTag = new CompoundTag();
             entityTag.putString(Constants.Key.ID, ModEntityTypes.MANNEQUIN.getRegistryName().toString());
             addAdditionalSaveData(entityTag);
@@ -233,9 +233,13 @@ public class MannequinEntity extends AbstractLivingEntity.ArmorStand implements 
             return itemStack.interactLivingEntity(player, this, hand);
         }
         if (player.isSecondaryUseActive()) {
-            double ry = TrigUtils.getAngleDegrees(player.getX(), player.getZ(), getX(), getZ()) + 90.0;
-            Rotations rotations = getBodyPose();
-            float yRot = this.getYRot();
+            // forward to vanilla armour stand interact implementations.
+            if (EnvironmentExecutorIO.hasControlDown()) {
+                return super.interactAt(player, pos, hand);
+            }
+            var ry = TrigUtils.getAngleDegrees(player.getX(), player.getZ(), getX(), getZ()) + 90.0;
+            var rotations = getBodyPose();
+            var yRot = this.getYRot();
             setBodyPose(new Rotations(rotations.getX(), (float) ry - yRot, rotations.getZ()));
             return InteractionResult.sidedSuccess(getLevel().isClientSide());
         }

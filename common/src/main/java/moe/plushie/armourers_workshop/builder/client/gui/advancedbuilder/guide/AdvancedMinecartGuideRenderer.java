@@ -10,9 +10,6 @@ import net.fabricmc.api.Environment;
 @Environment(EnvType.CLIENT)
 public class AdvancedMinecartGuideRenderer extends AdvancedEntityGuideRenderer {
 
-    public AdvancedMinecartGuideRenderer() {
-    }
-
     @Override
     public BakedArmature getArmature() {
         return BakedArmature.defaultBy(Armatures.MINECART);

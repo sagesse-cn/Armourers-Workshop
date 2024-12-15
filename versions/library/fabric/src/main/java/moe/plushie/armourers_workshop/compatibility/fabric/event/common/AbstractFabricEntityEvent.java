@@ -6,7 +6,6 @@ import moe.plushie.armourers_workshop.init.platform.event.common.EntityEvent;
 import moe.plushie.armourers_workshop.init.platform.fabric.event.EntityLifecycleEvents;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
-import net.minecraft.world.entity.Pose;
 
 @Available("[1.16, )")
 public class AbstractFabricEntityEvent {

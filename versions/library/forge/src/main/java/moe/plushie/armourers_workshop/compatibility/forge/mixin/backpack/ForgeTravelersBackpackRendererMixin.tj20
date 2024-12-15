@@ -1,0 +1,37 @@
+package moe.plushie.armourers_workshop.compatibility.forge.mixin.backpack;
+
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
+import com.tiviacz.travelersbackpack.client.model.BackpackLayerModel;
+import com.tiviacz.travelersbackpack.client.renderer.TravelersBackpackLayer;
+import moe.plushie.armourers_workshop.api.annotation.Available;
+import moe.plushie.armourers_workshop.core.client.other.EntityRenderData;
+import moe.plushie.armourers_workshop.core.skin.property.SkinProperty;
+import moe.plushie.armourers_workshop.init.platform.forge.addon.TravelersBackpackAddon;
+import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Pseudo;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+@Available("[1.20, 1.21)")
+@Pseudo
+@Mixin(TravelersBackpackLayer.class)
+public class ForgeTravelersBackpackRendererMixin {
+
+    @Inject(method = "renderBackpackLayer", at = @At("HEAD"), remap = false, cancellable = true)
+    private static void aw2$renderBackpack(BackpackLayerModel<?> model, HumanoidModel<?> humanoidModel, PoseStack poseStack, MultiBufferSource bufferIn, int packedLightIn, LivingEntity livingEntity, ItemStack stack, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, CallbackInfo ci) {
+        var renderData = EntityRenderData.of(livingEntity);
+        if (renderData != null && renderData.getOverriddenManager().contains(SkinProperty.OVERRIDE_MODEL_BACKPACK)) {
+            ci.cancel();
+        }
+    }
+
+    static {
+        TravelersBackpackAddon.register(CapabilityUtils::getWearingBackpack);
+    }
+}

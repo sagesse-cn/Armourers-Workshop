@@ -20,6 +20,7 @@ public class ModItemTags {
     public static final IRegistryHolder<IItemTag> BOATS = skinnable("boats");
     public static final IRegistryHolder<IItemTag> MINECARTS = skinnable("minecarts");
     public static final IRegistryHolder<IItemTag> FISHING_RODS = skinnable("fishing_rods");
+    public static final IRegistryHolder<IItemTag> BACKPACKS = skinnable("backpacks");
 
     public static final IRegistryHolder<IItemTag> HORSE_ARMORS = skinnable("horse_armors");
 

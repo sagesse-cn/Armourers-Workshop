@@ -21,6 +21,7 @@
       "Wing_R": [ 0, 36, 2 ],
       "Phalanx_L": [ 0, 36, 2 ],
       "Phalanx_R": [ 0, 36, 2 ],
+      "Backpack": [ 0, 36, 2 ],
       "Float": [ 0, 36, 0 ],
       "Static": [ 0, 36, 0 ]
     }

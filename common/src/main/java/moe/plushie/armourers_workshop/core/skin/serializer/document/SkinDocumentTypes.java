@@ -45,6 +45,8 @@ public class SkinDocumentTypes {
     public static final SkinDocumentType ITEM_HOE = register("item", SkinTypes.ITEM_HOE);
     public static final SkinDocumentType ITEM_FISHING = register("item", SkinTypes.ITEM_FISHING);
 
+    public static final SkinDocumentType ITEM_BACKPACK = register("item", SkinTypes.ITEM_BACKPACK);
+
     public static final SkinDocumentType ENTITY_HORSE = register("entity", SkinTypes.HORSE);
     public static final SkinDocumentType ENTITY_BOAT = register("entity", SkinTypes.BOAT);
     public static final SkinDocumentType ENTITY_MINECART = register("entity", SkinTypes.MINECART);

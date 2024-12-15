@@ -80,6 +80,8 @@ public final class SkinPartTypes {
     public static final ISkinPartType ITEM_FISHING_ROD = register("fishing.rod", new ItemPartType());
     public static final ISkinPartType ITEM_FISHING_HOOK = register("fishing.hook", new ItemPartType());
 
+    public static final ISkinPartType ITEM_BACKPACK = register("backpack.base", new ItemPartType());
+
     public static final ISkinPartType ITEM_SHIELD1 = register("shield.blocking", new OverrideItemPartType("blocking"));
     public static final ISkinPartType ITEM_TRIDENT1 = register("trident.throwing", new OverrideItemPartType("throwing"));
     public static final ISkinPartType ITEM_FISHING_ROD1 = register("fishing.rod1", new OverrideItemPartType("cast"));

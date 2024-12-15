@@ -3,7 +3,6 @@ package moe.plushie.armourers_workshop.compatibility.forge.mixin;
 import moe.plushie.armourers_workshop.api.annotation.Available;
 import moe.plushie.armourers_workshop.core.client.model.BakedModelStorage;
 import moe.plushie.armourers_workshop.core.client.other.SkinItemProperties;
-import moe.plushie.armourers_workshop.core.skin.property.SkinProperties;
 import moe.plushie.armourers_workshop.init.client.ClientWardrobeHandler;
 import net.minecraft.client.renderer.ItemModelShaper;
 import net.minecraft.client.resources.model.BakedModel;

@@ -18,7 +18,10 @@
       "Foot_L": [ -0.5, 1, -1 ],
       "Foot_R": [ -0.5, 1, -1 ],
       "Phalanx_L": [ 0, -2, 3 ],
-      "Phalanx_R": [ 0, -2, 3 ]
+      "Phalanx_R": [ 0, -2, 3 ],
+      "Backpack": [ 0, -2, 3 ],
+      "Float": [ 0, -2, 3 ],
+      "Static": [ 0, -2, 3 ]
     }
   },
   "model": [

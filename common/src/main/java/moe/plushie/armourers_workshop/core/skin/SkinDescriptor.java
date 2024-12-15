@@ -84,8 +84,8 @@ public class SkinDescriptor implements IDataSerializable.Immutable, ISkinDescrip
         if (skinType == SkinTypes.ITEM) {
             return true;
         }
-        if (skinType instanceof ISkinToolType) {
-            return ((ISkinToolType) skinType).contains(itemStack);
+        if (skinType instanceof ISkinToolType toolType) {
+            return toolType.contains(itemStack);
         }
         return false;
     }

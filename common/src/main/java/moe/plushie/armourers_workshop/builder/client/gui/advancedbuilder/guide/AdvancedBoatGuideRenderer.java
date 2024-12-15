@@ -10,9 +10,6 @@ import net.fabricmc.api.Environment;
 @Environment(EnvType.CLIENT)
 public class AdvancedBoatGuideRenderer extends AdvancedEntityGuideRenderer {
 
-    public AdvancedBoatGuideRenderer() {
-    }
-
     @Override
     public BakedArmature getArmature() {
         return BakedArmature.defaultBy(Armatures.BOAT);

@@ -1,5 +1,6 @@
 package moe.plushie.armourers_workshop.core.client.other;
 
+import moe.plushie.armourers_workshop.api.skin.ISkinType;
 import moe.plushie.armourers_workshop.core.client.bake.BakedSkin;
 import moe.plushie.armourers_workshop.core.skin.SkinDescriptor;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperty;
@@ -45,12 +46,24 @@ public class EntitySlot {
         return bakedScheme;
     }
 
+    public boolean shouldRenderInHeld(ItemStack itemStack) {
+        return descriptor.accept(itemStack);
+    }
+
     public float getRenderPriority() {
         return renderPriority;
     }
 
     public BakedSkin getSkin() {
         return bakedSkin;
+    }
+
+    public ISkinType getSkinType() {
+        return bakedSkin.getType();
+    }
+
+    public Type getSlotType() {
+        return slotType;
     }
 
     public SkinPaintScheme getPaintScheme() {

@@ -115,6 +115,7 @@ public class EntitySlotsHandler<T> implements IAssociatedContainerProvider, Skin
         wardrobeProvider.load(wardrobe, this::loadSkin);
 
         loadSkinInfos();
+        loadArmourEquipments(source);
         loadSkinAnimations(source);
         loadMissingSkinIfNeeded();
     }
@@ -193,6 +194,22 @@ public class EntitySlotsHandler<T> implements IAssociatedContainerProvider, Skin
         }
     }
 
+    private void loadArmourEquipments(T source) {
+        // ?
+        if (!(entityProvider instanceof EntityProvider entityProvider1)) {
+            return;
+        }
+        var isMannequinHand = source instanceof MannequinEntity;
+        for (var itemStack : entityProvider1.armourSlots) {
+            for (var slot : getItemSkins(itemStack, isMannequinHand)) {
+                if (slot.getSkinType() == SkinTypes.ITEM_BACKPACK) {
+                    armorSkins.add(slot);
+                    overriddenManager.addProperty(SkinProperty.OVERRIDE_MODEL_BACKPACK);
+                }
+            }
+        }
+    }
+
     private void loadMissingSkinIfNeeded() {
         if (missingSkins.isEmpty()) {
             if (isListening) {
@@ -214,7 +231,7 @@ public class EntitySlotsHandler<T> implements IAssociatedContainerProvider, Skin
 
         // the item skin will play parallel animation when item is active.
         if (entityProvider instanceof EntityProvider entityProvider1) {
-            boolean isMannequinHand = source instanceof MannequinEntity;
+            var isMannequinHand = source instanceof MannequinEntity;
             for (var itemStack : entityProvider1.handSlots) {
                 getItemSkins(itemStack, isMannequinHand).forEach(this::loadSkinAnimation);
             }
@@ -255,7 +272,7 @@ public class EntitySlotsHandler<T> implements IAssociatedContainerProvider, Skin
             // the item stack is not embedded skin, using matching pattern,
             // only need to find the first matching skin by item.
             for (var entry : itemSkins) {
-                if (entry.slotType != EntitySlot.Type.IN_HELD && entry.getDescriptor().accept(itemStack)) {
+                if (entry.slotType != EntitySlot.Type.IN_HELD && entry.shouldRenderInHeld(itemStack)) {
                     return Collections.singletonList(entry);
                 }
             }
@@ -501,12 +518,12 @@ public class EntitySlotsHandler<T> implements IAssociatedContainerProvider, Skin
         @Override
         protected void collect(Entity entity, List<ItemStack> collector) {
             handSlots.clear();
-            entity.getOverrideHandSlots().forEach(itemStack -> {
+            entity.getExtendedHandSlots().forEach(itemStack -> {
                 handSlots.add(itemStack);
                 collector.add(itemStack);
             });
             armourSlots.clear();
-            entity.getOverrideArmorSlots().forEach(itemStack -> {
+            entity.getExtendedArmorSlots().forEach(itemStack -> {
                 armourSlots.add(itemStack);
                 collector.add(itemStack);
             });

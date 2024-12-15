@@ -24,7 +24,9 @@ public enum ItemOverrideType {
 
     BOAT("boat", ModItemTags.BOATS, null),
     MINECART("minecart", ModItemTags.MINECARTS, null),
+
     FISHING_ROD("fishing_rod", ModItemTags.FISHING_RODS, null),
+    BACKPACK("backpack", ModItemTags.BACKPACKS, null),
 
     HORSE_ARMOR("horse_armor", ModItemTags.HORSE_ARMORS, null),
 

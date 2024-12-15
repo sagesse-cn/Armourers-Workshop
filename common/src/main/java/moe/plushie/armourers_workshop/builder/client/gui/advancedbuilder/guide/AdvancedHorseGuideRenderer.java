@@ -10,9 +10,6 @@ import net.fabricmc.api.Environment;
 @Environment(EnvType.CLIENT)
 public class AdvancedHorseGuideRenderer extends AdvancedEntityGuideRenderer {
 
-    public AdvancedHorseGuideRenderer() {
-    }
-
     @Override
     public BakedArmature getArmature() {
         return BakedArmature.defaultBy(Armatures.HORSE);

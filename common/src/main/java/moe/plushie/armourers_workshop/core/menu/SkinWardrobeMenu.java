@@ -46,6 +46,8 @@ public class SkinWardrobeMenu extends AbstractContainerMenu {
         addEquipmentSlots(Group.SKINS, 0, 5);
 
         addSkinSlots(SkinSlotType.OUTFIT, Group.OUTFITS, 0, 0);
+        addSkinSlots(SkinSlotType.BACKPACK, Group.OUTFITS, 0, 5);
+
         addSkinSlots(SkinSlotType.HORSE, Group.UNKNOWN, 0, 0);
         addSkinSlots(SkinSlotType.DYE, Group.DYES, 0, 0);
 

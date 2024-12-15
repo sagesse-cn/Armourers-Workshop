@@ -5,7 +5,8 @@
     "legs": 10,
     "feet": 10,
     "wings": 10,
-    "outfit": 10
+    "outfit": 10,
+    "backpack": 1
   },
   "entities": [
     "armourers_workshop:mannequin"

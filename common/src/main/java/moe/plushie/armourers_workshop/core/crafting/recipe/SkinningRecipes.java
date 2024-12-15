@@ -25,7 +25,9 @@ public class SkinningRecipes {
 
         recipes.add(new SkinningItemRecipe(SkinTypes.BOAT));
         recipes.add(new SkinningItemRecipe(SkinTypes.MINECART));
+
         recipes.add(new SkinningItemRecipe(SkinTypes.ITEM_FISHING));
+        recipes.add(new SkinningItemRecipe(SkinTypes.ITEM_BACKPACK));
 
         recipes.add(new SkinningItemRecipe(SkinTypes.ITEM));
 
