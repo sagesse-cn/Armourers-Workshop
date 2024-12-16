@@ -76,7 +76,7 @@ public class SkinDocument {
 
     public <T> void put(ISkinProperty<T> property, T value) {
         properties.put(property, value);
-        var changes = new SkinProperties();
+        var changes = new SkinProperties.Increment();
         changes.put(property, value);
         listener.documentDidChangeProperties(changes.serializeNBT());
     }

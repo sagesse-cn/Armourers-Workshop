@@ -38,7 +38,7 @@ public class SkinProperties extends OpenProperties implements ISkinProperties {
 
     @Override
     public <T> void put(ISkinProperty<T> property, T value) {
-        if (Objects.equals(value, property.getDefaultValue())) {
+        if (shouldRemoveDefaultValues() && Objects.equals(value, property.getDefaultValue())) {
             remove(property.getKey());
         } else {
             put(property.getKey(), value);
@@ -58,6 +58,10 @@ public class SkinProperties extends OpenProperties implements ISkinProperties {
     @Override
     public <T> boolean containsValue(ISkinProperty<T> property) {
         return containsValue(property.getKey());
+    }
+
+    public boolean shouldRemoveDefaultValues() {
+        return true;
     }
 
     public ArrayList<String> getPropertiesList() {
@@ -149,6 +153,14 @@ public class SkinProperties extends OpenProperties implements ISkinProperties {
                 }
             }
             return null;
+        }
+    }
+
+    public static class Increment extends SkinProperties {
+
+        @Override
+        public boolean shouldRemoveDefaultValues() {
+            return false; // increments require record all changes.
         }
     }
 }
