@@ -7,12 +7,10 @@ import moe.plushie.armourers_workshop.api.skin.ISkinType;
 import moe.plushie.armourers_workshop.api.skin.part.features.ICanUse;
 import moe.plushie.armourers_workshop.core.client.animation.AnimatedTransform;
 import moe.plushie.armourers_workshop.core.client.animation.AnimationController;
-import moe.plushie.armourers_workshop.core.client.animation.AnimationEngine;
 import moe.plushie.armourers_workshop.core.client.model.ItemTransform;
 import moe.plushie.armourers_workshop.core.client.other.PlaceholderManager;
 import moe.plushie.armourers_workshop.core.client.other.SkinItemSource;
 import moe.plushie.armourers_workshop.core.client.other.SkinRenderContext;
-import moe.plushie.armourers_workshop.core.client.other.SkinRenderHelper;
 import moe.plushie.armourers_workshop.core.client.skinrender.SkinRenderer;
 import moe.plushie.armourers_workshop.core.client.texture.PlayerTextureLoader;
 import moe.plushie.armourers_workshop.core.data.cache.PrimaryKey;
@@ -58,9 +56,6 @@ public class BakedSkin {
     private final HashMap<Object, Rectangle3f> cachedBounds = new HashMap<>();
     private final HashMap<Vector3i, Rectangle3f> cachedBlockBounds = new HashMap<>();
 
-    private final ArrayList<WingPartTransform> cachedWingsTransforms = new ArrayList<>();
-    private final ArrayList<BakedAttachmentTransform> cachedAttachmentTransforms = new ArrayList<>();
-    private final ArrayList<AnimatedTransform> cachedAnimatedTransforms = new ArrayList<>();
 
     private final Range<Integer> useTickRange;
     private final List<BakedSkinPart> skinParts;
@@ -74,6 +69,8 @@ public class BakedSkin {
 
     private final SkinPaintScheme paintScheme;
     private final Int2ObjectMap<SkinPaintScheme> resolvedColorSchemes = new Int2ObjectOpenHashMap<>();
+
+    private final BakedSkinAnimationHandler animationHandler = new BakedSkinAnimationHandler();
 
     public BakedSkin(String identifier, ISkinType skinType, ArrayList<BakedSkinPart> bakedParts, Skin skin, SkinPaintScheme paintScheme, ColorDescriptor colorDescriptor, SkinUsedCounter usedCounter) {
         this.identifier = identifier;
@@ -91,11 +88,7 @@ public class BakedSkin {
     }
 
     public void setupAnim(Entity entity, BakedArmature bakedArmature, SkinRenderContext context) {
-        cachedAnimatedTransforms.forEach(AnimatedTransform::reset);
-        cachedWingsTransforms.forEach(it -> it.setup(entity, context.getAnimationTicks()));
-        AnimationEngine.apply(entity, this, context);
-        SkinRenderHelper.apply(entity, this, bakedArmature, context.getItemSource());
-        cachedAttachmentTransforms.forEach(it -> it.setup(entity, bakedArmature, context));
+        animationHandler.setup(this, entity, bakedArmature, context);
     }
 
     public SkinPaintScheme resolve(Entity entity, SkinPaintScheme scheme) {
@@ -211,19 +204,29 @@ public class BakedSkin {
     }
 
     private void loadPartTransforms(List<BakedSkinPart> skinParts) {
+        // attach backpack part transform.
+        skinParts.forEach(it -> {
+            if (it.getType() == SkinPartTypes.ITEM_BACKPACK) {
+                var transform = new BakedBackpackPartTransform();
+                it.getTransform().insertChild(transform, 0);
+                animationHandler.register(1, (skin, entity, armature, context) -> transform.setup(entity, context));
+            }
+        });
         // search all transform
         skinParts.forEach(it -> it.getTransform().getChildren().forEach(transform -> {
             if (transform instanceof WingPartTransform transform1) {
-                cachedWingsTransforms.add(transform1);
+                animationHandler.register(1, (skin, entity, armature, context) -> transform1.setup(entity, context.getAnimationTicks()));
             }
         }));
         Collections.eachTree(skinParts, BakedSkinPart::getChildren, part -> part.getTransform().getChildren().forEach(transform -> {
             if (transform instanceof AnimatedTransform transform1) {
-                cachedAnimatedTransforms.add(transform1);
+                animationHandler.register(-1, (skin, entity, armature, context) -> transform1.reset());
             }
         }));
         // attach locator transform.
-        cachedAttachmentTransforms.addAll(BakedAttachmentTransform.create(skinParts));
+        BakedAttachmentTransform.create(skinParts).forEach(it -> {
+            animationHandler.register(0, (skin, entity, armature, context) -> it.setup(entity, armature, context));
+        });
     }
 
     private void loadBlockBounds(List<BakedSkinPart> skinParts) {

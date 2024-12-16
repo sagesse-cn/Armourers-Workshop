@@ -29,15 +29,15 @@ public abstract class AdvancedEntityGuideRenderer extends AbstractAdvancedGuideR
     public AdvancedEntityGuideRenderer() {
         this.armature = getArmature();
         this.texture = getTexture();
-        this.renderType = SkinRenderType.entityCutoutNoCull(OpenResourceLocation.parse(texture.getName()));
+        this.renderType = getRenderType(texture);
     }
 
     public abstract SkinTextureData getTexture();
 
     public abstract BakedArmature getArmature();
 
-    public RenderType getRenderType() {
-        return renderType;
+    public RenderType getRenderType(SkinTextureData texture) {
+        return SkinRenderType.entityCutoutNoCull(OpenResourceLocation.parse(texture.getName()));
     }
 
     public void applyOffset(SkinDocument document, IPoseStack poseStack) {

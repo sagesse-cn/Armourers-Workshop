@@ -459,14 +459,20 @@ public class AnimationController {
 
             @Override
             public Pair<OptimizedExpression<Object>, OptimizedExpression<Object>> compile(List<SkinAnimationPoint> points) {
-                var effects = Collections.compactMap(points, this::compile);
-                if (effects.size() != 1) {
-                    return Pair.of(context -> Collections.compactMap(effects, it -> it.evaluate(context)), null);
-                }
-                return Pair.of(effects.get(0), null);
+                var effect = compile0(points);
+                return Pair.of(effect, effect);
             }
 
-            private OptimizedExpression<Object> compile(SkinAnimationPoint point) {
+            private OptimizedExpression<Object> compile0(List<SkinAnimationPoint> points) {
+                var effects = Collections.compactMap(points, this::compile0);
+                if (effects.size() == 1) {
+                    return effects.get(0);
+                }
+                return context -> Collections.compactMap(effects, it -> it.evaluate(context));
+
+            }
+
+            private OptimizedExpression<Object> compile0(SkinAnimationPoint point) {
                 if (point instanceof SkinAnimationPoint.Instruct instruct) {
                     return new AnimationInstructHandler(compileExpression(OpenPrimitive.of(instruct.getScript()), 0));
                 }

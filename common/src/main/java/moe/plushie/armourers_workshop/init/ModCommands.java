@@ -85,7 +85,7 @@ public class ModCommands {
                 .then(literal("setColor").then(entities().then(dyesSlotNames().then(dyeColor().executes(Executor::setColor)))))
                 .then(literal("rsyncWardrobe").then(players().executes(Executor::resyncWardrobe)))
                 .then(literal("openWardrobe").then(entities().executes(Executor::openWardrobe)))
-                .then(literal("itemSkinnable").then(addOrRemote().then(overrideTypes().executes(Executor::setItemSkinnable))))
+                .then(literal("itemSkinnable").then(addOrRemove().then(overrideTypes().executes(Executor::setItemSkinnable))))
                 .then(literal("animation", "<entity_block_target>", ModCommands::animationCommands))
                 .then(literal("setUnlockedSlots").then(entities().then(resizableSlotNames().then(resizableSlotAmounts().executes(Executor::setUnlockedWardrobeSlots)))));
     }
@@ -180,7 +180,7 @@ public class ModCommands {
         return Commands.argument("skin", new FileArgumentType(EnvironmentManager.getSkinLibraryDirectory()));
     }
 
-    static ArgumentBuilder<CommandSourceStack, ?> addOrRemote() {
+    static ArgumentBuilder<CommandSourceStack, ?> addOrRemove() {
         return Commands.argument("operator", new ListArgumentType(Collections.newList("add", "remove")));
     }
 
@@ -353,8 +353,8 @@ public class ModCommands {
             }
             ModConfigSpec.COMMON.save();
             // notify the user of what happened
-            String messageKey = "commands.armourers_workshop.armourers.setItemSkinnable." + operator;
-            Component overrideTypeName = TranslateUtils.Name.of(overrideType);
+            var messageKey = "commands.armourers_workshop.armourers.setItemSkinnable." + operator;
+            var overrideTypeName = TranslateUtils.Name.of(overrideType);
             player.sendSystemMessage(Component.translatable(messageKey, itemStack.getDisplayName(), overrideTypeName));
             return 1;
         }

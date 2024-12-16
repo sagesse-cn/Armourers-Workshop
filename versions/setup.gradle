@@ -95,7 +95,7 @@ macroPreprocessorSettings {
     com.github.hexomod.macro.Preprocessor.SLASH_KEYWORDS.put("comment", "//#")
 }
 
-task switchCoreSource {
+tasks.register("switchCoreSource") {
     sourceSets.forEach {
         def sourceSet = it
         def allFiles = [:]
@@ -145,7 +145,7 @@ task switchCoreSource {
     }
 }
 
-task applyCoreSources {
+tasks.register("applyCoreSources") {
     dependsOn "macroPreprocessorJava"
     dependsOn "macroPreprocessorResource"
     dependsOn "applyCoreProperties"
@@ -154,7 +154,7 @@ task applyCoreSources {
     }
 }
 
-task applyCoreResources {
+tasks.register("applyCoreResources") {
     dependsOn "applyCoreSources"
 
 
@@ -175,7 +175,7 @@ task applyCoreResources {
     }
 }
 
-task applyCoreProperties {
+tasks.register("applyCoreProperties") {
     def rootPath = rootDir.absolutePath
     fileTree(rootPath).matching { include "**/*.properties" }.forEach {
         def target = new File(rootDir, "../../${it.absolutePath.replace(rootPath, "")}")
@@ -189,7 +189,7 @@ task applyCoreProperties {
     }
 }
 
-task applyCoreConfigurations {
+tasks.register("applyCoreConfigurations") {
     doLast {
         def target = "../../.idea/runConfigurations"
         def version_file = file("../../.idea/versions.txt");
@@ -204,7 +204,7 @@ task applyCoreConfigurations {
     }
 }
 
-task applyRunConfigurations {
+tasks.register("applyRunConfigurations") {
     doLast {
         targets.forEach {
             def target = file("../../${it}/run/server.properties")
