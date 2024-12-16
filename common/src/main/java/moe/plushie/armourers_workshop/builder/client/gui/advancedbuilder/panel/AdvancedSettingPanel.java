@@ -42,7 +42,11 @@ public class AdvancedSettingPanel extends AdvancedPanel {
                 SkinProperty.OVERRIDE_EQUIPMENT_HELMET,
                 SkinProperty.OVERRIDE_EQUIPMENT_LEGGINGS,
                 SkinProperty.LIMIT_LEGS_LIMBS,
-                SkinProperty.USE_OVERLAY_COLOR
+                SkinProperty.USE_OVERLAY_COLOR,
+                SkinProperty.OVERRIDE_ENTITY_SIZE,
+                SkinProperty.OVERRIDE_ENTITY_SIZE_WIDTH,
+                SkinProperty.OVERRIDE_ENTITY_SIZE_HEIGHT,
+                SkinProperty.OVERRIDE_ENTITY_SIZE_EYE_HEIGHT
         ));
         builder.put(SkinTypes.ARMOR_HEAD, Collections.newList(
                 SkinProperty.OVERRIDE_MODEL_HEAD,

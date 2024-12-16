@@ -21,8 +21,9 @@ public class TickUtils {
     }
 
     public static double animationTicksByTime(long time) {
-        // (server ticks - client received server ticks) / 1000 + client base ticks
-        return (time - TIMER.serverTime) / 1000.0;
+        // (server ticks - client current ticks) / 1000 + client animation ticks
+        var delta = (time - TIMER.clock.getTime()) / 1000.0;
+        return TIMER.animationTicks + delta;
     }
 
     private static class Timer {

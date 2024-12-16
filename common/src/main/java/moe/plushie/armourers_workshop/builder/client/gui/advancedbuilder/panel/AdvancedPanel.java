@@ -45,11 +45,11 @@ public abstract class AdvancedPanel extends UIView {
     public void sizeToFit() {
         var bounds = bounds();
         var edge = new UIEdgeInsets(8, 8, 8, 8);
-        float width = bounds.width - edge.left - edge.right;
-        float top = edge.top;
-        float left = bounds.width * 0.4f;
+        var width = bounds.width - edge.left - edge.right;
+        var top = edge.top;
+        var left = bounds.width * 0.4f;
         for (Section section : sections) {
-            float h = section.layout(4, left, left + 4, width - 4 - 4, 2);
+            var h = section.layout(4, left, left + 4, width - 4 - 4, 2);
             section.setFrame(new CGRect(edge.left, top + section.headerSize(), width, h));
             section.setAutoresizingMask(AutoresizingMask.flexibleWidth | AutoresizingMask.flexibleBottomMargin);
             top += section.headerSize() + h + section.footerSize();
@@ -73,7 +73,7 @@ public abstract class AdvancedPanel extends UIView {
     }
 
     protected void addGroup(NSString name, Consumer<Group> builder) {
-        Group group = new Group(editor, name);
+        var group = new Group(editor, name);
         builder.accept(group);
         addSection(group);
     }
@@ -140,7 +140,7 @@ public abstract class AdvancedPanel extends UIView {
             var box = new UICheckBox(new CGRect(0, 0, 80, 16));
             box.setTitle(desc);
             box.addTarget(property, UIControl.Event.VALUE_CHANGED, (pro, ctrl) -> {
-                UICheckBox checkBox = (UICheckBox) ctrl;
+                var checkBox = (UICheckBox) ctrl;
                 pro.set(checkBox.isSelected());
             });
             property.addObserver(box::setSelected);
@@ -157,7 +157,7 @@ public abstract class AdvancedPanel extends UIView {
             view.addTarget(property, UIControl.Event.EDITING_DID_BEGIN, (pro, ctrl) -> pro.beginEditing());
             view.addTarget(property, UIControl.Event.EDITING_DID_END, (pro, ctrl) -> pro.endEditing());
             view.addTarget(property, UIControl.Event.VALUE_CHANGED, (pro, ctrl) -> {
-                NewSlider slider = (NewSlider) ctrl;
+                var slider = (NewSlider) ctrl;
                 pro.set((float) slider.value());
             });
             property.addObserver(view::setValue);
@@ -168,7 +168,7 @@ public abstract class AdvancedPanel extends UIView {
         //      y [ --- ]
         //      z [ --- ]
         public void vector(NSString name, VectorProperty property, Unit unit) {
-            NSMutableString name1 = new NSMutableString(name);
+            var name1 = new NSMutableString(name);
             name1.append(" ");
             name1.append("X");
             slider(name1, property.x(), unit);
@@ -181,7 +181,7 @@ public abstract class AdvancedPanel extends UIView {
                 addView(null, view);
                 return;
             }
-            UILabel title = new UILabel(new CGRect(0, 0, 30, 10));
+            var title = new UILabel(new CGRect(0, 0, 30, 10));
             title.setText(name);
             title.setTextColor(UIColor.WHITE);
             title.setTextHorizontalAlignment(NSTextAlignment.Horizontal.RIGHT);

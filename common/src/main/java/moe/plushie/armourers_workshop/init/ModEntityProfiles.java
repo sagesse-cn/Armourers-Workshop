@@ -245,12 +245,12 @@ public class ModEntityProfiles {
 
         public static SimpleBuilder builtin(IResourceLocation location) {
             var path = FileUtils.getRegistryName(location.getPath(), "skin/profiles/");
-            return new SimpleBuilder(location.setPath("builtin/" + path));
+            return new SimpleBuilder(location.withPath("builtin/" + path));
         }
 
         public static SimpleBuilder custom(IResourceLocation location) {
             var path = FileUtils.getRegistryName(location.getPath(), "skin/profiles/");
-            return new SimpleBuilder(location.setPath(path));
+            return new SimpleBuilder(location.withPath(path));
         }
 
         public EntityProfile build() {

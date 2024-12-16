@@ -109,10 +109,10 @@ public class SmartTexture extends ReferenceCounted {
         builder.addData(location, provider);
         for (var variant : provider.getVariants()) {
             if (variant.getProperties().isNormal()) {
-                builder.addData(location.setPath(path + "_n.png"), variant);
+                builder.addData(location.withPath(path + "_n.png"), variant);
             }
             if (variant.getProperties().isSpecular()) {
-                builder.addData(location.setPath(path + "_s.png"), variant);
+                builder.addData(location.withPath(path + "_s.png"), variant);
             }
         }
         return builder.build();
@@ -143,7 +143,7 @@ public class SmartTexture extends ReferenceCounted {
             var blur = String.valueOf(isBlurFilter);
             var clamp = String.valueOf(isClampToEdge);
             var meta = String.format("{\"texture\":{\"blur\":%s,\"clamp\":%s}}", blur, clamp);
-            buffers.put(location.setPath(location.getPath() + ".mcmeta"), Unpooled.wrappedBuffer(meta.getBytes()));
+            buffers.put(location.withPath(location.getPath() + ".mcmeta"), Unpooled.wrappedBuffer(meta.getBytes()));
         }
 
         public Map<IResourceLocation, ByteBuf> build() {

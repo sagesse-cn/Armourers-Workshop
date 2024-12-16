@@ -76,9 +76,9 @@ public class AdvancedRightCardPanel extends UIView implements TreeViewDelegate {
         float h1 = rect.height * 0.35f;
         float h2 = rect.height * 0.65f;
 
-        UIImage image = UIImage.of(ModTextures.ADVANCED_SKIN_BUILDER).uv(24, 24).fixed(24, 24).clip(4, 4, 4, 4).build();
+        var image = UIImage.of(ModTextures.ADVANCED_SKIN_BUILDER).uv(24, 24).fixed(24, 24).clip(4, 4, 4, 4).build();
 
-        UIView bg1 = new UIView(bounds().insetBy(4, 4, h2, 4));
+        var bg1 = new UIView(bounds().insetBy(4, 4, h2, 4));
         bg1.setContents(image);
         bg1.setAutoresizingMask(AutoresizingMask.flexibleWidth | AutoresizingMask.flexibleBottomMargin);
         addSubview(bg1);
@@ -100,7 +100,7 @@ public class AdvancedRightCardPanel extends UIView implements TreeViewDelegate {
         minimapView.setDelegate(this);
         bg1.insertViewAtIndex(minimapView, 0);
 
-        UIView bg2 = new UIView(bounds().insetBy(h1 + 4, 4, 4, 4));
+        var bg2 = new UIView(bounds().insetBy(h1 + 4, 4, 4, 4));
         bg2.setAutoresizingMask(AutoresizingMask.flexibleWidth | AutoresizingMask.flexibleHeight);
         bg2.setContents(image);
         addSubview(bg2);
@@ -137,7 +137,7 @@ public class AdvancedRightCardPanel extends UIView implements TreeViewDelegate {
     }
 
     protected void addRightPanel(AdvancedPanel panel) {
-        UIBarItem barItem = panel.barItem();
+        var barItem = panel.barItem();
         panel.setFrame(rightToolbar.bounds());
         panel.sizeToFit();
         rightToolbar.addPage(panel, barItem);

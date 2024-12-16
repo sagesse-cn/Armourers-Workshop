@@ -644,7 +644,7 @@ public class SkinLoader {
                 return resourceManager.readResource(file).getInputStream();
             }
             // pk:<pack-id>:<skin-path>.armour
-            file = file.setPath(file.getPath() + Constants.EXT);
+            file = file.withPath(file.getPath() + Constants.EXT);
             if (resourceManager.hasResource(file)) {
                 return resourceManager.readResource(file).getInputStream();
             }

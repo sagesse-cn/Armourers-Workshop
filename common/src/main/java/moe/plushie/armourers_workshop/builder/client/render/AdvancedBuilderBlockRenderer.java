@@ -23,6 +23,7 @@ import moe.plushie.armourers_workshop.core.client.other.SkinRenderTesselator;
 import moe.plushie.armourers_workshop.core.data.ticket.Tickets;
 import moe.plushie.armourers_workshop.core.math.Vector3f;
 import moe.plushie.armourers_workshop.core.skin.SkinTypes;
+import moe.plushie.armourers_workshop.core.skin.property.SkinProperty;
 import moe.plushie.armourers_workshop.core.skin.serializer.document.SkinDocument;
 import moe.plushie.armourers_workshop.core.skin.serializer.document.SkinDocumentNode;
 import moe.plushie.armourers_workshop.core.skin.serializer.document.SkinDocumentType;
@@ -143,9 +144,14 @@ public class AdvancedBuilderBlockRenderer<T extends AdvancedBuilderBlockEntity> 
             }
         }
 
-//        if (document.getType().getSkinType() == SkinTypes.ITEM_BACKPACK) {
-//            poseStack.rotate(Vector3f.YP.rotationDegrees(180));
-//        }
+        if (settings.showsHelperModel() && document.get(SkinProperty.OVERRIDE_ENTITY_SIZE)) {
+            var width = (float) (document.get(SkinProperty.OVERRIDE_ENTITY_SIZE_WIDTH) * 16.0);
+            var height = (float) (document.get(SkinProperty.OVERRIDE_ENTITY_SIZE_HEIGHT) * 16.0);
+            var eyeHeight = (float) (document.get(SkinProperty.OVERRIDE_ENTITY_SIZE_EYE_HEIGHT) * 16.0);
+            var radius = (width / 2);
+            ShapeTesselator.stroke(-radius, (24 - height), -radius, radius, 24, radius, UIColor.WHITE, poseStack, bufferSource);
+            ShapeTesselator.stroke(-radius, (24 - eyeHeight), -radius, radius, (24 - eyeHeight), radius, UIColor.RED, poseStack, bufferSource);
+        }
 
         // only item
         if (USE_ITEM_TRANSFORMERS.contains(document.getType().getSkinType())) {

@@ -40,19 +40,10 @@ public class OpenResourceLocation implements IResourceLocation, Comparable<OpenR
         return create(namespace, path);
     }
 
-    @Override
-    public OpenResourceLocation setPath(String path) {
-        return create(namespace, path);
-    }
 
     @Override
     public String getPath() {
         return path;
-    }
-
-    @Override
-    public OpenResourceLocation setNamespace(String namespace) {
-        return create(namespace, path);
     }
 
     @Override
@@ -84,6 +75,16 @@ public class OpenResourceLocation implements IResourceLocation, Comparable<OpenR
             i = namespace.compareTo(resourceLocation.namespace);
         }
         return i;
+    }
+
+    @Override
+    public OpenResourceLocation withPath(String path) {
+        return create(namespace, path);
+    }
+
+    @Override
+    public OpenResourceLocation withNamespace(String namespace) {
+        return create(namespace, path);
     }
 
     @Override

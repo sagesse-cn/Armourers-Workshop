@@ -73,7 +73,6 @@ public class SkinDocumentExporter {
             }
         }
 
-
         properties.put(SkinProperty.ALL_AUTHOR_NAME, profile.getName());
         // in the offline server the `player.getStringUUID()` is not real player uuid.
         if (profile.getId() != null) {
@@ -84,7 +83,18 @@ public class SkinDocumentExporter {
 
         settings.setEditable(false);
         settings.setItemTransforms(itemTransforms);
-        //settings.setCollisionBox(Collections.newList(new Rectangle3f(0, 0, 0, 2, 2, 2)));
+
+        // requires override entity size?
+        if (properties.get(SkinProperty.OVERRIDE_ENTITY_SIZE)) {
+            var width = properties.get(SkinProperty.OVERRIDE_ENTITY_SIZE_WIDTH);
+            var height = properties.get(SkinProperty.OVERRIDE_ENTITY_SIZE_HEIGHT);
+            var eyeHeight = properties.get(SkinProperty.OVERRIDE_ENTITY_SIZE_EYE_HEIGHT);
+            settings.setCollisionBox(Collections.newList(new Rectangle3f(0, eyeHeight, 0, width, height, width)));
+        }
+        properties.remove(SkinProperty.OVERRIDE_ENTITY_SIZE);
+        properties.remove(SkinProperty.OVERRIDE_ENTITY_SIZE_WIDTH);
+        properties.remove(SkinProperty.OVERRIDE_ENTITY_SIZE_HEIGHT);
+        properties.remove(SkinProperty.OVERRIDE_ENTITY_SIZE_EYE_HEIGHT);
 
         builder.version(SkinSerializer.Versions.LATEST);
         builder.settings(settings);

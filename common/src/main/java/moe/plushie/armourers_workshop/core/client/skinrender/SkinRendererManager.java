@@ -313,7 +313,7 @@ public class SkinRendererManager {
 
         public TransformerLoaderImpl(IResourceLocation location) {
             var path = FileUtils.getRegistryName(location.getPath(), "skin/transformers/");
-            this.registryName = location.setPath(path);
+            this.registryName = location.withPath(path);
         }
 
         @Override

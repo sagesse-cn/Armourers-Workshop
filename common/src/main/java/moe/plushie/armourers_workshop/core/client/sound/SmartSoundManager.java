@@ -62,7 +62,7 @@ public class SmartSoundManager {
     protected void uploadSound(SmartSound sound) {
         var name = sound.getName();
         var location = sound.getLocation();
-        var id = location.setPath(location.getPath().replaceFirst("sounds/(.+)\\.ogg", "$1"));
+        var id = location.withPath(location.getPath().replaceFirst("sounds/(.+)\\.ogg", "$1"));
         getSoundManager().register(location.toLocation(), new AbstractSimpleSound(id.toLocation(), name));
         if (ModConfig.Client.enableResourceDebug) {
             ModLog.debug("Registering Sound '{}'", location);

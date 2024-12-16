@@ -20,7 +20,8 @@ public class AbstractForgeEntityEvent {
 
             @Override
             public void setSize(EntityDimensions size) {
-                event.setNewSize(size, true);
+                event.setNewSize(size, false);
+                event.setNewEyeHeight(size.getEyeHeight());
             }
 
             @Override

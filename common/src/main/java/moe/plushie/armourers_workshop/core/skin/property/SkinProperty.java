@@ -53,6 +53,12 @@ public class SkinProperty<T> implements ISkinProperty<T> {
     public static final SkinProperty<Boolean> OVERRIDE_EQUIPMENT_LEGGINGS = normal("hideEquipmentLegs", false);
     public static final SkinProperty<Boolean> OVERRIDE_EQUIPMENT_BOOTS = normal("hideEquipmentFeet", false);
 
+
+    public static final SkinProperty<Boolean> OVERRIDE_ENTITY_SIZE = normal("overrideEntitySize", false);
+    public static final SkinProperty<Double> OVERRIDE_ENTITY_SIZE_WIDTH = normal("overrideEntityWidth", 0.6);
+    public static final SkinProperty<Double> OVERRIDE_ENTITY_SIZE_HEIGHT = normal("overrideEntityHeight", 1.88);
+    public static final SkinProperty<Double> OVERRIDE_ENTITY_SIZE_EYE_HEIGHT = normal("overrideEntityEyeHeight", 1.62);
+
     public static final SkinProperty<Boolean> USE_OVERLAY_COLOR = normal("keepOverlayColor", false);
     public static final SkinProperty<Boolean> LIMIT_LEGS_LIMBS = normal("limitLimbs", false);
 

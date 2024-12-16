@@ -10,6 +10,8 @@ import com.apple.library.uikit.UILabel;
 import com.apple.library.uikit.UIView;
 import moe.plushie.armourers_workshop.api.skin.property.ISkinProperty;
 import moe.plushie.armourers_workshop.core.client.gui.widget.InventoryBox;
+import moe.plushie.armourers_workshop.core.math.Vector2f;
+import moe.plushie.armourers_workshop.core.math.Vector3f;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperty;
 import moe.plushie.armourers_workshop.core.utils.Objects;
 
@@ -27,6 +29,7 @@ public abstract class PropertySettingView extends UIView {
     protected UILabel inventorySlot;
     protected InventoryBox inventoryBox;
 
+    protected EntitySizeBox entitySizeBox;
 
     public PropertySettingView(CGRect rect, Collection<ISkinProperty<?>> properties) {
         super(rect);
@@ -34,13 +37,15 @@ public abstract class PropertySettingView extends UIView {
             if (property.getDefaultValue() instanceof Boolean) {
                 addCheckBox(Objects.unsafeCast(property));
             }
+            if (property == SkinProperty.OVERRIDE_ENTITY_SIZE_WIDTH) {
+                addEntitySize();
+            }
             if (property == SkinProperty.BLOCK_INVENTORY_WIDTH) {
                 addInventoryBox();
             }
         }
         this.setFrame(new CGRect(rect.x, rect.y, rect.width, cursorY));
         this.resolveConflicts();
-        this.resolveSlots();
     }
 
     public void beginEditing() {
@@ -80,6 +85,35 @@ public abstract class PropertySettingView extends UIView {
         cursorY = checkBox.frame().getMaxY() + 2;
     }
 
+    protected void addEntitySize() {
+        entitySizeBox = new EntitySizeBox(new CGRect(12, cursorY, bounds().getWidth() - 34, 48)) {
+            @Override
+            protected void update() {
+                super.update();
+                PropertySettingView.this.setEntitySize(getEntitySize());
+            }
+
+            @Override
+            protected void beginEditing() {
+                PropertySettingView.this.beginEditing();
+            }
+
+            @Override
+            protected void endEditing() {
+                PropertySettingView.this.endEditing();
+            }
+        };
+        entitySizeBox.setHidden(true);
+        addSubview(entitySizeBox);
+        cursorY = entitySizeBox.frame().getMaxY() + 2;
+    }
+
+    private void setEntitySize(Vector3f entitySize) {
+        putValue(SkinProperty.OVERRIDE_ENTITY_SIZE_WIDTH, (double) entitySize.getX());
+        putValue(SkinProperty.OVERRIDE_ENTITY_SIZE_HEIGHT, (double) entitySize.getY());
+        putValue(SkinProperty.OVERRIDE_ENTITY_SIZE_EYE_HEIGHT, (double) entitySize.getZ());
+    }
+
     protected void addInventoryBox() {
         inventoryTitle = new UILabel(new CGRect(0, cursorY - 2, bounds().width, 9));
         inventorySlot = new UILabel(new CGRect(0, cursorY + 6, bounds().width, 9));
@@ -103,10 +137,22 @@ public abstract class PropertySettingView extends UIView {
         putValue(SkinProperty.BLOCK_INVENTORY_WIDTH, width);
         putValue(SkinProperty.BLOCK_INVENTORY_HEIGHT, height);
         endEditing();
-        resolveSlots();
+        resolveInventorySlots();
     }
 
-    private void resolveSlots() {
+    private void resolveEntitySize() {
+        if (entitySizeBox == null) {
+            return;
+        }
+        var isEnabled = getValue(SkinProperty.OVERRIDE_ENTITY_SIZE);
+        var width = getValue(SkinProperty.OVERRIDE_ENTITY_SIZE_WIDTH);
+        var height = getValue(SkinProperty.OVERRIDE_ENTITY_SIZE_HEIGHT);
+        var eyeHeight = getValue(SkinProperty.OVERRIDE_ENTITY_SIZE_EYE_HEIGHT);
+        entitySizeBox.setHidden(!isEnabled);
+        entitySizeBox.setEntitySize(new Vector3f(width, height, eyeHeight));
+    }
+
+    private void resolveInventorySlots() {
         if (inventorySlot == null) {
             return;
         }
@@ -142,7 +188,8 @@ public abstract class PropertySettingView extends UIView {
                 putValue(SkinProperty.BLOCK_INVENTORY, false);
             }
         }
-        resolveSlots();
+        resolveEntitySize();
+        resolveInventorySlots();
     }
 
     protected NSString getDisplayText(String key, Object... objects) {

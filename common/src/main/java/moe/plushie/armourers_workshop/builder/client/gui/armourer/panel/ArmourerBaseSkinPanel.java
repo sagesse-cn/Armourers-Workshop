@@ -21,8 +21,8 @@ public class ArmourerBaseSkinPanel extends UIView {
 
     protected final SkinProperties skinProperties;
     protected final ArrayList<AbstractWidget> widgets = new ArrayList<>();
-    protected int cursorX = 0;
-    protected int cursorY = 0;
+    protected float cursorX = 0;
+    protected float cursorY = 0;
     protected Consumer<SkinProperties> applier;
 
     public ArmourerBaseSkinPanel(SkinProperties skinProperties) {

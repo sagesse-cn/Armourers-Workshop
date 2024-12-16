@@ -68,12 +68,13 @@ public class DrawerToolbar extends UIView implements UIScrollViewDelegate {
             if (y != 0) {
                 y += 5;
             }
-            CGRect rect = entity.frame().copy();
+            var rect = entity.frame().copy();
             rect.y = y;
             entity.setFrame(rect);
             y += rect.height;
         }
         sidebarView.setContentSize(new CGSize(0, y));
+        layoutContainerView();
     }
 
     protected float getBarSize() {
@@ -91,11 +92,18 @@ public class DrawerToolbar extends UIView implements UIScrollViewDelegate {
         displayView = contentView;
         if (displayView != null) {
             containerView.addSubview(displayView);
-            var bounds = containerView.bounds();
-            var size = displayView.sizeThatFits(bounds.size());
-            displayView.setFrame(new CGRect(0, 0, bounds.width, Math.max(bounds.height, size.height)));
-            containerView.setContentSize(new CGSize(0, size.height));
+            layoutContainerView();
             containerView.setContentOffset(new CGPoint(0, 0));
         }
+    }
+
+    private void layoutContainerView() {
+        if (displayView == null) {
+            return;
+        }
+        var bounds = containerView.bounds();
+        var size = displayView.sizeThatFits(bounds.size());
+        displayView.setFrame(new CGRect(0, 0, bounds.width, Math.max(bounds.height, size.height)));
+        containerView.setContentSize(new CGSize(0, size.height));
     }
 }
