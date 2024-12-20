@@ -3,7 +3,7 @@ package moe.plushie.armourers_workshop.compatibility.fabric.event.common;
 import moe.plushie.armourers_workshop.api.annotation.Available;
 import moe.plushie.armourers_workshop.api.common.IBlockSnapshot;
 import moe.plushie.armourers_workshop.api.registry.IEventHandler;
-import moe.plushie.armourers_workshop.init.platform.event.common.BlockEvent;
+import moe.plushie.armourers_workshop.init.event.common.BlockEvent;
 import moe.plushie.armourers_workshop.init.platform.fabric.event.PlayerBlockPlaceEvents;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.minecraft.core.BlockPos;

@@ -1,7 +1,7 @@
 package moe.plushie.armourers_workshop.init;
 
-import moe.plushie.armourers_workshop.init.platform.EventManager;
-import moe.plushie.armourers_workshop.init.platform.event.common.LauncherConfigSetupEvent;
+import moe.plushie.armourers_workshop.api.event.EventBus;
+import moe.plushie.armourers_workshop.init.event.common.LauncherConfigSetupEvent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 
@@ -180,7 +180,7 @@ public class ModConfig {
         ModConfigSpec.init();
 
         // listen the config changes events.
-        EventManager.listen(LauncherConfigSetupEvent.class, event -> {
+        EventBus.register(LauncherConfigSetupEvent.class, event -> {
             if (ModConfigSpec.CLIENT.equals(event.getSpec())) {
                 ModConfigSpec.CLIENT.reload();
             }

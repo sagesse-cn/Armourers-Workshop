@@ -82,8 +82,8 @@ public class WindowManagerImpl {
 
     public void render(CGGraphicsContext context, RenderInvoker foreground, RenderInvoker background, RenderInvoker overlay) {
         var partialTicks = context.state().partialTicks();
-        var mouseX = (int) context.state().mousePos().getX();
-        var mouseY = (int) context.state().mousePos().getY();
+        var mouseX = (int) context.state().mousePos().x();
+        var mouseY = (int) context.state().mousePos().y();
         // we need to display a custom tooltip, so must cancel the original tooltip render,
         // we need reset mouse to impossible position to fool the original tooltip render.
         var tooltipResponder = firstTooltipResponder();

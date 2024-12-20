@@ -6,7 +6,6 @@ import com.apple.library.uikit.UIButton;
 import com.apple.library.uikit.UIColor;
 import com.apple.library.uikit.UIControl;
 import moe.plushie.armourers_workshop.api.common.IItemColorProvider;
-import moe.plushie.armourers_workshop.api.skin.part.ISkinPartType;
 import moe.plushie.armourers_workshop.builder.blockentity.ArmourerBlockEntity;
 import moe.plushie.armourers_workshop.builder.client.gui.armourer.dialog.ArmourerClearDialog;
 import moe.plushie.armourers_workshop.builder.client.gui.armourer.dialog.ArmourerCopyDialog;
@@ -14,6 +13,7 @@ import moe.plushie.armourers_workshop.builder.client.gui.armourer.dialog.Armoure
 import moe.plushie.armourers_workshop.builder.menu.ArmourerMenu;
 import moe.plushie.armourers_workshop.builder.network.UpdateArmourerPacket;
 import moe.plushie.armourers_workshop.core.skin.SkinTypes;
+import moe.plushie.armourers_workshop.core.skin.part.SkinPartType;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPartTypes;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperty;
 import moe.plushie.armourers_workshop.core.utils.Constants;
@@ -125,10 +125,10 @@ public class ArmourerBlockSetting extends ArmourerBaseSetting {
         });
     }
 
-    public ArrayList<ISkinPartType> getPartTypes(boolean usesAll) {
+    public ArrayList<SkinPartType> getPartTypes(boolean usesAll) {
         var skinType = blockEntity.getSkinType();
         var skinProperties = blockEntity.getSkinProperties();
-        var partTypes = new ArrayList<ISkinPartType>();
+        var partTypes = new ArrayList<SkinPartType>();
         if (usesAll) {
             partTypes.add(0, SkinPartTypes.UNKNOWN);
         }

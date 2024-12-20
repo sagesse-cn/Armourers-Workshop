@@ -4,10 +4,10 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import moe.plushie.armourers_workshop.api.core.math.IMatrix3f;
 import moe.plushie.armourers_workshop.api.core.math.IMatrix4f;
 import moe.plushie.armourers_workshop.api.core.math.IPoseStack;
-import moe.plushie.armourers_workshop.api.core.math.IQuaternion3f;
+import moe.plushie.armourers_workshop.api.core.math.IQuaternionf;
 import moe.plushie.armourers_workshop.core.math.OpenMath;
 import moe.plushie.armourers_workshop.core.math.OpenPoseStack;
-import moe.plushie.armourers_workshop.utils.DataContainer;
+import moe.plushie.armourers_workshop.core.data.DataContainer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
@@ -81,7 +81,7 @@ public class AbstractPoseStack extends AbstractPoseStackImpl implements IPoseSta
         }
     }
 
-    public void rotate(IQuaternion3f quaternion) {
+    public void rotate(IQuaternionf quaternion) {
         stack.mulPose(quaternion);
     }
 

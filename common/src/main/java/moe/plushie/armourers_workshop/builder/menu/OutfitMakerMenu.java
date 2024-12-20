@@ -193,13 +193,13 @@ public class OutfitMakerMenu extends AbstractBlockEntityMenu<OutfitMakerBlockEnt
     private void mergePaintPart(ISkinPartTypeTextured texType, SkinPaintData desPaint, SkinPaintData srcPaint) {
         var pos = texType.getTextureSkinPos();
 
-        var width = (texType.getTextureModelSize().getX() * 2) + (texType.getTextureModelSize().getZ() * 2);
-        var height = texType.getTextureModelSize().getY() + texType.getTextureModelSize().getZ();
+        var width = (texType.getTextureModelSize().x() * 2) + (texType.getTextureModelSize().z() * 2);
+        var height = texType.getTextureModelSize().y() + texType.getTextureModelSize().z();
 
         for (var ix = 0; ix < width; ix++) {
             for (var iy = 0; iy < height; iy++) {
-                var x = pos.getX() + ix;
-                var y = pos.getY() + iy;
+                var x = pos.x() + ix;
+                var y = pos.y() + iy;
                 var color = srcPaint.getColor(x, y);
                 if (SkinPaintColor.isOpaque(color)) {
                     desPaint.setColor(x, y, color);

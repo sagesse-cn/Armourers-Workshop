@@ -2,7 +2,7 @@ package moe.plushie.armourers_workshop.compatibility.fabric.event.client;
 
 import moe.plushie.armourers_workshop.api.annotation.Available;
 import moe.plushie.armourers_workshop.api.registry.IEventHandler;
-import moe.plushie.armourers_workshop.init.platform.event.client.ClientPlayerEvent;
+import moe.plushie.armourers_workshop.init.event.client.ClientPlayerEvent;
 import moe.plushie.armourers_workshop.init.platform.fabric.event.ClientPlayerLifecycleEvents;
 import moe.plushie.armourers_workshop.utils.RenderSystem;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;

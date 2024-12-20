@@ -3,15 +3,15 @@ package moe.plushie.armourers_workshop.core.client.other;
 import moe.plushie.armourers_workshop.api.client.model.IModel;
 import moe.plushie.armourers_workshop.api.event.client.AddRendererLayerEvent;
 import moe.plushie.armourers_workshop.api.event.client.RemoveRendererLayerEvent;
+import moe.plushie.armourers_workshop.compatibility.client.model.AbstractModelHolder;
 import moe.plushie.armourers_workshop.core.armature.ArmatureTransformerManager;
 import moe.plushie.armourers_workshop.core.client.bake.BakedArmatureTransformer;
 import moe.plushie.armourers_workshop.core.client.layer.SkinWardrobeLayer;
 import moe.plushie.armourers_workshop.core.client.skinrender.SkinRendererManager;
+import moe.plushie.armourers_workshop.core.data.DataContainer;
 import moe.plushie.armourers_workshop.core.entity.EntityProfile;
 import moe.plushie.armourers_workshop.core.utils.Objects;
 import moe.plushie.armourers_workshop.init.platform.EventManager;
-import moe.plushie.armourers_workshop.utils.DataContainer;
-import moe.plushie.armourers_workshop.utils.ModelHolder;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
@@ -69,7 +69,7 @@ public class EntityRendererContext {
         // so we need to be compatible with that
         return cachedTransformers.computeIfAbsent(entityModel, entityModel1 -> {
             // if it can't transform this, it means we do not support this renderer.
-            var model = ModelHolder.ofNullable(entityModel1);
+            var model = AbstractModelHolder.ofNullable(entityModel1);
             return createTransformer(model, SkinRendererManager.DEFAULT);
         });
     }

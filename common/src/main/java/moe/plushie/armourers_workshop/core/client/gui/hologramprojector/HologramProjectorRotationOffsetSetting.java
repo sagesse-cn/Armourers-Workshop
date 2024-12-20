@@ -6,7 +6,7 @@ import com.apple.library.uikit.UICheckBox;
 import com.apple.library.uikit.UIControl;
 import com.apple.library.uikit.UISliderBox;
 import moe.plushie.armourers_workshop.core.blockentity.HologramProjectorBlockEntity;
-import moe.plushie.armourers_workshop.core.math.Vector3f;
+import moe.plushie.armourers_workshop.core.math.OpenVector3f;
 import moe.plushie.armourers_workshop.core.network.UpdateHologramProjectorPacket;
 import moe.plushie.armourers_workshop.core.utils.Objects;
 import moe.plushie.armourers_workshop.init.platform.NetworkManager;
@@ -21,7 +21,7 @@ public class HologramProjectorRotationOffsetSetting extends HologramProjectorBas
     private UISliderBox sliderZ;
 
     private final HologramProjectorBlockEntity entity;
-    private final UpdateHologramProjectorPacket.Field<Vector3f> field = UpdateHologramProjectorPacket.Field.ROTATION_OFFSET;
+    private final UpdateHologramProjectorPacket.Field<OpenVector3f> field = UpdateHologramProjectorPacket.Field.ROTATION_OFFSET;
 
     public HologramProjectorRotationOffsetSetting(HologramProjectorBlockEntity entity) {
         super("hologram-projector.rotationOffset");
@@ -34,22 +34,22 @@ public class HologramProjectorRotationOffsetSetting extends HologramProjectorBas
         float x = (float) sliderX.value();
         float y = (float) sliderY.value();
         float z = (float) sliderZ.value();
-        field.set(entity, new Vector3f(x, y, z));
+        field.set(entity, new OpenVector3f(x, y, z));
     }
 
     private void didUpdateValue(UIControl button) {
         float x = (float) sliderX.value();
         float y = (float) sliderY.value();
         float z = (float) sliderZ.value();
-        NetworkManager.sendToServer(field.buildPacket(entity, new Vector3f(x, y, z)));
+        NetworkManager.sendToServer(field.buildPacket(entity, new OpenVector3f(x, y, z)));
     }
 
     private void setup() {
         setupOption(11, 75, UpdateHologramProjectorPacket.Field.SHOWS_ROTATION_POINT, "showRotationPoint");
         var value = field.get(entity);
-        sliderX = setupSlider(11, 30, "X: ", value.getX());
-        sliderY = setupSlider(11, 45, "Y: ", value.getY());
-        sliderZ = setupSlider(11, 60, "Z: ", value.getZ());
+        sliderX = setupSlider(11, 30, "X: ", value.x());
+        sliderY = setupSlider(11, 45, "Y: ", value.y());
+        sliderZ = setupSlider(11, 60, "Z: ", value.z());
     }
 
     private void setupOption(int x, int y, UpdateHologramProjectorPacket.Field<Boolean> field, String key) {

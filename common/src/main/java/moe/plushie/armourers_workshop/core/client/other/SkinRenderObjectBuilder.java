@@ -4,8 +4,8 @@ import moe.plushie.armourers_workshop.core.client.bake.BakedArmature;
 import moe.plushie.armourers_workshop.core.client.bake.BakedSkin;
 import moe.plushie.armourers_workshop.core.client.bake.BakedSkinPart;
 import moe.plushie.armourers_workshop.core.client.shader.ShaderVertexObject;
+import moe.plushie.armourers_workshop.core.math.OpenVector3f;
 import moe.plushie.armourers_workshop.core.math.OpenVoxelShape;
-import moe.plushie.armourers_workshop.core.math.Vector3f;
 import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintScheme;
 import moe.plushie.armourers_workshop.core.utils.ColorUtils;
 import moe.plushie.armourers_workshop.init.ModDebugger;
@@ -40,7 +40,7 @@ public class SkinRenderObjectBuilder implements ConcurrentBufferBuilder {
     }
 
     @Override
-    public void addShape(Vector3f origin, ConcurrentRenderingContext context) {
+    public void addShape(OpenVector3f origin, ConcurrentRenderingContext context) {
         ShapeTesselator.vector(origin, 16, context.getPoseStack(), context.getBufferSource());
     }
 

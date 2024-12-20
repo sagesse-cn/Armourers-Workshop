@@ -6,7 +6,7 @@ import moe.plushie.armourers_workshop.api.annotation.Available;
 import moe.plushie.armourers_workshop.api.common.ITooltipContext;
 import moe.plushie.armourers_workshop.api.registry.IEventHandler;
 import moe.plushie.armourers_workshop.compatibility.core.data.AbstractTooltipContext;
-import moe.plushie.armourers_workshop.init.platform.event.client.ItemTooltipEvent;
+import moe.plushie.armourers_workshop.init.event.client.ItemTooltipEvent;
 import moe.plushie.armourers_workshop.init.platform.fabric.event.RenderTooltipEvents;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.minecraft.network.chat.Component;

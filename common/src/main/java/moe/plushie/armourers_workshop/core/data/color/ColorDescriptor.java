@@ -1,7 +1,7 @@
 package moe.plushie.armourers_workshop.core.data.color;
 
-import moe.plushie.armourers_workshop.api.skin.texture.ISkinPaintType;
 import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintColor;
+import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintType;
 import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintTypes;
 
 import java.util.HashMap;
@@ -9,7 +9,7 @@ import java.util.Set;
 
 public class ColorDescriptor {
 
-    private final HashMap<ISkinPaintType, Channel> channels = new HashMap<>();
+    private final HashMap<SkinPaintType, Channel> channels = new HashMap<>();
 
     public void add(SkinPaintColor color) {
         var paintType = color.getPaintType();
@@ -38,7 +38,7 @@ public class ColorDescriptor {
         return channels.isEmpty();
     }
 
-    public SkinPaintColor getAverageColor(ISkinPaintType paintType) {
+    public SkinPaintColor getAverageColor(SkinPaintType paintType) {
         var channel = channels.get(paintType);
         if (channel != null) {
             return channel.getResolvedColor();
@@ -46,7 +46,7 @@ public class ColorDescriptor {
         return null;
     }
 
-    public Set<ISkinPaintType> getPaintTypes() {
+    public Set<SkinPaintType> getPaintTypes() {
         return channels.keySet();
     }
 
@@ -56,7 +56,7 @@ public class ColorDescriptor {
         return result;
     }
 
-    private boolean shouldRecordChannel(ISkinPaintType paintType) {
+    private boolean shouldRecordChannel(SkinPaintType paintType) {
         if (paintType == SkinPaintTypes.RAINBOW) {
             return true;
         }

@@ -9,7 +9,6 @@ import moe.plushie.armourers_workshop.core.utils.LazyOptional;
 import moe.plushie.armourers_workshop.init.ModCapabilities;
 import moe.plushie.armourers_workshop.init.environment.EnvironmentExecutor;
 import moe.plushie.armourers_workshop.init.environment.EnvironmentType;
-import moe.plushie.armourers_workshop.utils.DataContainer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.world.entity.Entity;

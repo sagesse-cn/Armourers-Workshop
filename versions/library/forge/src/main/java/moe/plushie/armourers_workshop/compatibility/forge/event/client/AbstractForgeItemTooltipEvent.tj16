@@ -8,7 +8,7 @@ import moe.plushie.armourers_workshop.api.registry.IEventHandler;
 import moe.plushie.armourers_workshop.compatibility.client.gui.AbstractGraphicsRenderer;
 import moe.plushie.armourers_workshop.compatibility.core.data.AbstractTooltipContext;
 import moe.plushie.armourers_workshop.compatibility.forge.AbstractForgeClientEventsImpl;
-import moe.plushie.armourers_workshop.init.platform.event.client.ItemTooltipEvent;
+import moe.plushie.armourers_workshop.init.event.client.ItemTooltipEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
@@ -58,18 +58,18 @@ public class AbstractForgeItemTooltipEvent {
 
             @Override
             public float getScreenWidth() {
-                return screenLayout.getWidth();
+                return screenLayout.width();
             }
 
             @Override
             public float getScreenHeight() {
-                return screenLayout.getHeight();
+                return screenLayout.height;
             }
 
             @Override
             public CGGraphicsContext getContext() {
-                float mouseX = screenLayout.getX();
-                float mouseY = screenLayout.getY();
+                float mouseX = screenLayout.x;
+                float mouseY = screenLayout.y;
                 return AbstractGraphicsRenderer.of(null, event.getMatrixStack(), mouseX, mouseY, 0);
             }
         });

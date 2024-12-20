@@ -4,7 +4,6 @@ import com.apple.library.uikit.UIColor;
 import com.mojang.blaze3d.vertex.PoseStack;
 import moe.plushie.armourers_workshop.api.client.IBufferSource;
 import moe.plushie.armourers_workshop.api.core.math.IPoseStack;
-import moe.plushie.armourers_workshop.api.skin.ISkinType;
 import moe.plushie.armourers_workshop.builder.blockentity.AdvancedBuilderBlockEntity;
 import moe.plushie.armourers_workshop.builder.client.gui.advancedbuilder.guide.AbstractAdvancedGuideRenderer;
 import moe.plushie.armourers_workshop.builder.client.gui.advancedbuilder.guide.AdvancedBackpackGuideRenderer;
@@ -21,7 +20,8 @@ import moe.plushie.armourers_workshop.core.client.bake.BakedSkinPart;
 import moe.plushie.armourers_workshop.core.client.model.ItemModelManager;
 import moe.plushie.armourers_workshop.core.client.other.SkinRenderTesselator;
 import moe.plushie.armourers_workshop.core.data.ticket.Tickets;
-import moe.plushie.armourers_workshop.core.math.Vector3f;
+import moe.plushie.armourers_workshop.core.math.OpenVector3f;
+import moe.plushie.armourers_workshop.core.skin.SkinType;
 import moe.plushie.armourers_workshop.core.skin.SkinTypes;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperty;
 import moe.plushie.armourers_workshop.core.skin.serializer.document.SkinDocument;
@@ -79,7 +79,7 @@ public class AdvancedBuilderBlockRenderer<T extends AdvancedBuilderBlockEntity> 
     });
 
 
-    private static final Set<ISkinType> USE_ITEM_TRANSFORMERS = Collections.immutableSet(builder -> {
+    private static final Set<SkinType> USE_ITEM_TRANSFORMERS = Collections.immutableSet(builder -> {
         builder.add(SkinTypes.ITEM);
         builder.add(SkinTypes.ITEM_AXE);
         builder.add(SkinTypes.ITEM_HOE);
@@ -91,12 +91,12 @@ public class AdvancedBuilderBlockRenderer<T extends AdvancedBuilderBlockEntity> 
         builder.add(SkinTypes.ITEM_TRIDENT);
     });
 
-    public static ArrayList<Vector3f> OUTPUTS = new ArrayList<>();
+    public static ArrayList<OpenVector3f> OUTPUTS = new ArrayList<>();
     public static HashSet<BakedSkinPart> RESULTS = new HashSet<>();
 
-    public static void setOutput(int i, Vector3f pt) {
+    public static void setOutput(int i, OpenVector3f pt) {
         while (i >= OUTPUTS.size()) {
-            OUTPUTS.add(Vector3f.ZERO);
+            OUTPUTS.add(OpenVector3f.ZERO);
         }
         OUTPUTS.set(i, pt);
     }
@@ -113,9 +113,9 @@ public class AdvancedBuilderBlockRenderer<T extends AdvancedBuilderBlockEntity> 
     @Override
     public void render(T entity, float partialTicks, IPoseStack poseStack, IBufferSource bufferSource, int light, int overlay) {
         poseStack.pushPose();
-        poseStack.translate(entity.offset.getX(), entity.offset.getY(), entity.offset.getZ());
+        poseStack.translate(entity.offset.x(), entity.offset.y(), entity.offset.z());
         poseStack.translate(0.5f, 0.5f, 0.5f);
-        poseStack.scale(entity.carmeScale.getX(), entity.carmeScale.getY(), entity.carmeScale.getZ());
+        poseStack.scale(entity.carmeScale.x(), entity.carmeScale.y(), entity.carmeScale.z());
 
         poseStack.scale(-SCALE, -SCALE, SCALE);
 
@@ -133,7 +133,7 @@ public class AdvancedBuilderBlockRenderer<T extends AdvancedBuilderBlockEntity> 
 
         if (settings.showsOrigin()) {
             poseStack.scale(-1, -1, 1);
-            ShapeTesselator.vector(Vector3f.ZERO, 16, poseStack, bufferSource);
+            ShapeTesselator.vector(OpenVector3f.ZERO, 16, poseStack, bufferSource);
             poseStack.scale(-1, -1, 1);
         }
 
@@ -171,11 +171,11 @@ public class AdvancedBuilderBlockRenderer<T extends AdvancedBuilderBlockEntity> 
             poseStack.translate(-pos.getX(), -pos.getY(), -pos.getZ());
             ShapeTesselator.stroke(entity.getRenderBoundingBox(blockState), UIColor.RED, poseStack, bufferSource);
             var origin = entity.getRenderOrigin();
-            poseStack.translate(origin.getX(), origin.getY(), origin.getZ());
-            ShapeTesselator.vector(Vector3f.ZERO, 1, poseStack, bufferSource);
-            poseStack.translate(entity.carmeOffset.getX(), entity.carmeOffset.getY(), entity.carmeOffset.getZ());
+            poseStack.translate(origin.x(), origin.y(), origin.z());
+            ShapeTesselator.vector(OpenVector3f.ZERO, 1, poseStack, bufferSource);
+            poseStack.translate(entity.carmeOffset.x(), entity.carmeOffset.y(), entity.carmeOffset.z());
 //            poseStack.mulPose(new OpenQuaternionf(-entity.carmeRot.getX(), entity.carmeRot.getY(), entity.carmeRot.getZ(), true));
-            ShapeTesselator.vector(Vector3f.ZERO, 1, poseStack, bufferSource);
+            ShapeTesselator.vector(OpenVector3f.ZERO, 1, poseStack, bufferSource);
 
             poseStack.popPose();
         }
@@ -204,7 +204,7 @@ public class AdvancedBuilderBlockRenderer<T extends AdvancedBuilderBlockEntity> 
 
         if (node.isLocator()) {
             poseStack.scale(-1, -1, 1);
-            ShapeTesselator.vector(Vector3f.ZERO, 16, poseStack, bufferSource);
+            ShapeTesselator.vector(OpenVector3f.ZERO, 16, poseStack, bufferSource);
             poseStack.scale(-1, -1, 1);
         }
 
@@ -246,7 +246,7 @@ public class AdvancedBuilderBlockRenderer<T extends AdvancedBuilderBlockEntity> 
         poseStack.popPose();
     }
 
-    protected void applyTransform(IPoseStack poseStack, ISkinType skinType, OpenItemTransforms itemTransforms) {
+    protected void applyTransform(IPoseStack poseStack, SkinType skinType, OpenItemTransforms itemTransforms) {
         var displayContext = OpenItemDisplayContext.THIRD_PERSON_RIGHT_HAND;
         if (itemTransforms != null) {
             var itemTransform = itemTransforms.get(displayContext);

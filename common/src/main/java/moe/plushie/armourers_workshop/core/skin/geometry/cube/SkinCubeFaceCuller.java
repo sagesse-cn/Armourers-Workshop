@@ -1,11 +1,11 @@
 package moe.plushie.armourers_workshop.core.skin.geometry.cube;
 
-import moe.plushie.armourers_workshop.api.skin.part.ISkinPartType;
-import moe.plushie.armourers_workshop.core.math.Rectangle3i;
-import moe.plushie.armourers_workshop.core.math.Vector3i;
+import moe.plushie.armourers_workshop.core.math.OpenRectangle3i;
+import moe.plushie.armourers_workshop.core.math.OpenVector3i;
 import moe.plushie.armourers_workshop.core.skin.geometry.SkinGeometryFace;
 import moe.plushie.armourers_workshop.core.skin.geometry.SkinGeometrySet;
 import moe.plushie.armourers_workshop.core.skin.geometry.SkinGeometryTypes;
+import moe.plushie.armourers_workshop.core.skin.part.SkinPartType;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPartTypes;
 import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.core.utils.OpenDirection;
@@ -23,7 +23,7 @@ public class SkinCubeFaceCuller {
     private static final int DIRECTION_SIZE = OpenDirection.values().length;
 
     // joints array:
-    private static final Map<ISkinPartType, Partition> PARTITIONS2 = Collections.immutableMap(builder -> {
+    private static final Map<SkinPartType, Partition> PARTITIONS2 = Collections.immutableMap(builder -> {
         builder.put(SkinPartTypes.BIPPED_HAT, new Simple(SkinPartTypes.BIPPED_HAT));
         builder.put(SkinPartTypes.BIPPED_HEAD, new Simple(SkinPartTypes.BIPPED_HEAD));
         builder.put(SkinPartTypes.BIPPED_CHEST, new Limb(SkinPartTypes.BIPPED_CHEST, SkinPartTypes.BIPPED_TORSO, 6));
@@ -39,10 +39,10 @@ public class SkinCubeFaceCuller {
     });
 
     interface Partition {
-        Collection<SearchResult> subdivide(Rectangle3i rect);
+        Collection<SearchResult> subdivide(OpenRectangle3i rect);
     }
 
-    private static Partition getPartition(ISkinPartType partType) {
+    private static Partition getPartition(SkinPartType partType) {
         if (ModConfig.Client.enablePartSubdivide) {
             var partition = PARTITIONS2.get(partType);
             if (partition != null) {
@@ -52,7 +52,7 @@ public class SkinCubeFaceCuller {
         return new Simple(partType);
     }
 
-    public static Collection<SearchResult> cullFaces2(SkinGeometrySet<?> geometries, Rectangle3i bounds, ISkinPartType partType) {
+    public static Collection<SearchResult> cullFaces2(SkinGeometrySet<?> geometries, OpenRectangle3i bounds, SkinPartType partType) {
         // The texture cube does not support static cull,
         // the slices are designed to contain multiple cube types,
         // but the skin culler can't support it now.
@@ -85,8 +85,8 @@ public class SkinCubeFaceCuller {
         return results;
     }
 
-    public static Collection<SearchResult> allFaces(SkinGeometrySet<?> geometries, Rectangle3i bounds, ISkinPartType partType) {
-        var result = new SearchResult(partType, bounds, Vector3i.ZERO);
+    public static Collection<SearchResult> allFaces(SkinGeometrySet<?> geometries, OpenRectangle3i bounds, SkinPartType partType) {
+        var result = new SearchResult(partType, bounds, OpenVector3i.ZERO);
         for (int i = 0; i < geometries.size(); ++i) {
             var geometry = geometries.get(i);
             for (var face : geometry.getFaces()) {
@@ -96,9 +96,9 @@ public class SkinCubeFaceCuller {
         return Collections.singleton(result);
     }
 
-    public static ArrayList<SkinGeometryFace> cullFaces(SkinGeometrySet<?> geometries, Rectangle3i bounds) {
+    public static ArrayList<SkinGeometryFace> cullFaces(SkinGeometrySet<?> geometries, OpenRectangle3i bounds) {
         var indexedMap = new IndexedMap(geometries, bounds);
-        var rect = new Rectangle3i(0, 0, 0, bounds.getWidth(), bounds.getHeight(), bounds.getDepth());
+        var rect = new OpenRectangle3i(0, 0, 0, bounds.width(), bounds.height(), bounds.depth());
         var flags = cullFaceFlags(geometries, indexedMap, rect);
         var faces = new ArrayList<SkinGeometryFace>();
         for (int i = 0; i < geometries.size(); ++i) {
@@ -118,17 +118,17 @@ public class SkinCubeFaceCuller {
         return faces;
     }
 
-    private static BitSet cullFaceFlags(SkinGeometrySet<?> geometries, IndexedMap map, Rectangle3i rect) {
+    private static BitSet cullFaceFlags(SkinGeometrySet<?> geometries, IndexedMap map, OpenRectangle3i rect) {
         var flags = new BitSet(geometries.size() * DIRECTION_SIZE);
-        var searchArea = new Rectangle3i(rect.getX() - 1, rect.getY() - 1, rect.getZ() - 1, rect.getWidth() + 2, rect.getHeight() + 2, rect.getDepth() + 2);
-        var closedSet = new HashSet<Vector3i>();
-        var openList = new ArrayDeque<Vector3i>();
+        var searchArea = new OpenRectangle3i(rect.x() - 1, rect.y() - 1, rect.z() - 1, rect.width() + 2, rect.height() + 2, rect.depth() + 2);
+        var closedSet = new HashSet<OpenVector3i>();
+        var openList = new ArrayDeque<OpenVector3i>();
         var start = searchArea.getOrigin();
         openList.add(start);
         closedSet.add(start);
         map.limit(rect);
         while (!openList.isEmpty()) {
-            var pendingList = new ArrayList<Vector3i>();
+            var pendingList = new ArrayList<OpenVector3i>();
             var pos = openList.poll();
             for (var advance : OpenDirection.values()) {
                 var pos1 = pos.relative(advance, 1);
@@ -170,27 +170,27 @@ public class SkinCubeFaceCuller {
 
     static class Simple implements Partition {
 
-        final ISkinPartType partType;
+        final SkinPartType partType;
 
-        public Simple(ISkinPartType partType) {
+        public Simple(SkinPartType partType) {
             this.partType = partType;
         }
 
         @Override
-        public Collection<SearchResult> subdivide(Rectangle3i rect) {
-            var box = new Rectangle3i(0, 0, 0, rect.getWidth(), rect.getHeight(), rect.getDepth());
-            return Collections.singleton(new SearchResult(partType, box, Vector3i.ZERO));
+        public Collection<SearchResult> subdivide(OpenRectangle3i rect) {
+            var box = new OpenRectangle3i(0, 0, 0, rect.width(), rect.height(), rect.depth());
+            return Collections.singleton(new SearchResult(partType, box, OpenVector3i.ZERO));
         }
     }
 
     static class Limb extends Simple {
 
-        final ISkinPartType upperPartType;
-        final ISkinPartType lowerPartType;
+        final SkinPartType upperPartType;
+        final SkinPartType lowerPartType;
 
         final int yClip;
 
-        public Limb(ISkinPartType upperPartType, ISkinPartType lowerPartType, int yClip) {
+        public Limb(SkinPartType upperPartType, SkinPartType lowerPartType, int yClip) {
             super(upperPartType);
             this.upperPartType = upperPartType;
             this.lowerPartType = lowerPartType;
@@ -198,15 +198,15 @@ public class SkinCubeFaceCuller {
         }
 
         @Override
-        public Collection<SearchResult> subdivide(Rectangle3i rect) {
-            int upper = yClip - rect.getMinY();
-            int lower = rect.getMaxY() - yClip;
+        public Collection<SearchResult> subdivide(OpenRectangle3i rect) {
+            int upper = yClip - rect.minY();
+            int lower = rect.maxY() - yClip;
             if (lower > 0 && upper > 0) {
-                var upperBox = new Rectangle3i(0, 0, 0, rect.getWidth(), upper, rect.getDepth());
-                var lowerBox = new Rectangle3i(0, upper, 0, rect.getWidth(), lower, rect.getDepth());
+                var upperBox = new OpenRectangle3i(0, 0, 0, rect.width(), upper, rect.depth());
+                var lowerBox = new OpenRectangle3i(0, upper, 0, rect.width(), lower, rect.depth());
                 // ..
-                var upperResult = new SearchResult(upperPartType, upperBox, Vector3i.ZERO);
-                var lowerResult = new SearchResult(lowerPartType, lowerBox, new Vector3i(0, -yClip, 0));
+                var upperResult = new SearchResult(upperPartType, upperBox, OpenVector3i.ZERO);
+                var lowerResult = new SearchResult(lowerPartType, lowerBox, new OpenVector3i(0, -yClip, 0));
                 return Collections.newList(upperResult, lowerResult);
             }
             return super.subdivide(rect);
@@ -215,14 +215,14 @@ public class SkinCubeFaceCuller {
 
     public static class SearchResult {
 
-        protected final ISkinPartType partType;
-        protected final Rectangle3i bounds;
-        protected final Vector3i origin;
+        protected final SkinPartType partType;
+        protected final OpenRectangle3i bounds;
+        protected final OpenVector3i origin;
 
         protected BitSet flags;
         protected ArrayList<SkinGeometryFace> faces;
 
-        public SearchResult(ISkinPartType partType, Rectangle3i bounds, Vector3i origin) {
+        public SearchResult(SkinPartType partType, OpenRectangle3i bounds, OpenVector3i origin) {
             this.faces = new ArrayList<>();
             this.partType = partType;
             this.bounds = bounds;
@@ -237,7 +237,7 @@ public class SkinCubeFaceCuller {
             this.flags = cullFaceFlags(geometries, map, bounds);
         }
 
-        public ISkinPartType getPartType() {
+        public SkinPartType getPartType() {
             return partType;
         }
 
@@ -245,11 +245,11 @@ public class SkinCubeFaceCuller {
             return faces;
         }
 
-        public Vector3i getOrigin() {
+        public OpenVector3i getOrigin() {
             return origin;
         }
 
-        public Rectangle3i getBounds() {
+        public OpenRectangle3i getBounds() {
             return bounds;
         }
     }
@@ -273,37 +273,37 @@ public class SkinCubeFaceCuller {
         private int maxY;
         private int maxZ;
 
-        public IndexedMap(SkinGeometrySet<?> geometries, Rectangle3i bounds) {
-            this.x = bounds.getX();
-            this.y = bounds.getY();
-            this.z = bounds.getZ();
-            this.width = bounds.getWidth();
-            this.height = bounds.getHeight();
-            this.depth = bounds.getDepth();
+        public IndexedMap(SkinGeometrySet<?> geometries, OpenRectangle3i bounds) {
+            this.x = bounds.x();
+            this.y = bounds.y();
+            this.z = bounds.z();
+            this.width = bounds.width();
+            this.height = bounds.height();
+            this.depth = bounds.depth();
             this.indexes = new int[this.depth][this.height][this.width];
             int size = geometries.size();
             for (int i = 0; i < size; i++) {
                 var geometry = (SkinCube) geometries.get(i);
                 var blockPos = geometry.getBlockPos();
-                int x = blockPos.getX() - this.x;
-                int y = blockPos.getY() - this.y;
-                int z = blockPos.getZ() - this.z;
+                int x = blockPos.x() - this.x;
+                int y = blockPos.y() - this.y;
+                int z = blockPos.z() - this.z;
                 this.indexes[z][y][x] = i + 1;
             }
-            this.limit(new Rectangle3i(0, 0, 0, this.width, this.height, this.depth));
+            this.limit(new OpenRectangle3i(0, 0, 0, this.width, this.height, this.depth));
         }
 
-        public void limit(Rectangle3i limit) {
-            this.minX = Math.max(limit.getMinX(), 0);
-            this.minY = Math.max(limit.getMinY(), 0);
-            this.minZ = Math.max(limit.getMinZ(), 0);
-            this.maxX = Math.min(limit.getMaxX(), width);
-            this.maxY = Math.min(limit.getMaxY(), height);
-            this.maxZ = Math.min(limit.getMaxZ(), depth);
+        public void limit(OpenRectangle3i limit) {
+            this.minX = Math.max(limit.minX(), 0);
+            this.minY = Math.max(limit.minY(), 0);
+            this.minZ = Math.max(limit.minZ(), 0);
+            this.maxX = Math.min(limit.maxX(), width);
+            this.maxY = Math.min(limit.maxY(), height);
+            this.maxZ = Math.min(limit.maxZ(), depth);
         }
 
-        public int get(Vector3i pos) {
-            return get(pos.getX(), pos.getY(), pos.getZ());
+        public int get(OpenVector3i pos) {
+            return get(pos.x(), pos.y(), pos.z());
         }
 
         public int get(int x, int y, int z) {

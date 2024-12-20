@@ -2,7 +2,7 @@ package moe.plushie.armourers_workshop.init.mixin;
 
 import moe.plushie.armourers_workshop.api.data.IAssociatedContainerKey;
 import moe.plushie.armourers_workshop.api.data.IAssociatedContainerProvider;
-import moe.plushie.armourers_workshop.utils.DataContainer;
+import moe.plushie.armourers_workshop.core.data.DataContainer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;

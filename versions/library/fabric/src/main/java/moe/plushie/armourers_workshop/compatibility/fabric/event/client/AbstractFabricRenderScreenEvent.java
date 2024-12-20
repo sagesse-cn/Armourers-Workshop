@@ -2,7 +2,7 @@ package moe.plushie.armourers_workshop.compatibility.fabric.event.client;
 
 import moe.plushie.armourers_workshop.api.annotation.Available;
 import moe.plushie.armourers_workshop.api.registry.IEventHandler;
-import moe.plushie.armourers_workshop.init.platform.event.client.RenderScreenEvent;
+import moe.plushie.armourers_workshop.init.event.client.RenderScreenEvent;
 import moe.plushie.armourers_workshop.init.platform.fabric.event.ClientScreenRenderEvents;
 
 @Available("[1.16, )")

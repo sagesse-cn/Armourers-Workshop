@@ -13,8 +13,8 @@ public class CollisionShape {
 
     public static EntityDimensions withCollisionShape(@This EntityDimensions dimensions, EntityCollisionShape shape) {
         var rect = shape.getRect();
-        float newWidth = rect.getWidth();
-        float newHeight = rect.getHeight();
-        return EntityDimensions.scalable(newWidth, newHeight).withEyeHeight(rect.getY());
+        float newWidth = rect.width();
+        float newHeight = rect.height();
+        return EntityDimensions.scalable(newWidth, newHeight).withEyeHeight(rect.y());
     }
 }

@@ -1,6 +1,6 @@
 package moe.plushie.armourers_workshop.core.skin.serializer.exception;
 
-import moe.plushie.armourers_workshop.utils.TranslateUtils;
+import moe.plushie.armourers_workshop.core.utils.TranslateUtils;
 import net.minecraft.network.chat.Component;
 
 public class TranslatableException extends Exception {

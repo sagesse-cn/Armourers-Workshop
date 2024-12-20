@@ -1,6 +1,5 @@
 package moe.plushie.armourers_workshop.builder.client.gui.armourer;
 
-import moe.plushie.armourers_workshop.api.skin.ISkinType;
 import moe.plushie.armourers_workshop.api.skin.property.ISkinProperty;
 import moe.plushie.armourers_workshop.builder.blockentity.ArmourerBlockEntity;
 import moe.plushie.armourers_workshop.builder.client.gui.armourer.panel.ArmourerAdvancedSkinPanel;
@@ -13,6 +12,7 @@ import moe.plushie.armourers_workshop.builder.client.gui.armourer.panel.Armourer
 import moe.plushie.armourers_workshop.builder.client.gui.armourer.panel.ArmourerWingsSkinPanel;
 import moe.plushie.armourers_workshop.builder.menu.ArmourerMenu;
 import moe.plushie.armourers_workshop.builder.network.UpdateArmourerPacket;
+import moe.plushie.armourers_workshop.core.skin.SkinType;
 import moe.plushie.armourers_workshop.core.skin.SkinTypes;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperties;
 import moe.plushie.armourers_workshop.core.utils.Collections;
@@ -29,7 +29,7 @@ import java.util.function.Function;
 @Environment(EnvType.CLIENT)
 public class ArmourerSkinSetting extends ArmourerBaseSetting {
 
-    public static final Map<ISkinType, Function<SkinProperties, ArmourerBaseSkinPanel>> REGISTERED = Collections.immutableMap(builder -> {
+    public static final Map<SkinType, Function<SkinProperties, ArmourerBaseSkinPanel>> REGISTERED = Collections.immutableMap(builder -> {
         builder.put(SkinTypes.ARMOR_HEAD, ArmourerHeadSkinPanel::new);
         builder.put(SkinTypes.ARMOR_CHEST, ArmourerChestSkinPanel::new);
         builder.put(SkinTypes.ARMOR_LEGS, ArmourerLegSkinPanel::new);

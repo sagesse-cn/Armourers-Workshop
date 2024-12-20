@@ -2,23 +2,22 @@ package moe.plushie.armourers_workshop.builder.client.render;
 
 import moe.plushie.armourers_workshop.api.client.IBufferSource;
 import moe.plushie.armourers_workshop.api.client.IVertexConsumer;
-import moe.plushie.armourers_workshop.api.client.guide.IGuideDataProvider;
 import moe.plushie.armourers_workshop.api.core.IResourceLocation;
 import moe.plushie.armourers_workshop.api.core.math.IPoseStack;
 import moe.plushie.armourers_workshop.api.skin.property.ISkinProperties;
-import moe.plushie.armourers_workshop.api.skin.property.ISkinProperty;
 import moe.plushie.armourers_workshop.builder.blockentity.ArmourerBlockEntity;
+import moe.plushie.armourers_workshop.builder.client.gui.armourer.guide.GuideDataProvider;
 import moe.plushie.armourers_workshop.builder.client.gui.armourer.guide.GuideRendererManager;
 import moe.plushie.armourers_workshop.builder.other.CubeTransform;
 import moe.plushie.armourers_workshop.compatibility.client.renderer.AbstractBlockEntityRenderer;
 import moe.plushie.armourers_workshop.core.client.other.BlockEntityRenderData;
 import moe.plushie.armourers_workshop.core.client.other.SkinDynamicTexture;
 import moe.plushie.armourers_workshop.core.client.other.SkinRenderType;
-import moe.plushie.armourers_workshop.core.math.Rectangle3f;
+import moe.plushie.armourers_workshop.core.math.OpenRectangle3f;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPartTypes;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperty;
+import moe.plushie.armourers_workshop.core.utils.TextureUtils;
 import moe.plushie.armourers_workshop.utils.ShapeTesselator;
-import moe.plushie.armourers_workshop.utils.TextureUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.RenderType;
@@ -32,7 +31,7 @@ import java.util.function.Supplier;
 public class ArmourerBlockRenderer<T extends ArmourerBlockEntity> extends AbstractBlockEntityRenderer<T> {
 
     private final PlayerTextureOverride override = new PlayerTextureOverride();
-    private final Rectangle3f originBox = new Rectangle3f(-0.5f, -0.5f, -0.5f, 1.0f, 1.0f, 1.0f);
+    private final OpenRectangle3f originBox = new OpenRectangle3f(-0.5f, -0.5f, -0.5f, 1.0f, 1.0f, 1.0f);
     private final GuideRendererManager rendererManager = new GuideRendererManager();
 
     public ArmourerBlockRenderer(Context context) {
@@ -98,7 +97,7 @@ public class ArmourerBlockRenderer<T extends ArmourerBlockEntity> extends Abstra
             }
 
             poseStack.pushPose();
-            poseStack.translate(origin.getX(), origin.getY() + rect.getMinY(), origin.getZ());
+            poseStack.translate(origin.x(), origin.y() + rect.minY(), origin.z());
             poseStack.translate(polygonOffset, polygonOffset, polygonOffset);
 
             // render guide model
@@ -106,7 +105,7 @@ public class ArmourerBlockRenderer<T extends ArmourerBlockEntity> extends Abstra
                 var guideRenderer = rendererManager.getRenderer(partType);
                 if (guideRenderer != null) {
                     poseStack.pushPose();
-                    poseStack.translate(0, -rect2.getMinY(), 0);
+                    poseStack.translate(0, -rect2.minY(), 0);
                     poseStack.scale(16, 16, 16);
                     guideRenderer.render(poseStack, textureProvider, 0xf000f0, OverlayTexture.NO_OVERLAY, bufferSource);
                     poseStack.popPose();
@@ -182,7 +181,7 @@ public class ArmourerBlockRenderer<T extends ArmourerBlockEntity> extends Abstra
         }
     }
 
-    public static class CustomTextureProvider implements IGuideDataProvider {
+    public static class CustomTextureProvider implements GuideDataProvider {
 
         protected final SkinDynamicTexture displayTexture;
         protected final IResourceLocation displayTextureLocation;
@@ -228,7 +227,7 @@ public class ArmourerBlockRenderer<T extends ArmourerBlockEntity> extends Abstra
         }
 
         @Override
-        public boolean shouldRenderOverlay(ISkinProperty<Boolean> property) {
+        public boolean shouldRenderOverlay(SkinProperty<Boolean> property) {
             //  must check after the enable rendering.
             if (shouldRenderOverlay) {
                 return !skinProperties.get(property);

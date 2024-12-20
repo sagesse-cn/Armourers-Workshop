@@ -4,7 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import moe.plushie.armourers_workshop.api.core.math.IPoseStack;
 import moe.plushie.armourers_workshop.compatibility.client.AbstractPoseStack;
 import moe.plushie.armourers_workshop.core.client.other.EntityRenderData;
-import moe.plushie.armourers_workshop.core.math.Vector3f;
+import moe.plushie.armourers_workshop.core.math.OpenVector3f;
 import moe.plushie.armourers_workshop.core.skin.attachment.SkinAttachmentPose;
 import moe.plushie.armourers_workshop.core.skin.attachment.SkinAttachmentType;
 import moe.plushie.armourers_workshop.core.skin.attachment.SkinAttachmentTypes;
@@ -22,19 +22,19 @@ import java.util.function.Consumer;
 @Environment(EnvType.CLIENT)
 public class ClientAttachmentHandler {
 
-    private static final Vector3f GUN_LEFT_WAIST_ORIGIN = new Vector3f(-4, 12, 0);
-    private static final Vector3f GUN_RIGHT_WAIST_ORIGIN = new Vector3f(4, 12, 0);
-    private static final Vector3f GUN_BACKPACK_ORIGIN = new Vector3f(0, 24, 2);
+    private static final OpenVector3f GUN_LEFT_WAIST_ORIGIN = new OpenVector3f(-4, 12, 0);
+    private static final OpenVector3f GUN_RIGHT_WAIST_ORIGIN = new OpenVector3f(4, 12, 0);
+    private static final OpenVector3f GUN_BACKPACK_ORIGIN = new OpenVector3f(0, 24, 2);
 
     public static void onRenderName(Entity entity, Component name, PoseStack poseStackIn, MultiBufferSource bufferSourceIn) {
         apply(entity, SkinAttachmentTypes.NAME, 0, poseStackIn, bufferSourceIn, (poseStack, attachmentPose, index) -> {
             // calculate the distance from target.
-            var offset1 = Vector3f.ZERO.transforming(poseStack.last().pose());
-            var offset2 = Vector3f.ZERO.transforming(attachmentPose.pose());
+            var offset1 = OpenVector3f.ZERO.transforming(poseStack.last().pose());
+            var offset2 = OpenVector3f.ZERO.transforming(attachmentPose.pose());
 
-            float dx = offset2.getX() - offset1.getX();
-            float dy = (offset2.getY() + 0.5f) - offset1.getY();
-            float dz = offset2.getZ() - offset1.getZ();
+            float dx = offset2.x() - offset1.x();
+            float dy = (offset2.y() + 0.5f) - offset1.y();
+            float dz = offset2.z() - offset1.z();
 
             poseStack.translate(dx, dy, dz);
         });
@@ -50,8 +50,8 @@ public class ClientAttachmentHandler {
             // ..
             if (poseStack != null && attachmentPose != null) {
                 poseStack.last().set(attachmentPose);
-                poseStack.rotate(Vector3f.XP.rotationDegrees(-90));
-                poseStack.rotate(Vector3f.YP.rotationDegrees(180));
+                poseStack.rotate(OpenVector3f.XP.rotationDegrees(-90));
+                poseStack.rotate(OpenVector3f.YP.rotationDegrees(180));
             }
             handler.accept(itemStack);
         });
@@ -68,13 +68,13 @@ public class ClientAttachmentHandler {
         });
     }
 
-    public static void onRenderGun(Entity entity, ItemStack itemStack, Vector3f offset, PoseStack poseStackIn, MultiBufferSource bufferSourceIn) {
+    public static void onRenderGun(Entity entity, ItemStack itemStack, OpenVector3f offset, PoseStack poseStackIn, MultiBufferSource bufferSourceIn) {
         var attachmentType = SkinAttachmentTypes.BACKPACK;
         var attachmentOrigin = GUN_BACKPACK_ORIGIN;
 
-        float tx = offset.getX();
-        float ty = offset.getY();
-        float tz = offset.getZ();
+        float tx = offset.x();
+        float ty = offset.y();
+        float tz = offset.z();
         if (ty < 16) {
             if (tx < 0) {
                 attachmentType = SkinAttachmentTypes.LEFT_WAIST;
@@ -85,9 +85,9 @@ public class ClientAttachmentHandler {
             }
         }
 
-        float dx = (tx - attachmentOrigin.getX()) / 16f;
-        float dy = (ty - attachmentOrigin.getY()) / 16f;
-        float dz = (tz - attachmentOrigin.getZ()) / 16f;
+        float dx = (tx - attachmentOrigin.x()) / 16f;
+        float dy = (ty - attachmentOrigin.y()) / 16f;
+        float dz = (tz - attachmentOrigin.z()) / 16f;
 
         apply(entity, attachmentType, 0, poseStackIn, bufferSourceIn, (poseStack, attachmentPose, index) -> {
             poseStack.last().set(attachmentPose);

@@ -10,7 +10,7 @@ import moe.plushie.armourers_workshop.core.data.GenericProperty;
 import moe.plushie.armourers_workshop.core.data.GenericValue;
 import moe.plushie.armourers_workshop.core.network.CustomPacket;
 import moe.plushie.armourers_workshop.init.ModPermissions;
-import moe.plushie.armourers_workshop.utils.BlockUtils;
+import moe.plushie.armourers_workshop.builder.other.BlockUtils;
 import moe.plushie.armourers_workshop.utils.DataSerializers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;

@@ -1,10 +1,9 @@
 package moe.plushie.armourers_workshop.core.skin;
 
 import moe.plushie.armourers_workshop.api.skin.ISkin;
-import moe.plushie.armourers_workshop.api.skin.ISkinType;
-import moe.plushie.armourers_workshop.core.math.Rectangle3f;
-import moe.plushie.armourers_workshop.core.math.Rectangle3i;
-import moe.plushie.armourers_workshop.core.math.Vector3i;
+import moe.plushie.armourers_workshop.core.math.OpenRectangle3f;
+import moe.plushie.armourers_workshop.core.math.OpenRectangle3i;
+import moe.plushie.armourers_workshop.core.math.OpenVector3i;
 import moe.plushie.armourers_workshop.core.skin.animation.SkinAnimation;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPart;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperties;
@@ -29,7 +28,7 @@ public class Skin implements ISkin {
 
     private final SkinSettings settings;
     private final SkinProperties properties;
-    private final ISkinType type;
+    private final SkinType type;
     private final List<SkinPart> parts;
     private final List<SkinAnimation> animations;
 
@@ -37,9 +36,9 @@ public class Skin implements ISkin {
     private final SkinPreviewData previewData;
     private final Object blobs;
 
-    private Map<Vector3i, Rectangle3f> blockBounds;
+    private Map<OpenVector3i, OpenRectangle3f> blockBounds;
 
-    protected Skin(int id, int version, ISkinType type, SkinProperties properties, SkinSettings settings, SkinPaintData paintData, SkinPreviewData previewData, List<SkinAnimation> animations, List<SkinPart> parts, Object blobs) {
+    protected Skin(int id, int version, SkinType type, SkinProperties properties, SkinSettings settings, SkinPaintData paintData, SkinPreviewData previewData, List<SkinAnimation> animations, List<SkinPart> parts, Object blobs) {
         this.id = id;
         this.version = version;
         this.type = type;
@@ -64,7 +63,7 @@ public class Skin implements ISkin {
         return properties;
     }
 
-    public Map<Vector3i, Rectangle3f> getBlockBounds() {
+    public Map<OpenVector3i, OpenRectangle3f> getBlockBounds() {
         if (blockBounds != null) {
             return blockBounds;
         }
@@ -73,20 +72,20 @@ public class Skin implements ISkin {
             return blockBounds;
         }
         var collisionBox = settings.getCollisionBox();
-        blockBounds.put(Vector3i.ZERO, Rectangle3f.ZERO);
+        blockBounds.put(OpenVector3i.ZERO, OpenRectangle3f.ZERO);
         if (collisionBox != null) {
             for (var rect : collisionBox) {
-                var rect1 = new Rectangle3i(rect);
-                int bx = -Math.floorDiv(rect1.getMinX(), 16);
-                int by = -Math.floorDiv(rect1.getMinY(), 16);
-                int bz = Math.floorDiv(rect1.getMinZ(), 16);
-                int tx = Math.floorMod(rect1.getMinX(), 16) - 8;
-                int ty = Math.floorMod(rect1.getMinY(), 16) - 8;
-                int tz = Math.floorMod(rect1.getMinZ(), 16) - 8;
-                int tw = rect1.getWidth();
-                int th = rect1.getHeight();
-                int td = rect1.getDepth();
-                blockBounds.put(new Vector3i(bx, by, bz), new Rectangle3f(-tx, -ty, tz, -tw, -th, td));
+                var rect1 = new OpenRectangle3i(rect);
+                int bx = -Math.floorDiv(rect1.minX(), 16);
+                int by = -Math.floorDiv(rect1.minY(), 16);
+                int bz = Math.floorDiv(rect1.minZ(), 16);
+                int tx = Math.floorMod(rect1.minX(), 16) - 8;
+                int ty = Math.floorMod(rect1.minY(), 16) - 8;
+                int tz = Math.floorMod(rect1.minZ(), 16) - 8;
+                int tw = rect1.width();
+                int th = rect1.height();
+                int td = rect1.depth();
+                blockBounds.put(new OpenVector3i(bx, by, bz), new OpenRectangle3f(-tx, -ty, tz, -tw, -th, td));
             }
             return blockBounds;
         }
@@ -112,7 +111,7 @@ public class Skin implements ISkin {
     }
 
     @Override
-    public ISkinType getType() {
+    public SkinType getType() {
         return type;
     }
 
@@ -177,7 +176,7 @@ public class Skin implements ISkin {
 
     public static class Builder {
 
-        private final ISkinType type;
+        private final SkinType type;
 
         private ArrayList<SkinPart> skinParts = new ArrayList<>();
         private ArrayList<SkinAnimation> animations = new ArrayList<>();
@@ -191,7 +190,7 @@ public class Skin implements ISkin {
         private int id = -1;
         private int version = SkinSerializer.Versions.V13;
 
-        public Builder(ISkinType type) {
+        public Builder(SkinType type) {
             this.type = type;
             // for outfit skin, not allow edit by default.
             if (type == SkinTypes.OUTFIT) {
@@ -320,9 +319,6 @@ public class Skin implements ISkin {
                 properties.remove(SkinProperty.OVERRIDE_OVERLAY_COLOR);
             }
             // bind properties to part.
-            for (var part : skinParts) {
-                part.setProperties(properties);
-            }
             var skinIndexes = properties.get(SkinProperty.OUTFIT_PART_INDEXS);
             if (skinIndexes != null && !skinIndexes.isEmpty()) {
                 var split = skinIndexes.split(":");

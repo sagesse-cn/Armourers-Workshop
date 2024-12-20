@@ -3,7 +3,7 @@ package moe.plushie.armourers_workshop.builder.client.gui.advancedbuilder.docume
 import com.google.common.base.Objects;
 import moe.plushie.armourers_workshop.api.skin.property.ISkinProperty;
 import moe.plushie.armourers_workshop.builder.data.properties.DataProperty;
-import moe.plushie.armourers_workshop.builder.data.properties.VectorProperty;
+import moe.plushie.armourers_workshop.builder.data.properties.Vector3fProperty;
 import moe.plushie.armourers_workshop.core.skin.SkinDescriptor;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperties;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperty;
@@ -28,10 +28,10 @@ public class DocumentConnector {
     public final DataProperty<SkinDescriptor> part = registerNode(DataProperty::new, SkinDocumentNode::getSkin, SkinDocumentNode::setSkin);
     public final DataProperty<Boolean> lock = registerNode(DataProperty::new, SkinDocumentNode::isLocked, Objects::hashCode);
 
-    public final VectorProperty location = registerNode(VectorProperty::new, SkinDocumentNode::getLocation, SkinDocumentNode::setLocation);
-    public final VectorProperty rotation = registerNode(VectorProperty::new, SkinDocumentNode::getRotation, SkinDocumentNode::setRotation);
+    public final Vector3fProperty location = registerNode(Vector3fProperty::new, SkinDocumentNode::getLocation, SkinDocumentNode::setLocation);
+    public final Vector3fProperty rotation = registerNode(Vector3fProperty::new, SkinDocumentNode::getRotation, SkinDocumentNode::setRotation);
     public final DataProperty<Float> scale = registerNode(DataProperty::new, SkinDocumentNode::getScale, SkinDocumentNode::setScale);
-    public final VectorProperty pivot = registerNode(VectorProperty::new, SkinDocumentNode::getPivot, SkinDocumentNode::setPivot);
+    public final Vector3fProperty pivot = registerNode(Vector3fProperty::new, SkinDocumentNode::getPivot, SkinDocumentNode::setPivot);
 
     public final DataProperty<Boolean> enabled = registerNode(DataProperty::new, SkinDocumentNode::isEnabled, SkinDocumentNode::setEnabled);
     public final DataProperty<Boolean> mirror = registerNode(DataProperty::new, SkinDocumentNode::isMirror, SkinDocumentNode::setMirror);

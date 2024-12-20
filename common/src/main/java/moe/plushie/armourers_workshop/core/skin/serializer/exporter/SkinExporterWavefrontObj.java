@@ -2,10 +2,10 @@ package moe.plushie.armourers_workshop.core.skin.serializer.exporter;
 
 import moe.plushie.armourers_workshop.api.skin.geometry.ISkinGeometryType;
 import moe.plushie.armourers_workshop.core.math.OpenPoseStack;
+import moe.plushie.armourers_workshop.core.math.OpenRectangle3i;
 import moe.plushie.armourers_workshop.core.math.OpenTransform3f;
-import moe.plushie.armourers_workshop.core.math.Rectangle3i;
-import moe.plushie.armourers_workshop.core.math.Vector3f;
-import moe.plushie.armourers_workshop.core.math.Vector4f;
+import moe.plushie.armourers_workshop.core.math.OpenVector3f;
+import moe.plushie.armourers_workshop.core.math.OpenVector4f;
 import moe.plushie.armourers_workshop.core.skin.Skin;
 import moe.plushie.armourers_workshop.core.skin.geometry.SkinGeometryTypes;
 import moe.plushie.armourers_workshop.core.skin.geometry.cube.SkinCubeFace;
@@ -89,10 +89,10 @@ public class SkinExporterWavefrontObj implements SkinExporter {
             // apply the render context matrix.
             poseStack.scale(scale, scale, scale);
             poseStack.scale(-1, -1, 1);
-            poseStack.rotate(Vector3f.YP.rotationDegrees(90));
+            poseStack.rotate(OpenVector3f.YP.rotationDegrees(90));
             // apply the origin offset.
             var pos = part.getType().getRenderOffset();
-            poseStack.translate(pos.getX(), pos.getY(), pos.getZ());
+            poseStack.translate(pos.x(), pos.y(), pos.z());
             // apply the marker rotation and offset.
             transform.apply(poseStack);
             exportPart(poseStack, task.cubeFaces, part, task.skin, os, textureBuilder, partIndex++);
@@ -135,12 +135,12 @@ public class SkinExporterWavefrontObj implements SkinExporter {
         // Export vertex list.
         for (var face : faces) {
             var shape = face.getBoundingBox();
-            var x = shape.getX();
-            var y = shape.getY();
-            var z = shape.getZ();
-            var w = shape.getWidth();
-            var h = shape.getHeight();
-            var d = shape.getDepth();
+            var x = shape.x();
+            var y = shape.y();
+            var z = shape.z();
+            var w = shape.width();
+            var h = shape.height();
+            var d = shape.depth();
             var vertexes = SkinCubeFace.getBaseVertices(face.getDirection());
             for (var i = 0; i < 4; ++i) {
                 writeVert(poseStack, os, x + vertexes[i][0] * w, y + vertexes[i][1] * h, z + vertexes[i][2] * d);
@@ -179,15 +179,15 @@ public class SkinExporterWavefrontObj implements SkinExporter {
     }
 
     private void writeVert(OpenPoseStack poseStack, OutputStreamWriter os, float x, float y, float z) throws IOException {
-        var v = new Vector4f(x, y, z, 1);
+        var v = new OpenVector4f(x, y, z, 1);
         v.transform(poseStack.last().pose());
-        os.write(String.format("v %s %s %s", f2s(v.getX()), f2s(v.getY()), f2s(v.getZ())) + CRLF);
+        os.write(String.format("v %s %s %s", f2s(v.x()), f2s(v.y()), f2s(v.z())) + CRLF);
     }
 
     private void writeNormal(OpenPoseStack poseStack, OutputStreamWriter os, float x, float y, float z) throws IOException {
-        var v = new Vector3f(x, y, z);
+        var v = new OpenVector3f(x, y, z);
         v.transform(poseStack.last().normal());
-        os.write(String.format("vn %s %s %s", f2s(v.getX()), f2s(v.getY()), f2s(v.getZ())) + CRLF);
+        os.write(String.format("vn %s %s %s", f2s(v.x()), f2s(v.y()), f2s(v.z())) + CRLF);
     }
 
     private void writeTexture(OutputStreamWriter os, double x, double y) throws IOException {
@@ -230,7 +230,7 @@ public class SkinExporterWavefrontObj implements SkinExporter {
 
         Task(Skin skin, SkinPart skinPart) {
             var geometries = skinPart.getGeometries();
-            var bounds = new Rectangle3i(geometries.getShape().bounds());
+            var bounds = new OpenRectangle3i(geometries.getShape().bounds());
             this.skin = skin;
             this.skinPart = skinPart;
             this.cubeFaces = Collections.collect(SkinCubeFaceCuller.cullFaces(geometries, bounds), SkinCubeFace.class);

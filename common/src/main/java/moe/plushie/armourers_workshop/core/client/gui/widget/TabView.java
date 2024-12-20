@@ -40,7 +40,7 @@ public class TabView extends UIView {
     }
 
     public EntryBuilder addContentView(UIView contentView) {
-        Entry view = new Entry(contentView, new CGRect(0, 0, 26, 30));
+        var view = new Entry(contentView, new CGRect(0, 0, 26, 30));
         addSubview(view);
         entries.add(view);
         view.addTarget(this, UIControl.Event.MOUSE_LEFT_DOWN, TabView::switchTab);
@@ -50,9 +50,9 @@ public class TabView extends UIView {
     @Override
     public void layoutSubviews() {
         super.layoutSubviews();
-        CGRect bounds = this.bounds();
+        var bounds = this.bounds();
         this.contentView.setFrame(bounds);
-        Entry entry = this.selectedTab;
+        var entry = this.selectedTab;
         if (entry != null) {
             entry.contentView.setFrame(bounds);
         }
@@ -75,7 +75,7 @@ public class TabView extends UIView {
     public @Nullable UIView hitTest(CGPoint point, UIEvent event) {
         // we ignore tab view and content view the event response,
         // because in full screen mode, tab view or content view will intercept all events.
-        UIView target = super.hitTest(point, event);
+        var target = super.hitTest(point, event);
         if (target != this && target != this.contentView) {
             return target;
         }
@@ -102,7 +102,7 @@ public class TabView extends UIView {
     }
 
     public Entry firstActiveTab() {
-        for (Entry entry : entries) {
+        for (var entry : entries) {
             if (!entry.isHidden()) {
                 return entry;
             }
@@ -124,11 +124,11 @@ public class TabView extends UIView {
 
     private void initNormalWidgets(float x, float y, float width, float height) {
         int ly = 5, ry = 5, spacing = -5;
-        for (Entry tab : entries) {
+        for (var tab : entries) {
             if (tab.isHidden()) {
                 continue;
             }
-            CGRect rect = tab.frame();
+            var rect = tab.frame();
             if (tab.alignment == 0 && ly + rect.height <= height) { // left
                 tab.setFrame(new CGRect(x + -rect.width + 5, y + ly, rect.width, rect.height));
                 tab.updateAlignment(0);

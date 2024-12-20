@@ -8,83 +8,77 @@ import com.apple.library.uikit.UIControl;
 import com.apple.library.uikit.UILabel;
 import com.apple.library.uikit.UIView;
 import moe.plushie.armourers_workshop.builder.client.gui.advancedbuilder.panel.AdvancedPanel;
-import moe.plushie.armourers_workshop.core.math.Vector3f;
+import moe.plushie.armourers_workshop.builder.data.properties.DataProperty;
+import moe.plushie.armourers_workshop.builder.data.properties.Vector3dProperty;
+import moe.plushie.armourers_workshop.core.math.OpenVector3d;
+
+import java.util.function.Consumer;
 
 public class EntitySizeBox extends UIView {
 
-    float cursorY = 0;
-    float cursorX = 0;
+    private float cursorY = 0;
+    private float cursorX = 0;
 
-    private final NewSlider widthSlider;
-    private final NewSlider heightSlider;
-    private final NewSlider eyeHeightSlider;
-
-    private Vector3f entitySize = new Vector3f(0.6f, 1.88f, 1.62f);
+    private final Vector3dProperty valueProperty = new Vector3dProperty(0.6f, 1.88f, 1.62f);
 
     public EntitySizeBox(CGRect frame) {
         super(frame);
-        this.widthSlider = addSlider(getDisplayText("overrideEntityWidth"), entitySize.getX());
-        this.heightSlider = addSlider(getDisplayText("overrideEntityHeight"), entitySize.getY());
-        this.eyeHeightSlider = addSlider(getDisplayText("overrideEntityEyeHeight"), entitySize.getZ());
+        addSlider(getDisplayText("overrideEntityWidth"), valueProperty.x());
+        addSlider(getDisplayText("overrideEntityHeight"), valueProperty.y());
+        addSlider(getDisplayText("overrideEntityEyeHeight"), valueProperty.z());
         for (var child : subviews()) {
             if (child instanceof NewSlider) {
                 var nframe = child.frame().copy();
                 nframe.setX(cursorX + 8);
-                nframe.setWidth(bounds().getWidth() - cursorX - 8);
+                nframe.setWidth(bounds().width() - cursorX - 8);
                 child.setFrame(nframe);
+                child.setAutoresizingMask(AutoresizingMask.flexibleWidth | AutoresizingMask.flexibleBottomMargin);
             }
         }
     }
 
-    public void setEntitySize(Vector3f size) {
-        this.entitySize = size;
-        this.widthSlider.setValue(size.getX());
-        this.heightSlider.setValue(size.getY());
-        this.eyeHeightSlider.setValue(size.getZ());
+    public void addObserver(Consumer<OpenVector3d> observer) {
+        valueProperty.addObserver(observer);
     }
 
-    public Vector3f getEntitySize() {
-        return entitySize;
+    public void addEditingObserver(Consumer<Boolean> observer) {
+        valueProperty.addEditingObserver(observer);
     }
 
-    protected void update() {
-        double x = widthSlider.value();
-        double y = heightSlider.value();
-        double z = eyeHeightSlider.value();
-        entitySize = new Vector3f(x, y, z);
+    public void setValue(OpenVector3d value) {
+        valueProperty.set(value);
     }
 
-    protected void beginEditing() {
-
+    public OpenVector3d getValue() {
+        return valueProperty.get();
     }
 
-    protected void endEditing() {
-
-    }
-
-    private NewSlider addSlider(NSString name, double defaultValue) {
+    private void addSlider(NSString name, DataProperty<Double> property) {
         var title = new UILabel(new CGRect(0, cursorY + 3, 80, 10));
         title.setText(name);
         title.setTextColor(UIColor.WHITE);
         title.setTextHorizontalAlignment(NSTextAlignment.Horizontal.LEFT);
         title.sizeToFit();
-        cursorX = title.frame().getWidth();
+        cursorX = Math.max(cursorX, title.frame().width());
 
         var view = new NewSlider(new CGRect(0, cursorY, 80, 16));
         view.setFormatter(AdvancedPanel.Group.Unit.POINT);
         view.setStepValue(0.01);
         view.setMinValue(0.01);
         view.setMaxValue(10.0);
-        view.setValue(defaultValue);
-        view.addTarget(this, UIControl.Event.EDITING_DID_BEGIN, (pro, ctrl) -> pro.beginEditing());
-        view.addTarget(this, UIControl.Event.EDITING_DID_END, (pro, ctrl) -> pro.endEditing());
-        view.addTarget(this, UIControl.Event.VALUE_CHANGED, (pro, ctrl) -> pro.update());
+        view.setValue(property.getOrDefault(0.0));
+        view.addTarget(this, UIControl.Event.EDITING_DID_BEGIN, (pro, ctrl) -> property.beginEditing());
+        view.addTarget(this, UIControl.Event.EDITING_DID_END, (pro, ctrl) -> property.endEditing());
+        view.addTarget(this, UIControl.Event.VALUE_CHANGED, (pro, ctrl) -> {
+            var slider = (NewSlider) ctrl;
+            property.set(slider.value());
+        });
+        property.addObserver(view::setValue);
 
         addSubview(title);
         addSubview(view);
 
-        cursorY = view.frame().getMaxY();
-        return view;
+        cursorY = view.frame().maxY();
     }
 
     protected NSString getDisplayText(String key, Object... objects) {

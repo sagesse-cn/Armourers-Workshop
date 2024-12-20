@@ -1,8 +1,8 @@
 package moe.plushie.armourers_workshop.core.skin.serializer.v20.geometry.impl;
 
 import moe.plushie.armourers_workshop.api.skin.geometry.ISkinGeometryType;
-import moe.plushie.armourers_workshop.core.math.Rectangle3f;
-import moe.plushie.armourers_workshop.core.math.Vector3i;
+import moe.plushie.armourers_workshop.core.math.OpenRectangle3f;
+import moe.plushie.armourers_workshop.core.math.OpenVector3i;
 import moe.plushie.armourers_workshop.core.skin.geometry.cube.SkinCube;
 import moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk.ChunkDataOutputStream;
 import moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk.ChunkGeometrySlice;
@@ -64,12 +64,12 @@ public class ChunkGeometrySerializerV1 extends ChunkGeometrySerializer {
         }
 
         @Override
-        public Rectangle3f getBoundingBox() {
+        public OpenRectangle3f getBoundingBox() {
             if (slice.once(0)) {
                 float x = slice.getByte(0);
                 float y = slice.getByte(1);
                 float z = slice.getByte(2);
-                boundingBox = new Rectangle3f(x, y, z, 1, 1, 1);
+                boundingBox = new OpenRectangle3f(x, y, z, 1, 1, 1);
             }
             return boundingBox;
         }
@@ -101,7 +101,7 @@ public class ChunkGeometrySerializerV1 extends ChunkGeometrySerializer {
 
     protected static class Encoder implements ChunkGeometrySerializer.Encoder<SkinCube> {
 
-        private Vector3i pos = Vector3i.ZERO;
+        private OpenVector3i pos = OpenVector3i.ZERO;
         private final LinkedHashMap<SkinPaintColor, Integer> values = new LinkedHashMap<>();
 
         @Override
@@ -120,9 +120,9 @@ public class ChunkGeometrySerializerV1 extends ChunkGeometrySerializer {
         @Override
         public void end(ChunkPaletteData palette, ChunkDataOutputStream stream) throws IOException {
             // position(3B)
-            stream.writeByte(pos.getX());
-            stream.writeByte(pos.getY());
-            stream.writeByte(pos.getZ());
+            stream.writeByte(pos.x());
+            stream.writeByte(pos.y());
+            stream.writeByte(pos.z());
 
             // face: <color ref>
             for (var entry : values.entrySet()) {

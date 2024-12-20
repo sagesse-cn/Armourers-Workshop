@@ -75,14 +75,14 @@ public class HomeLibraryPanel extends AbstractLibraryPanel implements GlobalSkin
         super.layoutSubviews();
         float listTop = 20;
         float listLeft = 4;
-        float width = bounds().getWidth();
+        float width = bounds().width();
         for (ServerItemList fileList : lists()) {
             fileList.setFrame(new CGRect(listLeft, listTop + 20, width, 307));
             fileList.setItemSize(new CGSize(50, 50));
             fileList.setBackgroundColor(0);
             fileList.setShowsName(false);
             fileList.reloadData();
-            listTop = fileList.frame().getMaxY();
+            listTop = fileList.frame().maxY();
         }
         scrollView.setContentSize(new CGSize(0, listTop + 4));
         scrollView.setContentOffset(scrollView.contentOffset());

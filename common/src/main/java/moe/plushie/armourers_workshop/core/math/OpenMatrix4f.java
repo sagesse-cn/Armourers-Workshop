@@ -1,11 +1,21 @@
 package moe.plushie.armourers_workshop.core.math;
 
 import moe.plushie.armourers_workshop.api.core.math.IMatrix4f;
-import moe.plushie.armourers_workshop.api.core.math.IQuaternion3f;
+import moe.plushie.armourers_workshop.api.core.math.IQuaternionf;
 import moe.plushie.armourers_workshop.core.utils.MatrixUtils;
 
 import java.nio.FloatBuffer;
 
+/**
+ * Contains the definition of a 4x4 matrix of floats, and associated functions to transform it.
+ * <p>
+ * The matrix is column-major to match OpenGL's interpretation, and it looks like this:
+ * <p>
+ * m00  m10  m20  m30<br>
+ * m01  m11  m21  m31<br>
+ * m02  m12  m22  m32<br>
+ * m03  m13  m23  m33<br>
+ */
 @SuppressWarnings("unused")
 public class OpenMatrix4f implements IMatrix4f {
 
@@ -20,12 +30,12 @@ public class OpenMatrix4f implements IMatrix4f {
     }
 
     public OpenMatrix4f(IMatrix4f matrix) {
-        var buffer = MatrixUtils.createFloatBuffer(16);
+        var buffer = FastLocal.LOCALS.get().buffer;
         matrix.store(buffer);
         load(buffer);
     }
 
-    public OpenMatrix4f(IQuaternion3f quaternion) {
+    public OpenMatrix4f(IQuaternionf quaternion) {
         set(quaternion);
     }
 
@@ -34,7 +44,7 @@ public class OpenMatrix4f implements IMatrix4f {
     }
 
     public static OpenMatrix4f createScaleMatrix(float x, float y, float z) {
-        OpenMatrix4f matrix = new OpenMatrix4f();
+        var matrix = new OpenMatrix4f();
         matrix.m00 = x;
         matrix.m11 = y;
         matrix.m22 = z;
@@ -43,14 +53,20 @@ public class OpenMatrix4f implements IMatrix4f {
     }
 
     public static OpenMatrix4f createTranslateMatrix(float x, float y, float z) {
-        OpenMatrix4f matrix = new OpenMatrix4f();
+        var matrix = new OpenMatrix4f();
         matrix.m00 = 1;
         matrix.m11 = 1;
         matrix.m22 = 1;
         matrix.m33 = 1;
-        matrix.m03 = x;
-        matrix.m13 = y;
-        matrix.m23 = z;
+        matrix.m30 = x;
+        matrix.m31 = y;
+        matrix.m32 = z;
+        return matrix;
+    }
+
+    public static OpenMatrix4f createRotationMatrix(IQuaternionf q) {
+        var matrix = new OpenMatrix4f();
+        matrix.set(q);
         return matrix;
     }
 
@@ -76,7 +92,7 @@ public class OpenMatrix4f implements IMatrix4f {
     }
 
     @Override
-    public void rotate(IQuaternion3f quaternion) {
+    public void rotate(IQuaternionf quaternion) {
         multiply(FastLocal.from(quaternion));
     }
 
@@ -85,30 +101,95 @@ public class OpenMatrix4f implements IMatrix4f {
         set(FastLocal.from(matrix));
     }
 
-    public void set(IQuaternion3f quaternion) {
-        float f = quaternion.x();
-        float g = quaternion.y();
-        float h = quaternion.z();
-        float i = quaternion.w();
-        float j = 2.0f * f * f;
-        float k = 2.0f * g * g;
-        float l = 2.0f * h * h;
-        m00 = 1.0f - k - l;
-        m11 = 1.0f - l - j;
-        m22 = 1.0f - j - k;
+    public void set(IQuaternionf q) {
+        var w2 = q.w() * q.w();
+        var x2 = q.x() * q.x();
+        var y2 = q.y() * q.y();
+        var z2 = q.z() * q.z();
+        var zw = q.z() * q.w();
+        var xy = q.x() * q.y();
+        var xz = q.x() * q.z();
+        var yw = q.y() * q.w();
+        var yz = q.y() * q.z();
+        var xw = q.x() * q.w();
+        m00 = w2 + x2 - z2 - y2;
+        m01 = xy + zw + zw + xy;
+        m02 = xz - yw + xz - yw;
+        m03 = 0.0f;
+        m10 = -zw + xy - zw + xy;
+        m11 = y2 - z2 + w2 - x2;
+        m12 = yz + yz + xw + xw;
+        m13 = 0.0f;
+        m20 = yw + xz + xz + yw;
+        m21 = yz + yz - xw - xw;
+        m22 = z2 - y2 - x2 + w2;
+        m30 = 0.0f;
+        m31 = 0.0f;
+        m32 = 0.0f;
         m33 = 1.0f;
-        float m = f * g;
-        float n = g * h;
-        float o = h * f;
-        float p = f * i;
-        float q = g * i;
-        float r = h * i;
-        m10 = 2.0f * (m + r);
-        m01 = 2.0f * (m - r);
-        m20 = 2.0f * (o - q);
-        m02 = 2.0f * (o + q);
-        m21 = 2.0f * (n + p);
-        m12 = 2.0f * (n - p);
+    }
+
+    public void set(OpenMatrix3f m) {
+        m00 = m.m00;
+        m01 = m.m01;
+        m02 = m.m02;
+        m03 = 0.0f;
+        m10 = m.m10;
+        m11 = m.m11;
+        m12 = m.m12;
+        m13 = 0.0f;
+        m20 = m.m20;
+        m21 = m.m21;
+        m22 = m.m22;
+        m23 = 0.0f;
+        m30 = 0.0f;
+        m31 = 0.0f;
+        m32 = 0.0f;
+        m33 = 1.0f;
+    }
+
+    public void set(OpenMatrix4f mat) {
+        m00 = mat.m00;
+        m01 = mat.m01;
+        m02 = mat.m02;
+        m03 = mat.m03;
+        m10 = mat.m10;
+        m11 = mat.m11;
+        m12 = mat.m12;
+        m13 = mat.m13;
+        m20 = mat.m20;
+        m21 = mat.m21;
+        m22 = mat.m22;
+        m23 = mat.m23;
+        m30 = mat.m30;
+        m31 = mat.m31;
+        m32 = mat.m32;
+        m33 = mat.m33;
+    }
+
+    public void setIdentity() {
+        m00 = 1.0f;
+        m01 = 0.0f;
+        m02 = 0.0f;
+        m03 = 0.0f;
+        m10 = 0.0f;
+        m11 = 1.0f;
+        m12 = 0.0f;
+        m13 = 0.0f;
+        m20 = 0.0f;
+        m21 = 0.0f;
+        m22 = 1.0f;
+        m23 = 0.0f;
+        m30 = 0.0f;
+        m31 = 0.0f;
+        m32 = 0.0f;
+        m33 = 1.0f;
+    }
+
+    public void setTranslation(float x, float y, float z) {
+        m30 = x;
+        m31 = y;
+        m32 = z;
     }
 
     @Override
@@ -117,22 +198,21 @@ public class OpenMatrix4f implements IMatrix4f {
         float y = values[1];
         float z = values[2];
         float w = values[3];
-        values[0] = m00 * x + m01 * y + m02 * z + m03 * w;
-        values[1] = m10 * x + m11 * y + m12 * z + m13 * w;
-        values[2] = m20 * x + m21 * y + m22 * z + m23 * w;
-        values[3] = m30 * x + m31 * y + m32 * z + m33 * w;
+        values[0] = OpenMath.fma(m00, x, OpenMath.fma(m10, y, OpenMath.fma(m20, z, m30 * w)));
+        values[1] = OpenMath.fma(m01, x, OpenMath.fma(m11, y, OpenMath.fma(m21, z, m31 * w)));
+        values[2] = OpenMath.fma(m02, x, OpenMath.fma(m12, y, OpenMath.fma(m22, z, m32 * w)));
     }
 
     @Override
     public void multiply(IMatrix4f other) {
-        multiply(FastLocal.from(other), this, this);
-    }
-
-    public void multiplyFront(IMatrix4f other) {
         multiply(this, FastLocal.from(other), this);
     }
 
-    public void multiplyFront(IQuaternion3f quaternion) {
+    public void multiplyFront(IMatrix4f other) {
+        multiply(FastLocal.from(other), this, this);
+    }
+
+    public void multiplyFront(IQuaternionf quaternion) {
         multiplyFront(FastLocal.from(quaternion));
     }
 
@@ -196,211 +276,88 @@ public class OpenMatrix4f implements IMatrix4f {
     }
 
     @Override
-    public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("OpenMatrix4f:\n");
-        builder.append(m00);
-        builder.append(" ");
-        builder.append(m01);
-        builder.append(" ");
-        builder.append(m02);
-        builder.append(" ");
-        builder.append(m03);
-        builder.append("\n");
-        builder.append(m10);
-        builder.append(" ");
-        builder.append(m11);
-        builder.append(" ");
-        builder.append(m12);
-        builder.append(" ");
-        builder.append(m13);
-        builder.append("\n");
-        builder.append(m20);
-        builder.append(" ");
-        builder.append(m21);
-        builder.append(" ");
-        builder.append(m22);
-        builder.append(" ");
-        builder.append(m23);
-        builder.append("\n");
-        builder.append(m30);
-        builder.append(" ");
-        builder.append(m31);
-        builder.append(" ");
-        builder.append(m32);
-        builder.append(" ");
-        builder.append(m33);
-        builder.append("\n");
-        return builder.toString();
+    public void transpose() {
+        // | m00 m10 m20 m30 |    | m00 m01 m02 m03 |    
+        // | m01 m11 m21 m31 | => | m10 m11 m12 m13 | 
+        // | m02 m12 m22 m32 |    | m20 m21 m22 m23 |    
+        // | m03 m13 m23 m33 |    | m30 m31 m32 m33 |    
+        var nm10 = m01;
+        var nm20 = m02;
+        var nm21 = m12;
+        var nm30 = m03;
+        var nm31 = m13;
+        var nm32 = m23;
+        m01 = m10;
+        m02 = m20;
+        m03 = m30;
+        m10 = nm10;
+        m12 = m21;
+        m13 = m31;
+        m20 = nm20;
+        m21 = nm21;
+        m23 = m32;
+        m30 = nm30;
+        m31 = nm31;
+        m32 = nm32;
     }
 
-    public OpenMatrix4f set(OpenMatrix3f m) {
-        m00 = m.m00;
-        m01 = m.m01;
-        m02 = m.m02;
-        m03 = 0.0f;
-        m10 = m.m10;
-        m11 = m.m11;
-        m12 = m.m12;
-        m13 = 0.0f;
-        m20 = m.m20;
-        m21 = m.m21;
-        m22 = m.m22;
-        m23 = 0.0f;
-        m30 = 0.0f;
-        m31 = 0.0f;
-        m32 = 0.0f;
-        m33 = 1.0f;
-        return this;
-    }
-
-    public OpenMatrix4f set(OpenMatrix4f mat) {
-        m00 = mat.m00;
-        m01 = mat.m01;
-        m02 = mat.m02;
-        m03 = mat.m03;
-        m10 = mat.m10;
-        m11 = mat.m11;
-        m12 = mat.m12;
-        m13 = mat.m13;
-        m20 = mat.m20;
-        m21 = mat.m21;
-        m22 = mat.m22;
-        m23 = mat.m23;
-        m30 = mat.m30;
-        m31 = mat.m31;
-        m32 = mat.m32;
-        m33 = mat.m33;
-        return this;
-    }
-
-    public OpenMatrix4f setTranslation(float x, float y, float z) {
-        m03 = x;
-        m13 = y;
-        m23 = z;
-        return this;
-    }
-
-    public OpenMatrix4f setIdentity() {
-        m00 = 1.0f;
-        m01 = 0.0f;
-        m02 = 0.0f;
-        m03 = 0.0f;
-        m10 = 0.0f;
-        m11 = 1.0f;
-        m12 = 0.0f;
-        m13 = 0.0f;
-        m20 = 0.0f;
-        m21 = 0.0f;
-        m22 = 1.0f;
-        m23 = 0.0f;
-        m30 = 0.0f;
-        m31 = 0.0f;
-        m32 = 0.0f;
-        m33 = 1.0f;
-        return this;
+    @Override
+    public void invert() {
+        var a = m00 * m11 - m01 * m10;
+        var b = m00 * m12 - m02 * m10;
+        var c = m00 * m13 - m03 * m10;
+        var d = m01 * m12 - m02 * m11;
+        var e = m01 * m13 - m03 * m11;
+        var f = m02 * m13 - m03 * m12;
+        var g = m20 * m31 - m21 * m30;
+        var h = m20 * m32 - m22 * m30;
+        var i = m20 * m33 - m23 * m30;
+        var j = m21 * m32 - m22 * m31;
+        var k = m21 * m33 - m23 * m31;
+        var l = m22 * m33 - m23 * m32;
+        var det = a * l - b * k + c * j + d * i - e * h + f * g;
+        det = 1.0f / det;
+        var nm00 = OpenMath.fma(m11, l, OpenMath.fma(-m12, k, m13 * j)) * det;
+        var nm01 = OpenMath.fma(-m01, l, OpenMath.fma(m02, k, -m03 * j)) * det;
+        var nm02 = OpenMath.fma(m31, f, OpenMath.fma(-m32, e, m33 * d)) * det;
+        var nm03 = OpenMath.fma(-m21, f, OpenMath.fma(m22, e, -m23 * d)) * det;
+        var nm10 = OpenMath.fma(-m10, l, OpenMath.fma(m12, i, -m13 * h)) * det;
+        var nm11 = OpenMath.fma(m00, l, OpenMath.fma(-m02, i, m03 * h)) * det;
+        var nm12 = OpenMath.fma(-m30, f, OpenMath.fma(m32, c, -m33 * b)) * det;
+        var nm13 = OpenMath.fma(m20, f, OpenMath.fma(-m22, c, m23 * b)) * det;
+        var nm20 = OpenMath.fma(m10, k, OpenMath.fma(-m11, i, m13 * g)) * det;
+        var nm21 = OpenMath.fma(-m00, k, OpenMath.fma(m01, i, -m03 * g)) * det;
+        var nm22 = OpenMath.fma(m30, e, OpenMath.fma(-m31, c, m33 * a)) * det;
+        var nm23 = OpenMath.fma(-m20, e, OpenMath.fma(m21, c, -m23 * a)) * det;
+        var nm30 = OpenMath.fma(-m10, j, OpenMath.fma(m11, h, -m12 * g)) * det;
+        var nm31 = OpenMath.fma(m00, j, OpenMath.fma(-m01, h, m02 * g)) * det;
+        var nm32 = OpenMath.fma(-m30, d, OpenMath.fma(m31, b, -m32 * a)) * det;
+        var nm33 = OpenMath.fma(m20, d, OpenMath.fma(-m21, b, m22 * a)) * det;
+        m00 = nm00;
+        m01 = nm01;
+        m02 = nm02;
+        m03 = nm03;
+        m10 = nm10;
+        m11 = nm11;
+        m12 = nm12;
+        m13 = nm13;
+        m20 = nm20;
+        m21 = nm21;
+        m22 = nm22;
+        m23 = nm23;
+        m30 = nm30;
+        m31 = nm31;
+        m32 = nm32;
+        m33 = nm33;
     }
 
     public OpenMatrix4f copy() {
         return new OpenMatrix4f(this);
     }
 
-    public float adjugateAndDet() {
-        float f = m00 * m11 - m01 * m10;
-        float g = m00 * m12 - m02 * m10;
-        float h = m00 * m13 - m03 * m10;
-        float i = m01 * m12 - m02 * m11;
-        float j = m01 * m13 - m03 * m11;
-        float k = m02 * m13 - m03 * m12;
-        float l = m20 * m31 - m21 * m30;
-        float m = m20 * m32 - m22 * m30;
-        float n = m20 * m33 - m23 * m30;
-        float o = m21 * m32 - m22 * m31;
-        float p = m21 * m33 - m23 * m31;
-        float q = m22 * m33 - m23 * m32;
-        float r = m11 * q - m12 * p + m13 * o;
-        float s = -m10 * q + m12 * n - m13 * m;
-        float t = m10 * p - m11 * n + m13 * l;
-        float u = -m10 * o + m11 * m - m12 * l;
-        float v = -m01 * q + m02 * p - m03 * o;
-        float w = m00 * q - m02 * n + m03 * m;
-        float x = -m00 * p + m01 * n - m03 * l;
-        float y = m00 * o - m01 * m + m02 * l;
-        float z = m31 * k - m32 * j + m33 * i;
-        float aa = -m30 * k + m32 * h - m33 * g;
-        float ab = m30 * j - m31 * h + m33 * f;
-        float ac = -m30 * i + m31 * g - m32 * f;
-        float ad = -m21 * k + m22 * j - m23 * i;
-        float ae = m20 * k - m22 * h + m23 * g;
-        float af = -m20 * j + m21 * h - m23 * f;
-        float ag = m20 * i - m21 * g + m22 * f;
-        m00 = r;
-        m10 = s;
-        m20 = t;
-        m30 = u;
-        m01 = v;
-        m11 = w;
-        m21 = x;
-        m31 = y;
-        m02 = z;
-        m12 = aa;
-        m22 = ab;
-        m32 = ac;
-        m03 = ad;
-        m13 = ae;
-        m23 = af;
-        m33 = ag;
-        return f * q - g * p + h * o + i * n - j * m + k * l;
-    }
-
-    public float determinant() {
-        float f = m00 * m11 - m01 * m10;
-        float g = m00 * m12 - m02 * m10;
-        float h = m00 * m13 - m03 * m10;
-        float i = m01 * m12 - m02 * m11;
-        float j = m01 * m13 - m03 * m11;
-        float k = m02 * m13 - m03 * m12;
-        float l = m20 * m31 - m21 * m30;
-        float m = m20 * m32 - m22 * m30;
-        float n = m20 * m33 - m23 * m30;
-        float o = m21 * m32 - m22 * m31;
-        float p = m21 * m33 - m23 * m31;
-        float q = m22 * m33 - m23 * m32;
-        return f * q - g * p + h * o + i * n - j * m + k * l;
-    }
-
-    public void transpose() {
-        // | m00 m01 m02 m03 |    | m00 m10 m20 m30 |
-        // | m10 m11 m12 m13 | => | m01 m11 m21 m31 |
-        // | m20 m21 m22 m23 |    | m02 m12 m22 m32 |
-        // | m30 m31 m32 m33 |    | m03 m13 m23 m33 |
-        float f = m10;
-        m10 = m01;
-        m01 = f;
-        f = m20;
-        m20 = m02;
-        m02 = f;
-        f = m21;
-        m21 = m12;
-        m12 = f;
-        f = m30;
-        m30 = m03;
-        m03 = f;
-        f = m31;
-        m31 = m13;
-        m13 = f;
-        f = m32;
-        m32 = m23;
-        m23 = f;
-    }
-
     @Override
-    public void invert() {
-//        float f = adjugateAndDet();
-//        if (Math.abs(f) > 1.0E-6f) {
-//            multiply(f);
-//        }
-        invertGeneric(this, this);
+    public String toString() {
+        return OpenMath.format("%f %f %f %f\n%f %f %f %f\n%f %f %f %f\n%f %f %f %f\n", m00, m10, m20, m30, m01, m11, m21, m31, m02, m12, m22, m32, m03, m13, m23, m33);
     }
 
     @Override
@@ -428,111 +385,65 @@ public class OpenMatrix4f implements IMatrix4f {
 
     @Override
     public int hashCode() {
-        int result = (m00 != 0.0f ? Float.floatToIntBits(m00) : 0);
-        result = 31 * result + (m01 != 0.0f ? Float.floatToIntBits(m01) : 0);
-        result = 31 * result + (m02 != 0.0f ? Float.floatToIntBits(m02) : 0);
-        result = 31 * result + (m03 != 0.0f ? Float.floatToIntBits(m03) : 0);
-        result = 31 * result + (m10 != 0.0f ? Float.floatToIntBits(m10) : 0);
-        result = 31 * result + (m11 != 0.0f ? Float.floatToIntBits(m11) : 0);
-        result = 31 * result + (m12 != 0.0f ? Float.floatToIntBits(m12) : 0);
-        result = 31 * result + (m13 != 0.0f ? Float.floatToIntBits(m13) : 0);
-        result = 31 * result + (m20 != 0.0f ? Float.floatToIntBits(m20) : 0);
-        result = 31 * result + (m21 != 0.0f ? Float.floatToIntBits(m21) : 0);
-        result = 31 * result + (m22 != 0.0f ? Float.floatToIntBits(m22) : 0);
-        result = 31 * result + (m23 != 0.0f ? Float.floatToIntBits(m23) : 0);
-        result = 31 * result + (m30 != 0.0f ? Float.floatToIntBits(m30) : 0);
-        result = 31 * result + (m31 != 0.0f ? Float.floatToIntBits(m31) : 0);
-        result = 31 * result + (m32 != 0.0f ? Float.floatToIntBits(m32) : 0);
-        result = 31 * result + (m33 != 0.0f ? Float.floatToIntBits(m33) : 0);
+        int result = 1;
+        result = 31 * result + Float.floatToIntBits(m00);
+        result = 31 * result + Float.floatToIntBits(m01);
+        result = 31 * result + Float.floatToIntBits(m02);
+        result = 31 * result + Float.floatToIntBits(m03);
+        result = 31 * result + Float.floatToIntBits(m10);
+        result = 31 * result + Float.floatToIntBits(m11);
+        result = 31 * result + Float.floatToIntBits(m12);
+        result = 31 * result + Float.floatToIntBits(m13);
+        result = 31 * result + Float.floatToIntBits(m20);
+        result = 31 * result + Float.floatToIntBits(m21);
+        result = 31 * result + Float.floatToIntBits(m22);
+        result = 31 * result + Float.floatToIntBits(m23);
+        result = 31 * result + Float.floatToIntBits(m30);
+        result = 31 * result + Float.floatToIntBits(m31);
+        result = 31 * result + Float.floatToIntBits(m32);
+        result = 31 * result + Float.floatToIntBits(m33);
         return result;
     }
 
+    // column major index
     private static int bufferIndex(int i, int j) {
-        return j * 4 + i;
+        return i * 4 + j;
     }
 
-    private static void invertGeneric(OpenMatrix4f in, OpenMatrix4f ret) {
-        float a = in.m00 * in.m11 - in.m01 * in.m10;
-        float b = in.m00 * in.m12 - in.m02 * in.m10;
-        float c = in.m00 * in.m13 - in.m03 * in.m10;
-        float d = in.m01 * in.m12 - in.m02 * in.m11;
-        float e = in.m01 * in.m13 - in.m03 * in.m11;
-        float f = in.m02 * in.m13 - in.m03 * in.m12;
-        float g = in.m20 * in.m31 - in.m21 * in.m30;
-        float h = in.m20 * in.m32 - in.m22 * in.m30;
-        float i = in.m20 * in.m33 - in.m23 * in.m30;
-        float j = in.m21 * in.m32 - in.m22 * in.m31;
-        float k = in.m21 * in.m33 - in.m23 * in.m31;
-        float l = in.m22 * in.m33 - in.m23 * in.m32;
-        float det = a * l - b * k + c * j + d * i - e * h + f * g;
-        det = 1.0f / det;
-        float m00 = OpenMath.fma(in.m11, l, OpenMath.fma(-in.m12, k, in.m13 * j)) * det;
-        float m01 = OpenMath.fma(-in.m01, l, OpenMath.fma(in.m02, k, -in.m03 * j)) * det;
-        float m02 = OpenMath.fma(in.m31, f, OpenMath.fma(-in.m32, e, in.m33 * d)) * det;
-        float m03 = OpenMath.fma(-in.m21, f, OpenMath.fma(in.m22, e, -in.m23 * d)) * det;
-        float m10 = OpenMath.fma(-in.m10, l, OpenMath.fma(in.m12, i, -in.m13 * h)) * det;
-        float m11 = OpenMath.fma(in.m00, l, OpenMath.fma(-in.m02, i, in.m03 * h)) * det;
-        float m12 = OpenMath.fma(-in.m30, f, OpenMath.fma(in.m32, c, -in.m33 * b)) * det;
-        float m13 = OpenMath.fma(in.m20, f, OpenMath.fma(-in.m22, c, in.m23 * b)) * det;
-        float m20 = OpenMath.fma(in.m10, k, OpenMath.fma(-in.m11, i, in.m13 * g)) * det;
-        float m21 = OpenMath.fma(-in.m00, k, OpenMath.fma(in.m01, i, -in.m03 * g)) * det;
-        float m22 = OpenMath.fma(in.m30, e, OpenMath.fma(-in.m31, c, in.m33 * a)) * det;
-        float m23 = OpenMath.fma(-in.m20, e, OpenMath.fma(in.m21, c, -in.m23 * a)) * det;
-        float m30 = OpenMath.fma(-in.m10, j, OpenMath.fma(in.m11, h, -in.m12 * g)) * det;
-        float m31 = OpenMath.fma(in.m00, j, OpenMath.fma(-in.m01, h, in.m02 * g)) * det;
-        float m32 = OpenMath.fma(-in.m30, d, OpenMath.fma(in.m31, b, -in.m32 * a)) * det;
-        float m33 = OpenMath.fma(in.m20, d, OpenMath.fma(-in.m21, b, in.m22 * a)) * det;
-        ret.m00 = m00;
-        ret.m01 = m01;
-        ret.m02 = m02;
-        ret.m03 = m03;
-        ret.m10 = m10;
-        ret.m11 = m11;
-        ret.m12 = m12;
-        ret.m13 = m13;
-        ret.m20 = m20;
-        ret.m21 = m21;
-        ret.m22 = m22;
-        ret.m23 = m23;
-        ret.m30 = m30;
-        ret.m31 = m31;
-        ret.m32 = m32;
-        ret.m33 = m33;
-    }
-
-    private static void multiply(OpenMatrix4f lhs, OpenMatrix4f rhs, OpenMatrix4f ret) {
-        float m00 = lhs.m00 * rhs.m00 + lhs.m10 * rhs.m01 + lhs.m20 * rhs.m02 + lhs.m30 * rhs.m03;
-        float m01 = lhs.m01 * rhs.m00 + lhs.m11 * rhs.m01 + lhs.m21 * rhs.m02 + lhs.m31 * rhs.m03;
-        float m02 = lhs.m02 * rhs.m00 + lhs.m12 * rhs.m01 + lhs.m22 * rhs.m02 + lhs.m32 * rhs.m03;
-        float m03 = lhs.m03 * rhs.m00 + lhs.m13 * rhs.m01 + lhs.m23 * rhs.m02 + lhs.m33 * rhs.m03;
-        float m10 = lhs.m00 * rhs.m10 + lhs.m10 * rhs.m11 + lhs.m20 * rhs.m12 + lhs.m30 * rhs.m13;
-        float m11 = lhs.m01 * rhs.m10 + lhs.m11 * rhs.m11 + lhs.m21 * rhs.m12 + lhs.m31 * rhs.m13;
-        float m12 = lhs.m02 * rhs.m10 + lhs.m12 * rhs.m11 + lhs.m22 * rhs.m12 + lhs.m32 * rhs.m13;
-        float m13 = lhs.m03 * rhs.m10 + lhs.m13 * rhs.m11 + lhs.m23 * rhs.m12 + lhs.m33 * rhs.m13;
-        float m20 = lhs.m00 * rhs.m20 + lhs.m10 * rhs.m21 + lhs.m20 * rhs.m22 + lhs.m30 * rhs.m23;
-        float m21 = lhs.m01 * rhs.m20 + lhs.m11 * rhs.m21 + lhs.m21 * rhs.m22 + lhs.m31 * rhs.m23;
-        float m22 = lhs.m02 * rhs.m20 + lhs.m12 * rhs.m21 + lhs.m22 * rhs.m22 + lhs.m32 * rhs.m23;
-        float m23 = lhs.m03 * rhs.m20 + lhs.m13 * rhs.m21 + lhs.m23 * rhs.m22 + lhs.m33 * rhs.m23;
-        float m30 = lhs.m00 * rhs.m30 + lhs.m10 * rhs.m31 + lhs.m20 * rhs.m32 + lhs.m30 * rhs.m33;
-        float m31 = lhs.m01 * rhs.m30 + lhs.m11 * rhs.m31 + lhs.m21 * rhs.m32 + lhs.m31 * rhs.m33;
-        float m32 = lhs.m02 * rhs.m30 + lhs.m12 * rhs.m31 + lhs.m22 * rhs.m32 + lhs.m32 * rhs.m33;
-        float m33 = lhs.m03 * rhs.m30 + lhs.m13 * rhs.m31 + lhs.m23 * rhs.m32 + lhs.m33 * rhs.m33;
-        ret.m00 = m00;
-        ret.m01 = m01;
-        ret.m02 = m02;
-        ret.m03 = m03;
-        ret.m10 = m10;
-        ret.m11 = m11;
-        ret.m12 = m12;
-        ret.m13 = m13;
-        ret.m20 = m20;
-        ret.m21 = m21;
-        ret.m22 = m22;
-        ret.m23 = m23;
-        ret.m30 = m30;
-        ret.m31 = m31;
-        ret.m32 = m32;
-        ret.m33 = m33;
+    // dest = left * right
+    private static void multiply(OpenMatrix4f left, OpenMatrix4f right, OpenMatrix4f dest) {
+        var m00 = OpenMath.fma(left.m00, right.m00, OpenMath.fma(left.m10, right.m01, OpenMath.fma(left.m20, right.m02, left.m30 * right.m03)));
+        var m01 = OpenMath.fma(left.m01, right.m00, OpenMath.fma(left.m11, right.m01, OpenMath.fma(left.m21, right.m02, left.m31 * right.m03)));
+        var m02 = OpenMath.fma(left.m02, right.m00, OpenMath.fma(left.m12, right.m01, OpenMath.fma(left.m22, right.m02, left.m32 * right.m03)));
+        var m03 = OpenMath.fma(left.m03, right.m00, OpenMath.fma(left.m13, right.m01, OpenMath.fma(left.m23, right.m02, left.m33 * right.m03)));
+        var m10 = OpenMath.fma(left.m00, right.m10, OpenMath.fma(left.m10, right.m11, OpenMath.fma(left.m20, right.m12, left.m30 * right.m13)));
+        var m11 = OpenMath.fma(left.m01, right.m10, OpenMath.fma(left.m11, right.m11, OpenMath.fma(left.m21, right.m12, left.m31 * right.m13)));
+        var m12 = OpenMath.fma(left.m02, right.m10, OpenMath.fma(left.m12, right.m11, OpenMath.fma(left.m22, right.m12, left.m32 * right.m13)));
+        var m13 = OpenMath.fma(left.m03, right.m10, OpenMath.fma(left.m13, right.m11, OpenMath.fma(left.m23, right.m12, left.m33 * right.m13)));
+        var m20 = OpenMath.fma(left.m00, right.m20, OpenMath.fma(left.m10, right.m21, OpenMath.fma(left.m20, right.m22, left.m30 * right.m23)));
+        var m21 = OpenMath.fma(left.m01, right.m20, OpenMath.fma(left.m11, right.m21, OpenMath.fma(left.m21, right.m22, left.m31 * right.m23)));
+        var m22 = OpenMath.fma(left.m02, right.m20, OpenMath.fma(left.m12, right.m21, OpenMath.fma(left.m22, right.m22, left.m32 * right.m23)));
+        var m23 = OpenMath.fma(left.m03, right.m20, OpenMath.fma(left.m13, right.m21, OpenMath.fma(left.m23, right.m22, left.m33 * right.m23)));
+        var m30 = OpenMath.fma(left.m00, right.m30, OpenMath.fma(left.m10, right.m31, OpenMath.fma(left.m20, right.m32, left.m30 * right.m33)));
+        var m31 = OpenMath.fma(left.m01, right.m30, OpenMath.fma(left.m11, right.m31, OpenMath.fma(left.m21, right.m32, left.m31 * right.m33)));
+        var m32 = OpenMath.fma(left.m02, right.m30, OpenMath.fma(left.m12, right.m31, OpenMath.fma(left.m22, right.m32, left.m32 * right.m33)));
+        var m33 = OpenMath.fma(left.m03, right.m30, OpenMath.fma(left.m13, right.m31, OpenMath.fma(left.m23, right.m32, left.m33 * right.m33)));
+        dest.m00 = m00;
+        dest.m01 = m01;
+        dest.m02 = m02;
+        dest.m03 = m03;
+        dest.m10 = m10;
+        dest.m11 = m11;
+        dest.m12 = m12;
+        dest.m13 = m13;
+        dest.m20 = m20;
+        dest.m21 = m21;
+        dest.m22 = m22;
+        dest.m23 = m23;
+        dest.m30 = m30;
+        dest.m31 = m31;
+        dest.m32 = m32;
+        dest.m33 = m33;
     }
 
     private static class FastLocal extends OpenMatrix4f {
@@ -551,9 +462,8 @@ public class OpenMatrix4f implements IMatrix4f {
             return local;
         }
 
-        private static OpenMatrix4f from(IQuaternion3f value) {
+        private static OpenMatrix4f from(IQuaternionf value) {
             var local = LOCALS.get();
-            local.setIdentity();
             local.set(value);
             return local;
         }

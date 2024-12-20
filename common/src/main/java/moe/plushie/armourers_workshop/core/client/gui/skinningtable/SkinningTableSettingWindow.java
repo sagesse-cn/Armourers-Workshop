@@ -35,7 +35,7 @@ public class SkinningTableSettingWindow extends ConfirmDialog {
     }
 
     private UICheckBox addOptionView(Option<Boolean> option) {
-        var checkBox = new UICheckBox(new CGRect(8, contentHeight, bounds().getWidth() - 16, 9));
+        var checkBox = new UICheckBox(new CGRect(8, contentHeight, bounds().width() - 16, 9));
         checkBox.setTitle(NSString.localizedString("skinning-table.setting." + option.key));
         checkBox.setSelected(option.get(options));
         checkBox.addTarget(this, UIControl.Event.VALUE_CHANGED, (self, sender) -> {
@@ -49,7 +49,7 @@ public class SkinningTableSettingWindow extends ConfirmDialog {
 
     @Override
     public void sizeToFit() {
-        setBounds(new CGRect(0, 0, bounds().getWidth(), contentHeight + 30));
+        setBounds(new CGRect(0, 0, bounds().width(), contentHeight + 30));
     }
 
     public SkinDescriptor.Options getOptions() {

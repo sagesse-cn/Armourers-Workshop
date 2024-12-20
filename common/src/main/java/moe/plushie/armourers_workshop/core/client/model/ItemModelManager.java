@@ -2,8 +2,8 @@ package moe.plushie.armourers_workshop.core.client.model;
 
 import moe.plushie.armourers_workshop.api.core.IResourceLocation;
 import moe.plushie.armourers_workshop.api.core.IResourceManager;
-import moe.plushie.armourers_workshop.api.skin.ISkinType;
-import moe.plushie.armourers_workshop.core.math.Vector3f;
+import moe.plushie.armourers_workshop.core.math.OpenVector3f;
+import moe.plushie.armourers_workshop.core.skin.SkinType;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IODataObject;
 import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.core.utils.FileUtils;
@@ -35,7 +35,7 @@ public class ItemModelManager {
 
     private ItemModel missingModel;
 
-    private final Map<ISkinType, ItemModel> typedItemModels = new ConcurrentHashMap<>();
+    private final Map<SkinType, ItemModel> typedItemModels = new ConcurrentHashMap<>();
     private final Map<IResourceLocation, ItemModel> namedItemModels = new ConcurrentHashMap<>();
 
     private final Map<IResourceLocation, ItemProperty> namedItemProperties = Collections.immutableMap(builder -> {
@@ -54,7 +54,7 @@ public class ItemModelManager {
     }
 
 
-    public ItemModel getModel(ISkinType skinType) {
+    public ItemModel getModel(SkinType skinType) {
         return typedItemModels.computeIfAbsent(skinType, it -> {
             var id = ModConstants.key("skin/" + skinType.getRegistryName().getPath());
             return namedItemModels.getOrDefault(id, missingModel);
@@ -114,11 +114,11 @@ public class ItemModelManager {
                 });
                 object.get("display").entrySet().forEach(entry -> {
                     var name = entry.getKey();
-                    var translation = parseVector3f(entry.getValue().get("translation"), Vector3f.ZERO);
-                    var rotation = parseVector3f(entry.getValue().get("rotation"), Vector3f.ZERO);
-                    var scale = parseVector3f(entry.getValue().get("scale"), Vector3f.ONE);
-                    var rightTranslation = parseVector3f(entry.getValue().get("post_translation"), Vector3f.ZERO);
-                    var rightRotation = parseVector3f(entry.getValue().get("post_rotation"), Vector3f.ZERO);
+                    var translation = parseVector3f(entry.getValue().get("translation"), OpenVector3f.ZERO);
+                    var rotation = parseVector3f(entry.getValue().get("rotation"), OpenVector3f.ZERO);
+                    var scale = parseVector3f(entry.getValue().get("scale"), OpenVector3f.ONE);
+                    var rightTranslation = parseVector3f(entry.getValue().get("post_translation"), OpenVector3f.ZERO);
+                    var rightRotation = parseVector3f(entry.getValue().get("post_rotation"), OpenVector3f.ZERO);
                     builder.addTransform(name, ItemTransform.create(rev(translation), rev(rotation), scale, rev(rightTranslation), rev(rightRotation)));
                 });
                 object.get("overrides").allValues().forEach(it -> {
@@ -149,7 +149,7 @@ public class ItemModelManager {
             modelManager.missingModel = missingModel;
         }
 
-        private Vector3f parseVector3f(IODataObject value, Vector3f defaultValue) {
+        private OpenVector3f parseVector3f(IODataObject value, OpenVector3f defaultValue) {
             if (value.isNull()) {
                 return defaultValue;
             }
@@ -159,23 +159,23 @@ public class ItemModelManager {
             float x = value.at(0).floatValue();
             float y = value.at(1).floatValue();
             float z = value.at(2).floatValue();
-            return new Vector3f(x, y, z);
+            return new OpenVector3f(x, y, z);
         }
 
-        private Vector3f rev(Vector3f value) {
-            if (value.equals(Vector3f.ZERO)) {
-                return Vector3f.ZERO;
+        private OpenVector3f rev(OpenVector3f value) {
+            if (value.equals(OpenVector3f.ZERO)) {
+                return OpenVector3f.ZERO;
             }
-            float x = value.getX();
+            float x = value.x();
             if (x != 0) {
                 x = -x;
             }
-            float y = value.getY();
+            float y = value.y();
             if (y != 0) {
                 y = -y;
             }
-            float z = value.getZ();
-            return new Vector3f(x, y, z);
+            float z = value.z();
+            return new OpenVector3f(x, y, z);
         }
     }
 

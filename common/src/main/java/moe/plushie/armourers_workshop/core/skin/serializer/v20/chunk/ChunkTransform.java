@@ -6,7 +6,7 @@ import moe.plushie.armourers_workshop.core.math.OpenMatrix3f;
 import moe.plushie.armourers_workshop.core.math.OpenMatrix4f;
 import moe.plushie.armourers_workshop.core.math.OpenPoseStack;
 import moe.plushie.armourers_workshop.core.math.OpenTransform3f;
-import moe.plushie.armourers_workshop.core.math.Vector3f;
+import moe.plushie.armourers_workshop.core.math.OpenVector3f;
 
 import java.io.IOException;
 import java.nio.FloatBuffer;
@@ -28,11 +28,11 @@ public class ChunkTransform {
             0, 0, 0, // pivot
     };
 
-    private Vector3f translate;
-    private Vector3f rotation;
-    private Vector3f scale;
-    private Vector3f afterTranslate;
-    private Vector3f pivot;
+    private OpenVector3f translate;
+    private OpenVector3f rotation;
+    private OpenVector3f scale;
+    private OpenVector3f afterTranslate;
+    private OpenVector3f pivot;
 
     private FloatBuffer buffer;
 
@@ -44,11 +44,11 @@ public class ChunkTransform {
             this.setIdentity();
             return;
         }
-        this.translate = transform.getTranslate();
-        this.rotation = transform.getRotation();
-        this.scale = transform.getScale();
-        this.afterTranslate = transform.getAfterTranslate();
-        this.pivot = transform.getPivot();
+        this.translate = transform.translate();
+        this.rotation = transform.rotation();
+        this.scale = transform.scale();
+        this.afterTranslate = transform.afterTranslate();
+        this.pivot = transform.pivot();
     }
 
     public ChunkTransform(FloatBuffer buffer) {
@@ -103,11 +103,11 @@ public class ChunkTransform {
         }
         stream.writeByte(0x40);
         var buffer = FloatBuffer.allocate(IDENTITY_VECTOR_BUFFER.length);
-        buffer.put(translate.getX()).put(translate.getY()).put(translate.getZ());
-        buffer.put(rotation.getX()).put(rotation.getY()).put(rotation.getZ());
-        buffer.put(scale.getX()).put(scale.getY()).put(scale.getZ());
-        buffer.put(afterTranslate.getX()).put(afterTranslate.getY()).put(afterTranslate.getZ());
-        buffer.put(pivot.getX()).put(pivot.getY()).put(pivot.getZ());
+        buffer.put(translate.x()).put(translate.y()).put(translate.z());
+        buffer.put(rotation.x()).put(rotation.y()).put(rotation.z());
+        buffer.put(scale.x()).put(scale.y()).put(scale.z());
+        buffer.put(afterTranslate.x()).put(afterTranslate.y()).put(afterTranslate.z());
+        buffer.put(pivot.x()).put(pivot.y()).put(pivot.z());
         buffer.rewind();
         writeZippedBuffer(stream, buffer, IDENTITY_VECTOR_BUFFER);
     }
@@ -136,17 +136,17 @@ public class ChunkTransform {
         return OpenTransform3f.create(translate, rotation, scale, pivot, afterTranslate);
     }
 
-    private static Vector3f readVector(FloatBuffer buffer, int offset) {
+    private static OpenVector3f readVector(FloatBuffer buffer, int offset) {
         float x = buffer.get(offset);
         float y = buffer.get(offset + 1);
         float z = buffer.get(offset + 2);
         if (x == 0 && y == 0 && z == 0) {
-            return Vector3f.ZERO;
+            return OpenVector3f.ZERO;
         }
         if (x == 1 && y == 1 && z == 1) {
-            return Vector3f.ONE;
+            return OpenVector3f.ONE;
         }
-        return new Vector3f(x, y, z);
+        return new OpenVector3f(x, y, z);
     }
 
 

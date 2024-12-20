@@ -1,13 +1,13 @@
 package moe.plushie.armourers_workshop.core.skin.geometry.collection;
 
 import moe.plushie.armourers_workshop.api.skin.geometry.ISkinGeometryType;
-import moe.plushie.armourers_workshop.api.skin.part.ISkinPartType;
 import moe.plushie.armourers_workshop.api.skin.texture.ISkinPaintColor;
-import moe.plushie.armourers_workshop.core.math.Rectangle3f;
-import moe.plushie.armourers_workshop.core.math.Vector3i;
+import moe.plushie.armourers_workshop.core.math.OpenRectangle3f;
+import moe.plushie.armourers_workshop.core.math.OpenVector3i;
 import moe.plushie.armourers_workshop.core.skin.geometry.SkinGeometrySet;
 import moe.plushie.armourers_workshop.core.skin.geometry.SkinGeometryTypes;
 import moe.plushie.armourers_workshop.core.skin.geometry.cube.SkinCube;
+import moe.plushie.armourers_workshop.core.skin.part.SkinPartType;
 import moe.plushie.armourers_workshop.core.skin.serializer.exception.InvalidCubeTypeException;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IInputStream;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IOutputStream;
@@ -48,9 +48,9 @@ public class SkinGeometrySetV1 extends SkinGeometrySet<SkinCube> {
             // id/x/y/z + r/g/b/t * 6
             var blockPos = geometry.getBlockPos();
             stream.writeByte(geometry.getType().getId());
-            stream.writeByte(blockPos.getX());
-            stream.writeByte(blockPos.getY());
-            stream.writeByte(blockPos.getZ());
+            stream.writeByte(blockPos.x());
+            stream.writeByte(blockPos.y());
+            stream.writeByte(blockPos.z());
             for (var dir : OpenDirection.values()) {
                 var paintColor = geometry.getPaintColor(dir);
                 paintColors[dir.get3DDataValue()] = paintColor;
@@ -62,7 +62,7 @@ public class SkinGeometrySetV1 extends SkinGeometrySet<SkinCube> {
         }
     }
 
-    public static SkinGeometrySetV1 readFromStream(IInputStream stream, int version, ISkinPartType skinPart) throws IOException, InvalidCubeTypeException {
+    public static SkinGeometrySetV1 readFromStream(IInputStream stream, int version, SkinPartType skinPart) throws IOException, InvalidCubeTypeException {
         var size = stream.readInt();
         var geometries = new SkinGeometrySetV1(size);
         var bufferSlice = geometries.bufferSlice.get();
@@ -209,19 +209,19 @@ public class SkinGeometrySetV1 extends SkinGeometrySet<SkinCube> {
 
 
         @Override
-        public void setBoundingBox(Rectangle3f boundingBox) {
-            var blockPos = new Vector3i(boundingBox.getX(), boundingBox.getY(), boundingBox.getZ());
-            setX((byte) blockPos.getX());
-            setY((byte) blockPos.getY());
-            setZ((byte) blockPos.getZ());
+        public void setBoundingBox(OpenRectangle3f boundingBox) {
+            var blockPos = new OpenVector3i(boundingBox.x(), boundingBox.y(), boundingBox.z());
+            setX((byte) blockPos.x());
+            setY((byte) blockPos.y());
+            setZ((byte) blockPos.z());
         }
 
         @Override
-        public Rectangle3f getBoundingBox() {
+        public OpenRectangle3f getBoundingBox() {
             float x = getX();
             float y = getY();
             float z = getZ();
-            return new Rectangle3f(x, y, z, 1, 1, 1);
+            return new OpenRectangle3f(x, y, z, 1, 1, 1);
         }
 
         @Override

@@ -46,25 +46,25 @@ public class SlotListView<M extends AbstractContainerMenu> extends UIView {
         if (!isReady) {
             return;
         }
-        int mouseX = (int) context.state().mousePos().getX();
-        int mouseY = (int) context.state().mousePos().getY();
+        int mouseX = (int) context.state().mousePos().x();
+        int mouseY = (int) context.state().mousePos().y();
         var offset = screen.getContentOffset();
         context.saveGraphicsState();
-        context.translateCTM(-offset.getX(), -offset.getY(), 0);
+        context.translateCTM(-offset.x, -offset.y, 0);
         screen.renderInView(this, 400, mouseX, mouseY, context.state().partialTicks(), context);
         context.restoreGraphicsState();
     }
 
     @Override
     public void mouseDown(UIEvent event) {
-        var pt = locationInScreen(event);
-        screen.mouseClicked(pt.x, pt.y, event.key());
+        var point = locationInScreen(event);
+        screen.mouseClicked(point.x, point.y, event.key());
     }
 
     @Override
     public void mouseUp(UIEvent event) {
-        var pt = locationInScreen(event);
-        screen.mouseReleased(pt.x, pt.y, event.key());
+        var point = locationInScreen(event);
+        screen.mouseReleased(point.x, point.y, event.key());
     }
 
     @Override

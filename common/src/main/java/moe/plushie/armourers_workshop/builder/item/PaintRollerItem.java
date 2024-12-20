@@ -6,7 +6,7 @@ import moe.plushie.armourers_workshop.builder.item.impl.IPaintToolSelector;
 import moe.plushie.armourers_workshop.builder.item.option.PaintingToolOptions;
 import moe.plushie.armourers_workshop.builder.other.CubeSelector;
 import moe.plushie.armourers_workshop.init.ModSounds;
-import moe.plushie.armourers_workshop.utils.TranslateUtils;
+import moe.plushie.armourers_workshop.core.utils.TranslateUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.item.ItemStack;

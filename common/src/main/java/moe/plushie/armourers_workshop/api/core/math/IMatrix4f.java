@@ -14,7 +14,7 @@ public interface IMatrix4f {
 
     void translate(float x, float y, float z);
 
-    void rotate(IQuaternion3f quaternion);
+    void rotate(IQuaternionf quaternion);
 
     void multiply(IMatrix4f matrix);
 

@@ -4,12 +4,12 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import moe.plushie.armourers_workshop.core.math.OpenMath;
 import moe.plushie.armourers_workshop.core.math.OpenPoseStack;
+import moe.plushie.armourers_workshop.core.math.OpenRectangle2f;
+import moe.plushie.armourers_workshop.core.math.OpenRectangle3f;
+import moe.plushie.armourers_workshop.core.math.OpenSize2f;
 import moe.plushie.armourers_workshop.core.math.OpenTransform3f;
-import moe.plushie.armourers_workshop.core.math.Rectangle2f;
-import moe.plushie.armourers_workshop.core.math.Rectangle3f;
-import moe.plushie.armourers_workshop.core.math.Size2f;
-import moe.plushie.armourers_workshop.core.math.Vector2f;
-import moe.plushie.armourers_workshop.core.math.Vector3f;
+import moe.plushie.armourers_workshop.core.math.OpenVector2f;
+import moe.plushie.armourers_workshop.core.math.OpenVector3f;
 import moe.plushie.armourers_workshop.core.skin.Skin;
 import moe.plushie.armourers_workshop.core.skin.SkinTypes;
 import moe.plushie.armourers_workshop.core.skin.animation.SkinAnimation;
@@ -73,8 +73,8 @@ public class BlockBenchExporter {
     protected SkinProperties properties = new SkinProperties();
 
 
-    protected Vector3f offset = Vector3f.ZERO;
-    protected Vector3f displayOffset = Vector3f.ZERO;
+    protected OpenVector3f offset = OpenVector3f.ZERO;
+    protected OpenVector3f displayOffset = OpenVector3f.ZERO;
 
     protected final BlockBenchPack pack;
     protected final MolangVirtualMachine virtualMachine;
@@ -95,9 +95,9 @@ public class BlockBenchExporter {
         // convert to rendering coordinate.
         var poseStack = new OpenPoseStack();
         poseStack.scale(-1, -1, 1);
-        poseStack.translate(-offset.getX(), -offset.getY(), -offset.getZ());
+        poseStack.translate(-offset.x(), -offset.y(), -offset.z());
         Collections.eachTree(Collections.singleton(rootBone), it -> it.children, it -> it.transform(poseStack));
-        rootBone.children.forEach(it -> it.convertToLocal(Vector3f.ZERO));
+        rootBone.children.forEach(it -> it.convertToLocal(OpenVector3f.ZERO));
 
         // search all used texture by the bone tree.
         var usedTextureIds = new HashSet<Integer>();
@@ -159,7 +159,7 @@ public class BlockBenchExporter {
 
         var builder = new SkinPart.Builder(SkinPartTypes.ADVANCED);
         builder.name(bone.name);
-        builder.transform(OpenTransform3f.create(bone.origin, bone.rotation, Vector3f.ONE, bone.pivot, Vector3f.ZERO));
+        builder.transform(OpenTransform3f.create(bone.origin, bone.rotation, OpenVector3f.ONE, bone.pivot, OpenVector3f.ZERO));
         builder.children(children);
         builder.geometries(geometries);
         return builder.build();
@@ -168,18 +168,18 @@ public class BlockBenchExporter {
     protected SkinPart exportLocator(Locator locator) {
         var builder = new SkinPart.Builder(SkinPartTypes.ADVANCED_LOCATOR);
         builder.name(locator.name);
-        builder.transform(OpenTransform3f.create(locator.origin, locator.rotation, Vector3f.ONE));
+        builder.transform(OpenTransform3f.create(locator.origin, locator.rotation, OpenVector3f.ONE));
         return builder.build();
     }
 
     protected SkinGeometrySetV2.Box exportCube(Cube cube, TextureSet texture) {
-        float x = cube.origin.getX();
-        float y = cube.origin.getY();
-        float z = cube.origin.getZ();
+        float x = cube.origin.x();
+        float y = cube.origin.y();
+        float z = cube.origin.z();
 
-        float w = cube.size.getX();
-        float h = cube.size.getY();
-        float d = cube.size.getZ();
+        float w = cube.size.x();
+        float h = cube.size.y();
+        float d = cube.size.z();
 
         float inflate = cube.inflate;
 
@@ -190,14 +190,14 @@ public class BlockBenchExporter {
             skyBox = skyBox.separated();
         }
 
-        var rect = new Rectangle3f(x, y, z, w, h, d).inflate(inflate);
-        var transform = OpenTransform3f.create(Vector3f.ZERO, cube.rotation, Vector3f.ONE, cube.pivot, Vector3f.ZERO);
+        var rect = new OpenRectangle3f(x, y, z, w, h, d).inflate(inflate);
+        var transform = OpenTransform3f.create(OpenVector3f.ZERO, cube.rotation, OpenVector3f.ONE, cube.pivot, OpenVector3f.ZERO);
         return new SkinGeometrySetV2.Box(rect, transform, skyBox);
     }
 
     protected SkinGeometrySetV2.Mesh exportMesh(Mesh mesh, TextureSet texture) {
         var faces = new ArrayList<SkinMeshFace>();
-        var transform = OpenTransform3f.create(mesh.origin, mesh.rotation, Vector3f.ONE, Vector3f.ZERO, Vector3f.ZERO);
+        var transform = OpenTransform3f.create(mesh.origin, mesh.rotation, OpenVector3f.ONE, OpenVector3f.ZERO, OpenVector3f.ZERO);
         var defaultTexturePos = new SkinTexturePos[1];
         var sequence = new AtomicInteger();
         mesh.faces.stream().sorted(Comparator.comparingInt(it -> it.vertices.size())).forEachOrdered(it -> {
@@ -214,7 +214,7 @@ public class BlockBenchExporter {
                 var normal = it2.normal;
                 var textureCoords = it2.textureCoords;
                 vertices.add(new SkinGeometryVertex(vertexId, position, normal, textureCoords));
-                TextureResolution.applyBoundary(texturePos.getProvider(), textureCoords.getX(), textureCoords.getY());
+                TextureResolution.applyBoundary(texturePos.getProvider(), textureCoords.x(), textureCoords.y());
             });
             faces.add(new SkinMeshFace(faceId, transform, texturePos, vertices));
             defaultTexturePos[0] = texturePos;
@@ -227,7 +227,7 @@ public class BlockBenchExporter {
         var itemTransforms = new OpenItemTransforms();
         for (var value : OpenItemDisplayContext.values()) {
             if (!fullItemTransforms.containsKey(value.getName())) {
-                fullItemTransforms.put(value.getName(), new BlockBenchDisplay(Vector3f.ZERO, Vector3f.ZERO, Vector3f.ONE));
+                fullItemTransforms.put(value.getName(), new BlockBenchDisplay(OpenVector3f.ZERO, OpenVector3f.ZERO, OpenVector3f.ONE));
             }
         }
         fullItemTransforms.forEach((name, transform) -> {
@@ -241,10 +241,10 @@ public class BlockBenchExporter {
             }
         });
         // add display offset
-        if (!displayOffset.equals(Vector3f.ZERO) && !itemTransforms.isEmpty()) {
+        if (!displayOffset.equals(OpenVector3f.ZERO) && !itemTransforms.isEmpty()) {
             var translation = displayOffset.scaling(-1, -1, 1);
-            var rotation = Vector3f.ZERO;
-            var scale = Vector3f.ONE;
+            var rotation = OpenVector3f.ZERO;
+            var scale = OpenVector3f.ONE;
             itemTransforms.setOffset(OpenTransform3f.create(translation, rotation, scale));
         }
         return itemTransforms;
@@ -267,19 +267,19 @@ public class BlockBenchExporter {
     }
 
 
-    public void setOffset(Vector3f offset) {
+    public void setOffset(OpenVector3f offset) {
         this.offset = offset;
     }
 
-    public Vector3f getOffset() {
+    public OpenVector3f getOffset() {
         return offset;
     }
 
-    public void setDisplayOffset(Vector3f displayOffset) {
+    public void setDisplayOffset(OpenVector3f displayOffset) {
         this.displayOffset = displayOffset;
     }
 
-    public Vector3f getDisplayOffset() {
+    public OpenVector3f getDisplayOffset() {
         return displayOffset;
     }
 
@@ -300,10 +300,10 @@ public class BlockBenchExporter {
         public String id;
         public String name;
 
-        public Vector3f origin;
+        public OpenVector3f origin;
 
-        public Vector3f pivot;
-        public Vector3f rotation;
+        public OpenVector3f pivot;
+        public OpenVector3f rotation;
 
         public Bone parent;
         public ArrayList<Bone> children = new ArrayList<>();
@@ -360,15 +360,15 @@ public class BlockBenchExporter {
             locators.forEach(it -> it.transform(poseStack));
         }
 
-        public void convertToLocal(Vector3f globalOffset) {
+        public void convertToLocal(OpenVector3f globalOffset) {
             var newOrigin = origin;
 
             var poseStack = new OpenPoseStack();
-            poseStack.translate(-newOrigin.getX(), -newOrigin.getY(), -newOrigin.getZ());
+            poseStack.translate(-newOrigin.x(), -newOrigin.y(), -newOrigin.z());
             transform(poseStack);
 
             origin = newOrigin.subtracting(globalOffset);
-            pivot = Vector3f.ZERO;
+            pivot = OpenVector3f.ZERO;
 
             children.forEach(it -> it.convertToLocal(newOrigin));
         }
@@ -376,11 +376,11 @@ public class BlockBenchExporter {
 
     protected static class Cube {
 
-        public Vector3f origin;
-        public Vector3f size;
+        public OpenVector3f origin;
+        public OpenVector3f size;
 
-        public Vector3f pivot;
-        public Vector3f rotation;
+        public OpenVector3f pivot;
+        public OpenVector3f rotation;
 
         public TextureUV uv;
 
@@ -399,10 +399,10 @@ public class BlockBenchExporter {
         }
 
         public void transform(OpenPoseStack poseStack) {
-            var rect = new Rectangle3f(origin.getX(), origin.getY(), origin.getZ(), size.getX(), size.getY(), size.getZ());
+            var rect = new OpenRectangle3f(origin.x(), origin.y(), origin.z(), size.x(), size.y(), size.z());
             rect.mul(poseStack.last().pose());
-            origin = new Vector3f(rect.getX(), rect.getY(), rect.getZ());
-            size = new Vector3f(rect.getWidth(), rect.getHeight(), rect.getDepth());
+            origin = new OpenVector3f(rect.x(), rect.y(), rect.z());
+            size = new OpenVector3f(rect.width(), rect.height(), rect.depth());
             pivot = pivot.transforming(poseStack.last().pose());
             rotation = rotation.transforming(poseStack.last().normal());
         }
@@ -410,9 +410,9 @@ public class BlockBenchExporter {
 
     protected static class Mesh {
 
-        public Vector3f origin;
-        public Vector3f pivot;
-        public Vector3f rotation;
+        public OpenVector3f origin;
+        public OpenVector3f pivot;
+        public OpenVector3f rotation;
 
         public final List<MeshFace> faces = new ArrayList<>();
 
@@ -451,7 +451,7 @@ public class BlockBenchExporter {
             for (var vertexId : face.getVertices()) {
                 var position = mesh.getVertices().get(vertexId);
                 var textureCoords = face.getUV().get(vertexId);
-                vertices.add(new MeshVertex(id + "/" + vertexId, position, Vector3f.ZERO, textureCoords));
+                vertices.add(new MeshVertex(id + "/" + vertexId, position, OpenVector3f.ZERO, textureCoords));
             }
             if (vertices.size() < 3) {
                 throw new RuntimeException("error.bb.loadModel.wrongVertexCount");
@@ -503,7 +503,7 @@ public class BlockBenchExporter {
         }
 
         // normal = Line3(base1, base2).closestPointToPoint(top, false)
-        private Vector3f _line_closestPointToPoint(Vector3f start, Vector3f end, Vector3f point) {
+        private OpenVector3f _line_closestPointToPoint(OpenVector3f start, OpenVector3f end, OpenVector3f point) {
             var delta = end.subtracting(start);
             // Line3.closestPointToPointParameter
             var startEnd2 = delta.dot(delta);
@@ -515,7 +515,7 @@ public class BlockBenchExporter {
         }
 
         // distance = Plane(normal, base2).distanceToPoint(check)
-        private float _plane_distanceToPoint(Vector3f normal, Vector3f point, Vector3f check) {
+        private float _plane_distanceToPoint(OpenVector3f normal, OpenVector3f point, OpenVector3f check) {
             // Plane.setFromNormalAndCoplanarPoint
             float constant = -point.dot(normal);
             // Plane.distanceToPoint
@@ -526,11 +526,11 @@ public class BlockBenchExporter {
     protected static class MeshVertex {
 
         public String id;
-        public Vector3f position;
-        public Vector3f normal;
-        public Vector2f textureCoords;
+        public OpenVector3f position;
+        public OpenVector3f normal;
+        public OpenVector2f textureCoords;
 
-        public MeshVertex(String id, Vector3f position, Vector3f normal, Vector2f textureCoords) {
+        public MeshVertex(String id, OpenVector3f position, OpenVector3f normal, OpenVector2f textureCoords) {
             this.id = id;
             this.position = position;
             this.normal = normal;
@@ -551,8 +551,8 @@ public class BlockBenchExporter {
 
         public String name;
 
-        public Vector3f origin;
-        public Vector3f rotation;
+        public OpenVector3f origin;
+        public OpenVector3f rotation;
 
         public Locator(BlockBenchLocator locator) {
             this.name = locator.getName();
@@ -846,7 +846,7 @@ public class BlockBenchExporter {
 
         private static final String PATTERN = "^(.+)_([nes]+)(\\.\\w+)?$";
 
-        private final Size2f resolution;
+        private final OpenSize2f resolution;
         private final List<BlockBenchTexture> inputs;
         private final HashMap<Integer, SkinTextureData> allTexture = new HashMap<>();
         private final HashMap<String, SkinTextureData> loadedTextures = new HashMap<>();
@@ -854,7 +854,7 @@ public class BlockBenchExporter {
         protected SkinTextureData textureData;
         protected SkinTextureData defaultTextureData;
 
-        public TextureSet(Size2f resolution, List<BlockBenchTexture> textureInputs, HashSet<Integer> usedTextureIds) throws IOException {
+        public TextureSet(OpenSize2f resolution, List<BlockBenchTexture> textureInputs, HashSet<Integer> usedTextureIds) throws IOException {
             this.resolution = resolution;
             this.inputs = textureInputs;
             this.load(usedTextureIds);
@@ -911,7 +911,7 @@ public class BlockBenchExporter {
             var uv = cube.uv;
             var size = cube.size;
             var textureData = getTextureData(uv);
-            var skyBox = new SkinTextureBox(size.getX(), size.getY(), size.getZ(), cube.mirror, uv.getBase(), textureData);
+            var skyBox = new SkinTextureBox(size.x(), size.y(), size.z(), cube.mirror, uv.getBase(), textureData);
             uv.forEach((dir, rect) -> {
                 skyBox.putTextureRect(dir, rect);
                 skyBox.putTextureProvider(dir, getTextureData(uv, dir));
@@ -974,7 +974,7 @@ public class BlockBenchExporter {
             var imageSize = texture.getImageSize();
             if (imageSize == null) {
                 var image = ImageIO.read(new ByteArrayInputStream(imageBytes));
-                imageSize = new Size2f(image.getWidth(), image.getHeight());
+                imageSize = new OpenSize2f(image.getWidth(), image.getHeight());
             }
             var textureSize = resolveTextureSize(texture, 1);
             if (textureSize.width == 0 || textureSize.height == 0) {
@@ -992,7 +992,7 @@ public class BlockBenchExporter {
             return 0;
         }
 
-        private Size2f resolveTextureSize(BlockBenchTexture texture, int frameCount) {
+        private OpenSize2f resolveTextureSize(BlockBenchTexture texture, int frameCount) {
             var width = resolution.getWidth();
             var height = resolution.getHeight();
             // in new version block bench provides texture size.
@@ -1003,7 +1003,7 @@ public class BlockBenchExporter {
             if (frameCount > 1) {
                 height *= frameCount;
             }
-            return new Size2f(width, height);
+            return new OpenSize2f(width, height);
         }
 
         private SkinTextureAnimation resolveTextureAnimation(BlockBenchTexture texture, int frameCount) {
@@ -1045,10 +1045,10 @@ public class BlockBenchExporter {
 
         public static final TextureUV EMPTY = new TextureUV();
 
-        private final Vector2f base;
+        private final OpenVector2f base;
 
         private EnumMap<OpenDirection, Integer> rotations;
-        private final EnumMap<OpenDirection, Rectangle2f> rects = new EnumMap<>(OpenDirection.class);
+        private final EnumMap<OpenDirection, OpenRectangle2f> rects = new EnumMap<>(OpenDirection.class);
 
         private int defaultTextureId = -1;
         private EnumMap<OpenDirection, Integer> textureIds;
@@ -1057,7 +1057,7 @@ public class BlockBenchExporter {
             this.base = null;
         }
 
-        public TextureUV(Vector2f uv) {
+        public TextureUV(OpenVector2f uv) {
             this.base = uv;
         }
 
@@ -1081,16 +1081,16 @@ public class BlockBenchExporter {
                 var rect = face.getRect();
                 if (dir == OpenDirection.UP) {
                     var fixedRect = rect.copy();
-                    fixedRect.setX(rect.getMaxX());
-                    fixedRect.setY(rect.getMaxY());
-                    fixedRect.setWidth(-rect.getWidth());
-                    fixedRect.setHeight(-rect.getHeight());
+                    fixedRect.setX(rect.maxX());
+                    fixedRect.setY(rect.maxY());
+                    fixedRect.setWidth(-rect.width());
+                    fixedRect.setHeight(-rect.height());
                     rect = fixedRect;
                 }
                 if (dir == OpenDirection.DOWN) {
                     var fixedRect = rect.copy();
-                    fixedRect.setX(rect.getMaxX());
-                    fixedRect.setWidth(-rect.getWidth());
+                    fixedRect.setX(rect.maxX());
+                    fixedRect.setWidth(-rect.width());
                     rect = fixedRect;
                 }
                 uv.put(dir, rect);
@@ -1103,10 +1103,10 @@ public class BlockBenchExporter {
         // If the element is not a aligned size, the texture box needs to be rounded down.
         public static boolean isAlignedSize(BlockBenchCube element) {
             var size = element.getFrom().subtracting(element.getTo());
-            return (size.getX() % 1 == 0) && (size.getY() % 1 == 0) && (size.getZ() % 1 == 0);
+            return (size.x() % 1 == 0) && (size.y() % 1 == 0) && (size.z() % 1 == 0);
         }
 
-        public void forEach(BiConsumer<OpenDirection, Rectangle2f> consumer) {
+        public void forEach(BiConsumer<OpenDirection, OpenRectangle2f> consumer) {
             if (base == null) {
                 rects.forEach(consumer);
             }
@@ -1124,7 +1124,7 @@ public class BlockBenchExporter {
             }
         }
 
-        public void put(OpenDirection dir, Rectangle2f rect) {
+        public void put(OpenDirection dir, OpenRectangle2f rect) {
             rects.put(dir, rect);
         }
 
@@ -1145,12 +1145,12 @@ public class BlockBenchExporter {
             return 0;
         }
 
-        public Vector2f getBase() {
+        public OpenVector2f getBase() {
             return base;
         }
 
         @Nullable
-        public Rectangle2f getRect(OpenDirection dir) {
+        public OpenRectangle2f getRect(OpenDirection dir) {
             return rects.get(dir);
         }
 

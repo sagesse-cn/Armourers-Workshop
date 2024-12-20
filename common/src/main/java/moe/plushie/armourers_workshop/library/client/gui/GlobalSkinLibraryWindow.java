@@ -6,8 +6,8 @@ import com.apple.library.foundation.NSString;
 import com.apple.library.uikit.UIColor;
 import com.apple.library.uikit.UILabel;
 import com.apple.library.uikit.UILabelDelegate;
-import moe.plushie.armourers_workshop.api.skin.ISkinType;
 import moe.plushie.armourers_workshop.core.client.gui.widget.MenuWindow;
+import moe.plushie.armourers_workshop.core.skin.SkinType;
 import moe.plushie.armourers_workshop.core.skin.SkinTypes;
 import moe.plushie.armourers_workshop.init.ModLog;
 import moe.plushie.armourers_workshop.library.client.gui.panels.AbstractLibraryPanel;
@@ -77,8 +77,8 @@ public class GlobalSkinLibraryWindow extends MenuWindow<GlobalSkinLibraryMenu> {
     }
 
     private void setupUI() {
-        float width = bounds().getWidth();
-        float height = bounds().getHeight();
+        float width = bounds().width();
+        float height = bounds().height();
 
         headerPanel.setFrame(new CGRect(0, 0, width, 26));
         searchBoxPanel.setFrame(new CGRect(0, 27, width, 23));
@@ -186,7 +186,7 @@ public class GlobalSkinLibraryWindow extends MenuWindow<GlobalSkinLibraryMenu> {
             setPage(Page.HOME);
         }
 
-        public void showSkinList(String keyword, ISkinType skinType, SearchColumnType columnType, SearchOrderType orderType) {
+        public void showSkinList(String keyword, SkinType skinType, SearchColumnType columnType, SearchOrderType orderType) {
             ModLog.debug("select * from global_library where keyword = '{}' and skinType = {} order by {} {}", keyword, skinType, columnType, orderType);
             searchBoxPanel.reloadData(keyword, skinType, columnType, orderType);
             searchResultsPanel.reloadData(keyword, skinType, columnType, orderType);

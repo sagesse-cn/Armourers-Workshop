@@ -5,7 +5,7 @@ import moe.plushie.armourers_workshop.core.client.other.SkinRenderState;
 import moe.plushie.armourers_workshop.core.client.other.VertexArrayObject;
 import moe.plushie.armourers_workshop.core.client.other.VertexIndexObject;
 import moe.plushie.armourers_workshop.core.math.OpenMatrix4f;
-import moe.plushie.armourers_workshop.core.math.Vector4f;
+import moe.plushie.armourers_workshop.core.math.OpenVector4f;
 import moe.plushie.armourers_workshop.core.utils.ColorUtils;
 import moe.plushie.armourers_workshop.core.utils.TickUtils;
 import moe.plushie.armourers_workshop.init.ModDebugger;
@@ -21,7 +21,7 @@ public abstract class Shader {
 
     private final Int2ObjectOpenHashMap<OpenMatrix4f> overlayMatrices = new Int2ObjectOpenHashMap<>();
     private final Int2ObjectOpenHashMap<OpenMatrix4f> lightmapMatrices = new Int2ObjectOpenHashMap<>();
-    private final Int2ObjectOpenHashMap<Vector4f> outlineColors = new Int2ObjectOpenHashMap<>();
+    private final Int2ObjectOpenHashMap<OpenVector4f> outlineColors = new Int2ObjectOpenHashMap<>();
     private final SkinRenderState renderState = new SkinRenderState();
 
     public void begin() {
@@ -117,8 +117,7 @@ public abstract class Shader {
             var u = overlay & 0xffff;
             var v = (overlay >> 16) & 0xffff;
             var newValue = OpenMatrix4f.createScaleMatrix(0, 0, 0);
-            newValue.m03 = u;
-            newValue.m13 = v;
+            newValue.setTranslation(u, v, 0);
             return newValue;
         });
     }
@@ -134,25 +133,24 @@ public abstract class Shader {
             var u = lightmap & 0xffff;
             var v = (lightmap >> 16) & 0xffff;
             var newValue = OpenMatrix4f.createScaleMatrix(0, 0, 0);
-            newValue.m03 = u;
-            newValue.m13 = v;
+            newValue.setTranslation(u, v, 0);
             return newValue;
         });
     }
 
-    protected Vector4f getColorColorModulator(ShaderVertexObject object) {
+    protected OpenVector4f getColorColorModulator(ShaderVertexObject object) {
         if (object.isOutline()) {
             return getOutlineColor(object);
         }
-        return Vector4f.ONE;
+        return OpenVector4f.ONE;
     }
 
-    protected Vector4f getOutlineColor(ShaderVertexObject object) {
+    protected OpenVector4f getOutlineColor(ShaderVertexObject object) {
         return outlineColors.computeIfAbsent(object.getOutlineColor() | 0xff000000, color -> {
             float red = ColorUtils.getRed(color) / 255f;
             float green = ColorUtils.getGreen(color) / 255f;
             float blue = ColorUtils.getBlue(color) / 255f;
-            return new Vector4f(red, green, blue, 1f);
+            return new OpenVector4f(red, green, blue, 1f);
         });
     }
 }

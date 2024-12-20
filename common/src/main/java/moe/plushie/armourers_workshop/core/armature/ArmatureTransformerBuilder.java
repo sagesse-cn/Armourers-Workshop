@@ -7,7 +7,7 @@ import moe.plushie.armourers_workshop.api.core.IResourceLocation;
 import moe.plushie.armourers_workshop.core.armature.core.AfterTransformModifier;
 import moe.plushie.armourers_workshop.core.armature.core.DefaultOverriddenArmaturePlugin;
 import moe.plushie.armourers_workshop.core.math.OpenTransform3f;
-import moe.plushie.armourers_workshop.core.math.Vector3f;
+import moe.plushie.armourers_workshop.core.math.OpenVector3f;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IODataObject;
 import moe.plushie.armourers_workshop.core.utils.OpenResourceLocation;
 
@@ -95,7 +95,7 @@ public abstract class ArmatureTransformerBuilder {
         return transform;
     }
 
-    protected abstract JointModifier buildJointTarget(String name);
+    protected abstract JointModifier buildJointTarget(String name, IODataObject parameters);
 
     public ArrayList<IResourceLocation> getModels() {
         return models;
@@ -155,11 +155,11 @@ public abstract class ArmatureTransformerBuilder {
     private Collection<JointModifier> _parseModelModifiers(IODataObject object) {
         switch (object.type()) {
             case STRING: {
-                return _parseJointTargets(object);
+                return _parseJointTargets(object, null);
             }
             case DICTIONARY: {
                 var modifiers = new ArrayList<JointModifier>();
-                modifiers.addAll(_parseJointTargets(object));
+                modifiers.addAll(_parseJointTargets(object, null));
                 modifiers.addAll(_parseTransformModifiers(object));
                 modifiers.addAll(_parseModifiers(object.get("modifier")));
                 return modifiers;
@@ -171,15 +171,15 @@ public abstract class ArmatureTransformerBuilder {
         }
     }
 
-    private Collection<JointModifier> _parseJointTargets(IODataObject object) {
+    private Collection<JointModifier> _parseJointTargets(IODataObject object, IODataObject parameters) {
         switch (object.type()) {
             case DICTIONARY: {
-                return _parseJointTargets(object.get("target"));
+                return _parseJointTargets(object.get("target"), object);
             }
             case STRING: {
                 var value = object.stringValue();
                 if (!value.isEmpty()) {
-                    return Collections.singleton(buildJointTarget(value));
+                    return Collections.singleton(buildJointTarget(value, parameters));
                 }
                 return Collections.emptyList();
             }
@@ -241,8 +241,8 @@ public abstract class ArmatureTransformerBuilder {
     }
 
     private void _parseTranslateModifiers(String name, IODataObject object) {
-        var value = ArmatureSerializers.readVector(object, Vector3f.ZERO);
-        if (value.equals(Vector3f.ZERO)) {
+        var value = ArmatureSerializers.readVector(object, OpenVector3f.ZERO);
+        if (value.equals(OpenVector3f.ZERO)) {
             return;
         }
         var transform = OpenTransform3f.createTranslateTransform(value);
@@ -250,8 +250,8 @@ public abstract class ArmatureTransformerBuilder {
     }
 
     private void _parseRotateModifiers(String name, IODataObject object) {
-        var value = ArmatureSerializers.readVector(object, Vector3f.ZERO);
-        if (value.equals(Vector3f.ZERO)) {
+        var value = ArmatureSerializers.readVector(object, OpenVector3f.ZERO);
+        if (value.equals(OpenVector3f.ZERO)) {
             return;
         }
         var transform = OpenTransform3f.createRotationTransform(value);
@@ -259,8 +259,8 @@ public abstract class ArmatureTransformerBuilder {
     }
 
     private void _parseScaleModifiers(String name, IODataObject object) {
-        var value = ArmatureSerializers.readVector(object, Vector3f.ONE);
-        if (value.equals(Vector3f.ONE)) {
+        var value = ArmatureSerializers.readVector(object, OpenVector3f.ONE);
+        if (value.equals(OpenVector3f.ONE)) {
             return;
         }
         var transform = OpenTransform3f.createScaleTransform(value);
@@ -297,6 +297,6 @@ public abstract class ArmatureTransformerBuilder {
     }
 
     private interface ArmatureModifierBuilder {
-        JointModifier apply(Vector3f t1, Vector3f t2, Vector3f t3);
+        JointModifier apply(OpenVector3f t1, OpenVector3f t2, OpenVector3f t3);
     }
 }

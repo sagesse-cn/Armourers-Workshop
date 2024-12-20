@@ -1,6 +1,6 @@
 package moe.plushie.armourers_workshop.core.skin.particle;
 
-import moe.plushie.armourers_workshop.core.math.Vector3f;
+import moe.plushie.armourers_workshop.core.math.OpenVector3f;
 import net.minecraft.world.level.block.Block;
 
 public interface SkinParticle {
@@ -30,31 +30,31 @@ public interface SkinParticle {
     double getDuration();
 
 
-    void setSpeed(Vector3f speed);
+    void setSpeed(OpenVector3f speed);
 
-    Vector3f getSpeed();
-
-
-    void setPosition(Vector3f position);
-
-    Vector3f getPosition();
-
-    Vector3f getPositionOld();
+    OpenVector3f getSpeed();
 
 
-    Vector3f getLocalPosition();
+    void setPosition(OpenVector3f position);
+
+    OpenVector3f getPosition();
+
+    OpenVector3f getPositionOld();
+
+
+    OpenVector3f getLocalPosition();
 //                if (!particle.relativePosition) {
 //                    local.sub(emitter.lastGlobal);
 //                }
 
-    Vector3f getLocalPositionOld();
+    OpenVector3f getLocalPositionOld();
 //                if (!particle.relativePosition) {
 //                    prevLocal.sub(emitter.lastGlobal);
 //                }
 
-    Vector3f getGlobalPosition();
+    OpenVector3f getGlobalPosition();
 
-    Vector3f getGlobalPositionOld();
+    OpenVector3f getGlobalPositionOld();
 
 
     Block getBlock();

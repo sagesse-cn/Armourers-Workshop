@@ -3,15 +3,16 @@ package moe.plushie.armourers_workshop.builder.client.gui.advancedbuilder.docume
 import com.apple.library.foundation.NSString;
 import com.apple.library.uikit.UIColor;
 import moe.plushie.armourers_workshop.api.core.IResultHandler;
-import moe.plushie.armourers_workshop.api.skin.ISkinType;
 import moe.plushie.armourers_workshop.core.client.gui.notification.UserNotificationCenter;
 import moe.plushie.armourers_workshop.core.math.OpenTransform3f;
-import moe.plushie.armourers_workshop.core.math.Vector3f;
+import moe.plushie.armourers_workshop.core.math.OpenVector3f;
 import moe.plushie.armourers_workshop.core.skin.Skin;
+import moe.plushie.armourers_workshop.core.skin.SkinType;
 import moe.plushie.armourers_workshop.core.skin.SkinTypes;
 import moe.plushie.armourers_workshop.core.skin.animation.SkinAnimation;
 import moe.plushie.armourers_workshop.core.skin.animation.SkinAnimationKeyframe;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPart;
+import moe.plushie.armourers_workshop.core.skin.part.SkinPartType;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPartTypes;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperty;
 import moe.plushie.armourers_workshop.core.skin.serializer.SkinSerializer;
@@ -36,15 +37,25 @@ import java.util.function.Consumer;
 public class DocumentImporter {
 
     private boolean keepItemTransforms = false;
+    private boolean isAdaptMode = false;
+
     private final File inputFile;
-    private final ISkinType targetType;
+    private final SkinType targetType;
     private final DocumentPartMapper partMapper;
 
-    public DocumentImporter(File inputFile, ISkinType targetType) {
+    public DocumentImporter(File inputFile, SkinType targetType) {
         this.inputFile = inputFile;
         this.targetType = targetType;
         this.partMapper = DocumentPartMapper.of(targetType);
         //this.boneMapper = DocumentBoneMapper.of(SkinTypes.ADVANCED);
+    }
+
+    public boolean isAdaptMode() {
+        return isAdaptMode;
+    }
+
+    public void setAdaptMode(boolean adaptMode) {
+        this.isAdaptMode = adaptMode;
     }
 
     public boolean isKeepItemTransforms() {
@@ -153,6 +164,12 @@ public class DocumentImporter {
             builder.children(resolvedParts);
             rootParts.clear();
             rootParts.add(builder.build());
+        } else if (isAdaptMode) {
+            // if adapt mode is enabled, we don't need to extract to root part.
+            var builder = new SkinPart.Builder(SkinPartTypes.ADVANCED_STATIC);
+            builder.children(resolvedParts);
+            rootParts.clear();
+            rootParts.add(builder.build());
         } else if (!partMapper.isEmpty()) {
             resolvedParts.forEach(it -> extractToRootPart(it, new Stack<>(), rootParts));
         }
@@ -172,6 +189,12 @@ public class DocumentImporter {
             var node = partMapper.resolve(part.getName(), part.getType());
             var builder = new SkinPart.Builder(node.getType());
             builder.copyFrom(part);
+            // change part properties?
+            if (isAdaptMode && USE_ADAPT_MODE.contains(node.getType())) {
+                var newProperties = part.getProperties().copy();
+                newProperties.put(SkinProperty.USE_ADAPT_MODE, true);
+                builder.properties(newProperties);
+            }
             builder.name(node.getName());
             builder.children(resolveMappedParts(part.getChildren()));
             results.add(builder.build());
@@ -227,11 +250,95 @@ public class DocumentImporter {
         //rotation = transform.getRotation();
         //pivot = transform.getPivot();
         var translate = entry.getOffset(); // 0 + offset
-        var rotation = Vector3f.ZERO; // never use rotation on the built-in part type.
-        return OpenTransform3f.create(translate, rotation, Vector3f.ONE);
+        var rotation = OpenVector3f.ZERO; // never use rotation on the built-in part type.
+        return OpenTransform3f.create(translate, rotation, OpenVector3f.ONE);
     }
 
-    private static final Set<ISkinType> ITEM_TYPES = Collections.immutableSet(builder -> {
+    private OpenVector3f getOffset(BlockBenchPack pack) {
+        // relocation the block model origin to the center(8, 8, 8).
+        if (ITEM_TYPES.contains(targetType)) {
+            // work in java_block.
+            if (pack.getFormat().equals("java_block")) {
+                return new OpenVector3f(8, 8, 8);
+            }
+            // work in bedrock_block/bedrock_entity/bedrock_entity_old/geckolib_block/generic_block/modded_entity/optifine_entity.
+            return new OpenVector3f(0, 8, 0);
+        }
+        // relocation the entity model origin to the head bottom (0, 24, 0).
+        if (targetType == SkinTypes.OUTFIT || targetType == SkinTypes.ARMOR_HEAD || targetType == SkinTypes.ARMOR_CHEST || targetType == SkinTypes.ARMOR_LEGS || targetType == SkinTypes.ARMOR_FEET || targetType == SkinTypes.ARMOR_WINGS) {
+            return new OpenVector3f(0, 24, 0);
+        }
+        if (targetType == SkinTypes.HORSE) {
+            return new OpenVector3f(0, 24, 0);
+        }
+        return OpenVector3f.ZERO;
+    }
+
+    private OpenVector3f getDisplayOffset(BlockBenchPack pack) {
+        // the java_block display center is same the wen model center.
+        if (pack.getFormat().equals("java_block")) {
+            return OpenVector3f.ZERO;
+        }
+        // work in bedrock_block/bedrock_entity/bedrock_entity_old/geckolib_block/generic_block/modded_entity/optifine_entity.
+        return new OpenVector3f(0, 8, 0);
+    }
+
+
+    private OpenVector3f getParentOrigin(Stack<SkinPart> parent) {
+        var origin = OpenVector3f.ZERO;
+        for (var part : parent) {
+            if (part.getTransform() instanceof OpenTransform3f transform) {
+                origin = origin.adding(transform.translate());
+            }
+        }
+        return origin;
+    }
+
+    private static final Set<SkinPartType> USE_ADAPT_MODE = Collections.immutableSet(builder -> {
+        builder.add(SkinPartTypes.BIPPED_HAT);
+
+        builder.add(SkinPartTypes.BIPPED_HEAD);
+        builder.add(SkinPartTypes.BIPPED_CHEST);
+        builder.add(SkinPartTypes.BIPPED_LEFT_ARM);
+        builder.add(SkinPartTypes.BIPPED_RIGHT_ARM);
+        builder.add(SkinPartTypes.BIPPED_SKIRT);
+        builder.add(SkinPartTypes.BIPPED_LEFT_THIGH);
+        builder.add(SkinPartTypes.BIPPED_RIGHT_THIGH);
+        builder.add(SkinPartTypes.BIPPED_LEFT_FOOT);
+        builder.add(SkinPartTypes.BIPPED_RIGHT_FOOT);
+        builder.add(SkinPartTypes.BIPPED_LEFT_WING);
+        builder.add(SkinPartTypes.BIPPED_RIGHT_WING);
+        builder.add(SkinPartTypes.BIPPED_LEFT_PHALANX);
+        builder.add(SkinPartTypes.BIPPED_RIGHT_PHALANX);
+
+        builder.add(SkinPartTypes.BIPPED_TORSO);
+        builder.add(SkinPartTypes.BIPPED_LEFT_HAND);
+        builder.add(SkinPartTypes.BIPPED_RIGHT_HAND);
+        builder.add(SkinPartTypes.BIPPED_LEFT_LEG);
+        builder.add(SkinPartTypes.BIPPED_RIGHT_LEG);
+
+        builder.add(SkinPartTypes.HORSE_HEAD);
+        builder.add(SkinPartTypes.HORSE_NECK);
+        builder.add(SkinPartTypes.HORSE_CHEST);
+        builder.add(SkinPartTypes.HORSE_LEFT_FRONT_THIGH);
+        builder.add(SkinPartTypes.HORSE_RIGHT_FRONT_THIGH);
+        builder.add(SkinPartTypes.HORSE_LEFT_HIND_THIGH);
+        builder.add(SkinPartTypes.HORSE_RIGHT_HIND_THIGH);
+        builder.add(SkinPartTypes.HORSE_LEFT_FRONT_LEG);
+        builder.add(SkinPartTypes.HORSE_RIGHT_FRONT_LEG);
+        builder.add(SkinPartTypes.HORSE_LEFT_HIND_LEG);
+        builder.add(SkinPartTypes.HORSE_RIGHT_HIND_LEG);
+        builder.add(SkinPartTypes.HORSE_TAIL);
+
+        builder.add(SkinPartTypes.BOAT_BODY);
+        builder.add(SkinPartTypes.BOAT_LEFT_PADDLE);
+        builder.add(SkinPartTypes.BOAT_RIGHT_PADDLE);
+
+        builder.add(SkinPartTypes.MINECART_BODY);
+    });
+
+
+    private static final Set<SkinType> ITEM_TYPES = Collections.immutableSet(builder -> {
         builder.add(SkinTypes.ITEM_SWORD);
         builder.add(SkinTypes.ITEM_SHIELD);
         builder.add(SkinTypes.ITEM_BOW);
@@ -248,44 +355,4 @@ public class DocumentImporter {
         builder.add(SkinTypes.ITEM);
         builder.add(SkinTypes.BLOCK);
     });
-
-    private Vector3f getOffset(BlockBenchPack pack) {
-        // relocation the block model origin to the center(8, 8, 8).
-        if (ITEM_TYPES.contains(targetType)) {
-            // work in java_block.
-            if (pack.getFormat().equals("java_block")) {
-                return new Vector3f(8, 8, 8);
-            }
-            // work in bedrock_block/bedrock_entity/bedrock_entity_old/geckolib_block/generic_block/modded_entity/optifine_entity.
-            return new Vector3f(0, 8, 0);
-        }
-        // relocation the entity model origin to the head bottom (0, 24, 0).
-        if (targetType == SkinTypes.OUTFIT || targetType == SkinTypes.ARMOR_HEAD || targetType == SkinTypes.ARMOR_CHEST || targetType == SkinTypes.ARMOR_LEGS || targetType == SkinTypes.ARMOR_FEET || targetType == SkinTypes.ARMOR_WINGS) {
-            return new Vector3f(0, 24, 0);
-        }
-        if (targetType == SkinTypes.HORSE) {
-            return new Vector3f(0, 24, 0);
-        }
-        return Vector3f.ZERO;
-    }
-
-    private Vector3f getDisplayOffset(BlockBenchPack pack) {
-        // the java_block display center is same the wen model center.
-        if (pack.getFormat().equals("java_block")) {
-            return Vector3f.ZERO;
-        }
-        // work in bedrock_block/bedrock_entity/bedrock_entity_old/geckolib_block/generic_block/modded_entity/optifine_entity.
-        return new Vector3f(0, 8, 0);
-    }
-
-
-    private Vector3f getParentOrigin(Stack<SkinPart> parent) {
-        var origin = Vector3f.ZERO;
-        for (var part : parent) {
-            if (part.getTransform() instanceof OpenTransform3f transform) {
-                origin = origin.adding(transform.getTranslate());
-            }
-        }
-        return origin;
-    }
 }

@@ -2,13 +2,13 @@ package moe.plushie.armourers_workshop.compatibility.client.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import moe.plushie.armourers_workshop.api.annotation.Available;
+import moe.plushie.armourers_workshop.compatibility.client.AbstractItemDisplayContext;
 import moe.plushie.armourers_workshop.core.utils.OpenItemDisplayContext;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 
@@ -25,11 +25,11 @@ public abstract class AbstractItemStackRendererImpl extends BlockEntityWithoutLe
     }
 
     public void renderByItem(ItemStack itemStack, OpenItemDisplayContext transformType, PoseStack poseStack, MultiBufferSource renderTypeBuffer, int light, int overlay) {
-        super.renderByItem(itemStack, ItemTransforms.ofType(transformType), poseStack, renderTypeBuffer, light, overlay);
+        super.renderByItem(itemStack, AbstractItemDisplayContext.unwrap(transformType), poseStack, renderTypeBuffer, light, overlay);
     }
 
     @Override
     public void renderByItem(ItemStack itemStack, ItemDisplayContext transformType, PoseStack poseStack, MultiBufferSource renderTypeBuffer, int light, int overlay) {
-        this.renderByItem(itemStack, ItemTransforms.ofType(transformType), poseStack, renderTypeBuffer, light, overlay);
+        this.renderByItem(itemStack, AbstractItemDisplayContext.wrap(transformType), poseStack, renderTypeBuffer, light, overlay);
     }
 }

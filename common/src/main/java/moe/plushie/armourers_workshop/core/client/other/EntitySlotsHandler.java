@@ -3,33 +3,32 @@ package moe.plushie.armourers_workshop.core.client.other;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import moe.plushie.armourers_workshop.api.data.IAssociatedContainerKey;
 import moe.plushie.armourers_workshop.api.data.IAssociatedContainerProvider;
-import moe.plushie.armourers_workshop.api.skin.ISkinToolType;
-import moe.plushie.armourers_workshop.api.skin.ISkinType;
-import moe.plushie.armourers_workshop.api.skin.part.ISkinPartType;
-import moe.plushie.armourers_workshop.api.skin.texture.ISkinPaintType;
 import moe.plushie.armourers_workshop.core.blockentity.HologramProjectorBlockEntity;
 import moe.plushie.armourers_workshop.core.blockentity.SkinnableBlockEntity;
 import moe.plushie.armourers_workshop.core.capability.SkinWardrobe;
 import moe.plushie.armourers_workshop.core.client.animation.AnimationManager;
 import moe.plushie.armourers_workshop.core.client.bake.BakedSkin;
 import moe.plushie.armourers_workshop.core.client.bake.SkinBakery;
+import moe.plushie.armourers_workshop.core.data.DataContainer;
 import moe.plushie.armourers_workshop.core.data.ticket.Ticket;
 import moe.plushie.armourers_workshop.core.entity.EntityProfile;
 import moe.plushie.armourers_workshop.core.entity.MannequinEntity;
 import moe.plushie.armourers_workshop.core.menu.SkinSlotType;
 import moe.plushie.armourers_workshop.core.skin.SkinDescriptor;
+import moe.plushie.armourers_workshop.core.skin.SkinType;
 import moe.plushie.armourers_workshop.core.skin.SkinTypes;
 import moe.plushie.armourers_workshop.core.skin.attachment.SkinAttachmentContainer;
 import moe.plushie.armourers_workshop.core.skin.attachment.SkinAttachmentPose;
 import moe.plushie.armourers_workshop.core.skin.attachment.SkinAttachmentType;
+import moe.plushie.armourers_workshop.core.skin.part.SkinPartType;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperty;
 import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintColor;
 import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintScheme;
+import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintType;
 import moe.plushie.armourers_workshop.core.utils.TickUtils;
 import moe.plushie.armourers_workshop.init.ModConfig;
 import moe.plushie.armourers_workshop.init.ModDataComponents;
 import moe.plushie.armourers_workshop.init.ModItems;
-import moe.plushie.armourers_workshop.utils.DataContainer;
 import moe.plushie.armourers_workshop.utils.RenderSystem;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -52,8 +51,8 @@ public class EntitySlotsHandler<T> implements IAssociatedContainerProvider, Skin
 
     private final ArrayList<String> missingSkins = new ArrayList<>();
 
-    private final HashSet<ISkinType> lastSkinTypes = new HashSet<>();
-    private final HashSet<ISkinPartType> lastSkinPartTypes = new HashSet<>();
+    private final HashSet<SkinType> lastSkinTypes = new HashSet<>();
+    private final HashSet<SkinPartType> lastSkinPartTypes = new HashSet<>();
 
     private final ArrayList<EntitySlot> allSkins = new ArrayList<>();
     private final ArrayList<EntitySlot> armorSkins = new ArrayList<>();
@@ -155,13 +154,13 @@ public class EntitySlotsHandler<T> implements IAssociatedContainerProvider, Skin
         switch (slotType) {
             case IN_HELD -> {
                 // If held a skin of armor type, nothing happen
-                if (bakedSkin.getType() instanceof ISkinToolType || bakedSkin.getType() == SkinTypes.ITEM) {
+                if (bakedSkin.getType().isTool() || bakedSkin.getType() == SkinTypes.ITEM) {
                     allSkins.add(slot);
                     itemSkins.add(slot);
                 }
             }
             case IN_EQUIPMENT, IN_WARDROBE -> {
-                if (bakedSkin.getType() instanceof ISkinToolType || bakedSkin.getType() == SkinTypes.ITEM) {
+                if (bakedSkin.getType().isTool() || bakedSkin.getType() == SkinTypes.ITEM) {
                     allSkins.add(slot);
                     itemSkins.add(slot);
                 } else {
@@ -319,11 +318,11 @@ public class EntitySlotsHandler<T> implements IAssociatedContainerProvider, Skin
         return wardrobeProvider.enableExtraRenderer;
     }
 
-    public Collection<ISkinType> getUsingTypes() {
+    public Collection<SkinType> getUsingTypes() {
         return lastSkinTypes;
     }
 
-    public Collection<ISkinPartType> getUsingPartTypes() {
+    public Collection<SkinPartType> getUsingPartTypes() {
         return lastSkinPartTypes;
     }
 
@@ -387,8 +386,8 @@ public class EntitySlotsHandler<T> implements IAssociatedContainerProvider, Skin
 
     protected static class WardrobeProvider extends SlotProvider<SkinWardrobe> {
 
-        protected final HashMap<ISkinPaintType, SkinPaintColor> dyeColors = new HashMap<>();
-        protected final HashMap<ISkinPaintType, SkinPaintColor> lastDyeColors = new HashMap<>();
+        protected final HashMap<SkinPaintType, SkinPaintColor> dyeColors = new HashMap<>();
+        protected final HashMap<SkinPaintType, SkinPaintColor> lastDyeColors = new HashMap<>();
 
         protected BitSet wardrobeFlags = new BitSet();
         protected SkinPaintScheme colorScheme = SkinPaintScheme.EMPTY;

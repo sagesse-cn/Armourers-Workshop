@@ -11,9 +11,9 @@ import moe.plushie.armourers_workshop.core.client.other.PlaceholderManager;
 import moe.plushie.armourers_workshop.core.client.other.SkinItemSource;
 import moe.plushie.armourers_workshop.core.client.other.SkinRenderTesselator;
 import moe.plushie.armourers_workshop.core.math.OpenMatrix4f;
-import moe.plushie.armourers_workshop.core.math.OpenQuaternion3f;
-import moe.plushie.armourers_workshop.core.math.Rectangle3f;
-import moe.plushie.armourers_workshop.core.math.Vector3f;
+import moe.plushie.armourers_workshop.core.math.OpenQuaternionf;
+import moe.plushie.armourers_workshop.core.math.OpenRectangle3f;
+import moe.plushie.armourers_workshop.core.math.OpenVector3f;
 import moe.plushie.armourers_workshop.core.skin.texture.EntityTextureDescriptor;
 import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintScheme;
 import moe.plushie.armourers_workshop.core.utils.TickUtils;
@@ -30,26 +30,26 @@ import org.jetbrains.annotations.Nullable;
 public final class ExtendedItemRenderer {
 
     public static void renderSkinInGUI(BakedSkin bakedSkin, float x, float y, float z, float width, float height, float rx, float ry, float rz, IPoseStack poseStack, IBufferSource bufferSource) {
-        renderSkinInBox(bakedSkin, SkinPaintScheme.EMPTY, ItemStack.EMPTY, Vector3f.ONE, x, y, z, width, height, rx, ry, rz, 0, 0xf000f0, 0, poseStack, bufferSource);
+        renderSkinInBox(bakedSkin, SkinPaintScheme.EMPTY, ItemStack.EMPTY, OpenVector3f.ONE, x, y, z, width, height, rx, ry, rz, 0, 0xf000f0, 0, poseStack, bufferSource);
     }
 
     public static void renderSkinInGUI(BakedSkin bakedSkin, SkinPaintScheme scheme, ItemStack itemStack, float x, float y, float z, float width, float height, float rx, float ry, float rz, float partialTicks, int light, IPoseStack poseStack, IBufferSource bufferSource) {
-        renderSkinInBox(bakedSkin, scheme, itemStack, Vector3f.ONE, x, y, z, width, height, rx, ry, rz, partialTicks, light, 0, poseStack, bufferSource);
+        renderSkinInBox(bakedSkin, scheme, itemStack, OpenVector3f.ONE, x, y, z, width, height, rx, ry, rz, partialTicks, light, 0, poseStack, bufferSource);
     }
 
     public static void renderSkinInTooltip(BakedSkin bakedSkin, SkinPaintScheme scheme, ItemStack itemStack, float x, float y, float z, float width, float height, float rx, float ry, float rz, float partialTicks, int light, IPoseStack poseStack, IBufferSource bufferSource) {
-        renderSkinInBox(bakedSkin, scheme, itemStack, Vector3f.ONE, x, y, z, width, height, rx, ry, rz, partialTicks, light, 0, poseStack, bufferSource);
+        renderSkinInBox(bakedSkin, scheme, itemStack, OpenVector3f.ONE, x, y, z, width, height, rx, ry, rz, partialTicks, light, 0, poseStack, bufferSource);
     }
 
     public static int renderSkinInBox(BakedSkin bakedSkin, SkinPaintScheme scheme, float partialTicks, int light, SkinItemSource itemSource, IPoseStack poseStack, IBufferSource bufferSource) {
-        return renderSkinInBox(bakedSkin, scheme, Vector3f.ONE, partialTicks, light, 0, itemSource, poseStack, bufferSource);
+        return renderSkinInBox(bakedSkin, scheme, OpenVector3f.ONE, partialTicks, light, 0, itemSource, poseStack, bufferSource);
     }
 
     public static int renderSkinInBox(BakedSkin bakedSkin, SkinPaintScheme scheme, float partialTicks, int light, int outlineColor, SkinItemSource itemSource, IPoseStack poseStack, IBufferSource bufferSource) {
-        return renderSkinInBox(bakedSkin, scheme, Vector3f.ONE, partialTicks, light, outlineColor, itemSource, poseStack, bufferSource);
+        return renderSkinInBox(bakedSkin, scheme, OpenVector3f.ONE, partialTicks, light, outlineColor, itemSource, poseStack, bufferSource);
     }
 
-    private static void renderSkinInBox(BakedSkin bakedSkin, SkinPaintScheme scheme, ItemStack itemStack, @Nullable Vector3f targetBox, float x, float y, float z, float width, float height, float rx, float ry, float rz, float partialTicks, int light, int outlineColor, IPoseStack poseStack, IBufferSource bufferSource) {
+    private static void renderSkinInBox(BakedSkin bakedSkin, SkinPaintScheme scheme, ItemStack itemStack, @Nullable OpenVector3f targetBox, float x, float y, float z, float width, float height, float rx, float ry, float rz, float partialTicks, int light, int outlineColor, IPoseStack poseStack, IBufferSource bufferSource) {
         if (bakedSkin == null) {
             return;
         }
@@ -58,15 +58,15 @@ public final class ExtendedItemRenderer {
         poseStack.pushPose();
         poseStack.translate(x + width / 2f, y + height / 2f, z);
         poseStack.scale(1, -1, 1);
-        poseStack.rotate(Vector3f.XP.rotationDegrees(rx));
-        poseStack.rotate(Vector3f.YP.rotationDegrees(ry + (float) ((t * 100) % 360)));
+        poseStack.rotate(OpenVector3f.XP.rotationDegrees(rx));
+        poseStack.rotate(OpenVector3f.YP.rotationDegrees(ry + (float) ((t * 100) % 360)));
         poseStack.scale(0.625f, 0.625f, 0.625f);
         poseStack.scale(si, si, si);
         renderSkinInBox(bakedSkin, scheme, targetBox, partialTicks, light, outlineColor, SkinItemSource.create(itemStack), poseStack, bufferSource);
         poseStack.popPose();
     }
 
-    private static int renderSkinInBox(BakedSkin bakedSkin, SkinPaintScheme scheme, @Nullable Vector3f targetBox, float partialTicks, int light, int outlineColor, SkinItemSource itemSource, IPoseStack poseStack, IBufferSource bufferSource) {
+    private static int renderSkinInBox(BakedSkin bakedSkin, SkinPaintScheme scheme, @Nullable OpenVector3f targetBox, float partialTicks, int light, int outlineColor, SkinItemSource itemSource, IPoseStack poseStack, IBufferSource bufferSource) {
         var counter = 0;
         var tesselator = SkinRenderTesselator.create(bakedSkin);
         if (tesselator == null) {
@@ -100,31 +100,31 @@ public final class ExtendedItemRenderer {
         return counter;
     }
 
-    public static void renderMannequin(EntityTextureDescriptor descriptor, Vector3f rotation, float targetWidth, float targetHeight, float targetDepth, float partialTicks, int light, IPoseStack poseStack, IBufferSource bufferSource) {
+    public static void renderMannequin(EntityTextureDescriptor descriptor, OpenVector3f rotation, float targetWidth, float targetHeight, float targetDepth, float partialTicks, int light, IPoseStack poseStack, IBufferSource bufferSource) {
         var entity = PlaceholderManager.MANNEQUIN.get();
         if (entity == null || entity.getLevel() == null) {
             return;
         }
         poseStack.pushPose();
-        poseStack.rotate(Vector3f.YP.rotationDegrees(180));
+        poseStack.rotate(OpenVector3f.YP.rotationDegrees(180));
 
         if (!descriptor.equals(entity.getTextureDescriptor())) {
             entity.setTextureDescriptor(descriptor);
         }
 
         var aabb = entity.getBoundingBox();
-        var rect = new Rectangle3f(aabb.minX, aabb.minY, aabb.minZ, aabb.getXsize(), aabb.getYsize(), aabb.getZsize());
+        var rect = new OpenRectangle3f(aabb.minX, aabb.minY, aabb.minZ, aabb.getXsize(), aabb.getYsize(), aabb.getZsize());
         if (ModDebugger.targetBounds) {
             ShapeTesselator.stroke(-targetWidth / 2, -targetHeight / 2, -targetDepth / 2, targetWidth / 2, targetHeight / 2, targetDepth / 2, UIColor.ORANGE, poseStack, bufferSource);
             ShapeTesselator.vector(0, 0, 0, targetWidth, targetHeight, targetDepth, poseStack, bufferSource);
         }
 
-        var resolvedRect = rect.offset(rect.getMidX(), rect.getMidY(), rect.getMidZ());
-        resolvedRect.mul(new OpenMatrix4f(new OpenQuaternion3f(rotation.getX(), rotation.getY(), rotation.getZ(), true)));
-        var newScale = Math.min(targetWidth / resolvedRect.getWidth(), targetHeight / resolvedRect.getHeight());
+        var resolvedRect = rect.offset(rect.midX(), rect.midY(), rect.midZ());
+        resolvedRect.mul(new OpenMatrix4f(new OpenQuaternionf(rotation.x(), rotation.y(), rotation.z(), true)));
+        var newScale = Math.min(targetWidth / resolvedRect.width(), targetHeight / resolvedRect.height());
 
         poseStack.scale(newScale, newScale, newScale);
-        poseStack.translate(-rect.getMidX(), -rect.getMidY(), -rect.getMidZ()); // to model center
+        poseStack.translate(-rect.midX(), -rect.midY(), -rect.midZ()); // to model center
 
         var rendererManager = Minecraft.getInstance().getEntityRenderDispatcher();
         RenderSystem.runAsFancy(() -> rendererManager.render(entity, 0.0d, 0.0d, 0.0d, 0.0f, 1.0f, AbstractPoseStack.unwrap(poseStack), AbstractBufferSource.unwrap(bufferSource), light));

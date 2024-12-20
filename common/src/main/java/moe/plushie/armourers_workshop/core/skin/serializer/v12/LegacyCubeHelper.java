@@ -1,7 +1,7 @@
 package moe.plushie.armourers_workshop.core.skin.serializer.v12;
 
-import moe.plushie.armourers_workshop.api.skin.part.ISkinPartType;
 import moe.plushie.armourers_workshop.core.skin.geometry.collection.SkinGeometrySetV1;
+import moe.plushie.armourers_workshop.core.skin.part.SkinPartType;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPartTypes;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IInputStream;
 
@@ -10,7 +10,7 @@ import java.io.IOException;
 public final class LegacyCubeHelper {
 
     // Used by file versions less than 10
-    public static void loadLegacyCubeData(SkinGeometrySetV1 geometries, SkinGeometrySetV1.BufferSlice slice, IInputStream input, int version, ISkinPartType skinPart) throws IOException {
+    public static void loadLegacyCubeData(SkinGeometrySetV1 geometries, SkinGeometrySetV1.BufferSlice slice, IInputStream input, int version, SkinPartType skinPart) throws IOException {
         if (version < 3) {
             loadLegacyCube(geometries, slice, input, version, skinPart);
             return;
@@ -39,7 +39,7 @@ public final class LegacyCubeHelper {
     }
 
     // Used by file versions less than 3
-    public static void loadLegacyCube(SkinGeometrySetV1 geometries, SkinGeometrySetV1.BufferSlice slice, IInputStream stream, int version, ISkinPartType skinPart) throws IOException {
+    public static void loadLegacyCube(SkinGeometrySetV1 geometries, SkinGeometrySetV1.BufferSlice slice, IInputStream stream, int version, SkinPartType skinPart) throws IOException {
         byte x = stream.readByte();
         byte y = stream.readByte();
         byte z = stream.readByte();

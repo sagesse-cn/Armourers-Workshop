@@ -9,7 +9,7 @@ import moe.plushie.armourers_workshop.api.core.math.IRectangle3i;
 import moe.plushie.armourers_workshop.api.core.math.IVector3f;
 import moe.plushie.armourers_workshop.core.armature.JointShape;
 import moe.plushie.armourers_workshop.core.client.other.SkinRenderType;
-import moe.plushie.armourers_workshop.core.math.OpenBoundingBox;
+import moe.plushie.armourers_workshop.core.math.OpenAxisAlignedBoundingBox;
 import moe.plushie.armourers_workshop.core.math.OpenMatrix3f;
 import moe.plushie.armourers_workshop.core.math.OpenOrientedBoundingBox;
 import moe.plushie.armourers_workshop.core.math.OpenTransformedBoundingBox;
@@ -45,11 +45,11 @@ public class ShapeTesselator {
     };
 
     public static void point(IVector3f origin, IPoseStack poseStack, IBufferSource bufferSource) {
-        point(origin.getX(), origin.getY(), origin.getZ(), 1, poseStack, bufferSource);
+        point(origin.x(), origin.y(), origin.z(), 1, poseStack, bufferSource);
     }
 
     public static void point(IVector3f origin, float length, IPoseStack poseStack, IBufferSource bufferSource) {
-        point(origin.getX(), origin.getY(), origin.getZ(), length, poseStack, bufferSource);
+        point(origin.x(), origin.y(), origin.z(), length, poseStack, bufferSource);
     }
 
     public static void point(float x, float y, float z, float length, IPoseStack poseStack, IBufferSource bufferSource) {
@@ -85,11 +85,11 @@ public class ShapeTesselator {
     }
 
     public static void vector(IVector3f origin, IPoseStack poseStack, IBufferSource bufferSource) {
-        vector(origin.getX(), origin.getY(), origin.getZ(), 1, poseStack, bufferSource);
+        vector(origin.x(), origin.y(), origin.z(), 1, poseStack, bufferSource);
     }
 
     public static void vector(IVector3f origin, float length, IPoseStack poseStack, IBufferSource bufferSource) {
-        vector(origin.getX(), origin.getY(), origin.getZ(), length, poseStack, bufferSource);
+        vector(origin.x(), origin.y(), origin.z(), length, poseStack, bufferSource);
     }
 
     public static void vector(float x, float y, float z, IPoseStack poseStack, IBufferSource bufferSource) {
@@ -202,15 +202,15 @@ public class ShapeTesselator {
     }
 
     public static void stroke(IRectangle3f rect, int color, IPoseStack poseStack, IBufferSource bufferSource) {
-        stroke(rect.getMinX(), rect.getMinY(), rect.getMinZ(), rect.getMaxX(), rect.getMaxY(), rect.getMaxZ(), color, poseStack, bufferSource);
+        stroke(rect.minX(), rect.minY(), rect.minZ(), rect.maxX(), rect.maxY(), rect.maxZ(), color, poseStack, bufferSource);
     }
 
     public static void stroke(IRectangle3i rect, int color, IPoseStack poseStack, IBufferSource bufferSource) {
-        stroke(rect.getMinX(), rect.getMinY(), rect.getMinZ(), rect.getMaxX(), rect.getMaxY(), rect.getMaxZ(), color, poseStack, bufferSource);
+        stroke(rect.minX(), rect.minY(), rect.minZ(), rect.maxX(), rect.maxY(), rect.maxZ(), color, poseStack, bufferSource);
     }
 
-    public static void stroke(OpenBoundingBox aabb, int color, IPoseStack poseStack, IBufferSource bufferSource) {
-        stroke(aabb.getMinX(), aabb.getMinY(), aabb.getMinZ(), aabb.getMaxX(), aabb.getMaxY(), aabb.getMaxZ(), color, poseStack, bufferSource);
+    public static void stroke(OpenAxisAlignedBoundingBox aabb, int color, IPoseStack poseStack, IBufferSource bufferSource) {
+        stroke(aabb.minX(), aabb.minY(), aabb.minZ(), aabb.maxX(), aabb.maxY(), aabb.maxZ(), color, poseStack, bufferSource);
     }
 
     public static void stroke(OpenOrientedBoundingBox obb, int color, IPoseStack poseStack, IBufferSource bufferSource) {
@@ -233,7 +233,7 @@ public class ShapeTesselator {
         var rect = shape.bounds();
         shape.transform().apply(poseStack);
         stroke(rect, color, poseStack, bufferSource);
-        poseStack.translate(rect.getX(), rect.getY(), rect.getZ());
+        poseStack.translate(rect.x(), rect.y(), rect.z());
         for (var shape1 : shape.children()) {
             stroke(shape1, color, poseStack, bufferSource);
         }
@@ -256,7 +256,7 @@ public class ShapeTesselator {
         stroke(rect, color.getRGB(), poseStack, bufferSource);
     }
 
-    public static void stroke(OpenBoundingBox aabb, UIColor color, IPoseStack poseStack, IBufferSource bufferSource) {
+    public static void stroke(OpenAxisAlignedBoundingBox aabb, UIColor color, IPoseStack poseStack, IBufferSource bufferSource) {
         stroke(aabb, color.getRGB(), poseStack, bufferSource);
     }
 
@@ -314,32 +314,32 @@ public class ShapeTesselator {
 
 
     public static void cube(IRectangle3i rect, float r, float g, float b, float a, IPoseStack poseStack, IBufferSource bufferSource) {
-        float x = rect.getMinX();
-        float y = rect.getMinY();
-        float z = rect.getMinZ();
-        float w = rect.getWidth();
-        float h = rect.getHeight();
-        float d = rect.getDepth();
+        float x = rect.minX();
+        float y = rect.minY();
+        float z = rect.minZ();
+        float w = rect.width();
+        float h = rect.height();
+        float d = rect.depth();
         cube(x, y, z, w, h, d, r, g, b, a, poseStack, bufferSource);
     }
 
     public static void cube(IRectangle3f rect, float r, float g, float b, float a, IPoseStack poseStack, IBufferSource bufferSource) {
-        float x = rect.getMinX();
-        float y = rect.getMinY();
-        float z = rect.getMinZ();
-        float w = rect.getWidth();
-        float h = rect.getHeight();
-        float d = rect.getDepth();
+        float x = rect.minX();
+        float y = rect.minY();
+        float z = rect.minZ();
+        float w = rect.width();
+        float h = rect.height();
+        float d = rect.depth();
         cube(x, y, z, w, h, d, r, g, b, a, poseStack, bufferSource);
     }
 
     public static void cube(IRectangle3f rect, float r, float g, float b, float a, IPoseStack poseStack, IVertexConsumer consumer) {
-        float x = rect.getMinX();
-        float y = rect.getMinY();
-        float z = rect.getMinZ();
-        float w = rect.getWidth();
-        float h = rect.getHeight();
-        float d = rect.getDepth();
+        float x = rect.minX();
+        float y = rect.minY();
+        float z = rect.minZ();
+        float w = rect.width();
+        float h = rect.height();
+        float d = rect.depth();
         cube(x, y, z, w, h, d, r, g, b, a, poseStack, consumer);
     }
 

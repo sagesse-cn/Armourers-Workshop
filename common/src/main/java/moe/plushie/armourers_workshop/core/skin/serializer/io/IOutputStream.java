@@ -185,36 +185,36 @@ public interface IOutputStream {
 
     default void writeVector3i(IVector3i vec) throws IOException {
         var stream = getOutputStream();
-        stream.writeInt(vec.getX());
-        stream.writeInt(vec.getY());
-        stream.writeInt(vec.getZ());
+        stream.writeInt(vec.x());
+        stream.writeInt(vec.y());
+        stream.writeInt(vec.z());
     }
 
     default void writeVector3f(IVector3f vec) throws IOException {
         var stream = getOutputStream();
-        stream.writeFloat(vec.getX());
-        stream.writeFloat(vec.getY());
-        stream.writeFloat(vec.getZ());
+        stream.writeFloat(vec.x());
+        stream.writeFloat(vec.y());
+        stream.writeFloat(vec.z());
     }
 
     default void writeRectangle3i(IRectangle3i rect) throws IOException {
         var stream = getOutputStream();
-        stream.writeInt(rect.getX());
-        stream.writeInt(rect.getY());
-        stream.writeInt(rect.getZ());
-        stream.writeInt(rect.getWidth());
-        stream.writeInt(rect.getHeight());
-        stream.writeInt(rect.getDepth());
+        stream.writeInt(rect.x());
+        stream.writeInt(rect.y());
+        stream.writeInt(rect.z());
+        stream.writeInt(rect.width());
+        stream.writeInt(rect.height());
+        stream.writeInt(rect.depth());
     }
 
     default void writeRectangle3f(IRectangle3f rect) throws IOException {
         var stream = getOutputStream();
-        stream.writeFloat(rect.getX());
-        stream.writeFloat(rect.getY());
-        stream.writeFloat(rect.getZ());
-        stream.writeFloat(rect.getWidth());
-        stream.writeFloat(rect.getHeight());
-        stream.writeFloat(rect.getDepth());
+        stream.writeFloat(rect.x());
+        stream.writeFloat(rect.y());
+        stream.writeFloat(rect.z());
+        stream.writeFloat(rect.width());
+        stream.writeFloat(rect.height());
+        stream.writeFloat(rect.depth());
     }
 
     default void writeTransformf(ITransform3f transform) throws IOException {

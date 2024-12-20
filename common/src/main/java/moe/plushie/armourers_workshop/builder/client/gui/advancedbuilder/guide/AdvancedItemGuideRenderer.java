@@ -5,11 +5,11 @@ import moe.plushie.armourers_workshop.api.core.math.IPoseStack;
 import moe.plushie.armourers_workshop.api.skin.part.features.ICanHeld;
 import moe.plushie.armourers_workshop.core.client.other.SkinRenderType;
 import moe.plushie.armourers_workshop.core.client.other.SkinVertexBufferBuilder;
-import moe.plushie.armourers_workshop.core.math.Vector3f;
+import moe.plushie.armourers_workshop.core.math.OpenVector3f;
 import moe.plushie.armourers_workshop.core.skin.serializer.document.SkinDocument;
 import moe.plushie.armourers_workshop.core.skin.serializer.document.SkinDocumentNode;
-import moe.plushie.armourers_workshop.utils.OpenModelPart;
-import moe.plushie.armourers_workshop.utils.OpenModelPartBuilder;
+import moe.plushie.armourers_workshop.core.utils.OpenModelPart;
+import moe.plushie.armourers_workshop.core.utils.OpenModelPartBuilder;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
@@ -44,7 +44,7 @@ public class AdvancedItemGuideRenderer extends AbstractAdvancedGuideRenderer {
 
     protected void applyOffset(IPoseStack poseStack) {
         poseStack.translate(0, 2, 0);
-        poseStack.rotate(Vector3f.XP.rotationDegrees(-90));
+        poseStack.rotate(OpenVector3f.XP.rotationDegrees(-90));
         poseStack.scale(16, 16, 16);
     }
 

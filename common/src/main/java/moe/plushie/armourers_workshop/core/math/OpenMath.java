@@ -1,12 +1,20 @@
 package moe.plushie.armourers_workshop.core.math;
 
+import moe.plushie.armourers_workshop.compatibility.core.AbstractMath;
+
+import java.text.DecimalFormat;
+import java.util.regex.Pattern;
+
 public class OpenMath {
 
     public static final float PI_f = (float) Math.PI;
-    public static final float PIHalf_f = (float) Math.PI * 0.5f;
     public static final float PI2_f = (float) Math.PI * 2.0f;
+    public static final float PIHalf_f = (float) Math.PI * 0.5f;
 
-    public static final boolean HAS_Math_fma = hasMathFma();
+    public static final double PIHalf = Math.PI * 0.5;
+
+    public static final DecimalFormat FLOAT_NUMBER_FORMAT = new DecimalFormat("#.######");
+    public static final DecimalFormat DOUBLE_NUMBER_FORMAT = new DecimalFormat("#.###############");
 
     public static int floori(float value) {
         int i = (int) value;
@@ -55,7 +63,6 @@ public class OpenMath {
         return Math.sin(f);
     }
 
-
     public static float cos(float f) {
         return (float) Math.cos(f);
     }
@@ -73,9 +80,26 @@ public class OpenMath {
         return Math.atan2(d, e);
     }
 
+    public static float asin(float r) {
+        return (float) java.lang.Math.asin(r);
+    }
+
+    public static double asin(double r) {
+        return java.lang.Math.asin(r);
+    }
+
+    public static float safeAsin(float r) {
+        return r <= -1.0f ? -PIHalf_f : r >= 1.0f ? PIHalf_f : asin(r);
+    }
+
+    public static double safeAsin(double r) {
+        return r <= -1.0 ? -PIHalf : r >= 1.0 ? PIHalf : asin(r);
+    }
+
     public static float cosFromSin(float sin, float angle) {
-//        if (Options.FASTMATH)
-//            return sin(angle + PIHalf_f);
+        if (AbstractMath.HAS_FAST_MATH) {
+            return sin(angle + PIHalf_f);
+        }
         // sin(x)^2 + cos(x)^2 = 1
         float cos = sqrt(1.0f - sin * sin);
         float a = angle + PIHalf_f;
@@ -91,17 +115,11 @@ public class OpenMath {
 
 
     public static float fma(float a, float b, float c) {
-//        if (HAS_Math_fma) {
-//            return java.lang.Math.fma(a, b, c);
-//        }
-        return a * b + c;
+        return AbstractMath.fma(a, b, c);
     }
 
     public static double fma(double a, double b, double c) {
-//        if (HAS_Math_fma) {
-//            return java.lang.Math.fma(a, b, c);
-//        }
-        return a * b + c;
+        return AbstractMath.fma(a, b, c);
     }
 
     public static int clamp(int value, int minValue, int maxValue) {
@@ -169,6 +187,14 @@ public class OpenMath {
         return Math.toRadians((value + 360) % 360);
     }
 
+    public static double getAngleDegrees(double x1, double y1, double x2, double y2) {
+        double x = x2 - x1;
+        double y = y2 - y1;
+        if (x == 0 && y == 0) {
+            return 0;
+        }
+        return Math.toDegrees(Math.atan2(y, x));
+    }
 
     public static int wrapDegrees(int r) {
         int i = r % 360;
@@ -249,12 +275,31 @@ public class OpenMath {
     }
 
 
-    private static boolean hasMathFma() {
-        try {
-            Math.class.getDeclaredMethod("fma", float.class, float.class, float.class);
-            return true;
-        } catch (NoSuchMethodException e) {
-            return false;
+    public static String format(String format, Object... args) {
+        var builder = new StringBuilder();
+        var pattern = Pattern.compile("(%[a-zA-Z0-9.+-]+)");
+        var matcher = pattern.matcher(format);
+        int charIndex = 0;
+        int argIndex = 0;
+        while (matcher.find()) {
+            int start = matcher.start();
+            int end = matcher.end();
+            var command = format.substring(start, end);
+            // resolve %f %lf
+            if (command.equals("%f")) {
+                command = "%s";
+                args[argIndex] = FLOAT_NUMBER_FORMAT.format(args[argIndex]);
+            }
+            if (command.equals("%lf")) {
+                command = "%s";
+                args[argIndex] = DOUBLE_NUMBER_FORMAT.format(args[argIndex]);
+            }
+            builder.append(format, charIndex, start);
+            builder.append(command);
+            charIndex = end;
+            argIndex += 1;
         }
+        builder.append(format, charIndex, format.length());
+        return String.format(builder.toString(), args);
     }
 }

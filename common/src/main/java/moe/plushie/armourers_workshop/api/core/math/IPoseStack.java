@@ -10,7 +10,7 @@ public interface IPoseStack {
 
     void scale(float x, float y, float z);
 
-    void rotate(IQuaternion3f quaternion);
+    void rotate(IQuaternionf quaternion);
 
     void multiply(IMatrix3f matrix);
 

@@ -113,8 +113,8 @@ public class BakedSkinPartCombiner {
         }
 
         private boolean freeze() {
-            // we can't freeze the locator, because the locator will be read transform for real time.
-            if (part.getType() == SkinPartTypes.ADVANCED_LOCATOR) {
+            // we can't freeze the non-part type, because the part will be read/write transform for real time.
+            if (part.getType() != SkinPartTypes.ADVANCED) {
                 return false;
             }
             // determine node freeze by transform.

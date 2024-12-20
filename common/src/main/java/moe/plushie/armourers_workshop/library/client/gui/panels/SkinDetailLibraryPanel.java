@@ -36,7 +36,7 @@ import moe.plushie.armourers_workshop.library.data.impl.ServerPermission;
 import moe.plushie.armourers_workshop.library.data.impl.ServerSkin;
 import moe.plushie.armourers_workshop.library.data.impl.ServerUser;
 import moe.plushie.armourers_workshop.utils.RenderSystem;
-import moe.plushie.armourers_workshop.utils.TranslateUtils;
+import moe.plushie.armourers_workshop.core.utils.TranslateUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import org.apache.logging.log4j.util.Strings;

@@ -4,7 +4,7 @@ import moe.plushie.armourers_workshop.api.client.IBufferSource;
 import moe.plushie.armourers_workshop.api.core.math.IPoseStack;
 import moe.plushie.armourers_workshop.core.armature.Armatures;
 import moe.plushie.armourers_workshop.core.client.bake.BakedArmature;
-import moe.plushie.armourers_workshop.core.math.Rectangle3f;
+import moe.plushie.armourers_workshop.core.math.OpenRectangle3f;
 import moe.plushie.armourers_workshop.core.skin.serializer.document.SkinDocument;
 import moe.plushie.armourers_workshop.core.skin.texture.SkinTextureData;
 import moe.plushie.armourers_workshop.init.ModTextures;
@@ -20,7 +20,7 @@ public class AdvancedBackpackGuideRenderer extends AdvancedEntityGuideRenderer {
     }
 
     @Override
-    protected void renderOutline(Rectangle3f rect, int color, IPoseStack poseStack, IBufferSource bufferSource) {
+    protected void renderOutline(OpenRectangle3f rect, int color, IPoseStack poseStack, IBufferSource bufferSource) {
         // nope.
     }
 

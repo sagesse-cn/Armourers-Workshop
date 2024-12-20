@@ -3,7 +3,7 @@ package moe.plushie.armourers_workshop.compatibility.extensions.com.mojang.blaze
 import com.mojang.blaze3d.systems.RenderSystem;
 import moe.plushie.armourers_workshop.api.annotation.Available;
 import moe.plushie.armourers_workshop.api.core.math.IPoseStack;
-import moe.plushie.armourers_workshop.api.core.math.IQuaternion3f;
+import moe.plushie.armourers_workshop.api.core.math.IQuaternionf;
 import moe.plushie.armourers_workshop.compatibility.client.AbstractPoseStack;
 import moe.plushie.armourers_workshop.core.math.OpenPoseStack;
 import org.joml.Matrix4fStack;
@@ -46,7 +46,7 @@ public class ModelView {
         }
 
         @Override
-        public void rotate(IQuaternion3f quaternion) {
+        public void rotate(IQuaternionf quaternion) {
             stack.rotate(AbstractPoseStack.convertQuaternion(quaternion));
         }
 

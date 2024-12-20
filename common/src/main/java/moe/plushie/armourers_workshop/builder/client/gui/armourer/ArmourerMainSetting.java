@@ -11,11 +11,11 @@ import com.apple.library.uikit.UIImageView;
 import com.apple.library.uikit.UILabel;
 import com.apple.library.uikit.UITextField;
 import com.apple.library.uikit.UITextFieldDelegate;
-import moe.plushie.armourers_workshop.api.skin.ISkinType;
 import moe.plushie.armourers_workshop.builder.blockentity.ArmourerBlockEntity;
 import moe.plushie.armourers_workshop.builder.menu.ArmourerMenu;
 import moe.plushie.armourers_workshop.builder.network.UpdateArmourerPacket;
 import moe.plushie.armourers_workshop.core.client.gui.widget.SkinComboBox;
+import moe.plushie.armourers_workshop.core.skin.SkinType;
 import moe.plushie.armourers_workshop.core.skin.SkinTypes;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperty;
 import moe.plushie.armourers_workshop.core.utils.Collections;
@@ -35,7 +35,7 @@ import java.util.Objects;
 @Environment(EnvType.CLIENT)
 public class ArmourerMainSetting extends ArmourerBaseSetting implements UITextFieldDelegate {
 
-    private static final List<ISkinType> SUPPORTED_SKIN_TYPES = Collections.immutableList(builder -> {
+    private static final List<SkinType> SUPPORTED_SKIN_TYPES = Collections.immutableList(builder -> {
         builder.add(SkinTypes.ARMOR_HEAD);
         builder.add(SkinTypes.ARMOR_CHEST);
         builder.add(SkinTypes.ARMOR_LEGS);
@@ -63,7 +63,7 @@ public class ArmourerMainSetting extends ArmourerBaseSetting implements UITextFi
     protected final ArmourerBlockEntity blockEntity;
     protected final String modVersion;
 
-    protected ISkinType skinType = SkinTypes.ARMOR_HEAD;
+    protected SkinType skinType = SkinTypes.ARMOR_HEAD;
 
     protected ArmourerMainSetting(ArmourerMenu container) {
         super("armourer.main");
@@ -153,7 +153,7 @@ public class ArmourerMainSetting extends ArmourerBaseSetting implements UITextFi
     }
 
     private void setupLabel(int x, int y, NSString text) {
-        var label = new UILabel(new CGRect(x, y, bounds().getWidth(), 9));
+        var label = new UILabel(new CGRect(x, y, bounds().width(), 9));
         label.setText(text);
         addSubview(label);
     }

@@ -1,7 +1,7 @@
 package moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk;
 
 import moe.plushie.armourers_workshop.core.math.OpenMath;
-import moe.plushie.armourers_workshop.core.math.Vector2f;
+import moe.plushie.armourers_workshop.core.math.OpenVector2f;
 import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintColor;
 import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintType;
 import moe.plushie.armourers_workshop.core.skin.texture.SkinTextureData;
@@ -43,7 +43,7 @@ public abstract class ChunkColorSection {
 
     public abstract SkinPaintColor getColor(int index);
 
-    public ChunkTextureData.TextureRef getTexture(Vector2f pos) {
+    public ChunkTextureData.TextureRef getTexture(OpenVector2f pos) {
         var list = getTextureList(pos);
         if (list != null) {
             return list.get(pos, this);
@@ -51,7 +51,7 @@ public abstract class ChunkColorSection {
         return null;
     }
 
-    protected abstract ChunkTextureData getTextureList(Vector2f pos);
+    protected abstract ChunkTextureData getTextureList(OpenVector2f pos);
 
     public boolean isResolved() {
         return resolved;
@@ -137,7 +137,7 @@ public abstract class ChunkColorSection {
         }
 
         @Override
-        public ChunkTextureData getTextureList(Vector2f pos) {
+        public ChunkTextureData getTextureList(OpenVector2f pos) {
             if (textureLists == null) {
                 return null;
             }
@@ -185,8 +185,8 @@ public abstract class ChunkColorSection {
                     // add into line
                     list.freeze(x, y, textureLists::get);
                     var usedRect = list.getUsedRect();
-                    lineHeight = Math.max(lineHeight, usedRect.getHeight());
-                    x += usedRect.getWidth() + 16f;
+                    lineHeight = Math.max(lineHeight, usedRect.height());
+                    x += usedRect.width() + 16f;
                     if (++col < columns) {
                         continue;
                     }
@@ -219,7 +219,7 @@ public abstract class ChunkColorSection {
             });
         }
 
-        public ChunkTextureData.TextureRef putTexture(Vector2f uv, SkinTextureData provider) {
+        public ChunkTextureData.TextureRef putTexture(OpenVector2f uv, SkinTextureData provider) {
             // we're also adding all variant textures.
             var textureList = getOrCreateTextureList(provider);
             Collections.eachTree(provider.getVariants(), SkinTextureData::getVariants, this::getOrCreateTextureList);
@@ -231,7 +231,7 @@ public abstract class ChunkColorSection {
         }
 
         @Override
-        protected ChunkTextureData getTextureList(Vector2f pos) {
+        protected ChunkTextureData getTextureList(OpenVector2f pos) {
             for (var list : textureLists.values()) {
                 if (list.contains(pos)) {
                     return list;

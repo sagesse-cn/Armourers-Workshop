@@ -5,8 +5,6 @@ import moe.plushie.armourers_workshop.api.core.IDataSerializable;
 import moe.plushie.armourers_workshop.api.core.IDataSerializer;
 import moe.plushie.armourers_workshop.api.core.IDataSerializerKey;
 import moe.plushie.armourers_workshop.api.skin.ISkinDescriptor;
-import moe.plushie.armourers_workshop.api.skin.ISkinToolType;
-import moe.plushie.armourers_workshop.api.skin.ISkinType;
 import moe.plushie.armourers_workshop.core.data.ItemStackStorage;
 import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintScheme;
 import moe.plushie.armourers_workshop.core.utils.Objects;
@@ -25,7 +23,7 @@ public class SkinDescriptor implements IDataSerializable.Immutable, ISkinDescrip
     public static final IDataCodec<SkinDescriptor> CODEC = IDataCodec.COMPOUND_TAG.alternative(IDataCodec.STRING, TagSerializer::parse).serializer(SkinDescriptor::new);
 
     private final String identifier;
-    private final ISkinType type;
+    private final SkinType type;
     private final Options options;
     private final SkinPaintScheme paintScheme;
 
@@ -36,15 +34,15 @@ public class SkinDescriptor implements IDataSerializable.Immutable, ISkinDescrip
         this(identifier, SkinTypes.UNKNOWN, Options.DEFAULT, SkinPaintScheme.EMPTY);
     }
 
-    public SkinDescriptor(String identifier, ISkinType type) {
+    public SkinDescriptor(String identifier, SkinType type) {
         this(identifier, type, Options.DEFAULT, SkinPaintScheme.EMPTY);
     }
 
-    public SkinDescriptor(String identifier, ISkinType type, SkinPaintScheme paintScheme) {
+    public SkinDescriptor(String identifier, SkinType type, SkinPaintScheme paintScheme) {
         this(identifier, type, Options.DEFAULT, paintScheme);
     }
 
-    public SkinDescriptor(String identifier, ISkinType type, Options options, SkinPaintScheme paintScheme) {
+    public SkinDescriptor(String identifier, SkinType type, Options options, SkinPaintScheme paintScheme) {
         this.identifier = identifier;
         this.type = type;
         this.options = options;
@@ -84,7 +82,7 @@ public class SkinDescriptor implements IDataSerializable.Immutable, ISkinDescrip
         if (skinType == SkinTypes.ITEM) {
             return true;
         }
-        if (skinType instanceof ISkinToolType toolType) {
+        if (skinType instanceof SkinType.Tool toolType) {
             return toolType.contains(itemStack);
         }
         return false;
@@ -123,7 +121,7 @@ public class SkinDescriptor implements IDataSerializable.Immutable, ISkinDescrip
         return paintScheme;
     }
 
-    public ISkinType getType() {
+    public SkinType getType() {
         return type;
     }
 
@@ -156,7 +154,7 @@ public class SkinDescriptor implements IDataSerializable.Immutable, ISkinDescrip
     private static class CodingKeys {
 
         public static final IDataSerializerKey<String> IDENTIFIER = IDataSerializerKey.create("Identifier", IDataCodec.STRING, "");
-        public static final IDataSerializerKey<ISkinType> TYPE = IDataSerializerKey.create("SkinType", SkinTypes.CODEC, SkinTypes.UNKNOWN);
+        public static final IDataSerializerKey<SkinType> TYPE = IDataSerializerKey.create("SkinType", SkinTypes.CODEC, SkinTypes.UNKNOWN);
         public static final IDataSerializerKey<Options> OPTIONS = IDataSerializerKey.create("SkinOptions", Options.CODEC, Options.DEFAULT);
         public static final IDataSerializerKey<SkinPaintScheme> SCHEME = IDataSerializerKey.create("SkinDyes", SkinPaintScheme.CODEC, SkinPaintScheme.EMPTY);
 

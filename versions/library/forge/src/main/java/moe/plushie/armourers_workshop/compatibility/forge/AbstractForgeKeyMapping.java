@@ -3,9 +3,9 @@ package moe.plushie.armourers_workshop.compatibility.forge;
 import com.mojang.blaze3d.platform.InputConstants;
 import moe.plushie.armourers_workshop.api.annotation.Available;
 import moe.plushie.armourers_workshop.api.client.key.IKeyModifier;
+import moe.plushie.armourers_workshop.api.event.EventBus;
 import moe.plushie.armourers_workshop.core.utils.Collections;
-import moe.plushie.armourers_workshop.init.platform.EventManager;
-import moe.plushie.armourers_workshop.init.platform.event.client.RegisterKeyMappingsEvent;
+import moe.plushie.armourers_workshop.init.event.client.RegisterKeyMappingsEvent;
 import moe.plushie.armourers_workshop.utils.OpenKeyModifier;
 import net.minecraft.client.KeyMapping;
 import net.neoforged.neoforge.client.settings.KeyConflictContext;
@@ -42,7 +42,7 @@ public abstract class AbstractForgeKeyMapping extends KeyMapping {
     }
 
     public static void register(String key, KeyMapping keyMapping) {
-        EventManager.listen(RegisterKeyMappingsEvent.class, event -> event.register(keyMapping));
+        EventBus.register(RegisterKeyMappingsEvent.class, event -> event.register(keyMapping));
     }
 
     private static void bind(InputConstants.Key keyCode, KeyMapping keyMapping) {

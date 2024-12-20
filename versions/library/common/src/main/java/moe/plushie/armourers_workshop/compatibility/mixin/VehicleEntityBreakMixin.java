@@ -2,7 +2,7 @@ package moe.plushie.armourers_workshop.compatibility.mixin;
 
 import moe.plushie.armourers_workshop.api.annotation.Available;
 import moe.plushie.armourers_workshop.core.utils.Objects;
-import moe.plushie.armourers_workshop.utils.SkinUtils;
+import moe.plushie.armourers_workshop.core.utils.SkinUtils;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;

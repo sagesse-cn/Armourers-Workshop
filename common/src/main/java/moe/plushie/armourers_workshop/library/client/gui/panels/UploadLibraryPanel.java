@@ -52,8 +52,8 @@ public class UploadLibraryPanel extends AbstractLibraryPanel {
     }
 
     private void setup() {
-        float width = bounds().getWidth();
-        float height = bounds().getHeight();
+        float width = bounds().width();
+        float height = bounds().height();
 
         float inputWidth = width - 15 - 162;
 

@@ -1,8 +1,8 @@
 package moe.plushie.armourers_workshop.core.blockentity;
 
 import moe.plushie.armourers_workshop.api.common.IBlockEntityHandler;
-import moe.plushie.armourers_workshop.core.math.OpenQuaternion3f;
-import moe.plushie.armourers_workshop.core.math.Rectangle3f;
+import moe.plushie.armourers_workshop.core.math.OpenQuaternionf;
+import moe.plushie.armourers_workshop.core.math.OpenRectangle3f;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
@@ -25,12 +25,12 @@ public abstract class RotableContainerBlockEntity extends UpdatableContainerBloc
     }
 
     @Environment(EnvType.CLIENT)
-    public OpenQuaternion3f getRenderRotations(BlockState blockState) {
+    public OpenQuaternionf getRenderRotations(BlockState blockState) {
         return null;
     }
 
     @Environment(EnvType.CLIENT)
-    public Rectangle3f getRenderShape(BlockState blockState) {
+    public OpenRectangle3f getRenderShape(BlockState blockState) {
         return null;
     }
 
@@ -49,7 +49,7 @@ public abstract class RotableContainerBlockEntity extends UpdatableContainerBloc
         }
         var blockPos = getBlockPos();
         var box = rect.offset(blockPos.getX() + 0.5f, blockPos.getY() + 0.5f, blockPos.getZ() + 0.5f);
-        renderBoundingBox = new AABB(box.getMinX(), box.getMinY(), box.getMinZ(), box.getMaxX(), box.getMaxY(), box.getMaxZ());
+        renderBoundingBox = new AABB(box.minX(), box.minY(), box.minZ(), box.maxX(), box.maxY(), box.maxZ());
         return renderBoundingBox;
     }
 }

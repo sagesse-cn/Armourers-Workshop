@@ -2,7 +2,7 @@ package moe.plushie.armourers_workshop.init.mixin.forge;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import moe.plushie.armourers_workshop.init.platform.EventManager;
-import moe.plushie.armourers_workshop.init.platform.event.client.RenderLivingEntityEvent;
+import moe.plushie.armourers_workshop.init.event.client.RenderLivingEntityEvent;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.world.entity.LivingEntity;

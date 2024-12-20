@@ -2,9 +2,9 @@ package moe.plushie.armourers_workshop.compatibility.fabric.event.common;
 
 import moe.plushie.armourers_workshop.api.annotation.Available;
 import moe.plushie.armourers_workshop.api.registry.IEventHandler;
-import moe.plushie.armourers_workshop.init.platform.event.common.LauncherClientSetupEvent;
-import moe.plushie.armourers_workshop.init.platform.event.common.LauncherCommonSetupEvent;
-import moe.plushie.armourers_workshop.init.platform.event.common.LauncherLoadCompleteEvent;
+import moe.plushie.armourers_workshop.init.event.common.LauncherClientSetupEvent;
+import moe.plushie.armourers_workshop.init.event.common.LauncherCommonSetupEvent;
+import moe.plushie.armourers_workshop.init.event.common.LauncherLoadCompleteEvent;
 
 @Available("[1.16, )")
 public class AbstractFabricLauncherLifecycleEvent {

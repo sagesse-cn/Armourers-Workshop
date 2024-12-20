@@ -205,7 +205,7 @@ public interface ViewImpl {
                 // when the old value is zero, we can't to infer the space usage!!!
                 float usage = 0.5f;
                 if (offset != 0 || size != 0) {
-                    usage = (offset / (float) (offset + size));
+                    usage = (offset / (offset + size));
                 }
                 float dx = oldValue - offset - size;
                 newOffset = (newValue - dx) * usage;
@@ -218,7 +218,7 @@ public interface ViewImpl {
                 // we directly use half of the remaining space.
                 float usage = 0.5f;
                 if (oldValue != size) {
-                    usage = (offset / (float) (oldValue - size));
+                    usage = (offset / (oldValue - size));
                 }
                 newOffset = (newValue - size) * usage;
                 break;
@@ -227,7 +227,7 @@ public interface ViewImpl {
                 // width + right
                 float usage = 1f;
                 if (oldValue != size) {
-                    usage = (size / (float) (oldValue - size));
+                    usage = (size / (oldValue - size));
                 }
                 newSize = (newValue - offset) * usage;
                 break;
@@ -238,8 +238,8 @@ public interface ViewImpl {
                 float usage1 = 1 / 3f;
                 float usage2 = usage1;
                 if (oldValue != 0) {
-                    usage1 = (offset / (float) oldValue);
-                    usage2 = (size / (float) oldValue);
+                    usage1 = (offset / oldValue);
+                    usage2 = (size / oldValue);
                 }
                 newOffset = newValue * usage1;
                 newSize = newValue * usage2;

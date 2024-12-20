@@ -5,7 +5,7 @@ import moe.plushie.armourers_workshop.api.core.math.IPoseStack;
 import moe.plushie.armourers_workshop.core.armature.JointShape;
 import moe.plushie.armourers_workshop.core.client.bake.BakedArmature;
 import moe.plushie.armourers_workshop.core.client.other.SkinRenderType;
-import moe.plushie.armourers_workshop.core.math.Rectangle3f;
+import moe.plushie.armourers_workshop.core.math.OpenRectangle3f;
 import moe.plushie.armourers_workshop.core.skin.geometry.cube.SkinCubeFace;
 import moe.plushie.armourers_workshop.core.skin.serializer.document.SkinDocument;
 import moe.plushie.armourers_workshop.core.skin.texture.SkinTextureData;
@@ -69,14 +69,14 @@ public abstract class AdvancedEntityGuideRenderer extends AbstractAdvancedGuideR
         shape.transform().apply(poseStack);
         renderCube(shape, poseStack, 1, 1, 1, 1, bufferSource);
         renderOutline(rect, color, poseStack, bufferSource);
-        poseStack.translate(rect.getX(), rect.getY(), rect.getZ());
+        poseStack.translate(rect.x(), rect.y(), rect.z());
         for (var shape1 : shape.children()) {
             renderShape(shape1, color, poseStack, bufferSource);
         }
         poseStack.popPose();
     }
 
-    protected void renderOutline(Rectangle3f rect, int color, IPoseStack poseStack, IBufferSource bufferSource) {
+    protected void renderOutline(OpenRectangle3f rect, int color, IPoseStack poseStack, IBufferSource bufferSource) {
         ShapeTesselator.stroke(rect, color, poseStack, bufferSource);
     }
 
@@ -96,17 +96,17 @@ public abstract class AdvancedEntityGuideRenderer extends AbstractAdvancedGuideR
         var entry = poseStack.last();
         var builder = bufferSource.getBuffer(renderType);
 
-        float x = rect.getX();
-        float y = rect.getY();
-        float z = rect.getZ();
-        float w = rect.getWidth();
-        float h = rect.getHeight();
-        float d = rect.getDepth();
+        float x = rect.x();
+        float y = rect.y();
+        float z = rect.z();
+        float w = rect.width();
+        float h = rect.height();
+        float d = rect.depth();
 
-        float u = uv.getX();
-        float v = uv.getY();
-        float s = uv.getWidth();
-        float t = uv.getHeight();
+        float u = uv.x();
+        float v = uv.y();
+        float s = uv.width();
+        float t = uv.height();
         float n = texture.getWidth();
         float m = texture.getHeight();
 

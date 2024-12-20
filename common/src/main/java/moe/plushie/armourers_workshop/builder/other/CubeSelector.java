@@ -2,10 +2,9 @@ package moe.plushie.armourers_workshop.builder.other;
 
 import moe.plushie.armourers_workshop.api.network.IFriendlyByteBuf;
 import moe.plushie.armourers_workshop.builder.item.impl.IPaintToolSelector;
-import moe.plushie.armourers_workshop.core.math.Rectangle3i;
+import moe.plushie.armourers_workshop.core.math.OpenRectangle3i;
 import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.init.ModBlocks;
-import moe.plushie.armourers_workshop.utils.BlockUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.UseOnContext;
@@ -20,7 +19,7 @@ public class CubeSelector implements IPaintToolSelector {
 
     final BlockPos blockPos;
     final MatchMode mode;
-    final ArrayList<Rectangle3i> rects;
+    final ArrayList<OpenRectangle3i> rects;
 
     final int radius;
     final boolean isPlaneOnly;
@@ -35,7 +34,7 @@ public class CubeSelector implements IPaintToolSelector {
         this.rects = new ArrayList<>();
     }
 
-    protected CubeSelector(MatchMode mode, Iterable<Rectangle3i> rects) {
+    protected CubeSelector(MatchMode mode, Iterable<OpenRectangle3i> rects) {
         this.blockPos = BlockPos.ZERO;
         this.mode = mode;
         this.radius = 0;
@@ -60,7 +59,7 @@ public class CubeSelector implements IPaintToolSelector {
                 int width = buffer.readInt();
                 int height = buffer.readInt();
                 int depth = buffer.readInt();
-                rects.add(new Rectangle3i(x, y, z, width, height, depth));
+                rects.add(new OpenRectangle3i(x, y, z, width, height, depth));
             }
         }
     }
@@ -77,7 +76,7 @@ public class CubeSelector implements IPaintToolSelector {
         return new CubeSelector(MatchMode.SAME, pos, radius, isApplyAllFaces, false);
     }
 
-    public static CubeSelector all(Iterable<Rectangle3i> rects) {
+    public static CubeSelector all(Iterable<OpenRectangle3i> rects) {
         return new CubeSelector(MatchMode.ALL, rects);
     }
 
@@ -97,13 +96,13 @@ public class CubeSelector implements IPaintToolSelector {
         buffer.writeBoolean(isPlaneOnly);
         if (mode == MatchMode.ALL) {
             buffer.writeInt(rects.size());
-            for (Rectangle3i rect : rects) {
-                buffer.writeInt(rect.getX());
-                buffer.writeInt(rect.getY());
-                buffer.writeInt(rect.getZ());
-                buffer.writeInt(rect.getWidth());
-                buffer.writeInt(rect.getHeight());
-                buffer.writeInt(rect.getDepth());
+            for (OpenRectangle3i rect : rects) {
+                buffer.writeInt(rect.x());
+                buffer.writeInt(rect.y());
+                buffer.writeInt(rect.z());
+                buffer.writeInt(rect.width());
+                buffer.writeInt(rect.height());
+                buffer.writeInt(rect.depth());
             }
         }
     }
@@ -125,7 +124,7 @@ public class CubeSelector implements IPaintToolSelector {
             case ALL: {
                 for (var rect : rects) {
                     for (var pos : rect.enumerateZYX()) {
-                        consumer.accept(new BlockPos(pos.getX(), pos.getY(), pos.getZ()));
+                        consumer.accept(new BlockPos(pos.x(), pos.y(), pos.z()));
                     }
                 }
                 break;

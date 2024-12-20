@@ -1,13 +1,12 @@
 package moe.plushie.armourers_workshop.builder.client.gui.armourer.guide;
 
 import moe.plushie.armourers_workshop.api.client.IBufferSource;
-import moe.plushie.armourers_workshop.api.client.guide.IGuideDataProvider;
 import moe.plushie.armourers_workshop.api.core.math.IPoseStack;
 import moe.plushie.armourers_workshop.core.client.other.SkinRenderType;
-import moe.plushie.armourers_workshop.core.math.Vector3f;
+import moe.plushie.armourers_workshop.core.math.OpenVector3f;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPartTypes;
-import moe.plushie.armourers_workshop.utils.OpenModelPart;
-import moe.plushie.armourers_workshop.utils.OpenModelPartBuilder;
+import moe.plushie.armourers_workshop.core.utils.OpenModelPart;
+import moe.plushie.armourers_workshop.core.utils.OpenModelPartBuilder;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
@@ -38,10 +37,10 @@ public class HeldItemGuideRenderer extends AbstractGuideRenderer {
         rendererManager.register(SkinPartTypes.ITEM, this::render);
     }
 
-    public void render(IPoseStack poseStack, IGuideDataProvider provider, int light, int overlay, IBufferSource bufferSource) {
+    public void render(IPoseStack poseStack, GuideDataProvider provider, int light, int overlay, IBufferSource bufferSource) {
         float f = 1 / 16f;
         poseStack.pushPose();
-        poseStack.rotate(Vector3f.XP.rotationDegrees(-90));
+        poseStack.rotate(OpenVector3f.XP.rotationDegrees(-90));
         armSolid.render(poseStack, bufferSource.getBuffer(SkinRenderType.PLAYER_CUTOUT), light, overlay);
         poseStack.translate(0, -0.001f * f, 0);
         armTransparent.render(poseStack, bufferSource.getBuffer(SkinRenderType.PLAYER_TRANSLUCENT), light, overlay, 0xbfffffff);

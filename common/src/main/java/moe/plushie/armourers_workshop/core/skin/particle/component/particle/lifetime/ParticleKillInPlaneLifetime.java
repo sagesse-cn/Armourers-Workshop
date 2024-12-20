@@ -46,8 +46,8 @@ public class ParticleKillInPlaneLifetime extends SkinParticleComponent {
             }
             var p0 = particle.getLocalPositionOld();
             var p1 = particle.getLocalPosition();
-            var prev = a * p0.getX() + b * p0.getY() + c * p0.getZ() + d;
-            var now = a * p1.getX() + b * p1.getY() + c * p1.getY() + d;
+            var prev = a * p0.x() + b * p0.y() + c * p0.z() + d;
+            var now = a * p1.x() + b * p1.y() + c * p1.y() + d;
             if ((prev > 0 && now < 0) || (prev < 0 && now > 0)) {
                 particle.kill();
             }

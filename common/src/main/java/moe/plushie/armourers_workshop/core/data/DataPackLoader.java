@@ -2,7 +2,6 @@ package moe.plushie.armourers_workshop.core.data;
 
 import moe.plushie.armourers_workshop.api.core.IResourceLocation;
 import moe.plushie.armourers_workshop.api.core.IResourceManager;
-import moe.plushie.armourers_workshop.api.data.IDataPackBuilder;
 import moe.plushie.armourers_workshop.core.utils.FileUtils;
 import moe.plushie.armourers_workshop.core.utils.JsonSerializer;
 import moe.plushie.armourers_workshop.init.ModConstants;
@@ -54,12 +53,12 @@ public class DataPackLoader implements PreparableReloadListener {
     public static class Entry {
 
         private final IResourceLocation target;
-        private final Function<IResourceLocation, IDataPackBuilder> provider;
+        private final Function<IResourceLocation, DataPackBuilder> provider;
         private final Runnable willLoadHandler;
         private final Runnable didLoadHandler;
         private final int order;
 
-        public Entry(String path, Function<IResourceLocation, IDataPackBuilder> provider, Runnable willLoadHandler, Runnable didLoadHandler, int order) {
+        public Entry(String path, Function<IResourceLocation, DataPackBuilder> provider, Runnable willLoadHandler, Runnable didLoadHandler, int order) {
             this.target = ModConstants.key(path);
             this.provider = provider;
             this.willLoadHandler = willLoadHandler;
@@ -67,12 +66,12 @@ public class DataPackLoader implements PreparableReloadListener {
             this.order = order;
         }
 
-        public Supplier<Map<IResourceLocation, IDataPackBuilder>> prepare(IResourceManager resourceManager) {
+        public Supplier<Map<IResourceLocation, DataPackBuilder>> prepare(IResourceManager resourceManager) {
             if (willLoadHandler != null) {
                 willLoadHandler.run();
             }
             return () -> {
-                var results = new HashMap<IResourceLocation, IDataPackBuilder>();
+                var results = new HashMap<IResourceLocation, DataPackBuilder>();
                 resourceManager.readResources(target, s -> s.endsWith(".json"), (location, resource) -> {
                     var object = JsonSerializer.readFromResource(resource);
                     if (object == null) {
@@ -87,7 +86,7 @@ public class DataPackLoader implements PreparableReloadListener {
             };
         }
 
-        public void load(Map<IResourceLocation, IDataPackBuilder> results) {
+        public void load(Map<IResourceLocation, DataPackBuilder> results) {
             results.forEach((key, builder) -> builder.build());
             if (didLoadHandler != null) {
                 didLoadHandler.run();
@@ -97,6 +96,6 @@ public class DataPackLoader implements PreparableReloadListener {
 
     public interface TaskQueue {
 
-        void accept(Supplier<Map<IResourceLocation, IDataPackBuilder>> supplier, Consumer<Map<IResourceLocation, IDataPackBuilder>> consumer);
+        void accept(Supplier<Map<IResourceLocation, DataPackBuilder>> supplier, Consumer<Map<IResourceLocation, DataPackBuilder>> consumer);
     }
 }

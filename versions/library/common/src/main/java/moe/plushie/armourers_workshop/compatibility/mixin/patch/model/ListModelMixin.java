@@ -2,7 +2,7 @@ package moe.plushie.armourers_workshop.compatibility.mixin.patch.model;
 
 import moe.plushie.armourers_workshop.api.annotation.Available;
 import moe.plushie.armourers_workshop.api.client.model.IModelPartCollector;
-import moe.plushie.armourers_workshop.compatibility.client.model.AbstractModelHolder;
+import moe.plushie.armourers_workshop.compatibility.client.model.AbstractModelCollector;
 import net.minecraft.client.model.ListModel;
 import net.minecraft.client.model.geom.ModelPart;
 import org.spongepowered.asm.mixin.Mixin;
@@ -19,6 +19,6 @@ public abstract class ListModelMixin implements IModelPartCollector {
 
     @Override
     public void aw2$collect(Map<String, ModelPart> collector) {
-        AbstractModelHolder.collect("parts", parts(), collector);
+        AbstractModelCollector.collect("parts", parts(), collector);
     }
 }

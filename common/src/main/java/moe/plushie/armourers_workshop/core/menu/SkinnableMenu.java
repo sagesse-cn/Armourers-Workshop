@@ -2,7 +2,7 @@ package moe.plushie.armourers_workshop.core.menu;
 
 import moe.plushie.armourers_workshop.api.common.IGlobalPos;
 import moe.plushie.armourers_workshop.core.blockentity.SkinnableBlockEntity;
-import moe.plushie.armourers_workshop.utils.TranslateUtils;
+import moe.plushie.armourers_workshop.core.utils.TranslateUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;

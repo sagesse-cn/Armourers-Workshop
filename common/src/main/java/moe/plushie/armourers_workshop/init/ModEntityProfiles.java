@@ -2,7 +2,7 @@ package moe.plushie.armourers_workshop.init;
 
 import moe.plushie.armourers_workshop.api.common.IEntityTypeProvider;
 import moe.plushie.armourers_workshop.api.core.IResourceLocation;
-import moe.plushie.armourers_workshop.api.data.IDataPackBuilder;
+import moe.plushie.armourers_workshop.core.data.DataPackBuilder;
 import moe.plushie.armourers_workshop.core.data.DataPackType;
 import moe.plushie.armourers_workshop.core.entity.EntityProfile;
 import moe.plushie.armourers_workshop.core.menu.SkinSlotType;
@@ -85,7 +85,7 @@ public class ModEntityProfiles {
         return CUSTOM_ENTITIES;
     }
 
-    private static class SimpleLoader implements IDataPackBuilder {
+    private static class SimpleLoader implements DataPackBuilder {
 
         private static final Map<IResourceLocation, SimpleBuilder> CUSTOM_PROFILE_BUILDERS = new LinkedHashMap<>();
         private static final Map<IResourceLocation, SimpleBuilder> BUILTIN_PROFILE_BUILDERS = new LinkedHashMap<>();

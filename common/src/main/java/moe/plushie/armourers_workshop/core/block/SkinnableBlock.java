@@ -8,7 +8,7 @@ import moe.plushie.armourers_workshop.compatibility.core.data.AbstractDataSerial
 import moe.plushie.armourers_workshop.core.blockentity.SkinnableBlockEntity;
 import moe.plushie.armourers_workshop.core.data.SkinBlockPlaceContext;
 import moe.plushie.armourers_workshop.core.entity.SeatEntity;
-import moe.plushie.armourers_workshop.core.math.Vector3d;
+import moe.plushie.armourers_workshop.core.math.OpenVector3d;
 import moe.plushie.armourers_workshop.core.skin.SkinDescriptor;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperty;
 import moe.plushie.armourers_workshop.init.ModBlockEntityTypes;
@@ -262,7 +262,7 @@ public class SkinnableBlock extends AbstractAttachedHorizontalBlock implements A
     public void killSeatEntities(Level level, BlockPos blockPos) {
         var blockEntity = getParentBlockEntity(level, blockPos);
         if (blockEntity != null) {
-            Vector3d seatPos = blockEntity.getSeatPos().add(0.5f, 0.5f, 0.5f);
+            OpenVector3d seatPos = blockEntity.getSeatPos().add(0.5f, 0.5f, 0.5f);
             killSeatEntity(level, blockEntity.getParentPos(), seatPos);
         }
     }
@@ -300,8 +300,8 @@ public class SkinnableBlock extends AbstractAttachedHorizontalBlock implements A
     }
 
     @Nullable
-    private SeatEntity getSeatEntity(ServerLevel level, BlockPos blockPos, Vector3d pos) {
-        var searchRect = new AABB(pos.x, pos.y, pos.z, pos.x + 1, pos.y + 1, pos.z + 1);
+    private SeatEntity getSeatEntity(ServerLevel level, BlockPos blockPos, OpenVector3d pos) {
+        var searchRect = new AABB(pos.x(), pos.y(), pos.z(), pos.x() + 1, pos.y() + 1, pos.z() + 1);
         for (var entity : level.getEntitiesOfClass(SeatEntity.class, searchRect)) {
             if (entity.isAlive() && blockPos.equals(entity.getBlockPos())) {
                 if (entity.getPassengers().isEmpty()) {
@@ -317,8 +317,8 @@ public class SkinnableBlock extends AbstractAttachedHorizontalBlock implements A
         return entity;
     }
 
-    private void killSeatEntity(Level level, BlockPos blockPos, Vector3d pos) {
-        var searchRect = new AABB(pos.x, pos.y, pos.z, pos.x + 1, pos.y + 1, pos.z + 1);
+    private void killSeatEntity(Level level, BlockPos blockPos, OpenVector3d pos) {
+        var searchRect = new AABB(pos.x(), pos.y(), pos.z(), pos.x() + 1, pos.y() + 1, pos.z() + 1);
         for (var entity : level.getEntitiesOfClass(SeatEntity.class, searchRect)) {
             if (entity.isAlive() && blockPos.equals(entity.getBlockPos())) {
                 entity.kill();

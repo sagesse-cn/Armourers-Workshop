@@ -1,11 +1,11 @@
 package moe.plushie.armourers_workshop.init.platform;
 
 import moe.plushie.armourers_workshop.api.core.IResourceLocation;
-import moe.plushie.armourers_workshop.api.data.IDataPackBuilder;
+import moe.plushie.armourers_workshop.core.data.DataPackBuilder;
 import moe.plushie.armourers_workshop.core.data.DataPackLoader;
 import moe.plushie.armourers_workshop.core.data.DataPackType;
 import moe.plushie.armourers_workshop.core.utils.Collections;
-import moe.plushie.armourers_workshop.init.platform.event.common.DataPackEvent;
+import moe.plushie.armourers_workshop.init.event.common.DataPackEvent;
 import net.minecraft.server.packs.resources.ResourceManager;
 
 import java.util.Map;
@@ -23,7 +23,7 @@ public class DataPackManager {
         return INSTANCES.get(packType);
     }
 
-    public static void register(DataPackType packType, String path, Function<IResourceLocation, IDataPackBuilder> provider, Runnable willLoadHandler, Runnable didLoadHandler, int order) {
+    public static void register(DataPackType packType, String path, Function<IResourceLocation, DataPackBuilder> provider, Runnable willLoadHandler, Runnable didLoadHandler, int order) {
         var loader = byType(packType);
         if (loader != null) {
             loader.add(new DataPackLoader.Entry(path, provider, willLoadHandler, didLoadHandler, order));

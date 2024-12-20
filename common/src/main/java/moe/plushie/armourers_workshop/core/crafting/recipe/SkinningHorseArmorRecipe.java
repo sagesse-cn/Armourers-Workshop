@@ -1,12 +1,12 @@
 package moe.plushie.armourers_workshop.core.crafting.recipe;
 
-import moe.plushie.armourers_workshop.api.skin.ISkinType;
+import moe.plushie.armourers_workshop.core.skin.SkinType;
 import moe.plushie.armourers_workshop.init.ModItemTags;
 import net.minecraft.world.item.ItemStack;
 
 public class SkinningHorseArmorRecipe extends SkinningRecipe {
 
-    public SkinningHorseArmorRecipe(ISkinType skinType) {
+    public SkinningHorseArmorRecipe(SkinType skinType) {
         super(skinType);
     }
 

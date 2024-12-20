@@ -7,12 +7,12 @@ public class OpenNearPlane {
     private final float width;
     private final float height;
 
-    private final Vector3f forwards = new Vector3f(0, 0, 1);
-    private final Vector3f up = new Vector3f(0, 1, 0);
-    private final Vector3f left = new Vector3f(1, 0, 0);
+    private final OpenVector3f forwards = new OpenVector3f(0, 0, 1);
+    private final OpenVector3f up = new OpenVector3f(0, 1, 0);
+    private final OpenVector3f left = new OpenVector3f(1, 0, 0);
 
     public OpenNearPlane(float rx, float ry, float width, float height, float fov) {
-        var quaternion = OpenQuaternion3f.fromYXZ(-ry, rx, 0.0f, true);
+        var quaternion = OpenQuaternionf.fromEulerAnglesYXZ(-ry, rx, 0.0f, true);
         this.forwards.transform(quaternion);
         this.up.transform(quaternion);
         this.left.transform(quaternion);
@@ -21,7 +21,7 @@ public class OpenNearPlane {
         this.height = height;
     }
 
-    public Vector3f at(float deltaX, float deltaY, float deltaZ) {
+    public OpenVector3f at(float deltaX, float deltaY, float deltaZ) {
         float d0 = width / height;
         float d1 = (float) Math.tan((fov / 2.0) * (Math.PI / 180));
 
@@ -30,22 +30,22 @@ public class OpenNearPlane {
         float sz = deltaZ;
 
         // (forwards * sz) + (up * sy) - (left * sx)
-        float tx = forwards.getX() * sz + up.getX() * sy - left.getX() * sx;
-        float ty = forwards.getY() * sz + up.getY() * sy - left.getY() * sx;
-        float tz = forwards.getZ() * sz + up.getZ() * sy - left.getZ() * sx;
+        float tx = forwards.x() * sz + up.x() * sy - left.x() * sx;
+        float ty = forwards.y() * sz + up.y() * sy - left.y() * sx;
+        float tz = forwards.z() * sz + up.z() * sy - left.z() * sx;
 
-        return new Vector3f(tx, ty, tz);
+        return new OpenVector3f(tx, ty, tz);
     }
 
-    public Vector3f getLookVector() {
+    public OpenVector3f lookVector() {
         return forwards;
     }
 
-    public Vector3f getUpVector() {
+    public OpenVector3f upVector() {
         return up;
     }
 
-    public Vector3f getLeftVector() {
+    public OpenVector3f leftVector() {
         return left;
     }
 }

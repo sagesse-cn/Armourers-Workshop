@@ -24,8 +24,8 @@ public class AbstractMenuScreen<T extends AbstractContainerMenu> extends Abstrac
     }
 
     public void setContentOffset(CGPoint offset) {
-        leftPos = (int) offset.getX();
-        topPos = (int) offset.getY();
+        leftPos = (int) offset.x;
+        topPos = (int) offset.y;
     }
 
     public CGSize getContentSize() {
@@ -33,8 +33,8 @@ public class AbstractMenuScreen<T extends AbstractContainerMenu> extends Abstrac
     }
 
     public void setContentSize(CGSize size) {
-        imageWidth = (int) size.getWidth();
-        imageHeight = (int) size.getHeight();
+        imageWidth = (int) size.width;
+        imageHeight = (int) size.height;
     }
 
     public CGSize getScreenSize() {
@@ -42,8 +42,8 @@ public class AbstractMenuScreen<T extends AbstractContainerMenu> extends Abstrac
     }
 
     public void setScreenSize(CGSize size) {
-        width = (int) size.getWidth();
-        height = (int) size.getHeight();
+        width = (int) size.width;
+        height = (int) size.height;
     }
 }
 

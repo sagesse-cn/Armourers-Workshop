@@ -1,17 +1,22 @@
 package moe.plushie.armourers_workshop.builder.data.properties;
 
-import com.google.common.base.Objects;
-import moe.plushie.armourers_workshop.api.data.IDataProperty;
+import moe.plushie.armourers_workshop.core.utils.Objects;
 
 import java.util.ArrayList;
 import java.util.function.Consumer;
 
-public class DataProperty<T> implements IDataProperty<T> {
+public class DataProperty<T> {
 
     protected T value;
     protected Consumer<Boolean> editingObserver;
     protected final ArrayList<Consumer<T>> valueObservers = new ArrayList<>();
 
+    public DataProperty() {
+    }
+
+    public DataProperty(T value) {
+        this.value = value;
+    }
 
     public void beginEditing() {
         if (editingObserver != null) {
@@ -25,21 +30,25 @@ public class DataProperty<T> implements IDataProperty<T> {
         }
     }
 
-    @Override
     public void set(T value) {
-        if (Objects.equal(this.value, value)) {
+        if (Objects.equals(this.value, value)) {
             return;
         }
         this.value = value;
         this.valueObservers.forEach(it -> it.accept(value));
     }
 
-    @Override
     public T get() {
         return value;
     }
 
-    @Override
+    public T getOrDefault(T defaultValue) {
+        if (value != null) {
+            return value;
+        }
+        return defaultValue;
+    }
+
     public void addObserver(Consumer<T> observer) {
         this.valueObservers.add(observer);
     }

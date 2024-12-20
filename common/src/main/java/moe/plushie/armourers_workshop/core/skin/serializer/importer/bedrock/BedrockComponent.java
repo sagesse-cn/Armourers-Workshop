@@ -1,8 +1,8 @@
 package moe.plushie.armourers_workshop.core.skin.serializer.importer.bedrock;
 
-import moe.plushie.armourers_workshop.core.math.Size2i;
+import moe.plushie.armourers_workshop.core.math.OpenSize2i;
 import moe.plushie.armourers_workshop.core.utils.Collections;
-import moe.plushie.armourers_workshop.core.utils.MolangExpression;
+import moe.plushie.armourers_workshop.core.utils.OpenExpression;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -13,32 +13,32 @@ public class BedrockComponent {
 
     protected static class EmitterInitialization extends BedrockComponent {
 
-        private final MolangExpression creation;
-        private final MolangExpression update;
+        private final OpenExpression creation;
+        private final OpenExpression update;
 
-        public EmitterInitialization(MolangExpression creation, MolangExpression update) {
+        public EmitterInitialization(OpenExpression creation, OpenExpression update) {
             this.creation = creation;
             this.update = update;
         }
 
-        public MolangExpression getCreation() {
+        public OpenExpression getCreation() {
             return creation;
         }
 
-        public MolangExpression getUpdate() {
+        public OpenExpression getUpdate() {
             return update;
         }
 
         protected static class Builder extends BedrockComponent.Builder {
 
-            private MolangExpression creation;
-            private MolangExpression update;
+            private OpenExpression creation;
+            private OpenExpression update;
 
-            public void creation(MolangExpression creation) {
+            public void creation(OpenExpression creation) {
                 this.creation = creation;
             }
 
-            public void update(MolangExpression update) {
+            public void update(OpenExpression update) {
                 this.update = update;
             }
 
@@ -100,32 +100,32 @@ public class BedrockComponent {
 
     protected static class EmitterSteadyRate extends BedrockComponent {
 
-        private final MolangExpression spawnRate;
-        private final MolangExpression maxParticles;
+        private final OpenExpression spawnRate;
+        private final OpenExpression maxParticles;
 
-        public EmitterSteadyRate(MolangExpression spawnRate, MolangExpression maxParticles) {
+        public EmitterSteadyRate(OpenExpression spawnRate, OpenExpression maxParticles) {
             this.spawnRate = spawnRate;
             this.maxParticles = maxParticles;
         }
 
-        public MolangExpression getSpawnRate() {
+        public OpenExpression getSpawnRate() {
             return spawnRate;
         }
 
-        public MolangExpression getMaxParticles() {
+        public OpenExpression getMaxParticles() {
             return maxParticles;
         }
 
         protected static class Builder extends BedrockComponent.Builder {
 
-            MolangExpression spawnRate;
-            MolangExpression maxParticles;
+            OpenExpression spawnRate;
+            OpenExpression maxParticles;
 
-            public void spawnRate(MolangExpression spawnRate) {
+            public void spawnRate(OpenExpression spawnRate) {
                 this.spawnRate = spawnRate;
             }
 
-            public void maxParticles(MolangExpression maxParticles) {
+            public void maxParticles(OpenExpression maxParticles) {
                 this.maxParticles = maxParticles;
             }
 
@@ -138,21 +138,21 @@ public class BedrockComponent {
 
     protected static class EmitterInstantRate extends BedrockComponent {
 
-        private final MolangExpression particles;
+        private final OpenExpression particles;
 
-        public EmitterInstantRate(MolangExpression particles) {
+        public EmitterInstantRate(OpenExpression particles) {
             this.particles = particles;
         }
 
-        public MolangExpression getParticles() {
+        public OpenExpression getParticles() {
             return particles;
         }
 
         protected static class Builder extends BedrockComponent.Builder {
 
-            MolangExpression particles;
+            OpenExpression particles;
 
-            public void particles(MolangExpression particles) {
+            public void particles(OpenExpression particles) {
                 this.particles = particles;
             }
 
@@ -165,21 +165,21 @@ public class BedrockComponent {
 
     protected static class EmitterManualRate extends BedrockComponent {
 
-        private final MolangExpression maxParticles;
+        private final OpenExpression maxParticles;
 
-        public EmitterManualRate(MolangExpression maxParticles) {
+        public EmitterManualRate(OpenExpression maxParticles) {
             this.maxParticles = maxParticles;
         }
 
-        public MolangExpression getMaxParticles() {
+        public OpenExpression getMaxParticles() {
             return maxParticles;
         }
 
         protected static class Builder extends BedrockComponent.Builder {
 
-            MolangExpression maxParticles;
+            OpenExpression maxParticles;
 
-            public void maxParticles(MolangExpression maxParticles) {
+            public void maxParticles(OpenExpression maxParticles) {
                 this.maxParticles = maxParticles;
             }
 
@@ -266,32 +266,32 @@ public class BedrockComponent {
 
     protected static class EmitterLoopingLifetime extends BedrockComponent {
 
-        private final MolangExpression activeTime;
-        private final MolangExpression sleepTime;
+        private final OpenExpression activeTime;
+        private final OpenExpression sleepTime;
 
-        public EmitterLoopingLifetime(MolangExpression activeTime, MolangExpression sleepTime) {
+        public EmitterLoopingLifetime(OpenExpression activeTime, OpenExpression sleepTime) {
             this.activeTime = activeTime;
             this.sleepTime = sleepTime;
         }
 
-        public MolangExpression getActiveTime() {
+        public OpenExpression getActiveTime() {
             return activeTime;
         }
 
-        public MolangExpression getSleepTime() {
+        public OpenExpression getSleepTime() {
             return sleepTime;
         }
 
         protected static class Builder extends BedrockComponent.Builder {
 
-            MolangExpression activeTime;
-            MolangExpression sleepTime;
+            OpenExpression activeTime;
+            OpenExpression sleepTime;
 
-            public void activeTime(MolangExpression activeTime) {
+            public void activeTime(OpenExpression activeTime) {
                 this.activeTime = activeTime;
             }
 
-            public void sleepTime(MolangExpression sleepTime) {
+            public void sleepTime(OpenExpression sleepTime) {
                 this.sleepTime = sleepTime;
             }
 
@@ -305,21 +305,21 @@ public class BedrockComponent {
 
     protected static class EmitterOnceLifetime extends BedrockComponent {
 
-        private final MolangExpression activeTime;
+        private final OpenExpression activeTime;
 
-        public EmitterOnceLifetime(MolangExpression activeTime) {
+        public EmitterOnceLifetime(OpenExpression activeTime) {
             this.activeTime = activeTime;
         }
 
-        public MolangExpression getActiveTime() {
+        public OpenExpression getActiveTime() {
             return activeTime;
         }
 
         protected static class Builder extends BedrockComponent.Builder {
 
-            MolangExpression activeTime;
+            OpenExpression activeTime;
 
-            public void activeTime(MolangExpression activeTime) {
+            public void activeTime(OpenExpression activeTime) {
                 this.activeTime = activeTime;
             }
 
@@ -332,32 +332,32 @@ public class BedrockComponent {
 
     protected static class EmitterExpressionLifetime extends BedrockComponent {
 
-        private final MolangExpression activation;
-        private final MolangExpression expiration;
+        private final OpenExpression activation;
+        private final OpenExpression expiration;
 
-        public EmitterExpressionLifetime(MolangExpression activation, MolangExpression expiration) {
+        public EmitterExpressionLifetime(OpenExpression activation, OpenExpression expiration) {
             this.activation = activation;
             this.expiration = expiration;
         }
 
-        public MolangExpression getActivation() {
+        public OpenExpression getActivation() {
             return activation;
         }
 
-        public MolangExpression getExpiration() {
+        public OpenExpression getExpiration() {
             return expiration;
         }
 
         protected static class Builder extends BedrockComponent.Builder {
 
-            MolangExpression activation;
-            MolangExpression expiration;
+            OpenExpression activation;
+            OpenExpression expiration;
 
-            public void activation(MolangExpression activation) {
+            public void activation(OpenExpression activation) {
                 this.activation = activation;
             }
 
-            public void expiration(MolangExpression expiration) {
+            public void expiration(OpenExpression expiration) {
                 this.expiration = expiration;
             }
 
@@ -370,27 +370,27 @@ public class BedrockComponent {
 
     protected static class EmitterPointShape extends BedrockComponent {
 
-        private final MolangExpression offsetX;
-        private final MolangExpression offsetY;
-        private final MolangExpression offsetZ;
+        private final OpenExpression offsetX;
+        private final OpenExpression offsetY;
+        private final OpenExpression offsetZ;
         private final Object direction;
 
-        public EmitterPointShape(MolangExpression offsetX, MolangExpression offsetY, MolangExpression offsetZ, Object direction) {
+        public EmitterPointShape(OpenExpression offsetX, OpenExpression offsetY, OpenExpression offsetZ, Object direction) {
             this.offsetX = offsetX;
             this.offsetY = offsetY;
             this.offsetZ = offsetZ;
             this.direction = direction;
         }
 
-        public MolangExpression getOffsetX() {
+        public OpenExpression getOffsetX() {
             return offsetX;
         }
 
-        public MolangExpression getOffsetY() {
+        public OpenExpression getOffsetY() {
             return offsetY;
         }
 
-        public MolangExpression getOffsetZ() {
+        public OpenExpression getOffsetZ() {
             return offsetZ;
         }
 
@@ -409,15 +409,15 @@ public class BedrockComponent {
 
     protected static class EmitterSphereShape extends BedrockComponent {
 
-        private final MolangExpression offsetX;
-        private final MolangExpression offsetY;
-        private final MolangExpression offsetZ;
+        private final OpenExpression offsetX;
+        private final OpenExpression offsetY;
+        private final OpenExpression offsetZ;
 
-        private final MolangExpression radius;
+        private final OpenExpression radius;
         private final boolean surfaceOnly;
         private final Object direction;
 
-        public EmitterSphereShape(MolangExpression offsetX, MolangExpression offsetY, MolangExpression offsetZ, MolangExpression radius, boolean surfaceOnly, Object direction) {
+        public EmitterSphereShape(OpenExpression offsetX, OpenExpression offsetY, OpenExpression offsetZ, OpenExpression radius, boolean surfaceOnly, Object direction) {
             this.offsetX = offsetX;
             this.offsetY = offsetY;
             this.offsetZ = offsetZ;
@@ -426,19 +426,19 @@ public class BedrockComponent {
             this.direction = direction;
         }
 
-        public MolangExpression getOffsetX() {
+        public OpenExpression getOffsetX() {
             return offsetX;
         }
 
-        public MolangExpression getOffsetY() {
+        public OpenExpression getOffsetY() {
             return offsetY;
         }
 
-        public MolangExpression getOffsetZ() {
+        public OpenExpression getOffsetZ() {
             return offsetZ;
         }
 
-        public MolangExpression getRadius() {
+        public OpenExpression getRadius() {
             return radius;
         }
 
@@ -461,18 +461,18 @@ public class BedrockComponent {
 
     protected static class EmitterBoxShape extends BedrockComponent {
 
-        private final MolangExpression offsetX;
-        private final MolangExpression offsetY;
-        private final MolangExpression offsetZ;
+        private final OpenExpression offsetX;
+        private final OpenExpression offsetY;
+        private final OpenExpression offsetZ;
 
-        private final MolangExpression sizeWidth;
-        private final MolangExpression sizeHeight;
-        private final MolangExpression sizeDepth;
+        private final OpenExpression sizeWidth;
+        private final OpenExpression sizeHeight;
+        private final OpenExpression sizeDepth;
 
         private final boolean surfaceOnly;
         private final Object direction;
 
-        public EmitterBoxShape(MolangExpression offsetX, MolangExpression offsetY, MolangExpression offsetZ, MolangExpression sizeWidth, MolangExpression sizeHeight, MolangExpression sizeDepth, boolean surfaceOnly, Object direction) {
+        public EmitterBoxShape(OpenExpression offsetX, OpenExpression offsetY, OpenExpression offsetZ, OpenExpression sizeWidth, OpenExpression sizeHeight, OpenExpression sizeDepth, boolean surfaceOnly, Object direction) {
             this.offsetX = offsetX;
             this.offsetY = offsetY;
             this.offsetZ = offsetZ;
@@ -483,27 +483,27 @@ public class BedrockComponent {
             this.direction = direction;
         }
 
-        public MolangExpression getOffsetX() {
+        public OpenExpression getOffsetX() {
             return offsetX;
         }
 
-        public MolangExpression getOffsetY() {
+        public OpenExpression getOffsetY() {
             return offsetY;
         }
 
-        public MolangExpression getOffsetZ() {
+        public OpenExpression getOffsetZ() {
             return offsetZ;
         }
 
-        public MolangExpression getSizeWidth() {
+        public OpenExpression getSizeWidth() {
             return sizeWidth;
         }
 
-        public MolangExpression getSizeHeight() {
+        public OpenExpression getSizeHeight() {
             return sizeHeight;
         }
 
-        public MolangExpression getSizeDepth() {
+        public OpenExpression getSizeDepth() {
             return sizeDepth;
         }
 
@@ -517,19 +517,19 @@ public class BedrockComponent {
 
         protected static class Builder extends ShapeBuilder {
 
-            private MolangExpression sizeWidth;
-            private MolangExpression sizeHeight;
-            private MolangExpression sizeDepth;
+            private OpenExpression sizeWidth;
+            private OpenExpression sizeHeight;
+            private OpenExpression sizeDepth;
 
-            public void width(MolangExpression sizeWidth) {
+            public void width(OpenExpression sizeWidth) {
                 this.sizeWidth = sizeWidth;
             }
 
-            public void height(MolangExpression sizeHeight) {
+            public void height(OpenExpression sizeHeight) {
                 this.sizeHeight = sizeHeight;
             }
 
-            public void depth(MolangExpression sizeDepth) {
+            public void depth(OpenExpression sizeDepth) {
                 this.sizeDepth = sizeDepth;
             }
 
@@ -542,20 +542,20 @@ public class BedrockComponent {
 
     protected static class EmitterDiscShape extends BedrockComponent {
 
-        private final MolangExpression offsetX;
-        private final MolangExpression offsetY;
-        private final MolangExpression offsetZ;
+        private final OpenExpression offsetX;
+        private final OpenExpression offsetY;
+        private final OpenExpression offsetZ;
 
-        private final MolangExpression radius;
+        private final OpenExpression radius;
 
-        private final MolangExpression planeNormalX;
-        private final MolangExpression planeNormalY;
-        private final MolangExpression planeNormalZ;
+        private final OpenExpression planeNormalX;
+        private final OpenExpression planeNormalY;
+        private final OpenExpression planeNormalZ;
 
         private final boolean surfaceOnly;
         private final Object direction;
 
-        public EmitterDiscShape(MolangExpression offsetX, MolangExpression offsetY, MolangExpression offsetZ, MolangExpression radius, MolangExpression planeNormalX, MolangExpression planeNormalY, MolangExpression planeNormalZ, boolean surfaceOnly, Object direction) {
+        public EmitterDiscShape(OpenExpression offsetX, OpenExpression offsetY, OpenExpression offsetZ, OpenExpression radius, OpenExpression planeNormalX, OpenExpression planeNormalY, OpenExpression planeNormalZ, boolean surfaceOnly, Object direction) {
             this.offsetX = offsetX;
             this.offsetY = offsetY;
             this.offsetZ = offsetZ;
@@ -567,31 +567,31 @@ public class BedrockComponent {
             this.direction = direction;
         }
 
-        public MolangExpression getOffsetX() {
+        public OpenExpression getOffsetX() {
             return offsetX;
         }
 
-        public MolangExpression getOffsetY() {
+        public OpenExpression getOffsetY() {
             return offsetY;
         }
 
-        public MolangExpression getOffsetZ() {
+        public OpenExpression getOffsetZ() {
             return offsetZ;
         }
 
-        public MolangExpression getRadius() {
+        public OpenExpression getRadius() {
             return radius;
         }
 
-        public MolangExpression getPlaneNormalX() {
+        public OpenExpression getPlaneNormalX() {
             return planeNormalX;
         }
 
-        public MolangExpression getPlaneNormalY() {
+        public OpenExpression getPlaneNormalY() {
             return planeNormalY;
         }
 
-        public MolangExpression getPlaneNormalZ() {
+        public OpenExpression getPlaneNormalZ() {
             return planeNormalZ;
         }
 
@@ -605,19 +605,19 @@ public class BedrockComponent {
 
         protected static class Builder extends ShapeBuilder {
 
-            private MolangExpression planeNormalX;
-            private MolangExpression planeNormalY;
-            private MolangExpression planeNormalZ;
+            private OpenExpression planeNormalX;
+            private OpenExpression planeNormalY;
+            private OpenExpression planeNormalZ;
 
-            public void planeNormalX(MolangExpression planeNormalX) {
+            public void planeNormalX(OpenExpression planeNormalX) {
                 this.planeNormalX = planeNormalX;
             }
 
-            public void planeNormalY(MolangExpression planeNormalY) {
+            public void planeNormalY(OpenExpression planeNormalY) {
                 this.planeNormalY = planeNormalY;
             }
 
-            public void planeNormalZ(MolangExpression planeNormalZ) {
+            public void planeNormalZ(OpenExpression planeNormalZ) {
                 this.planeNormalZ = planeNormalZ;
             }
 
@@ -630,14 +630,14 @@ public class BedrockComponent {
 
     protected static class EmitterEntityShape extends BedrockComponent {
 
-        private final MolangExpression offsetX;
-        private final MolangExpression offsetY;
-        private final MolangExpression offsetZ;
+        private final OpenExpression offsetX;
+        private final OpenExpression offsetY;
+        private final OpenExpression offsetZ;
 
         private final boolean surfaceOnly;
         private final Object direction;
 
-        public EmitterEntityShape(MolangExpression offsetX, MolangExpression offsetY, MolangExpression offsetZ, boolean surfaceOnly, Object direction) {
+        public EmitterEntityShape(OpenExpression offsetX, OpenExpression offsetY, OpenExpression offsetZ, boolean surfaceOnly, Object direction) {
             this.offsetX = offsetX;
             this.offsetY = offsetY;
             this.offsetZ = offsetZ;
@@ -645,15 +645,15 @@ public class BedrockComponent {
             this.direction = direction;
         }
 
-        public MolangExpression getOffsetX() {
+        public OpenExpression getOffsetX() {
             return offsetX;
         }
 
-        public MolangExpression getOffsetY() {
+        public OpenExpression getOffsetY() {
             return offsetY;
         }
 
-        public MolangExpression getOffsetZ() {
+        public OpenExpression getOffsetZ() {
             return offsetZ;
         }
 
@@ -676,32 +676,32 @@ public class BedrockComponent {
 
     protected static class ParticleInitialization extends BedrockComponent {
 
-        private final MolangExpression update;
-        private final MolangExpression render;
+        private final OpenExpression update;
+        private final OpenExpression render;
 
-        public ParticleInitialization(MolangExpression update, MolangExpression render) {
+        public ParticleInitialization(OpenExpression update, OpenExpression render) {
             this.update = update;
             this.render = render;
         }
 
-        public MolangExpression getUpdate() {
+        public OpenExpression getUpdate() {
             return update;
         }
 
-        public MolangExpression getRender() {
+        public OpenExpression getRender() {
             return render;
         }
 
         protected static class Builder extends BedrockComponent.Builder {
 
-            MolangExpression update;
-            MolangExpression render;
+            OpenExpression update;
+            OpenExpression render;
 
-            public void update(MolangExpression update) {
+            public void update(OpenExpression update) {
                 this.update = update;
             }
 
-            public void render(MolangExpression render) {
+            public void render(OpenExpression render) {
                 this.render = render;
             }
 
@@ -714,21 +714,21 @@ public class BedrockComponent {
 
     protected static class ParticleInitialSpeed extends BedrockComponent {
 
-        private final MolangExpression speed;
+        private final OpenExpression speed;
 
-        public ParticleInitialSpeed(MolangExpression speed) {
+        public ParticleInitialSpeed(OpenExpression speed) {
             this.speed = speed;
         }
 
-        public MolangExpression getSpeed() {
+        public OpenExpression getSpeed() {
             return speed;
         }
 
         protected static class Builder extends BedrockComponent.Builder {
 
-            MolangExpression speed;
+            OpenExpression speed;
 
-            public void speed(MolangExpression speed) {
+            public void speed(OpenExpression speed) {
                 this.speed = speed;
             }
 
@@ -743,32 +743,32 @@ public class BedrockComponent {
 
     protected static class ParticleInitialSpin extends BedrockComponent {
 
-        private final MolangExpression rotation;
-        private final MolangExpression rotationRate;
+        private final OpenExpression rotation;
+        private final OpenExpression rotationRate;
 
-        public ParticleInitialSpin(MolangExpression rotation, MolangExpression rotationRate) {
+        public ParticleInitialSpin(OpenExpression rotation, OpenExpression rotationRate) {
             this.rotation = rotation;
             this.rotationRate = rotationRate;
         }
 
-        public MolangExpression getRotation() {
+        public OpenExpression getRotation() {
             return rotation;
         }
 
-        public MolangExpression getRotationRate() {
+        public OpenExpression getRotationRate() {
             return rotationRate;
         }
 
         protected static class Builder extends BedrockComponent.Builder {
 
-            MolangExpression rotation;
-            MolangExpression rotationRate;
+            OpenExpression rotation;
+            OpenExpression rotationRate;
 
-            public void rotation(MolangExpression rotation) {
+            public void rotation(OpenExpression rotation) {
                 this.rotation = rotation;
             }
 
-            public void rotationRate(MolangExpression rotationRate) {
+            public void rotationRate(OpenExpression rotationRate) {
                 this.rotationRate = rotationRate;
             }
 
@@ -830,32 +830,32 @@ public class BedrockComponent {
 
     protected static class ParticleExpressLifetime extends BedrockComponent {
 
-        private final MolangExpression maxAge;
-        private final MolangExpression expiration;
+        private final OpenExpression maxAge;
+        private final OpenExpression expiration;
 
-        public ParticleExpressLifetime(MolangExpression maxAge, MolangExpression expiration) {
+        public ParticleExpressLifetime(OpenExpression maxAge, OpenExpression expiration) {
             this.maxAge = maxAge;
             this.expiration = expiration;
         }
 
-        public MolangExpression getMaxAge() {
+        public OpenExpression getMaxAge() {
             return maxAge;
         }
 
-        public MolangExpression getExpiration() {
+        public OpenExpression getExpiration() {
             return expiration;
         }
 
         protected static class Builder extends BedrockComponent.Builder {
 
-            MolangExpression maxAge;
-            MolangExpression expiration;
+            OpenExpression maxAge;
+            OpenExpression expiration;
 
-            public void maxAge(MolangExpression maxAge) {
+            public void maxAge(OpenExpression maxAge) {
                 this.maxAge = maxAge;
             }
 
-            public void expiration(MolangExpression expiration) {
+            public void expiration(OpenExpression expiration) {
                 this.expiration = expiration;
             }
 
@@ -949,7 +949,7 @@ public class BedrockComponent {
 
     protected static class ParticleCollisionMotion extends BedrockComponent {
 
-        private final MolangExpression enabled;
+        private final OpenExpression enabled;
 
         private final float collisionDrag;
         private final float collisionRadius;
@@ -959,7 +959,7 @@ public class BedrockComponent {
 
         private final Map<Float, String> events;
 
-        public ParticleCollisionMotion(MolangExpression enabled, float collisionDrag, float collisionRadius, float coefficientOfRestitution, boolean expireOnContact, Map<Float, String> events) {
+        public ParticleCollisionMotion(OpenExpression enabled, float collisionDrag, float collisionRadius, float coefficientOfRestitution, boolean expireOnContact, Map<Float, String> events) {
             this.enabled = enabled;
             this.collisionDrag = collisionDrag;
             this.collisionRadius = collisionRadius;
@@ -968,7 +968,7 @@ public class BedrockComponent {
             this.events = events;
         }
 
-        public MolangExpression getEnabled() {
+        public OpenExpression getEnabled() {
             return enabled;
         }
 
@@ -994,7 +994,7 @@ public class BedrockComponent {
 
         protected static class Builder extends BedrockComponent.Builder {
 
-            MolangExpression enabled;
+            OpenExpression enabled;
 
             float collisionDrag;
             float collisionRadius;
@@ -1005,7 +1005,7 @@ public class BedrockComponent {
             Map<Float, String> events = new LinkedHashMap<>();
 
 
-            public void enabled(MolangExpression enabled) {
+            public void enabled(OpenExpression enabled) {
                 this.enabled = enabled;
             }
 
@@ -1038,15 +1038,15 @@ public class BedrockComponent {
 
     protected static class ParticleDynamicMotion extends BedrockComponent {
 
-        private final MolangExpression linearAccelerationX;
-        private final MolangExpression linearAccelerationY;
-        private final MolangExpression linearAccelerationZ;
+        private final OpenExpression linearAccelerationX;
+        private final OpenExpression linearAccelerationY;
+        private final OpenExpression linearAccelerationZ;
 
-        private final MolangExpression linearDragCoefficient;
-        private final MolangExpression rotationAcceleration;
-        private final MolangExpression rotationDragCoefficient;
+        private final OpenExpression linearDragCoefficient;
+        private final OpenExpression rotationAcceleration;
+        private final OpenExpression rotationDragCoefficient;
 
-        public ParticleDynamicMotion(MolangExpression linearAccelerationX, MolangExpression linearAccelerationY, MolangExpression linearAccelerationZ, MolangExpression linearDragCoefficient, MolangExpression rotationAcceleration, MolangExpression rotationDragCoefficient) {
+        public ParticleDynamicMotion(OpenExpression linearAccelerationX, OpenExpression linearAccelerationY, OpenExpression linearAccelerationZ, OpenExpression linearDragCoefficient, OpenExpression rotationAcceleration, OpenExpression rotationDragCoefficient) {
             this.linearAccelerationX = linearAccelerationX;
             this.linearAccelerationY = linearAccelerationY;
             this.linearAccelerationZ = linearAccelerationZ;
@@ -1055,61 +1055,61 @@ public class BedrockComponent {
             this.rotationDragCoefficient = rotationDragCoefficient;
         }
 
-        public MolangExpression getLinearAccelerationX() {
+        public OpenExpression getLinearAccelerationX() {
             return linearAccelerationX;
         }
 
-        public MolangExpression getLinearAccelerationY() {
+        public OpenExpression getLinearAccelerationY() {
             return linearAccelerationY;
         }
 
-        public MolangExpression getLinearAccelerationZ() {
+        public OpenExpression getLinearAccelerationZ() {
             return linearAccelerationZ;
         }
 
-        public MolangExpression getLinearDragCoefficient() {
+        public OpenExpression getLinearDragCoefficient() {
             return linearDragCoefficient;
         }
 
-        public MolangExpression getRotationAcceleration() {
+        public OpenExpression getRotationAcceleration() {
             return rotationAcceleration;
         }
 
-        public MolangExpression getRotationDragCoefficient() {
+        public OpenExpression getRotationDragCoefficient() {
             return rotationDragCoefficient;
         }
 
         protected static class Builder extends BedrockComponent.Builder {
 
-            MolangExpression linearAccelerationX;
-            MolangExpression linearAccelerationY;
-            MolangExpression linearAccelerationZ;
+            OpenExpression linearAccelerationX;
+            OpenExpression linearAccelerationY;
+            OpenExpression linearAccelerationZ;
 
-            MolangExpression linearDragCoefficient;
-            MolangExpression rotationAcceleration;
-            MolangExpression rotationDragCoefficient;
+            OpenExpression linearDragCoefficient;
+            OpenExpression rotationAcceleration;
+            OpenExpression rotationDragCoefficient;
 
-            public void linearAccelerationX(MolangExpression linearAccelerationX) {
+            public void linearAccelerationX(OpenExpression linearAccelerationX) {
                 this.linearAccelerationX = linearAccelerationX;
             }
 
-            public void linearAccelerationY(MolangExpression linearAccelerationY) {
+            public void linearAccelerationY(OpenExpression linearAccelerationY) {
                 this.linearAccelerationY = linearAccelerationY;
             }
 
-            public void linearAccelerationZ(MolangExpression linearAccelerationZ) {
+            public void linearAccelerationZ(OpenExpression linearAccelerationZ) {
                 this.linearAccelerationZ = linearAccelerationZ;
             }
 
-            public void linearDragCoefficient(MolangExpression linearDragCoefficient) {
+            public void linearDragCoefficient(OpenExpression linearDragCoefficient) {
                 this.linearDragCoefficient = linearDragCoefficient;
             }
 
-            public void rotationAcceleration(MolangExpression rotationAcceleration) {
+            public void rotationAcceleration(OpenExpression rotationAcceleration) {
                 this.rotationAcceleration = rotationAcceleration;
             }
 
-            public void rotationDragCoefficient(MolangExpression rotationDragCoefficient) {
+            public void rotationDragCoefficient(OpenExpression rotationDragCoefficient) {
                 this.rotationDragCoefficient = rotationDragCoefficient;
             }
 
@@ -1122,17 +1122,17 @@ public class BedrockComponent {
 
     protected static class ParticleParametricMotion extends BedrockComponent {
 
-        private final MolangExpression relativePositionX;
-        private final MolangExpression relativePositionY;
-        private final MolangExpression relativePositionZ;
+        private final OpenExpression relativePositionX;
+        private final OpenExpression relativePositionY;
+        private final OpenExpression relativePositionZ;
 
-        private final MolangExpression directionX;
-        private final MolangExpression directionY;
-        private final MolangExpression directionZ;
+        private final OpenExpression directionX;
+        private final OpenExpression directionY;
+        private final OpenExpression directionZ;
 
-        private final MolangExpression rotation;
+        private final OpenExpression rotation;
 
-        public ParticleParametricMotion(MolangExpression relativePositionX, MolangExpression relativePositionY, MolangExpression relativePositionZ, MolangExpression directionX, MolangExpression directionY, MolangExpression directionZ, MolangExpression rotation) {
+        public ParticleParametricMotion(OpenExpression relativePositionX, OpenExpression relativePositionY, OpenExpression relativePositionZ, OpenExpression directionX, OpenExpression directionY, OpenExpression directionZ, OpenExpression rotation) {
             this.relativePositionX = relativePositionX;
             this.relativePositionY = relativePositionY;
             this.relativePositionZ = relativePositionZ;
@@ -1142,72 +1142,72 @@ public class BedrockComponent {
             this.rotation = rotation;
         }
 
-        public MolangExpression getRelativePositionX() {
+        public OpenExpression getRelativePositionX() {
             return relativePositionX;
         }
 
-        public MolangExpression getRelativePositionY() {
+        public OpenExpression getRelativePositionY() {
             return relativePositionY;
         }
 
-        public MolangExpression getRelativePositionZ() {
+        public OpenExpression getRelativePositionZ() {
             return relativePositionZ;
         }
 
-        public MolangExpression getDirectionX() {
+        public OpenExpression getDirectionX() {
             return directionX;
         }
 
-        public MolangExpression getDirectionY() {
+        public OpenExpression getDirectionY() {
             return directionY;
         }
 
-        public MolangExpression getDirectionZ() {
+        public OpenExpression getDirectionZ() {
             return directionZ;
         }
 
-        public MolangExpression getRotation() {
+        public OpenExpression getRotation() {
             return rotation;
         }
 
         protected static class Builder extends BedrockComponent.Builder {
 
-            MolangExpression relativePositionX;
-            MolangExpression relativePositionY;
-            MolangExpression relativePositionZ;
+            OpenExpression relativePositionX;
+            OpenExpression relativePositionY;
+            OpenExpression relativePositionZ;
 
-            MolangExpression directionX;
-            MolangExpression directionY;
-            MolangExpression directionZ;
+            OpenExpression directionX;
+            OpenExpression directionY;
+            OpenExpression directionZ;
 
-            MolangExpression rotation;
+            OpenExpression rotation;
 
-            public void relativePositionX(MolangExpression relativePositionX) {
+            public void relativePositionX(OpenExpression relativePositionX) {
                 this.relativePositionX = relativePositionX;
             }
 
-            public void relativePositionY(MolangExpression relativePositionY) {
+            public void relativePositionY(OpenExpression relativePositionY) {
                 this.relativePositionY = relativePositionY;
             }
 
-            public void relativePositionZ(MolangExpression relativePositionZ) {
+            public void relativePositionZ(OpenExpression relativePositionZ) {
                 this.relativePositionZ = relativePositionZ;
             }
 
 
-            public void directionX(MolangExpression directionX) {
+            public void directionX(OpenExpression directionX) {
                 this.directionX = directionX;
             }
 
-            public void directionY(MolangExpression directionY) {
+            public void directionY(OpenExpression directionY) {
                 this.directionY = directionY;
             }
 
-            public void directionZ(MolangExpression directionZ) {
+            public void directionZ(OpenExpression directionZ) {
                 this.directionZ = directionZ;
             }
 
-            public void rotation(MolangExpression rotation) {
+            public void rotation(OpenExpression rotation) {
                 this.rotation = rotation;
             }
 
@@ -1231,28 +1231,28 @@ public class BedrockComponent {
 
     protected static class ParticleBillboardAppearance extends BedrockComponent {
 
-        private final MolangExpression width;
-        private final MolangExpression height;
+        private final OpenExpression width;
+        private final OpenExpression height;
         private final String facingCameraMode;
 
-        private final Size2i textureSize;
+        private final OpenSize2i textureSize;
 
-        private final MolangExpression textureCoordsX;
-        private final MolangExpression textureCoordsY;
+        private final OpenExpression textureCoordsX;
+        private final OpenExpression textureCoordsY;
 
-        private final MolangExpression textureCoordsWidth;
-        private final MolangExpression textureCoordsHeight;
+        private final OpenExpression textureCoordsWidth;
+        private final OpenExpression textureCoordsHeight;
 
-        private final MolangExpression stepX;
-        private final MolangExpression stepY;
+        private final OpenExpression stepX;
+        private final OpenExpression stepY;
 
         private final boolean useAnimation;
         private final int fps;
-        private final MolangExpression maxFrame;
+        private final OpenExpression maxFrame;
         private final boolean stretchToLifetime;
         private final boolean loop;
 
-        public ParticleBillboardAppearance(MolangExpression width, MolangExpression height, String facingCameraMode, Size2i textureSize, MolangExpression textureCoordsX, MolangExpression textureCoordsY, MolangExpression textureCoordsWidth, MolangExpression textureCoordsHeight, MolangExpression stepX, MolangExpression stepY, boolean useAnimation, int fps, MolangExpression maxFrame, boolean stretchToLifetime, boolean loop) {
+        public ParticleBillboardAppearance(OpenExpression width, OpenExpression height, String facingCameraMode, OpenSize2i textureSize, OpenExpression textureCoordsX, OpenExpression textureCoordsY, OpenExpression textureCoordsWidth, OpenExpression textureCoordsHeight, OpenExpression stepX, OpenExpression stepY, boolean useAnimation, int fps, OpenExpression maxFrame, boolean stretchToLifetime, boolean loop) {
             this.width = width;
             this.height = height;
             this.facingCameraMode = facingCameraMode;
@@ -1270,11 +1270,11 @@ public class BedrockComponent {
             this.loop = loop;
         }
 
-        public MolangExpression getWidth() {
+        public OpenExpression getWidth() {
             return width;
         }
 
-        public MolangExpression getHeight() {
+        public OpenExpression getHeight() {
             return height;
         }
 
@@ -1282,31 +1282,31 @@ public class BedrockComponent {
             return facingCameraMode;
         }
 
-        public Size2i getTextureSize() {
+        public OpenSize2i getTextureSize() {
             return textureSize;
         }
 
-        public MolangExpression getTextureCoordsX() {
+        public OpenExpression getTextureCoordsX() {
             return textureCoordsX;
         }
 
-        public MolangExpression getTextureCoordsY() {
+        public OpenExpression getTextureCoordsY() {
             return textureCoordsY;
         }
 
-        public MolangExpression getTextureCoordsWidth() {
+        public OpenExpression getTextureCoordsWidth() {
             return textureCoordsWidth;
         }
 
-        public MolangExpression getTextureCoordsHeight() {
+        public OpenExpression getTextureCoordsHeight() {
             return textureCoordsHeight;
         }
 
-        public MolangExpression getStepX() {
+        public OpenExpression getStepX() {
             return stepX;
         }
 
-        public MolangExpression getStepY() {
+        public OpenExpression getStepY() {
             return stepY;
         }
 
@@ -1318,7 +1318,7 @@ public class BedrockComponent {
             return fps;
         }
 
-        public MolangExpression getMaxFrame() {
+        public OpenExpression getMaxFrame() {
             return maxFrame;
         }
 
@@ -1332,32 +1332,32 @@ public class BedrockComponent {
 
         protected static class Builder extends BedrockComponent.Builder {
 
-            private MolangExpression width;
-            private MolangExpression height;
+            private OpenExpression width;
+            private OpenExpression height;
 
             private String facingCameraMode;
 
             private int textureWidth = 0;
             private int textureHeight = 0;
 
-            private MolangExpression textureCoordsX;
-            private MolangExpression textureCoordsY;
-            private MolangExpression textureCoordsWidth;
-            private MolangExpression textureCoordsHeight;
-            private MolangExpression stepX;
-            private MolangExpression stepY;
+            private OpenExpression textureCoordsX;
+            private OpenExpression textureCoordsY;
+            private OpenExpression textureCoordsWidth;
+            private OpenExpression textureCoordsHeight;
+            private OpenExpression stepX;
+            private OpenExpression stepY;
 
             private boolean useAnimation;
             private int fps;
-            private MolangExpression maxFrame;
+            private OpenExpression maxFrame;
             private boolean stretchToLifetime;
             private boolean loop;
 
-            public void width(MolangExpression width) {
+            public void width(OpenExpression width) {
                 this.width = width;
             }
 
-            public void height(MolangExpression height) {
+            public void height(OpenExpression height) {
                 this.height = height;
             }
 
@@ -1373,28 +1373,28 @@ public class BedrockComponent {
                 this.textureHeight = textureHeight;
             }
 
-            public void textureCoordsX(MolangExpression textureCoordsX) {
+            public void textureCoordsX(OpenExpression textureCoordsX) {
                 this.textureCoordsX = textureCoordsX;
             }
 
-            public void textureCoordsY(MolangExpression textureCoordsY) {
+            public void textureCoordsY(OpenExpression textureCoordsY) {
                 this.textureCoordsY = textureCoordsY;
             }
 
 
-            public void textureCoordsWidth(MolangExpression textureCoordsWidth) {
+            public void textureCoordsWidth(OpenExpression textureCoordsWidth) {
                 this.textureCoordsWidth = textureCoordsWidth;
             }
 
-            public void textureCoordsHeight(MolangExpression textureCoordsHeight) {
+            public void textureCoordsHeight(OpenExpression textureCoordsHeight) {
                 this.textureCoordsHeight = textureCoordsHeight;
             }
 
-            public void stepX(MolangExpression uvStepX) {
+            public void stepX(OpenExpression uvStepX) {
                 this.stepX = uvStepX;
             }
 
-            public void stepY(MolangExpression uvStepY) {
+            public void stepY(OpenExpression uvStepY) {
                 this.stepY = uvStepY;
             }
 
@@ -1407,7 +1407,7 @@ public class BedrockComponent {
                 this.fps = fps;
             }
 
-            public void maxFrame(MolangExpression maxFrame) {
+            public void maxFrame(OpenExpression maxFrame) {
                 this.maxFrame = maxFrame;
             }
 
@@ -1421,28 +1421,28 @@ public class BedrockComponent {
 
             @Override
             public BedrockComponent build() {
-                return new ParticleBillboardAppearance(width, height, facingCameraMode, new Size2i(textureWidth, textureHeight), textureCoordsX, textureCoordsY, textureCoordsWidth, textureCoordsHeight, stepX, stepY, useAnimation, fps, maxFrame, stretchToLifetime, loop);
+                return new ParticleBillboardAppearance(width, height, facingCameraMode, new OpenSize2i(textureWidth, textureHeight), textureCoordsX, textureCoordsY, textureCoordsWidth, textureCoordsHeight, stepX, stepY, useAnimation, fps, maxFrame, stretchToLifetime, loop);
             }
         }
     }
 
     protected static class ParticleTintingAppearance extends BedrockComponent {
 
-        private final List<MolangExpression> values;
-        private final MolangExpression interpolation;
+        private final List<OpenExpression> values;
+        private final OpenExpression interpolation;
         private final Map<String, String> gradientValues;
 
-        public ParticleTintingAppearance(List<MolangExpression> values, MolangExpression interpolation, Map<String, String> gradientValues) {
+        public ParticleTintingAppearance(List<OpenExpression> values, OpenExpression interpolation, Map<String, String> gradientValues) {
             this.values = values;
             this.interpolation = interpolation;
             this.gradientValues = gradientValues;
         }
 
-        public List<MolangExpression> getValues() {
+        public List<OpenExpression> getValues() {
             return values;
         }
 
-        public MolangExpression getInterpolation() {
+        public OpenExpression getInterpolation() {
             return interpolation;
         }
 
@@ -1452,15 +1452,15 @@ public class BedrockComponent {
 
         protected static class Builder extends BedrockComponent.Builder {
 
-            private MolangExpression interpolation;
-            private final List<MolangExpression> values = new ArrayList<>();
+            private OpenExpression interpolation;
+            private final List<OpenExpression> values = new ArrayList<>();
             private final Map<String, String> gradientValues = new LinkedHashMap<>();
 
-            public void addColor(MolangExpression expression) {
+            public void addColor(OpenExpression expression) {
                 this.values.add(expression);
             }
 
-            public void interpolation(MolangExpression interpolation) {
+            public void interpolation(OpenExpression interpolation) {
                 this.interpolation = interpolation;
             }
 
@@ -1482,23 +1482,23 @@ public class BedrockComponent {
 
     protected static abstract class ShapeBuilder extends BedrockComponent.Builder {
 
-        MolangExpression offsetX;
-        MolangExpression offsetY;
-        MolangExpression offsetZ;
+        OpenExpression offsetX;
+        OpenExpression offsetY;
+        OpenExpression offsetZ;
 
         Object direction;
-        MolangExpression radius;
+        OpenExpression radius;
         boolean surfaceOnly;
 
-        public void offsetX(MolangExpression offsetX) {
+        public void offsetX(OpenExpression offsetX) {
             this.offsetX = offsetX;
         }
 
-        public void offsetY(MolangExpression offsetY) {
+        public void offsetY(OpenExpression offsetY) {
             this.offsetY = offsetY;
         }
 
-        public void offsetZ(MolangExpression offsetZ) {
+        public void offsetZ(OpenExpression offsetZ) {
             this.offsetZ = offsetZ;
         }
 
@@ -1506,7 +1506,7 @@ public class BedrockComponent {
             this.direction = direction;
         }
 
-        public void radius(MolangExpression radius) {
+        public void radius(OpenExpression radius) {
             this.radius = radius;
         }
 

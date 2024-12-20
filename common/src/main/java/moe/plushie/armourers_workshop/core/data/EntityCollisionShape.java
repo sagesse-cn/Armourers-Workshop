@@ -1,8 +1,7 @@
 package moe.plushie.armourers_workshop.core.data;
 
 import moe.plushie.armourers_workshop.api.core.IDataCodec;
-import moe.plushie.armourers_workshop.core.math.Rectangle3f;
-import moe.plushie.armourers_workshop.core.math.Size3f;
+import moe.plushie.armourers_workshop.core.math.OpenRectangle3f;
 import moe.plushie.armourers_workshop.core.utils.Objects;
 
 import java.util.List;
@@ -11,21 +10,21 @@ public class EntityCollisionShape {
 
     public static final IDataCodec<EntityCollisionShape> CODEC = IDataCodec.FLOAT.listOf().xmap(EntityCollisionShape::new, EntityCollisionShape::toList);
 
-    private final Rectangle3f rect;
+    private final OpenRectangle3f rect;
 
-    public EntityCollisionShape(Rectangle3f rect) {
+    public EntityCollisionShape(OpenRectangle3f rect) {
         this.rect = rect;
     }
 
     public EntityCollisionShape(List<Float> values) {
-        this.rect = new Rectangle3f(values);
+        this.rect = new OpenRectangle3f(values);
     }
 
-    public static EntityCollisionShape size(Rectangle3f rect) {
+    public static EntityCollisionShape size(OpenRectangle3f rect) {
         return new EntityCollisionShape(rect);
     }
 
-    public Rectangle3f getRect() {
+    public OpenRectangle3f getRect() {
         return rect;
     }
 

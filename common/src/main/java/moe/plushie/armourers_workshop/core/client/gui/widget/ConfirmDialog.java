@@ -35,7 +35,7 @@ public class ConfirmDialog extends BaseDialog {
 
     private void setup() {
         var rect = bounds();
-        float w = 100;
+        float w = buttonWidth();
         float sp = (rect.width - w * 2) / 3;
         float bottom = rect.height - 30;
 
@@ -43,10 +43,10 @@ public class ConfirmDialog extends BaseDialog {
         messageLabel.setAutoresizingMask(AutoresizingMask.flexibleWidth);
 
         confirmButton.setFrame(new CGRect(sp, bottom, w, 20));
-        confirmButton.setAutoresizingMask(AutoresizingMask.flexibleLeftMargin | AutoresizingMask.flexibleTopMargin);
+        confirmButton.setAutoresizingMask(AutoresizingMask.flexibleRightMargin | AutoresizingMask.flexibleTopMargin);
 
         cancelButton.setFrame(new CGRect(rect.width - w - sp, bottom, w, 20));
-        cancelButton.setAutoresizingMask(AutoresizingMask.flexibleRightMargin | AutoresizingMask.flexibleTopMargin);
+        cancelButton.setAutoresizingMask(AutoresizingMask.flexibleLeftMargin | AutoresizingMask.flexibleTopMargin);
     }
 
     public NSString message() {
@@ -95,6 +95,11 @@ public class ConfirmDialog extends BaseDialog {
 
     public boolean isCancelled() {
         return selectedIndex == 0;
+    }
+
+
+    protected int buttonWidth() {
+        return 100;
     }
 
     protected UIButton buildButton(int x, int y, int width, int height, BiConsumer<ConfirmDialog, UIControl> event) {

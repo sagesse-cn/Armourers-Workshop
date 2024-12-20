@@ -38,7 +38,7 @@ import moe.plushie.armourers_workshop.core.skin.particle.component.particle.moti
 import moe.plushie.armourers_workshop.core.skin.particle.component.particle.motion.ParticleDynamicMotion;
 import moe.plushie.armourers_workshop.core.skin.particle.component.particle.motion.ParticleParametricMotion;
 import moe.plushie.armourers_workshop.core.skin.texture.SkinTextureData;
-import moe.plushie.armourers_workshop.core.utils.MolangExpression;
+import moe.plushie.armourers_workshop.core.utils.OpenExpression;
 import moe.plushie.armourers_workshop.core.utils.Objects;
 import moe.plushie.armourers_workshop.core.utils.OpenPrimitive;
 import moe.plushie.armourers_workshop.init.ModConstants;
@@ -316,9 +316,9 @@ public class BedrockExporter {
             return EmitterShapeDirection.outwards();
         }
         if (direction instanceof List<?> value) {
-            var x = convertToFloatExpression((MolangExpression) value.get(0));
-            var y = convertToFloatExpression((MolangExpression) value.get(1));
-            var z = convertToFloatExpression((MolangExpression) value.get(2));
+            var x = convertToFloatExpression((OpenExpression) value.get(0));
+            var y = convertToFloatExpression((OpenExpression) value.get(1));
+            var z = convertToFloatExpression((OpenExpression) value.get(2));
             return EmitterShapeDirection.custom(x, y, z);
         }
         throw new IllegalArgumentException("unknown particle shape direction: " + direction);
@@ -342,7 +342,7 @@ public class BedrockExporter {
     }
 
 
-    private OpenPrimitive convertToExpression(MolangExpression value) {
+    private OpenPrimitive convertToExpression(OpenExpression value) {
         var expr = compileExpression(value);
         if (expr != null && expr.isMutable()) {
             return OpenPrimitive.of(value.getExpression());
@@ -350,7 +350,7 @@ public class BedrockExporter {
         return OpenPrimitive.NULL;
     }
 
-    private OpenPrimitive convertToIntExpression(MolangExpression value) {
+    private OpenPrimitive convertToIntExpression(OpenExpression value) {
         var expr = compileExpression(value);
         if (expr != null && expr.isMutable()) {
             return OpenPrimitive.of(value.getExpression());
@@ -361,7 +361,7 @@ public class BedrockExporter {
         return OpenPrimitive.NULL;
     }
 
-    private OpenPrimitive convertToFloatExpression(MolangExpression value) {
+    private OpenPrimitive convertToFloatExpression(OpenExpression value) {
         var expr = compileExpression(value);
         if (expr != null && expr.isMutable()) {
             return OpenPrimitive.of(value.getExpression());
@@ -372,7 +372,7 @@ public class BedrockExporter {
         return OpenPrimitive.NULL;
     }
 
-    private Expression compileExpression(MolangExpression value) {
+    private Expression compileExpression(OpenExpression value) {
         try {
             if (value == null) {
                 return null;

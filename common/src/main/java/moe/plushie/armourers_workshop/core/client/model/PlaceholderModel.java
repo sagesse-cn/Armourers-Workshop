@@ -4,8 +4,8 @@ import moe.plushie.armourers_workshop.api.client.model.IModel;
 import moe.plushie.armourers_workshop.api.client.model.IModelBabyPose;
 import moe.plushie.armourers_workshop.api.client.model.IModelPart;
 import moe.plushie.armourers_workshop.api.data.IAssociatedContainerKey;
-import moe.plushie.armourers_workshop.utils.DataContainer;
-import moe.plushie.armourers_workshop.utils.ModelPartPose;
+import moe.plushie.armourers_workshop.core.data.DataContainer;
+import moe.plushie.armourers_workshop.core.utils.OpenModelPartPose;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -55,12 +55,12 @@ public class PlaceholderModel implements IModel {
     public static class Part implements IModelPart {
 
         private boolean isVisible = true;
-        private ModelPartPose pose;
+        private OpenModelPartPose pose;
         private final String name;
 
         public Part(String name) {
             this.name = name;
-            this.pose = new ModelPartPose(0, 0, 0, 0, 0, 0);
+            this.pose = new OpenModelPartPose(0, 0, 0, 0, 0, 0);
         }
 
         @Override
@@ -74,7 +74,7 @@ public class PlaceholderModel implements IModel {
         }
 
         @Override
-        public ModelPartPose pose() {
+        public OpenModelPartPose pose() {
             return pose;
         }
     }

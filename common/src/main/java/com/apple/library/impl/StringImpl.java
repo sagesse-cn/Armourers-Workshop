@@ -5,7 +5,7 @@ import com.apple.library.foundation.NSMutableString;
 import com.apple.library.foundation.NSString;
 import com.apple.library.uikit.UIFont;
 import moe.plushie.armourers_workshop.init.ModConstants;
-import moe.plushie.armourers_workshop.utils.TranslateUtils;
+import moe.plushie.armourers_workshop.core.utils.TranslateUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
 

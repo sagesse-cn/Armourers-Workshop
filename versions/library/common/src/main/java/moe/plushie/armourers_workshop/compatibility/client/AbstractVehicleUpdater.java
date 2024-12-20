@@ -3,14 +3,14 @@ package moe.plushie.armourers_workshop.compatibility.client;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import moe.plushie.armourers_workshop.api.annotation.Available;
+import moe.plushie.armourers_workshop.api.event.EventBus;
 import moe.plushie.armourers_workshop.compatibility.core.AbstractDeltaTracker;
 import moe.plushie.armourers_workshop.core.client.other.EntityRenderData;
 import moe.plushie.armourers_workshop.core.math.OpenMatrix4f;
-import moe.plushie.armourers_workshop.core.math.Vector3f;
+import moe.plushie.armourers_workshop.core.math.OpenVector3f;
 import moe.plushie.armourers_workshop.core.skin.attachment.SkinAttachmentPose;
 import moe.plushie.armourers_workshop.core.skin.attachment.SkinAttachmentTypes;
-import moe.plushie.armourers_workshop.init.platform.EventManager;
-import moe.plushie.armourers_workshop.init.platform.event.client.RenderFrameEvent;
+import moe.plushie.armourers_workshop.init.event.client.RenderFrameEvent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.animal.horse.Horse;
 
@@ -25,7 +25,7 @@ public class AbstractVehicleUpdater {
     private Int2ObjectMap<Entity> active;
 
     private AbstractVehicleUpdater() {
-        EventManager.listen(RenderFrameEvent.Pre.class, event -> update(event.getDeltaTracker()));
+        EventBus.register(RenderFrameEvent.Pre.class, event -> update(event.getDeltaTracker()));
     }
 
     public static AbstractVehicleUpdater getInstance() {
@@ -67,13 +67,13 @@ public class AbstractVehicleUpdater {
         // compute and save the custom riding position into entity.
         var scale = getRiddingScale(entity);
         var mat = OpenMatrix4f.createScaleMatrix(1, 1, 1);
-        mat.rotate(Vector3f.YP.rotationDegrees(180 - entity.getViewYRot(partialTicks)));
+        mat.rotate(OpenVector3f.YP.rotationDegrees(180 - entity.getViewYRot(partialTicks)));
         mat.scale(-1, -1, 1);
         mat.scale(scale, scale, scale);
         mat.translate(0, -1.501f, 0);
         mat.scale(1 / 16f, 1 / 16f, 1 / 16f);
         mat.multiply(pose.pose());
-        var offset = Vector3f.ZERO.transforming(mat);
+        var offset = OpenVector3f.ZERO.transforming(mat);
         entity.setCustomRidding(index, offset);
 
         // update the entity riding position.

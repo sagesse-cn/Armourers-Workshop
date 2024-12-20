@@ -3,7 +3,7 @@ package com.apple.library.coregraphics;
 import com.apple.library.impl.ObjectUtilsImpl;
 import moe.plushie.armourers_workshop.api.client.IBufferSource;
 import moe.plushie.armourers_workshop.api.core.math.IPoseStack;
-import moe.plushie.armourers_workshop.core.math.Vector3f;
+import moe.plushie.armourers_workshop.core.math.OpenVector3f;
 
 @SuppressWarnings("unused")
 public interface CGGraphicsState {
@@ -36,13 +36,13 @@ public interface CGGraphicsState {
 
     default void rotate(float x, float y, float z) {
         if (x != 0) {
-            ctm().rotate(Vector3f.XP.rotationDegrees(x));
+            ctm().rotate(OpenVector3f.XP.rotationDegrees(x));
         }
         if (y != 0) {
-            ctm().rotate(Vector3f.YP.rotationDegrees(y));
+            ctm().rotate(OpenVector3f.YP.rotationDegrees(y));
         }
         if (z != 0) {
-            ctm().rotate(Vector3f.ZP.rotationDegrees(z));
+            ctm().rotate(OpenVector3f.ZP.rotationDegrees(z));
         }
     }
 

@@ -5,7 +5,7 @@ import moe.plushie.armourers_workshop.api.armature.IJointTransform;
 import moe.plushie.armourers_workshop.api.client.model.IModel;
 import moe.plushie.armourers_workshop.api.client.model.IModelPart;
 import moe.plushie.armourers_workshop.core.armature.JointModifier;
-import moe.plushie.armourers_workshop.core.math.Vector3f;
+import moe.plushie.armourers_workshop.core.math.OpenVector3f;
 
 public class AllayWingJointModifier extends JointModifier {
 
@@ -26,7 +26,7 @@ public class AllayWingJointModifier extends JointModifier {
             transform.apply(poseStack);
             var yRot = wingPose.getYRot();
             if (yRot != 0) {
-                poseStack.rotate(Vector3f.YP.rotation(yRot));
+                poseStack.rotate(OpenVector3f.YP.rotation(yRot));
             }
             poseStack.scale(0.5f, 0.5f, 0.5f);
         };

@@ -2,7 +2,6 @@ package moe.plushie.armourers_workshop.core.data;
 
 import moe.plushie.armourers_workshop.core.item.MannequinItem;
 import moe.plushie.armourers_workshop.core.math.OpenMath;
-import moe.plushie.armourers_workshop.utils.TrigUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Player;
@@ -12,7 +11,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class MannequinHitResult extends BlockHitResult {
 
@@ -29,7 +27,7 @@ public class MannequinHitResult extends BlockHitResult {
         Level level = player.getLevel();
         ItemStack itemStack = player.getMainHandItem();
         float scale = MannequinItem.getScale(itemStack);
-        float rotation = (float) TrigUtils.getAngleDegrees(origin.x(), origin.z(), target.x(), target.z()) + 90.0f;
+        float rotation = (float) OpenMath.getAngleDegrees(origin.x(), origin.z(), target.x(), target.z()) + 90.0f;
 
         if (MannequinItem.isSmall(itemStack)) {
             scale *= 0.5f;
@@ -37,11 +35,11 @@ public class MannequinHitResult extends BlockHitResult {
         BlockState blockState = level.getBlockState(pos);
 
         if (player.isSecondaryUseActive()) {
-            VoxelShape shape = blockState.getShape(level, pos);
+            var shape = blockState.getShape(level, pos);
             target = Vec3.upFromBottomCenterOf(pos, shape.max(Direction.Axis.Y));
-            VoxelShape collisionShape = blockState.getCollisionShape(level, pos);
+            var collisionShape = blockState.getCollisionShape(level, pos);
             if (!Block.isFaceFull(collisionShape, Direction.UP)) {
-                Vec3 newLocation = Vec3.atBottomCenterOf(pos); // can't stand, reset to bottom
+                var newLocation = Vec3.atBottomCenterOf(pos); // can't stand, reset to bottom
                 if (!collisionShape.isEmpty()) {
                     BlockHitResult collisionBox = shape.clip(target, newLocation, pos);
                     if (collisionBox != null) {

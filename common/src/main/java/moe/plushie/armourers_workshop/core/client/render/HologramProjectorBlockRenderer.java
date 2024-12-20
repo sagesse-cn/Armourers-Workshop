@@ -11,9 +11,9 @@ import moe.plushie.armourers_workshop.core.client.other.BlockEntityRenderData;
 import moe.plushie.armourers_workshop.core.client.other.PlaceholderManager;
 import moe.plushie.armourers_workshop.core.client.other.SkinItemSource;
 import moe.plushie.armourers_workshop.core.client.skinrender.SkinRenderer;
-import moe.plushie.armourers_workshop.core.math.OpenQuaternion3f;
-import moe.plushie.armourers_workshop.core.math.Rectangle3f;
-import moe.plushie.armourers_workshop.core.math.Vector3f;
+import moe.plushie.armourers_workshop.core.math.OpenQuaternionf;
+import moe.plushie.armourers_workshop.core.math.OpenRectangle3f;
+import moe.plushie.armourers_workshop.core.math.OpenVector3f;
 import moe.plushie.armourers_workshop.init.ModDebugger;
 import moe.plushie.armourers_workshop.utils.RenderSystem;
 import moe.plushie.armourers_workshop.utils.ShapeTesselator;
@@ -109,26 +109,26 @@ public class HologramProjectorBlockRenderer<T extends HologramProjectorBlockEnti
         renderPatch.deactivate(entity);
     }
 
-    private void apply(T entity, Rectangle3f rect, double animationTime, IPoseStack poseStack, IBufferSource bufferSource) {
+    private void apply(T entity, OpenRectangle3f rect, double animationTime, IPoseStack poseStack, IBufferSource bufferSource) {
         var angle = entity.getModelAngle();
         var offset = entity.getModelOffset();
         var rotationOffset = entity.getRotationOffset();
         var rotationSpeed = entity.getRotationSpeed();
 
-        var rotX = angle.getX();
-        var speedX = rotationSpeed.getX() / 1000f;
+        var rotX = angle.x();
+        var speedX = rotationSpeed.x() / 1000f;
         if (speedX != 0) {
             rotX += (float) (((animationTime % speedX) / speedX) * 360.0);
         }
 
-        var rotY = angle.getY();
-        var speedY = rotationSpeed.getY() / 1000f;
+        var rotY = angle.y();
+        var speedY = rotationSpeed.y() / 1000f;
         if (speedY != 0) {
             rotY += (float) (((animationTime % speedY) / speedY) * 360.0);
         }
 
-        var rotZ = angle.getZ();
-        var speedZ = rotationSpeed.getZ() / 1000f;
+        var rotZ = angle.z();
+        var speedZ = rotationSpeed.z() / 1000f;
         if (speedZ != 0) {
             rotZ += (float) (((animationTime % speedZ) / speedZ) * 360.0);
         }
@@ -136,23 +136,23 @@ public class HologramProjectorBlockRenderer<T extends HologramProjectorBlockEnti
         var scale = entity.getModelScale();
         poseStack.scale(scale, scale, scale);
         if (entity.isOverrideOrigin()) {
-            poseStack.translate(0, -rect.getMaxY(), 0); // to model center
+            poseStack.translate(0, -rect.maxY(), 0); // to model center
         }
-        poseStack.translate(-offset.getX(), -offset.getY(), offset.getZ());
+        poseStack.translate(-offset.x(), -offset.y(), offset.z());
 
         if (entity.shouldShowRotationPoint()) {
             ShapeTesselator.stroke(-1, -1, -1, 1, 1, 1, UIColor.MAGENTA, poseStack, bufferSource);
         }
 
         if (ModDebugger.hologramProjector) {
-            ShapeTesselator.vector(Vector3f.ZERO, 128, poseStack, bufferSource);
+            ShapeTesselator.vector(OpenVector3f.ZERO, 128, poseStack, bufferSource);
         }
 
-        poseStack.rotate(new OpenQuaternion3f(rotX, -rotY, rotZ, true));
-        poseStack.translate(rotationOffset.getX(), -rotationOffset.getY(), rotationOffset.getZ());
+        poseStack.rotate(new OpenQuaternionf(rotX, -rotY, rotZ, true));
+        poseStack.translate(rotationOffset.x(), -rotationOffset.y(), rotationOffset.z());
 
         if (ModDebugger.hologramProjector) {
-            ShapeTesselator.vector(Vector3f.ZERO, 128, poseStack, bufferSource);
+            ShapeTesselator.vector(OpenVector3f.ZERO, 128, poseStack, bufferSource);
         }
     }
 

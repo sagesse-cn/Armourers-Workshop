@@ -90,9 +90,7 @@ public interface IDataCodec<A> {
 
     IDataCodec<String> STRING = wrap(Codec.STRING);
 
-
     IDataCodec<ByteBuffer> BYTE_BUFFER = wrap(Codec.BYTE_BUFFER);
-
 
     IDataCodec<UUID> UUID = INT.listOf().xmap(it -> {
         long l = (long) it.get(0) << 32 | (long) it.get(1) & 0xffffffffL;

@@ -2,7 +2,6 @@ package moe.plushie.armourers_workshop.core.client.other;
 
 import com.mojang.blaze3d.vertex.VertexFormat;
 import moe.plushie.armourers_workshop.api.client.IRenderedBuffer;
-import moe.plushie.armourers_workshop.api.skin.part.ISkinPartType;
 import moe.plushie.armourers_workshop.compatibility.client.AbstractVertexArrayObject;
 import moe.plushie.armourers_workshop.core.client.bake.BakedSkin;
 import moe.plushie.armourers_workshop.core.client.bake.BakedSkinPart;
@@ -12,6 +11,7 @@ import moe.plushie.armourers_workshop.core.client.texture.SmartTexture;
 import moe.plushie.armourers_workshop.core.data.cache.CacheQueue;
 import moe.plushie.armourers_workshop.core.data.cache.ObjectPool;
 import moe.plushie.armourers_workshop.core.math.OpenPoseStack;
+import moe.plushie.armourers_workshop.core.skin.part.SkinPartType;
 import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintScheme;
 import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.core.utils.Executors;
@@ -244,7 +244,7 @@ public class ConcurrentBufferCompiler {
         final boolean isUsingIndex;
 
         final float polygonOffset;
-        final ISkinPartType partType;
+        final SkinPartType partType;
         final RenderType renderType;
 
         int vertexCount;
@@ -259,7 +259,7 @@ public class ConcurrentBufferCompiler {
 
         boolean isCompiled = false;
 
-        Pass(RenderType renderType, IRenderedBuffer bufferBuilder, float polygonOffset, ISkinPartType partType, boolean isOutline) {
+        Pass(RenderType renderType, IRenderedBuffer bufferBuilder, float polygonOffset, SkinPartType partType, boolean isOutline) {
             this.partType = partType;
             this.renderType = renderType;
             this.bufferBuilder = bufferBuilder;

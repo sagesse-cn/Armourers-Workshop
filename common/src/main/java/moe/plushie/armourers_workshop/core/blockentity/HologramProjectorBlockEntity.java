@@ -7,9 +7,9 @@ import moe.plushie.armourers_workshop.core.block.HologramProjectorBlock;
 import moe.plushie.armourers_workshop.core.client.bake.SkinBakery;
 import moe.plushie.armourers_workshop.core.data.ticket.Tickets;
 import moe.plushie.armourers_workshop.core.math.OpenMath;
-import moe.plushie.armourers_workshop.core.math.OpenQuaternion3f;
-import moe.plushie.armourers_workshop.core.math.Rectangle3f;
-import moe.plushie.armourers_workshop.core.math.Vector3f;
+import moe.plushie.armourers_workshop.core.math.OpenQuaternionf;
+import moe.plushie.armourers_workshop.core.math.OpenRectangle3f;
+import moe.plushie.armourers_workshop.core.math.OpenVector3f;
 import moe.plushie.armourers_workshop.core.skin.SkinDescriptor;
 import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.core.utils.Constants;
@@ -28,24 +28,24 @@ import java.util.Map;
 
 public class HologramProjectorBlockEntity extends RotableContainerBlockEntity {
 
-    private static final Map<?, Vector3f> FACING_TO_ROT = Collections.immutableMap(builder -> {
-        builder.put(Pair.of(AttachFace.CEILING, Direction.EAST), new Vector3f(180, 270, 0));
-        builder.put(Pair.of(AttachFace.CEILING, Direction.NORTH), new Vector3f(180, 180, 0));
-        builder.put(Pair.of(AttachFace.CEILING, Direction.WEST), new Vector3f(180, 90, 0));
-        builder.put(Pair.of(AttachFace.CEILING, Direction.SOUTH), new Vector3f(180, 0, 0));
-        builder.put(Pair.of(AttachFace.WALL, Direction.EAST), new Vector3f(270, 0, 270));
-        builder.put(Pair.of(AttachFace.WALL, Direction.SOUTH), new Vector3f(270, 0, 180));
-        builder.put(Pair.of(AttachFace.WALL, Direction.WEST), new Vector3f(270, 0, 90));
-        builder.put(Pair.of(AttachFace.WALL, Direction.NORTH), new Vector3f(270, 0, 0));
-        builder.put(Pair.of(AttachFace.FLOOR, Direction.EAST), new Vector3f(0, 270, 0));
-        builder.put(Pair.of(AttachFace.FLOOR, Direction.SOUTH), new Vector3f(0, 180, 0));
-        builder.put(Pair.of(AttachFace.FLOOR, Direction.WEST), new Vector3f(0, 90, 0));
-        builder.put(Pair.of(AttachFace.FLOOR, Direction.NORTH), new Vector3f(0, 0, 0));
+    private static final Map<?, OpenVector3f> FACING_TO_ROT = Collections.immutableMap(builder -> {
+        builder.put(Pair.of(AttachFace.CEILING, Direction.EAST), new OpenVector3f(180, 270, 0));
+        builder.put(Pair.of(AttachFace.CEILING, Direction.NORTH), new OpenVector3f(180, 180, 0));
+        builder.put(Pair.of(AttachFace.CEILING, Direction.WEST), new OpenVector3f(180, 90, 0));
+        builder.put(Pair.of(AttachFace.CEILING, Direction.SOUTH), new OpenVector3f(180, 0, 0));
+        builder.put(Pair.of(AttachFace.WALL, Direction.EAST), new OpenVector3f(270, 0, 270));
+        builder.put(Pair.of(AttachFace.WALL, Direction.SOUTH), new OpenVector3f(270, 0, 180));
+        builder.put(Pair.of(AttachFace.WALL, Direction.WEST), new OpenVector3f(270, 0, 90));
+        builder.put(Pair.of(AttachFace.WALL, Direction.NORTH), new OpenVector3f(270, 0, 0));
+        builder.put(Pair.of(AttachFace.FLOOR, Direction.EAST), new OpenVector3f(0, 270, 0));
+        builder.put(Pair.of(AttachFace.FLOOR, Direction.SOUTH), new OpenVector3f(0, 180, 0));
+        builder.put(Pair.of(AttachFace.FLOOR, Direction.WEST), new OpenVector3f(0, 90, 0));
+        builder.put(Pair.of(AttachFace.FLOOR, Direction.NORTH), new OpenVector3f(0, 0, 0));
     });
 
     private final NonNullItemList items = new NonNullItemList(1);
 
-    private OpenQuaternion3f renderRotations;
+    private OpenQuaternionf renderRotations;
 
     private int powerMode = 0;
     private float modelScale = 1.0f;
@@ -54,11 +54,11 @@ public class HologramProjectorBlockEntity extends RotableContainerBlockEntity {
     private boolean isPowered = false;
     private boolean showRotationPoint = false;
 
-    private Vector3f modelAngle = Vector3f.ZERO;
-    private Vector3f modelOffset = Vector3f.ZERO;
+    private OpenVector3f modelAngle = OpenVector3f.ZERO;
+    private OpenVector3f modelOffset = OpenVector3f.ZERO;
 
-    private Vector3f rotationSpeed = Vector3f.ZERO;
-    private Vector3f rotationOffset = Vector3f.ZERO;
+    private OpenVector3f rotationSpeed = OpenVector3f.ZERO;
+    private OpenVector3f rotationOffset = OpenVector3f.ZERO;
 
     public HologramProjectorBlockEntity(BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState) {
         super(blockEntityType, blockPos, blockState);
@@ -186,38 +186,38 @@ public class HologramProjectorBlockEntity extends RotableContainerBlockEntity {
         return 1;
     }
 
-    public Vector3f getRotationSpeed() {
+    public OpenVector3f getRotationSpeed() {
         return this.rotationSpeed;
     }
 
-    public void setRotationSpeed(Vector3f rotationSpeed) {
+    public void setRotationSpeed(OpenVector3f rotationSpeed) {
         this.rotationSpeed = rotationSpeed;
         this.updateBlockStates();
     }
 
-    public Vector3f getRotationOffset() {
+    public OpenVector3f getRotationOffset() {
         return this.rotationOffset;
     }
 
-    public void setRotationOffset(Vector3f rotationOffset) {
+    public void setRotationOffset(OpenVector3f rotationOffset) {
         this.rotationOffset = rotationOffset;
         this.updateBlockStates();
     }
 
-    public Vector3f getModelOffset() {
+    public OpenVector3f getModelOffset() {
         return this.modelOffset;
     }
 
-    public void setModelOffset(Vector3f modelOffset) {
+    public void setModelOffset(OpenVector3f modelOffset) {
         this.modelOffset = modelOffset;
         this.updateBlockStates();
     }
 
-    public Vector3f getModelAngle() {
+    public OpenVector3f getModelAngle() {
         return this.modelAngle;
     }
 
-    public void setModelAngle(Vector3f modelAngle) {
+    public void setModelAngle(OpenVector3f modelAngle) {
         this.modelAngle = modelAngle;
         this.updateBlockStates();
     }
@@ -228,20 +228,20 @@ public class HologramProjectorBlockEntity extends RotableContainerBlockEntity {
 
     @Override
     @Environment(EnvType.CLIENT)
-    public OpenQuaternion3f getRenderRotations(BlockState blockState) {
+    public OpenQuaternionf getRenderRotations(BlockState blockState) {
         if (renderRotations != null) {
             return renderRotations;
         }
         var face = blockState.getOptionalValue(HologramProjectorBlock.FACE).orElse(AttachFace.FLOOR);
         var facing = blockState.getOptionalValue(HologramProjectorBlock.FACING).orElse(Direction.NORTH);
-        var rot = FACING_TO_ROT.getOrDefault(Pair.of(face, facing), Vector3f.ZERO);
-        renderRotations = new OpenQuaternion3f(rot.getX(), rot.getY(), rot.getZ(), true);
+        var rot = FACING_TO_ROT.getOrDefault(Pair.of(face, facing), OpenVector3f.ZERO);
+        renderRotations = new OpenQuaternionf(rot.x(), rot.y(), rot.z(), true);
         return renderRotations;
     }
 
     @Override
     @Environment(EnvType.CLIENT)
-    public Rectangle3f getRenderShape(BlockState blockState) {
+    public OpenRectangle3f getRenderShape(BlockState blockState) {
         if (!isPowered()) {
             return null;
         }
@@ -256,38 +256,38 @@ public class HologramProjectorBlockEntity extends RotableContainerBlockEntity {
         var modelRadius = 0.0f;
         var rotationRadius = 0.0f;
 
-        if (!rect.equals(Rectangle3f.ZERO)) {
-            float x = Math.max(Math.abs(rect.getMinX()), Math.abs(rect.getMaxX()));
-            float y = Math.max(Math.abs(rect.getMinY()), Math.abs(rect.getMaxY()));
-            float z = Math.max(Math.abs(rect.getMinZ()), Math.abs(rect.getMaxZ()));
+        if (!rect.equals(OpenRectangle3f.ZERO)) {
+            float x = Math.max(Math.abs(rect.minX()), Math.abs(rect.maxX()));
+            float y = Math.max(Math.abs(rect.minY()), Math.abs(rect.maxY()));
+            float z = Math.max(Math.abs(rect.minZ()), Math.abs(rect.maxZ()));
             modelRadius = OpenMath.sqrt(x * x + y * y + z * z);
         }
 
-        if (!rotationOffset.equals(Vector3f.ZERO)) {
-            var x = Math.abs(rotationOffset.getX());
-            var y = Math.abs(rotationOffset.getY());
-            var z = Math.abs(rotationOffset.getZ());
+        if (!rotationOffset.equals(OpenVector3f.ZERO)) {
+            var x = Math.abs(rotationOffset.x());
+            var y = Math.abs(rotationOffset.y());
+            var z = Math.abs(rotationOffset.z());
             rotationRadius = OpenMath.sqrt(x * x + y * y + z * z);
         }
 
         var tr = (rotationRadius + modelRadius) * scale;
-        var tx = (modelOffset.getX()) * scale;
-        var ty = (modelOffset.getY()) * scale + 0.5f;
-        var tz = (modelOffset.getZ()) * scale;
+        var tx = (modelOffset.x()) * scale;
+        var ty = (modelOffset.y()) * scale + 0.5f;
+        var tz = (modelOffset.z()) * scale;
 
         if (isOverrideOrigin()) {
-            ty += rect.getMaxY() * scale;
+            ty += rect.maxY() * scale;
         }
 
-        return new Rectangle3f(tx - tr, ty - tr, tz - tr, tr * 2, tr * 2, tr * 2);
+        return new OpenRectangle3f(tx - tr, ty - tr, tz - tr, tr * 2, tr * 2, tr * 2);
     }
 
     private static class CodingKeys {
 
-        public static final IDataSerializerKey<Vector3f> ANGLE = IDataSerializerKey.create("Angle", Vector3f.CODEC, Vector3f.ZERO);
-        public static final IDataSerializerKey<Vector3f> OFFSET = IDataSerializerKey.create("Offset", Vector3f.CODEC, Vector3f.ZERO);
-        public static final IDataSerializerKey<Vector3f> ROTATION_SPEED = IDataSerializerKey.create("RotSpeed", Vector3f.CODEC, Vector3f.ZERO);
-        public static final IDataSerializerKey<Vector3f> ROTATION_OFFSET = IDataSerializerKey.create("RotOffset", Vector3f.CODEC, Vector3f.ZERO);
+        public static final IDataSerializerKey<OpenVector3f> ANGLE = IDataSerializerKey.create("Angle", OpenVector3f.CODEC, OpenVector3f.ZERO);
+        public static final IDataSerializerKey<OpenVector3f> OFFSET = IDataSerializerKey.create("Offset", OpenVector3f.CODEC, OpenVector3f.ZERO);
+        public static final IDataSerializerKey<OpenVector3f> ROTATION_SPEED = IDataSerializerKey.create("RotSpeed", OpenVector3f.CODEC, OpenVector3f.ZERO);
+        public static final IDataSerializerKey<OpenVector3f> ROTATION_OFFSET = IDataSerializerKey.create("RotOffset", OpenVector3f.CODEC, OpenVector3f.ZERO);
         public static final IDataSerializerKey<Boolean> IS_GLOWING = IDataSerializerKey.create("Glowing", IDataCodec.BOOL, true);
         public static final IDataSerializerKey<Boolean> IS_POWERED = IDataSerializerKey.create("Powered", IDataCodec.BOOL, false);
         public static final IDataSerializerKey<Float> SCALE = IDataSerializerKey.create("Scale", IDataCodec.FLOAT, 1.0f);

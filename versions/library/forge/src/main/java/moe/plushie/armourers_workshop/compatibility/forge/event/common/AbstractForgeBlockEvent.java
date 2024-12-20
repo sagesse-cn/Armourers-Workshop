@@ -4,12 +4,11 @@ import moe.plushie.armourers_workshop.api.annotation.Available;
 import moe.plushie.armourers_workshop.api.common.IBlockSnapshot;
 import moe.plushie.armourers_workshop.api.registry.IEventHandler;
 import moe.plushie.armourers_workshop.compatibility.forge.AbstractForgeCommonEventsImpl;
-import moe.plushie.armourers_workshop.init.platform.event.common.BlockEvent;
+import moe.plushie.armourers_workshop.init.event.common.BlockEvent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
 @Available("[1.21, )")

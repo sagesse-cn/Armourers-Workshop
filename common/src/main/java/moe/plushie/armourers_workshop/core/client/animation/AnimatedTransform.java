@@ -3,11 +3,12 @@ package moe.plushie.armourers_workshop.core.client.animation;
 import moe.plushie.armourers_workshop.api.core.math.IPoseStack;
 import moe.plushie.armourers_workshop.api.core.math.ITransform;
 import moe.plushie.armourers_workshop.core.math.OpenMath;
-import moe.plushie.armourers_workshop.core.math.OpenQuaternion3f;
+import moe.plushie.armourers_workshop.core.math.OpenQuaternionf;
 import moe.plushie.armourers_workshop.core.math.OpenTransform3f;
-import moe.plushie.armourers_workshop.core.math.Vector3f;
+import moe.plushie.armourers_workshop.core.math.OpenVector3f;
+import moe.plushie.armourers_workshop.core.skin.part.SkinPartTransform;
 import moe.plushie.armourers_workshop.core.utils.Collections;
-import org.apache.commons.lang3.tuple.Triple;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -15,77 +16,97 @@ import java.util.List;
 
 public class AnimatedTransform implements ITransform {
 
-    private final Vector3f pivot;
-    private final Vector3f afterTranslate;
+    private final OpenVector3f pivot;
+    private final OpenVector3f afterTranslate;
 
     private final OpenTransform3f parent;
 
-    private final List<Triple<AnimatedPoint, Integer, Boolean>> pendingPoints = new ArrayList<>();
+    private final List<AnimatedOutputPoint> pendingPoints = new ArrayList<>();
 
     private final List<AnimatedPoint> points = new ArrayList<>();
     private final List<AnimatedPoint> defaultPoints = new ArrayList<>();
     private final List<AnimatedPoint> mixedPoints = new ArrayList<>();
 
+    private final OpenVector3f lastPivot = new OpenVector3f(0, 0, 0);
+    private final OpenVector3f lastTranslate = new OpenVector3f(0, 0, 0);
+    private final OpenVector3f lastRotation = new OpenVector3f(0, 0, 0);
+    private final OpenVector3f lastScale = new OpenVector3f(1, 1, 1);
+
+    protected AnimatedOutputPoint controller;
     protected AnimatedPoint snapshot;
     protected int dirty = 0;
 
     public AnimatedTransform(OpenTransform3f parent) {
         this.parent = parent;
-        this.pivot = parent.getPivot();
-        this.afterTranslate = parent.getAfterTranslate();
+        this.pivot = parent.pivot();
+        this.afterTranslate = parent.afterTranslate();
     }
 
-    public void link(AnimatedPoint point, int priority, boolean isMixedMode) {
+    @Nullable
+    public static AnimatedTransform of(SkinPartTransform partTransform) {
+        // when animation transform already been created, we just use it directly.
+        for (var childTransform : partTransform.getChildren()) {
+            if (childTransform instanceof AnimatedTransform animatedTransform) {
+                return animatedTransform;
+            }
+        }
+        // if part have a non-standard transform (preview mode),
+        // we wil think this part can't be support animation.
+        if (!(partTransform.getParent() instanceof OpenTransform3f parent)) {
+            return null;
+        }
+        // we will replace the standard transform to animated transform.
+        var animatedTransform = new AnimatedTransform(parent);
+        partTransform.replaceChild(parent, animatedTransform);
+        return animatedTransform;
+    }
+
+    public void link(AnimatedOutputPoint point) {
         // add point and sort it.
-        this.pendingPoints.add(Triple.of(point, priority, isMixedMode));
-        this.pendingPoints.sort(Comparator.comparingInt(Triple::getMiddle));
+        this.pendingPoints.add(point);
+        this.pendingPoints.sort(Comparator.comparingInt(it -> it.getMode().getPriority()));
         // rebuild linked values.
         this.points.clear();
         this.defaultPoints.clear();
         this.mixedPoints.clear();
-        this.points.addAll(Collections.compactMap(pendingPoints, Triple::getLeft));
-        this.defaultPoints.addAll(Collections.compactMap(Collections.filter(pendingPoints, it -> !it.getRight()), Triple::getLeft));
-        this.mixedPoints.addAll(Collections.compactMap(Collections.filter(pendingPoints, Triple::getRight), Triple::getLeft));
+        this.points.addAll(pendingPoints);
+        this.defaultPoints.addAll(Collections.filter(pendingPoints, it -> !it.getMode().isMixMode()));
+        this.mixedPoints.addAll(Collections.filter(pendingPoints, it -> it.getMode().isMixMode()));
     }
-
 
     @Override
     public void apply(IPoseStack poseStack) {
-        // no snapshot or no changes?
-        if (snapshot == null) {
-            parent.apply(poseStack);
-            return;
-        }
         // the translation have changes?
-        var translate = snapshot.getTranslate();
-        if (translate != Vector3f.ZERO) {
-            poseStack.translate(translate.getX(), translate.getY(), translate.getZ());
+        var translate = getTranslate();
+        if (translate != OpenVector3f.ZERO) {
+            poseStack.translate(translate.x(), translate.y(), translate.z());
         }
         // the rotation have changes?
-        var rotation = snapshot.getRotation();
-        if (rotation != Vector3f.ZERO) {
-            if (pivot != Vector3f.ZERO) {
-                poseStack.translate(pivot.getX(), pivot.getY(), pivot.getZ());
+        var pivot = getPivot();
+        var rotation = getRotation();
+        if (rotation != OpenVector3f.ZERO) {
+            if (pivot != OpenVector3f.ZERO) {
+                poseStack.translate(pivot.x(), pivot.y(), pivot.z());
             }
-            poseStack.rotate(OpenQuaternion3f.fromZYX(rotation, true));
-            if (pivot != Vector3f.ZERO) {
-                poseStack.translate(-pivot.getX(), -pivot.getY(), -pivot.getZ());
+            poseStack.rotate(OpenQuaternionf.fromEulerAnglesZYX(rotation, true));
+            if (pivot != OpenVector3f.ZERO) {
+                poseStack.translate(-pivot.x(), -pivot.y(), -pivot.z());
             }
         }
         // the scale have changes?
-        var scale = snapshot.getScale();
-        if (scale != Vector3f.ONE) {
-            if (pivot != Vector3f.ZERO) {
-                poseStack.translate(pivot.getX(), pivot.getY(), pivot.getZ());
+        var scale = getScale();
+        if (scale != OpenVector3f.ONE) {
+            if (pivot != OpenVector3f.ZERO) {
+                poseStack.translate(pivot.x(), pivot.y(), pivot.z());
             }
-            poseStack.scale(scale.getX(), scale.getY(), scale.getZ());
-            if (pivot != Vector3f.ZERO) {
-                poseStack.translate(-pivot.getX(), -pivot.getY(), -pivot.getZ());
+            poseStack.scale(scale.x(), scale.y(), scale.z());
+            if (pivot != OpenVector3f.ZERO) {
+                poseStack.translate(-pivot.x(), -pivot.y(), -pivot.z());
             }
         }
         // the after translate have changes?
-        if (afterTranslate != Vector3f.ZERO) {
-            poseStack.translate(afterTranslate.getX(), afterTranslate.getY(), afterTranslate.getZ());
+        if (afterTranslate != OpenVector3f.ZERO) {
+            poseStack.translate(afterTranslate.x(), afterTranslate.y(), afterTranslate.z());
         }
     }
 
@@ -97,51 +118,56 @@ public class AnimatedTransform implements ITransform {
     }
 
     private void exportTranslate(AnimatedPoint result) {
-        var base = parent.getTranslate();
-        var delta = Vector3f.ZERO;
+        var base = parent.translate();
+        var delta = OpenVector3f.ZERO;
         for (var point : points) {
             var value = point.getTranslate();
-            if (value != Vector3f.ZERO) { // has any animation change this point?
+            if (value != OpenVector3f.ZERO) { // has any animation change this point?
                 delta = value;
             }
         }
-        result.setTranslate(base.getX() + delta.getX(), base.getY() + delta.getY(), base.getZ() + delta.getZ());
+        result.setTranslate(base.x() + delta.x(), base.y() + delta.y(), base.z() + delta.z());
     }
 
     private void exportRotation(AnimatedPoint result) {
-        var base = parent.getRotation();
-        var delta = Vector3f.ZERO;
+        var base = parent.rotation();
+        var delta = OpenVector3f.ZERO;
         for (var point : defaultPoints) {
             var value = point.getRotation();
-            if (value != Vector3f.ZERO) { // has any animation change this point?
+            if (value != OpenVector3f.ZERO) { // has any animation change this point?
                 delta = value;
             }
         }
+        // if the wants the bone to be controlled, we always use the rotation by controller.
+        if (controller != null) {
+            delta = controller.getRotation();
+            base = OpenVector3f.ZERO; // the parent rotation will overwrite when a bone controlled.
+        }
         // in mixed mode we need to merge all rotation.
-        float x = base.getX() + delta.getX();
-        float y = base.getY() + delta.getY();
-        float z = base.getZ() + delta.getZ();
+        var x = base.x() + delta.x();
+        var y = base.y() + delta.y();
+        var z = base.z() + delta.z();
         for (var point : mixedPoints) {
             var value = point.getRotation();
-            if (value != Vector3f.ZERO) { // has any animation change this point?
-                x += value.getX();
-                y += value.getY();
-                z += value.getZ();
+            if (value != OpenVector3f.ZERO) { // has any animation change this point?
+                x += value.x();
+                y += value.y();
+                z += value.z();
             }
         }
         result.setRotation(OpenMath.wrapDegrees(x), OpenMath.wrapDegrees(y), OpenMath.wrapDegrees(z));
     }
 
     private void exportScale(AnimatedPoint result) {
-        var base = parent.getScale();
-        var delta = Vector3f.ONE;
+        var base = parent.scale();
+        var delta = OpenVector3f.ONE;
         for (var point : points) {
             var value = point.getScale();
-            if (value != Vector3f.ONE) { // has any animation change this point?
+            if (value != OpenVector3f.ONE) { // has any animation change this point?
                 delta = value;
             }
         }
-        result.setScale(base.getX() * delta.getX(), base.getY() * delta.getY(), base.getZ() * delta.getZ());
+        result.setScale(base.x() * delta.x(), base.y() * delta.y(), base.z() * delta.z());
     }
 
     public void clear() {
@@ -157,8 +183,44 @@ public class AnimatedTransform implements ITransform {
         dirty |= flags;
     }
 
+    public void setController(AnimatedOutputPoint controller) {
+        this.controller = controller;
+    }
+
+    public AnimatedOutputPoint getController() {
+        return controller;
+    }
+
     public OpenTransform3f getParent() {
         return parent;
+    }
+
+    public OpenVector3f getTranslate() {
+        if (snapshot != null) {
+            return snapshot.getTranslate();
+        }
+        return parent.translate();
+    }
+
+    public OpenVector3f getRotation() {
+        if (snapshot != null) {
+            return snapshot.getRotation();
+        }
+        if (controller != null) {
+            return controller.getRotation();
+        }
+        return parent.rotation();
+    }
+
+    public OpenVector3f getScale() {
+        if (snapshot != null) {
+            return snapshot.getScale();
+        }
+        return parent.scale();
+    }
+
+    public OpenVector3f getPivot() {
+        return pivot;
     }
 }
 

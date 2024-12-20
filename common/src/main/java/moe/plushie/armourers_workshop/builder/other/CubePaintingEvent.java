@@ -190,15 +190,13 @@ public class CubePaintingEvent {
                 return destinationColor;
             }
             var oldValue = provider.getColor(dir);
-            var paintType = oldValue.getPaintType();
-            var paintColor = oldValue.getRGB();
             if (usePaintColor) {
-                paintColor = destinationColor.getRGB();
+                return destinationColor.withPaintType(oldValue.getPaintType());
             }
             if (usePaintType) {
-                paintType = destinationColor.getPaintType();
+                return destinationColor.withColor(oldValue.getRed());
             }
-            return SkinPaintColor.of(paintColor, paintType);
+            return oldValue;
         }
     }
 
@@ -247,7 +245,7 @@ public class CubePaintingEvent {
         public ISkinPaintColor resolve(BlockPos pos, Direction dir, ISkinPaintColor sourceColor) {
             int rgb = sourceColor.getRGB();
             rgb = ColorUtils.makeColorBighter(rgb, intensity);
-            return SkinPaintColor.of(rgb, sourceColor.getPaintType());
+            return sourceColor.withColor(rgb);
         }
     }
 
@@ -285,7 +283,7 @@ public class CubePaintingEvent {
             } else {
                 rgb = ColorUtils.addColorNoise(rgb, intensity, getRandom(pos, dir));
             }
-            return SkinPaintColor.of(rgb, sourceColor.getPaintType());
+            return sourceColor.withColor(rgb);
         }
 
         private Random getRandom(BlockPos pos, Direction dir) {
@@ -345,9 +343,9 @@ public class CubePaintingEvent {
             }
             int rgb = ColorUtils.HSBtoRGB(destinationHSB);
             if (!changePaintType) {
-                return SkinPaintColor.of(rgb, sourceColor.getPaintType());
+                return sourceColor.withColor(rgb);
             }
-            return SkinPaintColor.of(rgb, destinationColor.getPaintType());
+            return destinationColor.withColor(rgb);
         }
     }
 
@@ -396,7 +394,7 @@ public class CubePaintingEvent {
             newB += oldB / 100F * (100 - intensity);
             newB = OpenMath.clamp((int) newB, 0, 255);
 
-            return SkinPaintColor.of((int) newR, (int) newG, (int) newB, sourceColor.getPaintType());
+            return sourceColor.withColor((int) newR, (int) newG, (int) newB);
         }
     }
 

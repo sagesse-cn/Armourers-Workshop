@@ -3,10 +3,9 @@ package moe.plushie.armourers_workshop.compatibility.forge;
 import moe.plushie.armourers_workshop.api.annotation.Available;
 import moe.plushie.armourers_workshop.api.config.IConfigBuilder;
 import moe.plushie.armourers_workshop.api.config.IConfigSpec;
-import moe.plushie.armourers_workshop.compatibility.AbstractConfigSpec;
+import moe.plushie.armourers_workshop.compatibility.core.AbstractConfigSpec;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.neoforge.common.ModConfigSpec;
-import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.HashMap;
 import java.util.List;

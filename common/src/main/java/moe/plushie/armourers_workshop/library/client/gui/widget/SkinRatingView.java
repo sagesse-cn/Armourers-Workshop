@@ -89,7 +89,7 @@ public class SkinRatingView extends UIControl {
     }
 
     public void setMaxValue(int maxValue) {
-        CGRect frame = frame();
+        var frame = frame();
         this.maxValue = maxValue;
         this.setFrame(new CGRect(frame.x, frame.y, maxValue * 8, frame.height));
     }

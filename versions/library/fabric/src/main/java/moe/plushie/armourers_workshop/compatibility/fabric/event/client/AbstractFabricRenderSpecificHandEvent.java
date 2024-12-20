@@ -3,7 +3,7 @@ package moe.plushie.armourers_workshop.compatibility.fabric.event.client;
 import com.mojang.blaze3d.vertex.PoseStack;
 import moe.plushie.armourers_workshop.api.annotation.Available;
 import moe.plushie.armourers_workshop.api.registry.IEventHandler;
-import moe.plushie.armourers_workshop.init.platform.event.client.RenderSpecificHandEvent;
+import moe.plushie.armourers_workshop.init.event.client.RenderSpecificHandEvent;
 import moe.plushie.armourers_workshop.init.platform.fabric.event.RenderSpecificArmEvents;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;

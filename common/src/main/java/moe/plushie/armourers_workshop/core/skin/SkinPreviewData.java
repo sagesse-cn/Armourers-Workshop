@@ -29,7 +29,7 @@ public class SkinPreviewData {
         eachPart(skin.getParts(), part -> {
             // apply the origin offset.
             var pos = part.getType().getRenderOffset();
-            var offset = OpenTransform3f.createTranslateTransform(pos.getX(), pos.getY(), pos.getZ());
+            var offset = OpenTransform3f.createTranslateTransform(pos.x(), pos.y(), pos.z());
             // apply the marker rotation and offset.
             var transform = new SkinPartTransform(part, offset);
             allCubes.add(Pair.of(transform, part.getGeometries()));

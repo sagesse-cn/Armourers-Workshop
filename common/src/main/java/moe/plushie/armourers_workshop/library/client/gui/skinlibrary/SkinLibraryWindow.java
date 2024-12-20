@@ -15,7 +15,6 @@ import com.apple.library.uikit.UITextFieldDelegate;
 import com.apple.library.uikit.UIView;
 import moe.plushie.armourers_workshop.api.library.ISkinLibrary;
 import moe.plushie.armourers_workshop.api.library.ISkinLibraryListener;
-import moe.plushie.armourers_workshop.api.skin.ISkinType;
 import moe.plushie.armourers_workshop.core.client.bake.SkinBakery;
 import moe.plushie.armourers_workshop.core.client.gui.notification.UserNotificationCenter;
 import moe.plushie.armourers_workshop.core.client.gui.widget.ConfirmDialog;
@@ -26,6 +25,7 @@ import moe.plushie.armourers_workshop.core.client.gui.widget.SkinFileList;
 import moe.plushie.armourers_workshop.core.data.DataDomain;
 import moe.plushie.armourers_workshop.core.data.ticket.Tickets;
 import moe.plushie.armourers_workshop.core.skin.SkinDescriptor;
+import moe.plushie.armourers_workshop.core.skin.SkinType;
 import moe.plushie.armourers_workshop.core.skin.SkinTypes;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperty;
 import moe.plushie.armourers_workshop.core.skin.serializer.SkinFileOptions;
@@ -72,11 +72,11 @@ public class SkinLibraryWindow extends MenuWindow<SkinLibraryMenu> implements UI
     private final UITextField searchTextField = new UITextField(CGRect.ZERO);
 
     private final SkinComboBox skinTypeList = new SkinComboBox(CGRect.ZERO);
-    private final SkinFileList fileList = new SkinFileList(new CGRect(0, 0, 100, 100));
+    private final SkinFileList<SkinLibraryFile> fileList = new SkinFileList<>(new CGRect(0, 0, 100, 100));
     private final HashMap<String, CGPoint> contentOffsets = new HashMap<>();
 
-    protected ISkinType skinType = SkinTypes.UNKNOWN;
-    protected ISkinLibrary.Entry selectedFile = null;
+    protected SkinType skinType = SkinTypes.UNKNOWN;
+    protected SkinLibraryFile selectedFile = null;
     protected String selectedPath;
     protected ItemStack lastInputItem;
 
@@ -131,7 +131,7 @@ public class SkinLibraryWindow extends MenuWindow<SkinLibraryMenu> implements UI
     private void setupInputView(CGRect rect) {
         int width = 162;
 
-        UIView group1 = new UIView(new CGRect(rect.getMinX(), rect.getMinY(), width, 30));
+        UIView group1 = new UIView(new CGRect(rect.minX(), rect.minY(), width, 30));
         addSubview(group1);
 
         localFileButton.setTooltip(getDisplayText("rollover.localFiles"), UIControl.State.DISABLED);
@@ -146,13 +146,13 @@ public class SkinLibraryWindow extends MenuWindow<SkinLibraryMenu> implements UI
         remotePrivateButton.addTarget(this, UIControl.Event.MOUSE_LEFT_DOWN, SkinLibraryWindow::selectLibrary);
         group1.addSubview(remotePrivateButton);
 
-        nameTextField.setFrame(new CGRect(rect.getMinX(), group1.frame().getMaxY() + 5, width, 20));
+        nameTextField.setFrame(new CGRect(rect.minX(), group1.frame().maxY() + 5, width, 20));
         nameTextField.setPlaceholder(getDisplayText("label.enterFileName"));
         nameTextField.setMaxLength(255);
         nameTextField.setDelegate(this);
         addSubview(nameTextField);
 
-        UIView group3 = new UIView(new CGRect(rect.getMinX(), nameTextField.frame().getMaxY() + 5, width, 24));
+        UIView group3 = new UIView(new CGRect(rect.minX(), nameTextField.frame().maxY() + 5, width, 24));
         addSubview(group3);
 
         openFolderButton.setTooltip(getDisplayText("rollover.openLibraryFolder"), UIControl.State.NORMAL);
@@ -181,17 +181,17 @@ public class SkinLibraryWindow extends MenuWindow<SkinLibraryMenu> implements UI
         int width = 162;
         int height = 76;
 
-        var group1 = new UIView(new CGRect(rect.getMinX(), rect.getMaxY() - height, width, height));
+        var group1 = new UIView(new CGRect(rect.minX(), rect.maxY() - height, width, height));
         group1.setOpaque(false);
         group1.setAutoresizingMask(AutoresizingMask.flexibleTopMargin);
         group1.setContents(UIImage.of(ModTextures.SKIN_LIBRARY).uv(0, 180).build());
         addSubview(group1);
 
-        var group2 = new UIView(new CGRect(rect.getMinX(), group1.frame().getMinY() - 31, width, 26));
+        var group2 = new UIView(new CGRect(rect.minX(), group1.frame().minY() - 31, width, 26));
         group2.setAutoresizingMask(AutoresizingMask.flexibleTopMargin);
         addSubview(group2);
 
-        fileOptionsBox.setFrame(new CGRect(rect.getMinX(), group2.frame().getMinY() - 10, width, 10));
+        fileOptionsBox.setFrame(new CGRect(rect.minX(), group2.frame().minY() - 10, width, 10));
         fileOptionsBox.setTitle(getDisplayText("fileOptions"));
         fileOptionsBox.setTitleColor(UIColor.WHITE);
         fileOptionsBox.setSelected(false);
@@ -217,9 +217,9 @@ public class SkinLibraryWindow extends MenuWindow<SkinLibraryMenu> implements UI
     }
 
     private void setupFileView(CGRect rect) {
-        float width = rect.getWidth();
+        float width = rect.width();
 
-        var group1 = new UIView(new CGRect(rect.getMinX(), rect.getMinY(), width, 20));
+        var group1 = new UIView(new CGRect(rect.minX(), rect.minY(), width, 20));
         group1.setAutoresizingMask(AutoresizingMask.flexibleWidth);
         addSubview(group1);
 
@@ -235,7 +235,7 @@ public class SkinLibraryWindow extends MenuWindow<SkinLibraryMenu> implements UI
         searchTextField.addTarget(this, UIControl.Event.VALUE_CHANGED, SkinLibraryWindow::reloadData);
         group1.addSubview(searchTextField);
 
-        skinTypeList.setFrame(new CGRect(rect.getMaxX() - 80, rect.getMinY() + 2, 80, 16));
+        skinTypeList.setFrame(new CGRect(rect.maxX() - 80, rect.minY() + 2, 80, 16));
         skinTypeList.setMaxRows(12);
         skinTypeList.setAutoresizingMask(AutoresizingMask.flexibleLeftMargin);
         skinTypeList.reloadSkins(SkinTypes.values());
@@ -403,7 +403,7 @@ public class SkinLibraryWindow extends MenuWindow<SkinLibraryMenu> implements UI
     }
 
     private void removeItem(UIControl sender) {
-        if (!(selectedFile instanceof SkinLibraryFile file) || !isAuthorized()) {
+        if (selectedFile == null || !isAuthorized()) {
             return;
         }
         var dialog = new ConfirmDialog();
@@ -411,31 +411,31 @@ public class SkinLibraryWindow extends MenuWindow<SkinLibraryMenu> implements UI
         dialog.setMessageColor(new UIColor(0xff5555));
         dialog.setConfirmText(getDisplayText("dialog.delete.delete"));
         dialog.setCancelText(getDisplayText("dialog.delete.close"));
-        dialog.setMessage(getDisplayText("dialog.delete.deleteFile", file.getName()));
-        if (file.isDirectory()) {
-            dialog.setMessage(getDisplayText("dialog.delete.deleteFolder", file.getName()));
+        dialog.setMessage(getDisplayText("dialog.delete.deleteFile", selectedFile.getName()));
+        if (selectedFile.isDirectory()) {
+            dialog.setMessage(getDisplayText("dialog.delete.deleteFolder", selectedFile.getName()));
         }
         dialog.showInView(this, () -> {
             if (!dialog.isCancelled()) {
-                selectedLibrary.delete(file);
+                selectedLibrary.delete(selectedFile);
             }
         });
     }
 
     private void renameItem(String sender) {
-        if (!(selectedFile instanceof SkinLibraryFile file) || !isAuthorized()) {
+        if (selectedFile == null || !isAuthorized()) {
             return;
         }
-        if (sender.equals(file.getName())) {
+        if (sender.equals(selectedFile.getName())) {
             return; // not changes.
         }
-        var ext = file.isDirectory() ? "" : Constants.EXT;
-        var newPath = FileUtils.normalize(file.getPath() + "/../" + sender + ext, true);
+        var ext = selectedFile.isDirectory() ? "" : Constants.EXT;
+        var newPath = FileUtils.normalize(selectedFile.getPath() + "/../" + sender + ext, true);
         if (selectedLibrary.get(newPath) != null) {
-            overwriteItem(newPath, () -> selectedLibrary.rename(file, newPath));
+            overwriteItem(newPath, () -> selectedLibrary.rename(selectedFile, newPath));
             return;
         }
-        selectedLibrary.rename(file, newPath);
+        selectedLibrary.rename(selectedFile, newPath);
     }
 
     private void overwriteItem(String path, Runnable handler) {

@@ -3,11 +3,11 @@ package moe.plushie.armourers_workshop.init.platform.forge.builder;
 import com.mojang.blaze3d.platform.InputConstants;
 import moe.plushie.armourers_workshop.api.client.key.IKeyBinding;
 import moe.plushie.armourers_workshop.api.client.key.IKeyModifier;
+import moe.plushie.armourers_workshop.api.event.EventBus;
 import moe.plushie.armourers_workshop.api.registry.IKeyBindingBuilder;
 import moe.plushie.armourers_workshop.compatibility.forge.AbstractForgeKeyMapping;
 import moe.plushie.armourers_workshop.core.utils.Objects;
-import moe.plushie.armourers_workshop.init.platform.EventManager;
-import moe.plushie.armourers_workshop.init.platform.event.client.RenderFrameEvent;
+import moe.plushie.armourers_workshop.init.event.client.RenderFrameEvent;
 import moe.plushie.armourers_workshop.utils.OpenKeyModifier;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.network.chat.Component;
@@ -105,7 +105,7 @@ public class KeyBindingBuilderImpl<T extends IKeyBinding> implements IKeyBinding
 
     private static <T> ArrayList<T> createAndAttach() {
         // attach the input event to client.
-        EventManager.listen(RenderFrameEvent.Post.class, event -> INPUTS.forEach(pair -> {
+        EventBus.register(RenderFrameEvent.Post.class, event -> INPUTS.forEach(pair -> {
             if (pair.getKey().consumeClick()) {
                 pair.getValue().get().run();
             }

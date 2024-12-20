@@ -58,16 +58,16 @@ public class ScrollIndicator extends UIControl {
         topButton.setCanBecomeFocused(false);
         addSubview(topButton);
 
-        bottomButton.setFrame(new CGRect(0, rect.getMaxY() - size, size, size));
+        bottomButton.setFrame(new CGRect(0, rect.maxY() - size, size, size));
         bottomButton.setAutoresizingMask(AutoresizingMask.flexibleWidth | AutoresizingMask.flexibleTopMargin);
         bottomButton.setBackgroundImage(makeImage(30, 0), State.ALL);
         bottomButton.addTarget(this, Event.MOUSE_LEFT_DOWN, ScrollIndicator::downAction);
         bottomButton.setCanBecomeFocused(false);
         addSubview(bottomButton);
 
-        var bg1 = new UIImageView(new CGRect(0, topButton.frame().getMaxY(), size, size));
-        var bg2 = new UIImageView(new CGRect(0, bottomButton.frame().getMinY() - size, size, size));
-        var bg3 = new UIImageView(new CGRect(0, bg1.frame().getMaxY(), size, bg2.frame().getMinY() - bg1.frame().getMaxY()));
+        var bg1 = new UIImageView(new CGRect(0, topButton.frame().maxY(), size, size));
+        var bg2 = new UIImageView(new CGRect(0, bottomButton.frame().minY() - size, size, size));
+        var bg3 = new UIImageView(new CGRect(0, bg1.frame().maxY(), size, bg2.frame().minY() - bg1.frame().maxY()));
         bg1.setImage(makeImage(20, 20));
         bg2.setImage(makeImage(30, 20));
         bg3.setImage(UIImage.of(ModTextures.SCROLLBAR).uv(246, 0).resizable(10, 246).build());
@@ -94,8 +94,8 @@ public class ScrollIndicator extends UIControl {
 
     private void updateOffsetIfNeeded() {
         var frame = middleButton.frame();
-        float minY = topButton.frame().getMaxY();
-        float maxY = bottomButton.frame().getMinY();
+        float minY = topButton.frame().maxY();
+        float maxY = bottomButton.frame().minY();
         float y = ((maxY - minY) - frame.height) * value;
         middleButton.setFrame(new CGRect(frame.x, minY + y, frame.width, frame.height));
     }
@@ -106,8 +106,8 @@ public class ScrollIndicator extends UIControl {
     }
 
     private float valueAtPoint(CGPoint point) {
-        float minY = topButton.frame().getMaxY();
-        float maxY = bottomButton.frame().getMinY();
+        float minY = topButton.frame().maxY();
+        float maxY = bottomButton.frame().minY();
         float y = point.y;
         if (y < minY) {
             return 0;

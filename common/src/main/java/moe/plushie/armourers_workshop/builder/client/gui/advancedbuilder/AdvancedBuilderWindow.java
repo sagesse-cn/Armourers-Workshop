@@ -13,7 +13,6 @@ import com.apple.library.uikit.UIMenuController;
 import com.apple.library.uikit.UIMenuItem;
 import com.apple.library.uikit.UIScreen;
 import com.apple.library.uikit.UIView;
-import moe.plushie.armourers_workshop.api.skin.ISkinType;
 import moe.plushie.armourers_workshop.builder.blockentity.AdvancedBuilderBlockEntity;
 import moe.plushie.armourers_workshop.builder.client.gui.advancedbuilder.document.DocumentEditor;
 import moe.plushie.armourers_workshop.builder.client.gui.advancedbuilder.document.DocumentImporter;
@@ -30,8 +29,9 @@ import moe.plushie.armourers_workshop.core.client.gui.notification.UserNotificat
 import moe.plushie.armourers_workshop.core.client.gui.widget.ConfirmDialog;
 import moe.plushie.armourers_workshop.core.client.gui.widget.FileProviderDialog;
 import moe.plushie.armourers_workshop.core.client.gui.widget.MenuWindow;
-import moe.plushie.armourers_workshop.core.client.gui.widget.TreeIndexPath;
 import moe.plushie.armourers_workshop.core.skin.Skin;
+import moe.plushie.armourers_workshop.core.skin.SkinType;
+import moe.plushie.armourers_workshop.core.skin.property.SkinProperty;
 import moe.plushie.armourers_workshop.core.skin.serializer.document.SkinDocument;
 import moe.plushie.armourers_workshop.core.skin.serializer.document.SkinDocumentListener;
 import moe.plushie.armourers_workshop.core.skin.serializer.document.SkinDocumentNode;
@@ -81,8 +81,8 @@ public class AdvancedBuilderWindow extends MenuWindow<AdvancedBuilderMenu> imple
         this.editor = new DocumentEditor(blockEntity);
         this.doc = editor.getDocument();
         this.cameraView = new AdvancedCameraPanel(editor);
-        this.leftCard = new AdvancedLeftCardPanel(editor, new CGRect(0, 0, 200, UIScreen.bounds().getHeight() * 2));
-        this.rightCard = new AdvancedRightCardPanel(editor, new CGRect(0, 0, 200, UIScreen.bounds().getHeight() * 2));
+        this.leftCard = new AdvancedLeftCardPanel(editor, new CGRect(0, 0, 200, UIScreen.bounds().height() * 2));
+        this.rightCard = new AdvancedRightCardPanel(editor, new CGRect(0, 0, 200, UIScreen.bounds().height() * 2));
         this.inventoryView.setHidden(true);
         this.minimapView = rightCard.getMinimapView();
         this.typeListView = rightCard.getTypeListView();
@@ -193,7 +193,7 @@ public class AdvancedBuilderWindow extends MenuWindow<AdvancedBuilderMenu> imple
         if (documentType == null) {
             return;
         }
-        importNewSkin(documentType.getSkinType(), documentType.usesItemTransforms(), skin -> {
+        importNewSkin(documentType.getSkinType(), skin -> {
             var blockEntity = editor.getBlockEntity();
             NetworkManager.sendToServer(new AdvancedImportPacket(blockEntity, skin, ""));
         });
@@ -226,7 +226,7 @@ public class AdvancedBuilderWindow extends MenuWindow<AdvancedBuilderMenu> imple
         addMenuItem(item);
     }
 
-    public void importNewSkin(ISkinType skinType, boolean keepItemTransforms, Consumer<Skin> consumer) {
+    public void importNewSkin(SkinType skinType, Consumer<Skin> consumer) {
         var title = NSString.localizedString("advanced-skin-builder.dialog.importer.title");
         var libraryManager = SkinLibraryManager.getClient();
         if (!libraryManager.shouldUploadFile(inventory.player)) {
@@ -245,7 +245,9 @@ public class AdvancedBuilderWindow extends MenuWindow<AdvancedBuilderMenu> imple
         alert.showInView(this, () -> {
             if (!alert.isCancelled()) {
                 var importer = new DocumentImporter(alert.getSelectedFile(), skinType);
-                importer.setKeepItemTransforms(keepItemTransforms);
+                var properties = alert.getProperties();
+                importer.setAdaptMode(properties.get(SkinProperty.USE_ADAPT_MODE));
+                importer.setKeepItemTransforms(properties.get(SkinProperty.USE_ITEM_TRANSFORMS));
                 importer.execute(consumer);
             }
         });
@@ -275,7 +277,7 @@ public class AdvancedBuilderWindow extends MenuWindow<AdvancedBuilderMenu> imple
 
     @Override
     public void documentDidSelectNode(SkinDocumentNode node) {
-        TreeIndexPath indexPath = minimapView.findNodePath(node);
+        var indexPath = minimapView.findNodePath(node);
         minimapView.setSelectedIndex(indexPath);
     }
 
@@ -289,7 +291,7 @@ public class AdvancedBuilderWindow extends MenuWindow<AdvancedBuilderMenu> imple
     @Override
     public void documentDidChangeType(SkinDocumentType type) {
         typeListView.setSelectedType(type);
-        TreeIndexPath indexPath = minimapView.getSelectedIndex();
+        var indexPath = minimapView.getSelectedIndex();
         minimapView.reloadData(editor.getDocument().getRoot());
         minimapView.setSelectedIndex(indexPath);
     }
@@ -306,9 +308,9 @@ public class AdvancedBuilderWindow extends MenuWindow<AdvancedBuilderMenu> imple
 
     @Override
     public void documentDidInsertNode(SkinDocumentNode node, SkinDocumentNode target, int index) {
-        DocumentMinimapNode nodeView = minimapView.findNode(node);
+        var nodeView = minimapView.findNode(node);
         if (nodeView != null) {
-            DocumentMinimapNode targetView = new DocumentMinimapNode(target);
+            var targetView = new DocumentMinimapNode(target);
             nodeView.insertAtIndex(targetView, index);
         }
     }
@@ -326,9 +328,9 @@ public class AdvancedBuilderWindow extends MenuWindow<AdvancedBuilderMenu> imple
 
     @Override
     public void documentDidRemoveNode(SkinDocumentNode node) {
-        DocumentMinimapNode nodeView = minimapView.findNode(node);
+        var nodeView = minimapView.findNode(node);
         if (nodeView != null) {
-            TreeIndexPath indexPath = minimapView.getSelectedIndex();
+            var indexPath = minimapView.getSelectedIndex();
             nodeView.removeFromParent();
             minimapView.setSelectedIndex(indexPath);
         }
@@ -336,8 +338,8 @@ public class AdvancedBuilderWindow extends MenuWindow<AdvancedBuilderMenu> imple
 
     @Override
     public void documentDidMoveNode(SkinDocumentNode node, SkinDocumentNode target, int index) {
-        DocumentMinimapNode nodeView = minimapView.findNode(node);
-        DocumentMinimapNode targetView = minimapView.findNode(target);
+        var nodeView = minimapView.findNode(node);
+        var targetView = minimapView.findNode(target);
         if (nodeView != null && targetView != null) {
             nodeView.moveTo(targetView, index);
         }

@@ -5,7 +5,7 @@ import com.apple.library.foundation.NSString;
 import com.apple.library.uikit.UIControl;
 import com.apple.library.uikit.UISliderBox;
 import moe.plushie.armourers_workshop.core.blockentity.HologramProjectorBlockEntity;
-import moe.plushie.armourers_workshop.core.math.Vector3f;
+import moe.plushie.armourers_workshop.core.math.OpenVector3f;
 import moe.plushie.armourers_workshop.core.network.UpdateHologramProjectorPacket;
 import moe.plushie.armourers_workshop.init.platform.NetworkManager;
 import net.fabricmc.api.EnvType;
@@ -19,7 +19,7 @@ public class HologramProjectorRotationSpeedSetting extends HologramProjectorBase
     private UISliderBox sliderZ;
 
     private final HologramProjectorBlockEntity entity;
-    private final UpdateHologramProjectorPacket.Field<Vector3f> field = UpdateHologramProjectorPacket.Field.ROTATION_SPEED;
+    private final UpdateHologramProjectorPacket.Field<OpenVector3f> field = UpdateHologramProjectorPacket.Field.ROTATION_SPEED;
 
     public HologramProjectorRotationSpeedSetting(HologramProjectorBlockEntity entity) {
         super("hologram-projector.rotationSpeed");
@@ -32,21 +32,21 @@ public class HologramProjectorRotationSpeedSetting extends HologramProjectorBase
         float x = (float) sliderX.value();
         float y = (float) sliderY.value();
         float z = (float) sliderZ.value();
-        field.set(entity, new Vector3f(x, y, z));
+        field.set(entity, new OpenVector3f(x, y, z));
     }
 
     private void didUpdateValue(UIControl button) {
         float x = (float) sliderX.value();
         float y = (float) sliderY.value();
         float z = (float) sliderZ.value();
-        NetworkManager.sendToServer(field.buildPacket(entity, new Vector3f(x, y, z)));
+        NetworkManager.sendToServer(field.buildPacket(entity, new OpenVector3f(x, y, z)));
     }
 
     private void setup() {
         var value = field.get(entity);
-        sliderX = setupSlider(11, 30, "X: ", value.getX());
-        sliderY = setupSlider(11, 45, "Y: ", value.getY());
-        sliderZ = setupSlider(11, 60, "Z: ", value.getZ());
+        sliderX = setupSlider(11, 30, "X: ", value.x());
+        sliderY = setupSlider(11, 45, "Y: ", value.y());
+        sliderZ = setupSlider(11, 60, "Z: ", value.z());
     }
 
     private UISliderBox setupSlider(int x, int y, String key, double value) {

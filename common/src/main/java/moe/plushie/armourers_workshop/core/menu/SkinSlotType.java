@@ -1,14 +1,13 @@
 package moe.plushie.armourers_workshop.core.menu;
 
 import com.mojang.serialization.Codec;
-import moe.plushie.armourers_workshop.api.core.IResourceLocation;
-import moe.plushie.armourers_workshop.api.skin.ISkinArmorType;
-import moe.plushie.armourers_workshop.api.skin.ISkinType;
-import moe.plushie.armourers_workshop.api.skin.texture.ISkinPaintType;
 import moe.plushie.armourers_workshop.core.item.BottleItem;
 import moe.plushie.armourers_workshop.core.skin.SkinDescriptor;
+import moe.plushie.armourers_workshop.core.skin.SkinType;
 import moe.plushie.armourers_workshop.core.skin.SkinTypes;
+import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintType;
 import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintTypes;
+import moe.plushie.armourers_workshop.core.utils.OpenResourceLocation;
 import moe.plushie.armourers_workshop.init.ModConstants;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
@@ -48,10 +47,10 @@ public enum SkinSlotType {
     private final int id;
     private final int index;
     private final int size;
-    private final ISkinType skinType;
+    private final SkinType skinType;
     public static final Codec<SkinSlotType> CODEC = Codec.STRING.xmap(Helper::decode, Helper::encode);
 
-    SkinSlotType(int id, int index, int size, String name, ISkinType skinType) {
+    SkinSlotType(int id, int index, int size, String name, SkinType skinType) {
         this.id = id;
         this.name = name;
         this.index = index;
@@ -72,7 +71,7 @@ public enum SkinSlotType {
         return Helper.NAMED_SLOTS.get(name);
     }
 
-    public static SkinSlotType byType(ISkinType skinType) {
+    public static SkinSlotType byType(SkinType skinType) {
         for (var slotType : SkinSlotType.values()) {
             if (Objects.equals(slotType.skinType, skinType)) {
                 return slotType;
@@ -104,11 +103,11 @@ public enum SkinSlotType {
         return Helper.TOTAL_SIZE;
     }
 
-    public static ISkinPaintType[] getSupportedPaintTypes() {
+    public static SkinPaintType[] getSupportedPaintTypes() {
         return Helper.SLOT_TO_TYPES;
     }
 
-    public static int getDyeSlotIndex(ISkinPaintType paintType) {
+    public static int getDyeSlotIndex(SkinPaintType paintType) {
         int i = 0;
         for (; i < Helper.SLOT_TO_TYPES.length; ++i) {
             if (Helper.SLOT_TO_TYPES[i] == paintType) {
@@ -118,7 +117,7 @@ public enum SkinSlotType {
         return DYE.getIndex() + i;
     }
 
-    public IResourceLocation getIconSprite() {
+    public OpenResourceLocation getIconSprite() {
         return ModConstants.key("item/slot/" + name);
     }
 
@@ -127,7 +126,7 @@ public enum SkinSlotType {
     }
 
     public boolean isArmor() {
-        return skinType instanceof ISkinArmorType;
+        return skinType.isArmour();
     }
 
     public int getId() {
@@ -146,14 +145,14 @@ public enum SkinSlotType {
         return name;
     }
 
-    public ISkinType getSkinType() {
+    public SkinType getSkinType() {
         return skinType;
     }
 
     private static class Helper {
         static final HashMap<Integer, SkinSlotType> INDEXED_SLOTS = new HashMap<>();
         static final HashMap<String, SkinSlotType> NAMED_SLOTS = new HashMap<>();
-        static final ISkinPaintType[] SLOT_TO_TYPES = {
+        static final SkinPaintType[] SLOT_TO_TYPES = {
                 SkinPaintTypes.DYE_1,
                 SkinPaintTypes.DYE_2,
                 SkinPaintTypes.DYE_3,

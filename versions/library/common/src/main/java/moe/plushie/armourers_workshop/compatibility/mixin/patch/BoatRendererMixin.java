@@ -5,8 +5,8 @@ import com.mojang.datafixers.util.Pair;
 import moe.plushie.armourers_workshop.api.annotation.Available;
 import moe.plushie.armourers_workshop.api.client.model.IModel;
 import moe.plushie.armourers_workshop.api.client.model.IModelProvider;
+import moe.plushie.armourers_workshop.compatibility.client.model.AbstractModelHolder;
 import moe.plushie.armourers_workshop.init.client.ClientWardrobeHandler;
-import moe.plushie.armourers_workshop.utils.ModelHolder;
 import net.minecraft.client.model.ListModel;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -55,7 +55,7 @@ public class BoatRendererMixin<T extends Boat> implements IModelProvider<T> {
     public IModel getModel(T entity) {
         return aw2$boatModels.computeIfAbsent(entity.getVariant(), it -> {
             Model model = boatResources.get(it).getSecond();
-            return ModelHolder.of(model);
+            return AbstractModelHolder.of(model);
         });
     }
 }

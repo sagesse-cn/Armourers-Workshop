@@ -1,7 +1,7 @@
 package moe.plushie.armourers_workshop.core.skin.serializer.importer.blockbench;
 
-import moe.plushie.armourers_workshop.core.math.Size2f;
-import moe.plushie.armourers_workshop.core.math.Vector3f;
+import moe.plushie.armourers_workshop.core.math.OpenSize2f;
+import moe.plushie.armourers_workshop.core.math.OpenVector3f;
 import moe.plushie.armourers_workshop.core.skin.serializer.importer.PackObject;
 import moe.plushie.armourers_workshop.core.skin.serializer.importer.PackResourceSet;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IOConsumer;
@@ -188,8 +188,8 @@ public class BlockBenchPackReader {
         object.at("frame_order_type", it -> builder.frameOrderType(it.stringValue()));
         object.at("frame_order", it -> builder.frameOrder(it.stringValue()));
         object.at("frame_interpolate", it -> builder.frameInterpolate(it.boolValue()));
-        object.at("width", width -> object.at("height", height -> builder.imageSize(new Size2f(width.floatValue(), height.floatValue()))));
-        object.at("uv_width", width -> object.at("uv_height", height -> builder.textureSize(new Size2f(width.floatValue(), height.floatValue()))));
+        object.at("width", width -> object.at("height", height -> builder.imageSize(new OpenSize2f(width.floatValue(), height.floatValue()))));
+        object.at("uv_width", width -> object.at("uv_height", height -> builder.textureSize(new OpenSize2f(width.floatValue(), height.floatValue()))));
         return builder.build();
     }
 
@@ -223,7 +223,7 @@ public class BlockBenchPackReader {
             fo.at("interpolation", it -> {
                 fb.interpolation(it.stringValue());
                 if (it.stringValue().equals("bezier")) {
-                    var values = new ArrayList<Vector3f>();
+                    var values = new ArrayList<OpenVector3f>();
                     var parameters = new ArrayList<Float>();
                     //fo.get("bezier_linked");
                     values.add(fo.get("bezier_left_time").vector3fValue());
@@ -231,9 +231,9 @@ public class BlockBenchPackReader {
                     values.add(fo.get("bezier_right_time").vector3fValue());
                     values.add(fo.get("bezier_right_value").vector3fValue());
                     for (var parameter : values) {
-                        parameters.add(parameter.getX());
-                        parameters.add(parameter.getY());
-                        parameters.add(parameter.getZ());
+                        parameters.add(parameter.x());
+                        parameters.add(parameter.y());
+                        parameters.add(parameter.z());
                     }
                     fb.parameters(parameters);
                 }

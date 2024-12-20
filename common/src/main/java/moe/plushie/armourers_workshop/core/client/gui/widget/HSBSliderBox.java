@@ -101,8 +101,8 @@ public class HSBSliderBox extends UIControl {
     private void updateValueWithEvent(UIEvent event) {
         var point = event.locationInView(this);
         var rect = bounds().insetBy(1, 1, 1, 1);
-        double value = ((double) point.x - rect.x) / rect.width;
-        values[type.ordinal()] = OpenMath.clamp((float) value, 0f, 1f);
+        var value = (point.x - rect.x) / rect.width;
+        values[type.ordinal()] = OpenMath.clamp(value, 0f, 1f);
         valueDidChange();
     }
 

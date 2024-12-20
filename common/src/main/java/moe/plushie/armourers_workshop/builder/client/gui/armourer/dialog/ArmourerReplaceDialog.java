@@ -52,11 +52,11 @@ public class ArmourerReplaceDialog extends ConfirmDialog {
 
     private void setup() {
         layoutIfNeeded();
-        var left = confirmButton.frame().getX() + 1;
-        var centerX = cancelButton.frame().getX() + 1;
-        var bottom = confirmButton.frame().getY() - 4;
+        var left = confirmButton.frame().x() + 1;
+        var centerX = cancelButton.frame().x() + 1;
+        var bottom = confirmButton.frame().y() - 4;
         var width = bounds().width - 30;
-        var height = bounds().getHeight() + 10 + 98;
+        var height = bounds().height() + 10 + 98;
 
         setupBackgroundView(left, centerX, height);
 
@@ -73,7 +73,7 @@ public class ArmourerReplaceDialog extends ConfirmDialog {
         bringSubviewToFront(confirmButton);
         bringSubviewToFront(cancelButton);
 
-        listView.setFrame(new CGRect(0, 0, bounds().getWidth(), height));
+        listView.setFrame(new CGRect(0, 0, bounds().width(), height));
         listView.getMenu().reloadSlots(inventoryView.frame(), new CGRect(left + 32, 44, 0, 0));
         addSubview(listView);
     }
@@ -166,7 +166,7 @@ public class ArmourerReplaceDialog extends ConfirmDialog {
     @Override
     public void setCenter(CGPoint newValue) {
         int extendHeight = 98 + 10;
-        super.setCenter(new CGPoint(newValue.x, newValue.y - extendHeight / 2));
+        super.setCenter(new CGPoint(newValue.x, newValue.y - extendHeight / 2f));
         if (listView != null) {
             listView.setNeedsLayout();
         }

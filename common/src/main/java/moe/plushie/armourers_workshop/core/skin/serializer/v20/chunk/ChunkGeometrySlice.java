@@ -1,10 +1,10 @@
 package moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk;
 
 import moe.plushie.armourers_workshop.api.skin.geometry.ISkinGeometryType;
+import moe.plushie.armourers_workshop.core.math.OpenRectangle3f;
 import moe.plushie.armourers_workshop.core.math.OpenTransform3f;
-import moe.plushie.armourers_workshop.core.math.Rectangle3f;
-import moe.plushie.armourers_workshop.core.math.Vector2f;
-import moe.plushie.armourers_workshop.core.math.Vector3f;
+import moe.plushie.armourers_workshop.core.math.OpenVector2f;
+import moe.plushie.armourers_workshop.core.math.OpenVector3f;
 import moe.plushie.armourers_workshop.core.skin.geometry.SkinGeometry;
 import moe.plushie.armourers_workshop.core.skin.serializer.v20.geometry.ChunkGeometrySerializer;
 import moe.plushie.armourers_workshop.core.skin.serializer.v20.geometry.ChunkGeometrySerializers;
@@ -119,27 +119,27 @@ public class ChunkGeometrySlice implements OpenSliceAccessor.Provider<SkinGeomet
         return Float.intBitsToFloat(getFixedInt(offset, usedBytes));
     }
 
-    public Vector3f getVector3f(int offset) {
+    public OpenVector3f getVector3f(int offset) {
         float x = getFloat(offset);
         float y = getFloat(offset + 4);
         float z = getFloat(offset + 8);
         if (x == 0 && y == 0 && z == 0) {
-            return Vector3f.ZERO;
+            return OpenVector3f.ZERO;
         }
         if (x == 1 && y == 1 && z == 1) {
-            return Vector3f.ONE;
+            return OpenVector3f.ONE;
         }
-        return new Vector3f(x, y, z);
+        return new OpenVector3f(x, y, z);
     }
 
-    public Rectangle3f getRectangle3f(int offset) {
+    public OpenRectangle3f getRectangle3f(int offset) {
         float x = getFloat(offset);
         float y = getFloat(offset + 4);
         float z = getFloat(offset + 8);
         float width = getFloat(offset + 12);
         float height = getFloat(offset + 16);
         float depth = getFloat(offset + 20);
-        return new Rectangle3f(x, y, z, width, height, depth);
+        return new OpenRectangle3f(x, y, z, width, height, depth);
     }
 
 
@@ -157,14 +157,14 @@ public class ChunkGeometrySlice implements OpenSliceAccessor.Provider<SkinGeomet
         return palette.readColor(getFixedInt(offset, palette.getColorIndexBytes()));
     }
 
-    public Vector2f getTexturePos(int offset) {
+    public OpenVector2f getTexturePos(int offset) {
         int usedBytes = palette.getTextureIndexBytes();
         float x = getFixedFloat(offset, usedBytes);
         float y = getFixedFloat(offset + usedBytes, usedBytes);
         if (x == 0 && y == 0) {
-            return Vector2f.ZERO;
+            return OpenVector2f.ZERO;
         }
-        return new Vector2f(x, y);
+        return new OpenVector2f(x, y);
     }
 
     public SkinTextureOptions getTextureOptions(int offset) {

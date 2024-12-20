@@ -9,20 +9,20 @@ import com.apple.library.uikit.UIEvent;
 import com.apple.library.uikit.UIImage;
 import com.apple.library.uikit.UILabel;
 import com.apple.library.uikit.UIView;
-import moe.plushie.armourers_workshop.api.skin.texture.ISkinPaintType;
 import moe.plushie.armourers_workshop.core.capability.SkinWardrobe;
 import moe.plushie.armourers_workshop.core.client.texture.BakedEntityTexture;
 import moe.plushie.armourers_workshop.core.client.texture.PlayerTextureLoader;
 import moe.plushie.armourers_workshop.core.menu.SkinSlotType;
 import moe.plushie.armourers_workshop.core.network.UpdateWardrobePacket;
 import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintColor;
+import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintType;
 import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintTypes;
 import moe.plushie.armourers_workshop.core.utils.Objects;
+import moe.plushie.armourers_workshop.core.utils.TextureUtils;
 import moe.plushie.armourers_workshop.init.ModDataComponents;
 import moe.plushie.armourers_workshop.init.ModTextures;
 import moe.plushie.armourers_workshop.init.platform.NetworkManager;
 import moe.plushie.armourers_workshop.utils.RenderSystem;
-import moe.plushie.armourers_workshop.utils.TextureUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
@@ -51,7 +51,7 @@ public class SkinWardrobeColorSetting extends SkinWardrobeBaseSetting {
         setupPickerView(SkinPaintTypes.MISC_4, 178, 113, false);
     }
 
-    private void setupPickerView(ISkinPaintType paintType, int x, int y, boolean enableAutoPick) {
+    private void setupPickerView(SkinPaintType paintType, int x, int y, boolean enableAutoPick) {
         var picker = new ColorPicker(paintType, new CGRect(x, y, 90, 24), enableAutoPick);
         addSubview(picker);
     }
@@ -74,12 +74,12 @@ public class SkinWardrobeColorSetting extends SkinWardrobeBaseSetting {
         private final UIView colorView = new UIView(new CGRect(1, 12, 12, 12));
 
         private final int slot;
-        private final ISkinPaintType paintType;
+        private final SkinPaintType paintType;
 
         private SkinPaintColor color;
         private UIButton pickerButton;
 
-        public ColorPicker(ISkinPaintType paintType, CGRect frame, boolean enableAutoPick) {
+        public ColorPicker(SkinPaintType paintType, CGRect frame, boolean enableAutoPick) {
             super(frame);
             this.paintType = paintType;
             this.slot = SkinSlotType.getDyeSlotIndex(paintType);
@@ -87,7 +87,7 @@ public class SkinWardrobeColorSetting extends SkinWardrobeBaseSetting {
             this.setup(paintType, enableAutoPick);
         }
 
-        private void setup(ISkinPaintType paintType, boolean enableAutoPick) {
+        private void setup(SkinPaintType paintType, boolean enableAutoPick) {
             var name = paintType.getRegistryName().getPath();
             // title
             this.titleView.setText(getDisplayText("label." + name));

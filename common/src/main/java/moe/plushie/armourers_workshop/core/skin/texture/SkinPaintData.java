@@ -1,6 +1,6 @@
 package moe.plushie.armourers_workshop.core.skin.texture;
 
-import moe.plushie.armourers_workshop.core.math.Vector2i;
+import moe.plushie.armourers_workshop.core.math.OpenVector2i;
 
 import java.util.ArrayList;
 
@@ -67,7 +67,7 @@ public class SkinPaintData {
             if (sourceBox.equals(destinationBox) || destinationBox == null) {
                 return;
             }
-            var sourceTextures = new ArrayList<Vector2i>(0);
+            var sourceTextures = new ArrayList<OpenVector2i>(0);
             sourceBox.forEach((texturePos, x, y, z, dir) -> sourceTextures.add(texturePos));
             destinationBox.forEach((texture, x, y, z, dir) -> {
                 if (!sourceTextures.isEmpty()) {
@@ -78,12 +78,12 @@ public class SkinPaintData {
         });
     }
 
-    public int getColor(Vector2i point) {
-        return getColor(point.getX(), point.getY());
+    public int getColor(OpenVector2i point) {
+        return getColor(point.x(), point.y());
     }
 
-    public void setColor(Vector2i point, int color) {
-        setColor(point.getX(), point.getY(), color);
+    public void setColor(OpenVector2i point, int color) {
+        setColor(point.x(), point.y(), color);
     }
 
     public int getColor(int x, int y) {

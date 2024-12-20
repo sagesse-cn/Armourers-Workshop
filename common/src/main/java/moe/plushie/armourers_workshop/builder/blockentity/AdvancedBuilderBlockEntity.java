@@ -5,8 +5,8 @@ import moe.plushie.armourers_workshop.api.common.IBlockEntityHandler;
 import moe.plushie.armourers_workshop.api.core.IDataSerializer;
 import moe.plushie.armourers_workshop.core.blockentity.UpdatableBlockEntity;
 import moe.plushie.armourers_workshop.core.data.UserNotifications;
-import moe.plushie.armourers_workshop.core.math.Rectangle3f;
-import moe.plushie.armourers_workshop.core.math.Vector3f;
+import moe.plushie.armourers_workshop.core.math.OpenRectangle3f;
+import moe.plushie.armourers_workshop.core.math.OpenVector3f;
 import moe.plushie.armourers_workshop.core.skin.Skin;
 import moe.plushie.armourers_workshop.core.skin.SkinDescriptor;
 import moe.plushie.armourers_workshop.core.skin.SkinLoader;
@@ -20,8 +20,8 @@ import moe.plushie.armourers_workshop.core.skin.serializer.document.SkinDocument
 import moe.plushie.armourers_workshop.core.skin.serializer.exception.TranslatableException;
 import moe.plushie.armourers_workshop.core.utils.OpenItemTransforms;
 import moe.plushie.armourers_workshop.init.environment.EnvironmentExecutor;
-import moe.plushie.armourers_workshop.utils.BlockUtils;
-import moe.plushie.armourers_workshop.utils.SkinUtils;
+import moe.plushie.armourers_workshop.builder.other.BlockUtils;
+import moe.plushie.armourers_workshop.core.utils.SkinUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
@@ -34,20 +34,20 @@ public class AdvancedBuilderBlockEntity extends UpdatableBlockEntity implements 
 
     private AABB renderBoundingBox;
 
-    public final Vector3f carmeOffset = new Vector3f();
-    public final Vector3f carmeRot = new Vector3f();
-    public final Vector3f carmeScale = new Vector3f(1, 1, 1);
+    public final OpenVector3f carmeOffset = new OpenVector3f();
+    public final OpenVector3f carmeRot = new OpenVector3f();
+    public final OpenVector3f carmeScale = new OpenVector3f(1, 1, 1);
 
-    public Vector3f offset = new Vector3f(0, 12, 0);
+    public OpenVector3f offset = new OpenVector3f(0, 12, 0);
 
     private final SkinDocument document = new SkinDocument();
 
-    public Vector3f getRenderOrigin() {
+    public OpenVector3f getRenderOrigin() {
         var pos = getBlockPos();
-        return new Vector3f(
-                pos.getX() + offset.getX() + 0.5f,
-                pos.getY() + offset.getY() + 0.5f,
-                pos.getZ() + offset.getZ() + 0.5f
+        return new OpenVector3f(
+                pos.getX() + offset.x() + 0.5f,
+                pos.getY() + offset.y() + 0.5f,
+                pos.getZ() + offset.z() + 0.5f
         );
     }
 
@@ -135,8 +135,8 @@ public class AdvancedBuilderBlockEntity extends UpdatableBlockEntity implements 
         }
         var s = 16f;
         var origin = getRenderOrigin();
-        var rect = new Rectangle3f(origin.getX() - s / 2, origin.getY() - s / 2, origin.getZ() - s / 2, s, s, s);
-        renderBoundingBox = new AABB(rect.getMinX(), rect.getMinY(), rect.getMinZ(), rect.getMaxX(), rect.getMaxY(), rect.getMaxZ());
+        var rect = new OpenRectangle3f(origin.x() - s / 2, origin.y() - s / 2, origin.z() - s / 2, s, s, s);
+        renderBoundingBox = new AABB(rect.minX(), rect.minY(), rect.minZ(), rect.maxX(), rect.maxY(), rect.maxZ());
         return renderBoundingBox;
     }
 }

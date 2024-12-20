@@ -49,13 +49,13 @@ public class InventoryBox extends UIControl {
         float height = bounds().height;
         float hoverWidth = OpenMath.clamp(mouseOffset.x, 0, width);
         float hoverHeight = OpenMath.clamp(mouseOffset.y, 0, height);
-        for (int iy = 0; iy < height; iy += itemSize.height) {
-            for (int ix = 0; ix < width; ix += itemSize.width) {
-                int iu = u;
+        for (float iy = 0; iy < height; iy += itemSize.height) {
+            for (float ix = 0; ix < width; ix += itemSize.width) {
+                float iu = u;
                 if (ix <= offset.x && iy <= offset.y) {
                     iu += itemSize.width;
                 }
-                int iv = v;
+                float iv = v;
                 if (ix <= hoverWidth && iy <= hoverHeight && isHighlighted()) {
                     iv += itemSize.height;
                 }

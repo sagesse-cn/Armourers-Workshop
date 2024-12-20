@@ -1,7 +1,7 @@
 package moe.plushie.armourers_workshop.core.skin.texture;
 
 import moe.plushie.armourers_workshop.api.skin.texture.ISkinTexturePos;
-import moe.plushie.armourers_workshop.core.math.Vector2i;
+import moe.plushie.armourers_workshop.core.math.OpenVector2i;
 import moe.plushie.armourers_workshop.core.utils.Objects;
 import org.jetbrains.annotations.Nullable;
 
@@ -96,6 +96,6 @@ public class SkinTexturePos implements ISkinTexturePos {
 
     @Override
     public String toString() {
-        return Objects.toString(this, "uv", new Vector2i(u, v), "size", new Vector2i(width, height), "total", new Vector2i(totalWidth, totalHeight), "options", options);
+        return Objects.toString(this, "uv", new OpenVector2i(u, v), "size", new OpenVector2i(width, height), "total", new OpenVector2i(totalWidth, totalHeight), "options", options);
     }
 }

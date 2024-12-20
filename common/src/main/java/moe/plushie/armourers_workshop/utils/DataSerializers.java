@@ -10,14 +10,14 @@ import moe.plushie.armourers_workshop.api.common.IPlayerDataSerializer;
 import moe.plushie.armourers_workshop.api.core.IDataCodec;
 import moe.plushie.armourers_workshop.api.core.IResourceLocation;
 import moe.plushie.armourers_workshop.api.network.IFriendlyByteBuf;
-import moe.plushie.armourers_workshop.api.skin.ISkinType;
 import moe.plushie.armourers_workshop.api.skin.texture.ISkinPaintColor;
 import moe.plushie.armourers_workshop.compatibility.core.data.AbstractEntityDataSerializer;
 import moe.plushie.armourers_workshop.core.capability.SkinWardrobe;
 import moe.plushie.armourers_workshop.core.data.EntityCollisionShape;
 import moe.plushie.armourers_workshop.core.entity.EntityProfile;
-import moe.plushie.armourers_workshop.core.math.Rectangle3f;
-import moe.plushie.armourers_workshop.core.math.Vector3f;
+import moe.plushie.armourers_workshop.core.math.OpenRectangle3f;
+import moe.plushie.armourers_workshop.core.math.OpenVector3f;
+import moe.plushie.armourers_workshop.core.skin.SkinType;
 import moe.plushie.armourers_workshop.core.skin.SkinTypes;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperties;
 import moe.plushie.armourers_workshop.core.skin.texture.EntityTextureDescriptor;
@@ -65,7 +65,7 @@ import java.util.zip.GZIPOutputStream;
 public class DataSerializers {
 
     public static final IDataCodec<IResourceLocation> RESOURCE_LOCATION = IDataCodec.STRING.xmap(OpenResourceLocation::parse, IResourceLocation::toString);
-    public static final IDataCodec<Rectangle3f> BOUNDING_BOX = IDataCodec.FLOAT.listOf().xmap(Rectangle3f::new, Rectangle3f::toList);
+    public static final IDataCodec<OpenRectangle3f> BOUNDING_BOX = IDataCodec.FLOAT.listOf().xmap(OpenRectangle3f::new, OpenRectangle3f::toList);
     public static final IDataCodec<SkinPaintData> COMPRESSED_PAINT_DATA = IDataCodec.BYTE_BUFFER.xmap(DataSerializers::decompressPaintData, DataSerializers::compressPaintData);
 
     public static final IEntitySerializer<CompoundTag> COMPOUND_TAG = of(EntityDataSerializers.COMPOUND_TAG);
@@ -88,17 +88,17 @@ public class DataSerializers {
         }
     };
 
-    public static final IEntitySerializer<Vector3f> VECTOR_3F = new IEntitySerializer<Vector3f>() {
+    public static final IEntitySerializer<OpenVector3f> VECTOR_3F = new IEntitySerializer<OpenVector3f>() {
         @Override
-        public void write(IFriendlyByteBuf buffer, Vector3f pos) {
-            buffer.writeFloat(pos.getX());
-            buffer.writeFloat(pos.getY());
-            buffer.writeFloat(pos.getZ());
+        public void write(IFriendlyByteBuf buffer, OpenVector3f pos) {
+            buffer.writeFloat(pos.x());
+            buffer.writeFloat(pos.y());
+            buffer.writeFloat(pos.z());
         }
 
         @Override
-        public Vector3f read(IFriendlyByteBuf buffer) {
-            return new Vector3f(buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
+        public OpenVector3f read(IFriendlyByteBuf buffer) {
+            return new OpenVector3f(buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
         }
     };
 
@@ -255,23 +255,29 @@ public class DataSerializers {
         }
     };
 
-    public static final IPlayerDataSerializer<ISkinType> SKIN_TYPE = new IPlayerDataSerializer<ISkinType>() {
-        public void write(IFriendlyByteBuf buffer, Player player, ISkinType value) {
+    public static final IPlayerDataSerializer<SkinType> SKIN_TYPE = new IPlayerDataSerializer<SkinType>() {
+
+        @Override
+        public void write(IFriendlyByteBuf buffer, Player player, SkinType value) {
             buffer.writeUtf(value.getRegistryName().toString());
         }
 
-        public ISkinType read(IFriendlyByteBuf buffer, Player player) {
+        @Override
+        public SkinType read(IFriendlyByteBuf buffer, Player player) {
             return SkinTypes.byName(buffer.readUtf());
         }
     };
 
     public static final IPlayerDataSerializer<SkinProperties> SKIN_PROPERTIES = new IPlayerDataSerializer<SkinProperties>() {
+
+        @Override
         public void write(IFriendlyByteBuf buffer, Player player, SkinProperties value) {
             var nbt = new CompoundTag();
             value.writeToNBT(nbt);
             buffer.writeNbt(nbt);
         }
 
+        @Override
         public SkinProperties read(IFriendlyByteBuf buffer, Player player) {
             var properties = new SkinProperties();
             var nbt = buffer.readNbt();

@@ -1,8 +1,6 @@
 package moe.plushie.armourers_workshop.core.utils;
 
-import moe.plushie.armourers_workshop.api.skin.ISkinEquipmentSlot;
-
-public enum OpenEquipmentSlot implements ISkinEquipmentSlot {
+public enum OpenEquipmentSlot {
 
     MAINHAND("mainhand"),
     OFFHAND("offhand"),
@@ -10,8 +8,7 @@ public enum OpenEquipmentSlot implements ISkinEquipmentSlot {
     FEET("feet"),
     LEGS("legs"),
     CHEST("chest"),
-    HEAD("head"),
-    BODY("body");
+    HEAD("head");
 
     private final String name;
 
@@ -19,7 +16,6 @@ public enum OpenEquipmentSlot implements ISkinEquipmentSlot {
         this.name = name;
     }
 
-    @Override
     public String getName() {
         return name;
     }

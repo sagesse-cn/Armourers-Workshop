@@ -33,8 +33,7 @@ public class TreeView extends UIScrollView implements UIMenuControllerDelegate {
     protected TreeNode selectedNode = null;
     protected UIMenuController currentMenuController;
 
-    protected final DelegateImpl<TreeViewDelegate> delegate = DelegateImpl.of(new TreeViewDelegate() {
-    });
+    protected final DelegateImpl<TreeViewDelegate> delegate = DelegateImpl.of(new TreeViewDelegate() {});
 
     public TreeView(CGRect frame) {
         this(new TreeNode("Root"), frame);
@@ -60,7 +59,7 @@ public class TreeView extends UIScrollView implements UIMenuControllerDelegate {
         }
         hideNodeMenuIfNeeded();
         selectedNode = node;
-        for (Entry entry : entries.values()) {
+        for (var entry : entries.values()) {
             if (entry.node == node) {
                 entry.setSelected(true);
             }
@@ -71,7 +70,7 @@ public class TreeView extends UIScrollView implements UIMenuControllerDelegate {
     public void deselectNode(TreeNode node) {
         hideNodeMenuIfNeeded();
         selectedNode = null;
-        for (Entry entry : entries.values()) {
+        for (var entry : entries.values()) {
             if (entry.node == node) {
                 entry.setSelected(false);
             }
@@ -139,8 +138,8 @@ public class TreeView extends UIScrollView implements UIMenuControllerDelegate {
     private void buildEntry(String key, float x, float y, CGSize itemSize, CGSize contentSize, TreeNode node, HashMap<String, Entry> removedEntries) {
         // add a entry if needed, but except root.
         if (!key.isEmpty()) {
-            CGRect rect = new CGRect(0, y, itemSize.width, itemSize.height);
-            Entry entry = removedEntries.remove(key);
+            var rect = new CGRect(0, y, itemSize.width, itemSize.height);
+            var entry = removedEntries.remove(key);
             if (entry == null) {
                 entry = new Entry(rect);
                 entries.put(key, entry);
@@ -161,7 +160,7 @@ public class TreeView extends UIScrollView implements UIMenuControllerDelegate {
         }
         // add all child into view.
         int index = 0;
-        for (TreeNode child : node.children()) {
+        for (var child : node.children()) {
             String key1 = key + ":" + index++;
             buildEntry(key1, x, contentSize.height, itemSize, contentSize, child, removedEntries);
         }
@@ -235,7 +234,7 @@ public class TreeView extends UIScrollView implements UIMenuControllerDelegate {
             // show the title always.
             updateTitleIfNeeded();
             if (cachedTitle != null) {
-                context.drawText(cachedTitle, iconRect.getMaxX(), 1, UIFont.systemFont(), textColor.currentValue(), null);
+                context.drawText(cachedTitle, iconRect.maxX(), 1, UIFont.systemFont(), textColor.currentValue(), null);
             }
         }
 

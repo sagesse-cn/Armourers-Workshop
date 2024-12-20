@@ -2,8 +2,8 @@ package moe.plushie.armourers_workshop.core.skin.serializer.document;
 
 import moe.plushie.armourers_workshop.api.core.IRegistryEntry;
 import moe.plushie.armourers_workshop.api.core.IResourceLocation;
-import moe.plushie.armourers_workshop.api.skin.ISkinType;
-import moe.plushie.armourers_workshop.api.skin.part.ISkinPartType;
+import moe.plushie.armourers_workshop.core.skin.SkinType;
+import moe.plushie.armourers_workshop.core.skin.part.SkinPartType;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPartTypes;
 import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.core.utils.Objects;
@@ -16,7 +16,7 @@ import java.util.Set;
 
 public class SkinDocumentType implements IRegistryEntry {
 
-    private static final Map<ISkinPartType, Collection<ISkinPartType>> LINKED_PARTS = Collections.immutableMap(builder -> {
+    private static final Map<SkinPartType, Collection<SkinPartType>> LINKED_PARTS = Collections.immutableMap(builder -> {
         builder.put(SkinPartTypes.BIPPED_CHEST, Collections.newList(SkinPartTypes.BIPPED_TORSO));
         builder.put(SkinPartTypes.BIPPED_LEFT_ARM, Collections.newList(SkinPartTypes.BIPPED_LEFT_HAND));
         builder.put(SkinPartTypes.BIPPED_RIGHT_ARM, Collections.newList(SkinPartTypes.BIPPED_RIGHT_HAND));
@@ -29,17 +29,17 @@ public class SkinDocumentType implements IRegistryEntry {
         builder.put(SkinPartTypes.ITEM_FISHING_ROD, Collections.newList(SkinPartTypes.ITEM_FISHING_ROD1));
     });
 
-    private static final Set<ISkinPartType> DISABLED_PARTS = Collections.immutableSet(builder -> {
+    private static final Set<SkinPartType> DISABLED_PARTS = Collections.immutableSet(builder -> {
         builder.add(SkinPartTypes.BLOCK_MULTI);
     });
 
     private final String category;
-    private final ISkinType skinType;
-    private final ArrayList<ISkinPartType> skinPartTypes;
+    private final SkinType skinType;
+    private final ArrayList<SkinPartType> skinPartTypes;
 
     private IResourceLocation registryName;
 
-    public SkinDocumentType(String category, ISkinType type) {
+    public SkinDocumentType(String category, SkinType type) {
         this.category = category;
         this.skinType = type;
         this.skinPartTypes = generatePartTypes(type);
@@ -53,11 +53,11 @@ public class SkinDocumentType implements IRegistryEntry {
         return category;
     }
 
-    public ISkinType getSkinType() {
+    public SkinType getSkinType() {
         return skinType;
     }
 
-    public List<? extends ISkinPartType> getSkinPartTypes() {
+    public List<? extends SkinPartType> getSkinPartTypes() {
         return skinPartTypes;
     }
 
@@ -70,18 +70,13 @@ public class SkinDocumentType implements IRegistryEntry {
         return registryName;
     }
 
-    public boolean usesItemTransforms() {
-        return true;
-        //return skinType instanceof ISkinEquipmentType || skinType == SkinTypes.ITEM;
-    }
-
     @Override
     public String toString() {
         return Objects.toString(this, "name", category, "id", registryName);
     }
 
-    private ArrayList<ISkinPartType> generatePartTypes(ISkinType type) {
-        var partTypes = new ArrayList<ISkinPartType>();
+    private ArrayList<SkinPartType> generatePartTypes(SkinType type) {
+        var partTypes = new ArrayList<SkinPartType>();
         for (var partType : type.getParts()) {
             // manually disabled parts.
             if (DISABLED_PARTS.contains(partType)) {

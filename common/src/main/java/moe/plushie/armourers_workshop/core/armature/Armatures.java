@@ -1,13 +1,13 @@
 package moe.plushie.armourers_workshop.core.armature;
 
 import moe.plushie.armourers_workshop.api.armature.IJointTransform;
-import moe.plushie.armourers_workshop.api.core.IResourceLocation;
-import moe.plushie.armourers_workshop.api.skin.ISkinType;
-import moe.plushie.armourers_workshop.api.skin.part.ISkinPartType;
+import moe.plushie.armourers_workshop.core.skin.SkinType;
 import moe.plushie.armourers_workshop.core.skin.SkinTypes;
+import moe.plushie.armourers_workshop.core.skin.part.SkinPartType;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPartTypes;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IODataObject;
 import moe.plushie.armourers_workshop.core.utils.JsonSerializer;
+import moe.plushie.armourers_workshop.core.utils.OpenResourceLocation;
 import moe.plushie.armourers_workshop.init.ModConstants;
 import moe.plushie.armourers_workshop.init.ModLog;
 import org.jetbrains.annotations.Nullable;
@@ -21,8 +21,8 @@ import java.util.function.Function;
 @SuppressWarnings("unused")
 public class Armatures {
 
-    private static final LinkedHashMap<ISkinType, Armature> LINKED_ARMATURES = new LinkedHashMap<>();
-    private static final LinkedHashMap<IResourceLocation, Armature> NAMED_ARMATURES = new LinkedHashMap<>();
+    private static final LinkedHashMap<SkinType, Armature> LINKED_ARMATURES = new LinkedHashMap<>();
+    private static final LinkedHashMap<OpenResourceLocation, Armature> NAMED_ARMATURES = new LinkedHashMap<>();
 
     public static final Armature HUMANOID = Builder.named("humanoid");
     public static final Armature HORSE = Builder.named("horse");
@@ -33,11 +33,11 @@ public class Armatures {
     public static final Armature HAND = Builder.named("hand");
 
     @Nullable
-    public static Armature byName(IResourceLocation registryName) {
+    public static Armature byName(OpenResourceLocation registryName) {
         return NAMED_ARMATURES.get(registryName);
     }
 
-    public static Armature byType(ISkinType skinType) {
+    public static Armature byType(SkinType skinType) {
         return LINKED_ARMATURES.getOrDefault(skinType, ANY);
     }
 
@@ -48,9 +48,9 @@ public class Armatures {
 
         private Joint wildcardJoint;
 
-        private final HashSet<ISkinType> skinTypes = new HashSet<>();
+        private final HashSet<SkinType> skinTypes = new HashSet<>();
         private final LinkedHashMap<String, Joint> namedJoints = new LinkedHashMap<>();
-        private final LinkedHashMap<ISkinPartType, Joint> linkedJoints = new LinkedHashMap<>();
+        private final LinkedHashMap<SkinPartType, Joint> linkedJoints = new LinkedHashMap<>();
         private final LinkedHashMap<Joint, JointShape> jointShapes = new LinkedHashMap<>();
         private final LinkedHashMap<Joint, IJointTransform> jointTransforms = new LinkedHashMap<>();
         private final LinkedHashMap<Joint, String> jointParents = new LinkedHashMap<>();
@@ -96,7 +96,7 @@ public class Armatures {
                     return;
                 }
                 case STRING: {
-                    String value = object.stringValue();
+                    var value = object.stringValue();
                     if (value.isEmpty() || value.equals("*")) {
                         consumer.accept(null);
                         return;

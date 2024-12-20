@@ -1,7 +1,7 @@
 package moe.plushie.armourers_workshop.core.skin.serializer.v13;
 
-import moe.plushie.armourers_workshop.api.skin.ISkinType;
 import moe.plushie.armourers_workshop.core.skin.Skin;
+import moe.plushie.armourers_workshop.core.skin.SkinType;
 import moe.plushie.armourers_workshop.core.skin.SkinTypes;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPart;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperties;
@@ -112,13 +112,13 @@ public final class SkinSerializerV13 implements IOSerializer {
             ModLog.error("Error loading skin type header.");
         }
 
-        ISkinType skinType = null;
+        SkinType skinType = null;
 
         if (loadedProps) {
-            String regName = stream.readString();
+            var regName = stream.readString();
             skinType = SkinTypes.byName(regName);
         } else {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
             do {
                 sb.append(new String(new byte[]{stream.readByte()}, StandardCharsets.UTF_8));
             } while (!sb.toString().endsWith("armourers:"));
@@ -214,7 +214,7 @@ public final class SkinSerializerV13 implements IOSerializer {
             ModLog.error("Error loading skin type header.");
         }
 
-        ISkinType skinType = null;
+        SkinType skinType = null;
 
         if (loadedProps) {
             String regName = stream.readString();

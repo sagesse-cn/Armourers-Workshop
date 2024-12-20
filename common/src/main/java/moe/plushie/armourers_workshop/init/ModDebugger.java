@@ -2,7 +2,7 @@ package moe.plushie.armourers_workshop.init;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import moe.plushie.armourers_workshop.api.core.math.IPoseStack;
-import moe.plushie.armourers_workshop.core.math.OpenQuaternion3f;
+import moe.plushie.armourers_workshop.core.math.OpenQuaternionf;
 import moe.plushie.armourers_workshop.core.utils.TickUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -64,7 +64,7 @@ public class ModDebugger {
 
     public static boolean viewHierarchy = false;
 
-    public static boolean armature = false;
+    public static boolean armature = true;
     public static boolean defaultArmature = false;
 
     // Debug tool
@@ -75,12 +75,12 @@ public class ModDebugger {
     public static boolean sortOrderToolTip;
 
     public static void rotate(IPoseStack poseStack) {
-        poseStack.rotate(new OpenQuaternion3f(rx, ry, rz, true));
+        poseStack.rotate(new OpenQuaternionf(rx, ry, rz, true));
     }
 
     @Environment(EnvType.CLIENT)
     public static void rotate(PoseStack poseStack) {
-        poseStack.mulPose(new OpenQuaternion3f(rx, ry, rz, true));
+        poseStack.mulPose(new OpenQuaternionf(rx, ry, rz, true));
     }
 
     public static void scale(IPoseStack poseStack) {

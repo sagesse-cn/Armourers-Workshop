@@ -8,10 +8,9 @@ import com.apple.library.uikit.UIColor;
 import com.apple.library.uikit.UIControl;
 import com.apple.library.uikit.UILabel;
 import com.apple.library.uikit.UIView;
-import moe.plushie.armourers_workshop.api.skin.property.ISkinProperty;
 import moe.plushie.armourers_workshop.core.client.gui.widget.InventoryBox;
-import moe.plushie.armourers_workshop.core.math.Vector2f;
-import moe.plushie.armourers_workshop.core.math.Vector3f;
+import moe.plushie.armourers_workshop.core.client.gui.widget.VerticalStackView;
+import moe.plushie.armourers_workshop.core.math.OpenVector3d;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperty;
 import moe.plushie.armourers_workshop.core.utils.Objects;
 
@@ -19,7 +18,7 @@ import java.util.Collection;
 
 public abstract class PropertySettingView extends UIView {
 
-    private float cursorY = 0;
+    protected final VerticalStackView stackView = new VerticalStackView(CGRect.ZERO);
 
     protected UICheckBox blockBed;
     protected UICheckBox blockEnderInventory;
@@ -31,8 +30,11 @@ public abstract class PropertySettingView extends UIView {
 
     protected EntitySizeBox entitySizeBox;
 
-    public PropertySettingView(CGRect rect, Collection<ISkinProperty<?>> properties) {
+    public PropertySettingView(CGRect rect, Collection<SkinProperty<?>> properties) {
         super(rect);
+        this.stackView.setFrame(bounds());
+        this.stackView.setAutoresizingMask(AutoresizingMask.flexibleWidth | AutoresizingMask.flexibleHeight);
+        this.addSubview(stackView);
         for (var property : properties) {
             if (property.getDefaultValue() instanceof Boolean) {
                 addCheckBox(Objects.unsafeCast(property));
@@ -44,22 +46,23 @@ public abstract class PropertySettingView extends UIView {
                 addInventoryBox();
             }
         }
-        this.setFrame(new CGRect(rect.x, rect.y, rect.width, cursorY));
+        this.stackView.sizeToFit();
+        this.setFrame(new CGRect(rect.x, rect.y, rect.width, stackView.frame().maxY()));
         this.resolveConflicts();
     }
 
     public void beginEditing() {
     }
 
-    public abstract <T> void putValue(ISkinProperty<T> property, T value);
+    public abstract <T> void putValue(SkinProperty<T> property, T value);
 
-    public abstract <T> T getValue(ISkinProperty<T> property);
+    public abstract <T> T getValue(SkinProperty<T> property);
 
     public void endEditing() {
     }
 
-    protected void addCheckBox(ISkinProperty<Boolean> property) {
-        var checkBox = new UICheckBox(new CGRect(0, cursorY, bounds().width, 10));
+    protected void addCheckBox(SkinProperty<Boolean> property) {
+        var checkBox = new UICheckBox(new CGRect(0, 0, 80, 10));
         checkBox.setTitle(getDisplayText(property.getKey()));
         checkBox.setTitleColor(UIColor.WHITE);
         checkBox.setTitleColor(UIColor.GRAY, UIControl.State.DISABLED);
@@ -71,7 +74,7 @@ public abstract class PropertySettingView extends UIView {
             self.resolveConflicts();
             self.endEditing();
         });
-        addSubview(checkBox);
+        stackView.addArrangedSubview(checkBox);
         if (property == SkinProperty.BLOCK_BED) {
             checkBox.setFrame(checkBox.frame().insetBy(0, 4, 0, 0));
             blockBed = checkBox;
@@ -82,51 +85,49 @@ public abstract class PropertySettingView extends UIView {
         if (property == SkinProperty.BLOCK_INVENTORY) {
             blockInventory = checkBox;
         }
-        cursorY = checkBox.frame().getMaxY() + 2;
     }
 
     protected void addEntitySize() {
-        entitySizeBox = new EntitySizeBox(new CGRect(12, cursorY, bounds().getWidth() - 34, 48)) {
-            @Override
-            protected void update() {
-                super.update();
-                PropertySettingView.this.setEntitySize(getEntitySize());
-            }
+        var contentView = new UIView(new CGRect(0, 0, 80, 48));
 
-            @Override
-            protected void beginEditing() {
-                PropertySettingView.this.beginEditing();
-            }
-
-            @Override
-            protected void endEditing() {
-                PropertySettingView.this.endEditing();
-            }
-        };
+        entitySizeBox = new EntitySizeBox(new CGRect(12, 0, 56, 48));
+        entitySizeBox.setAutoresizingMask(AutoresizingMask.flexibleWidth | AutoresizingMask.flexibleHeight);
         entitySizeBox.setHidden(true);
-        addSubview(entitySizeBox);
-        cursorY = entitySizeBox.frame().getMaxY() + 2;
-    }
+        entitySizeBox.addEditingObserver(flag -> {
+            if (flag) {
+                beginEditing();
+            } else {
+                endEditing();
+            }
+        });
+        entitySizeBox.addObserver(value -> {
+            putValue(SkinProperty.OVERRIDE_ENTITY_SIZE_WIDTH, value.x());
+            putValue(SkinProperty.OVERRIDE_ENTITY_SIZE_HEIGHT, value.y());
+            putValue(SkinProperty.OVERRIDE_ENTITY_SIZE_EYE_HEIGHT, value.z());
+        });
+        contentView.addSubview(entitySizeBox);
 
-    private void setEntitySize(Vector3f entitySize) {
-        putValue(SkinProperty.OVERRIDE_ENTITY_SIZE_WIDTH, (double) entitySize.getX());
-        putValue(SkinProperty.OVERRIDE_ENTITY_SIZE_HEIGHT, (double) entitySize.getY());
-        putValue(SkinProperty.OVERRIDE_ENTITY_SIZE_EYE_HEIGHT, (double) entitySize.getZ());
+        stackView.addArrangedSubview(contentView);
     }
 
     protected void addInventoryBox() {
-        inventoryTitle = new UILabel(new CGRect(0, cursorY - 2, bounds().width, 9));
-        inventorySlot = new UILabel(new CGRect(0, cursorY + 6, bounds().width, 9));
-        inventoryBox = new InventoryBox(new CGRect(0, cursorY, 9 * 10, 6 * 10));
+        var contentView = new UIView(new CGRect(0, 0, 80, 6 * 10));
 
+        inventoryTitle = new UILabel(new CGRect(0, -2, 80, 9));
+        inventoryTitle.setAutoresizingMask(AutoresizingMask.flexibleWidth | AutoresizingMask.flexibleBottomMargin);
         inventoryTitle.setText(getDisplayText("label.inventorySize"));
+        contentView.addSubview(inventoryTitle);
+
+        inventorySlot = new UILabel(new CGRect(0, 6, 80, 9));
+        inventorySlot.setAutoresizingMask(AutoresizingMask.flexibleWidth | AutoresizingMask.flexibleBottomMargin);
+        contentView.addSubview(inventorySlot);
+
+        inventoryBox = new InventoryBox(new CGRect(0, 0, 9 * 10, 6 * 10));
+        inventoryBox.setAutoresizingMask(AutoresizingMask.flexibleRightMargin | AutoresizingMask.flexibleBottomMargin);
         inventoryBox.addTarget(this, UIControl.Event.VALUE_CHANGED, PropertySettingView::setInventorySize);
+        contentView.addSubview(inventoryBox);
 
-        addSubview(inventoryTitle);
-        addSubview(inventorySlot);
-        addSubview(inventoryBox);
-
-        cursorY = inventoryBox.frame().getMaxY() + 2;
+        stackView.addArrangedSubview(contentView);
     }
 
     private void setInventorySize(UIControl sender) {
@@ -148,8 +149,8 @@ public abstract class PropertySettingView extends UIView {
         var width = getValue(SkinProperty.OVERRIDE_ENTITY_SIZE_WIDTH);
         var height = getValue(SkinProperty.OVERRIDE_ENTITY_SIZE_HEIGHT);
         var eyeHeight = getValue(SkinProperty.OVERRIDE_ENTITY_SIZE_EYE_HEIGHT);
+        entitySizeBox.setValue(new OpenVector3d(width, height, eyeHeight));
         entitySizeBox.setHidden(!isEnabled);
-        entitySizeBox.setEntitySize(new Vector3f(width, height, eyeHeight));
     }
 
     private void resolveInventorySlots() {

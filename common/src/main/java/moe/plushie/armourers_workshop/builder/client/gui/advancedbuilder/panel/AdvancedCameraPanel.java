@@ -7,12 +7,12 @@ import com.apple.library.uikit.UIEvent;
 import com.apple.library.uikit.UIView;
 import moe.plushie.armourers_workshop.builder.blockentity.AdvancedBuilderBlockEntity;
 import moe.plushie.armourers_workshop.builder.client.gui.advancedbuilder.document.DocumentEditor;
+import moe.plushie.armourers_workshop.builder.data.ClamppedVector3f;
 import moe.plushie.armourers_workshop.builder.entity.CameraEntity;
 import moe.plushie.armourers_workshop.core.client.bake.BakedSkinPart;
-import moe.plushie.armourers_workshop.core.math.ClamppedVector3f;
-import moe.plushie.armourers_workshop.core.math.OpenBoundingBox;
+import moe.plushie.armourers_workshop.core.math.OpenAxisAlignedBoundingBox;
 import moe.plushie.armourers_workshop.core.math.OpenMatrix4f;
-import moe.plushie.armourers_workshop.core.math.Vector3f;
+import moe.plushie.armourers_workshop.core.math.OpenVector3f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
 
@@ -22,17 +22,17 @@ public class AdvancedCameraPanel extends UIView {
 
     private CGPoint startMousePos = CGPoint.ZERO;
 
-    private final Vector3f origin = new Vector3f();
+    private final OpenVector3f origin = new OpenVector3f();
 
-    private final Vector3f oldRotation = new Vector3f();
-    private final Vector3f oldTranslate = new Vector3f();
+    private final OpenVector3f oldRotation = new OpenVector3f();
+    private final OpenVector3f oldTranslate = new OpenVector3f();
 
     //    private final ClamppedVector3f lastScale = new ClamppedVector3f(1, 1, 1, 0.5f, 0.5f, 0.5f, 5.0f, 5.0f, 5.0f);
 //    private final ClamppedVector3f lastRotation = new ClamppedVector3f(0, 0, 0, -90, Float.NEGATIVE_INFINITY, 0, 90, Float.POSITIVE_INFINITY, 0);
 //    private final ClamppedVector3f lastTranslate = new ClamppedVector3f(0, 0, 0, -8, -8, -8, 8, 8, 8);
-    private final Vector3f lastZoom = new ClamppedVector3f(1, 1, 1, 0.1f, 0.1f, 0.1f, 2.0f, 2.0f, 2.0f);
-    private final Vector3f lastRotation = new ClamppedVector3f(0, 0, 0, -90, Float.NEGATIVE_INFINITY, 0, 90, Float.POSITIVE_INFINITY, 0);
-    private final Vector3f lastTranslate = new Vector3f(0, 0, 0);
+    private final OpenVector3f lastZoom = new ClamppedVector3f(1, 1, 1, 0.1f, 0.1f, 0.1f, 2.0f, 2.0f, 2.0f);
+    private final OpenVector3f lastRotation = new ClamppedVector3f(0, 0, 0, -90, Float.NEGATIVE_INFINITY, 0, 90, Float.POSITIVE_INFINITY, 0);
+    private final OpenVector3f lastTranslate = new OpenVector3f(0, 0, 0);
 
 
     private final Options options;
@@ -94,7 +94,7 @@ public class AdvancedCameraPanel extends UIView {
         if (moveMode) {
             float dx = mousePos.x - startMousePos.x;
             float dy = mousePos.y - startMousePos.y;
-            move(new Vector3f(dx, dy, 0));
+            move(new OpenVector3f(dx, dy, 0));
         }
         if (rotationMode) {
             rotation(mousePos);
@@ -104,7 +104,7 @@ public class AdvancedCameraPanel extends UIView {
 
     @Override
     public void mouseWheel(UIEvent event) {
-        zoom(event.delta().getY());
+        zoom(event.delta().y());
     }
 
     @Override
@@ -112,21 +112,21 @@ public class AdvancedCameraPanel extends UIView {
 //        raycast(event);
     }
 
-    private void move(Vector3f delta) {
+    private void move(OpenVector3f delta) {
         var window = bounds();
         var plane = cameraEntity.getNearPlane();
         float near = options.getCameraNear();
 
-        float deltaX = -delta.getX() / (window.width / 2f);
-        float deltaY = delta.getY() / (window.height / 2f);
-        float deltaZ = near + delta.getZ();
+        float deltaX = -delta.x() / (window.width / 2f);
+        float deltaY = delta.y() / (window.height / 2f);
+        float deltaZ = near + delta.z();
 
         var d1 = plane.at(0, 0, -near);
         var d2 = plane.at(deltaX, deltaY, deltaZ);
 
-        float x = oldTranslate.getX() + d1.getX() + d2.getX();
-        float y = oldTranslate.getY() + d1.getY() + d2.getY();
-        float z = oldTranslate.getZ() + d1.getZ() + d2.getZ();
+        float x = oldTranslate.x() + d1.x() + d2.x();
+        float y = oldTranslate.y() + d1.y() + d2.y();
+        float z = oldTranslate.z() + d1.z() + d2.z();
 
         lastTranslate.set(x, y, z);
     }
@@ -136,14 +136,14 @@ public class AdvancedCameraPanel extends UIView {
 
         float dx = (mousePos.y - startMousePos.y) / window.height;
         float dy = (mousePos.x - startMousePos.x) / window.width;
-        float rx = oldRotation.getX() + dx * 360;
-        float ry = oldRotation.getY() + dy * 360;
+        float rx = oldRotation.x() + dx * 360;
+        float ry = oldRotation.y() + dy * 360;
 
         lastRotation.set(rx, ry, 0);
     }
 
     private void zoom(double delta) {
-        float scale = lastZoom.getX();
+        float scale = lastZoom.x();
         if (delta < 0) {
             scale /= 0.99f;
         } else if (delta > 0) {
@@ -226,21 +226,21 @@ public class AdvancedCameraPanel extends UIView {
 
     public void applyCameraChanges() {
 
-        float tx = lastTranslate.getX();
-        float ty = lastTranslate.getY();
-        float tz = lastTranslate.getZ();
+        float tx = lastTranslate.x();
+        float ty = lastTranslate.y();
+        float tz = lastTranslate.z();
 
-        float rx = lastRotation.getX();
-        float ry = lastRotation.getY();
-        float rz = lastRotation.getZ();
+        float rx = lastRotation.x();
+        float ry = lastRotation.y();
+        float rz = lastRotation.z();
 
         blockEntity.carmeOffset.set(tx, ty, tz);
         blockEntity.carmeRot.set(rx, ry, rz);
 
-        cameraEntity.setZoom(lastZoom.getZ());
+        cameraEntity.setZoom(lastZoom.z());
         cameraEntity.setXRot(rx);
         cameraEntity.setYRot(ry);
-        cameraEntity.setPos(origin.getX() + tx, origin.getY() + ty, origin.getZ() + tz);
+        cameraEntity.setPos(origin.x() + tx, origin.y() + ty, origin.z() + tz);
         cameraEntity.setOldPosAndRot();
     }
 
@@ -260,7 +260,7 @@ public class AdvancedCameraPanel extends UIView {
 
         final OpenMatrix4f invMat;
         final BakedSkinPart part;
-        final OpenBoundingBox box;
+        final OpenAxisAlignedBoundingBox box;
 
         Node(BakedSkinPart part, OpenMatrix4f invMat) {
             this.part = part;

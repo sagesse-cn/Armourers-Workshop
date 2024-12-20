@@ -2,7 +2,7 @@ package moe.plushie.armourers_workshop.core.armature;
 
 import moe.plushie.armourers_workshop.api.armature.IJoint;
 import moe.plushie.armourers_workshop.api.armature.IJointTransform;
-import moe.plushie.armourers_workshop.api.skin.part.ISkinPartType;
+import moe.plushie.armourers_workshop.core.skin.part.SkinPartType;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
@@ -12,9 +12,9 @@ import java.util.Map;
 public class Armature {
 
     private final IJoint[] joints;
-    private final ISkinPartType[] partTypes;
+    private final SkinPartType[] partTypes;
     private final Map<String, IJoint> namedJoints;
-    private final Map<ISkinPartType, IJoint> linkedJoints;
+    private final Map<SkinPartType, IJoint> linkedJoints;
     private final IJoint wildcardJoint;
 
     private final IJointTransform[] localTransforms;
@@ -22,9 +22,9 @@ public class Armature {
 
     private final JointShape[] shapes;
 
-    public Armature(Map<String, Joint> joints, Map<Joint, IJointTransform> transforms, Map<ISkinPartType, Joint> linkedJoints, @Nullable Joint wildcardJoint, Map<Joint, JointShape> shapes) {
+    public Armature(Map<String, Joint> joints, Map<Joint, IJointTransform> transforms, Map<SkinPartType, Joint> linkedJoints, @Nullable Joint wildcardJoint, Map<Joint, JointShape> shapes) {
         this.joints = new IJoint[joints.size()];
-        this.partTypes = new ISkinPartType[joints.size()];
+        this.partTypes = new SkinPartType[joints.size()];
         this.localTransforms = new IJointTransform[joints.size()];
         this.globalTransforms = new IJointTransform[joints.size()];
         this.namedJoints = new LinkedHashMap<>(joints);
@@ -55,13 +55,13 @@ public class Armature {
     }
 
     @Nullable
-    public IJoint getJoint(ISkinPartType partType) {
+    public IJoint getJoint(SkinPartType partType) {
         // ...
         return linkedJoints.getOrDefault(partType, wildcardJoint);
     }
 
     @Nullable
-    public ISkinPartType getPartType(IJoint joint) {
+    public SkinPartType getPartType(IJoint joint) {
         return partTypes[joint.getId()];
     }
 

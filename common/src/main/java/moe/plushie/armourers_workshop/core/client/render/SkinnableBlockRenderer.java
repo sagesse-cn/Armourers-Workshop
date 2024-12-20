@@ -76,7 +76,7 @@ public class SkinnableBlockRenderer<T extends SkinnableBlockEntity> extends Abst
                 skin.getBlockBounds().forEach((pos, rect) -> {
                     poseStack.pushPose();
                     poseStack.scale(-1, -1, 1);
-                    poseStack.translate(pos.getX() * 16f, pos.getY() * 16f, pos.getZ() * 16f);
+                    poseStack.translate(pos.x() * 16f, pos.y() * 16f, pos.z() * 16f);
                     ShapeTesselator.stroke(rect, UIColor.RED, poseStack, bufferSource);
                     poseStack.popPose();
                 });

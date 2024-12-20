@@ -69,14 +69,7 @@ public class AdvancedGeneralPanel extends AdvancedPanel {
         if (node == null || window == null) {
             return;
         }
-        boolean keepItemTransforms = false;
-        if (node.isBasic() && node.isLocked() && document.getType().usesItemTransforms()) {
-            keepItemTransforms = true;
-        }
-        if (node.getType() instanceof ICanOverride) {
-            keepItemTransforms = true;
-        }
-        window.importNewSkin(SkinTypes.ADVANCED, keepItemTransforms, skin -> {
+        window.importNewSkin(SkinTypes.ADVANCED, skin -> {
             var blockEntity = editor.getBlockEntity();
             NetworkManager.sendToServer(new AdvancedImportPacket(blockEntity, skin, node.getId()));
         });

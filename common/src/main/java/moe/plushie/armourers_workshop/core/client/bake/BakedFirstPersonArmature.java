@@ -1,8 +1,8 @@
 package moe.plushie.armourers_workshop.core.client.bake;
 
 import moe.plushie.armourers_workshop.api.armature.IJoint;
-import moe.plushie.armourers_workshop.api.skin.part.ISkinPartType;
 import moe.plushie.armourers_workshop.core.armature.Armatures;
+import moe.plushie.armourers_workshop.core.skin.part.SkinPartType;
 import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.core.utils.OpenItemDisplayContext;
 
@@ -29,7 +29,7 @@ public class BakedFirstPersonArmature extends BakedArmature {
     }
 
     @Override
-    public IJoint getJoint(ISkinPartType partType) {
+    public IJoint getJoint(SkinPartType partType) {
         var joint = super.getJoint(partType);
         if (joint != null && !jointNames.isEmpty() && !jointNames.contains(joint.getName())) {
             return null;

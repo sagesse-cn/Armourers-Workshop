@@ -1,8 +1,8 @@
 package moe.plushie.armourers_workshop.core.skin.geometry.collection;
 
 import moe.plushie.armourers_workshop.api.skin.geometry.ISkinGeometryType;
+import moe.plushie.armourers_workshop.core.math.OpenRectangle3f;
 import moe.plushie.armourers_workshop.core.math.OpenTransform3f;
-import moe.plushie.armourers_workshop.core.math.Rectangle3f;
 import moe.plushie.armourers_workshop.core.skin.geometry.SkinGeometry;
 import moe.plushie.armourers_workshop.core.skin.geometry.SkinGeometrySet;
 import moe.plushie.armourers_workshop.core.skin.geometry.SkinGeometryTypes;
@@ -51,7 +51,7 @@ public class SkinGeometrySetV2 extends SkinGeometrySet<SkinGeometry> {
 
         private final SkinTextureBox skyBox;
 
-        public Box(Rectangle3f boundingBox, OpenTransform3f transform, SkinTextureBox skyBox) {
+        public Box(OpenRectangle3f boundingBox, OpenTransform3f transform, SkinTextureBox skyBox) {
             this.transform = transform;
             this.boundingBox = boundingBox;
             this.skyBox = skyBox;

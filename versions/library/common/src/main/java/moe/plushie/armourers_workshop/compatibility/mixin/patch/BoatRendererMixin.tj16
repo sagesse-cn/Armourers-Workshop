@@ -4,8 +4,8 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import moe.plushie.armourers_workshop.api.annotation.Available;
 import moe.plushie.armourers_workshop.api.client.model.IModel;
 import moe.plushie.armourers_workshop.api.client.model.IModelProvider;
+import moe.plushie.armourers_workshop.compatibility.client.model.AbstractModelHolder;
 import moe.plushie.armourers_workshop.init.client.ClientWardrobeHandler;
-import moe.plushie.armourers_workshop.utils.ModelHolder;
 import net.minecraft.client.model.BoatModel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.BoatRenderer;
@@ -45,6 +45,6 @@ public class BoatRendererMixin<T extends Boat> implements IModelProvider<Boat> {
     @Unique
     @Override
     public IModel getModel(Boat entity) {
-        return ModelHolder.of(model);
+        return AbstractModelHolder.of(model);
     }
 }

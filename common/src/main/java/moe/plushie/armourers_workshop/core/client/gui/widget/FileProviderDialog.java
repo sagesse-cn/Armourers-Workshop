@@ -10,28 +10,28 @@ import com.apple.library.uikit.UIImage;
 import com.apple.library.uikit.UIImageView;
 import com.apple.library.uikit.UILabel;
 import com.apple.library.uikit.UIView;
-import moe.plushie.armourers_workshop.api.library.ISkinLibrary;
-import moe.plushie.armourers_workshop.api.skin.ISkinType;
-import moe.plushie.armourers_workshop.api.skin.serializer.ISkinFileHeader;
+import moe.plushie.armourers_workshop.core.data.DataDomain;
+import moe.plushie.armourers_workshop.core.skin.property.SkinProperties;
+import moe.plushie.armourers_workshop.core.skin.serializer.SkinFile;
 import moe.plushie.armourers_workshop.core.utils.FileUtils;
-import moe.plushie.armourers_workshop.init.ModLog;
+import moe.plushie.armourers_workshop.core.utils.Objects;
 import moe.plushie.armourers_workshop.init.ModTextures;
 import net.minecraft.Util;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Objects;
 
 public class FileProviderDialog extends ConfirmDialog {
 
-    private final SkinFileList fileList = new SkinFileList(new CGRect(0, 0, 100, 100));
+    private final SkinFileList<FileItem> fileList = new SkinFileList<>(new CGRect(0, 0, 100, 100));
 
     private final File rootPath;
     private final String extension;
 
     private FileItem selectedFile;
     private String selectedPath;
+
+    protected SkinProperties properties = new SkinProperties();
 
     public FileProviderDialog(File rootPath, String extension) {
         super();
@@ -55,6 +55,13 @@ public class FileProviderDialog extends ConfirmDialog {
 
         confirmButton.setTooltip(NSString.localizedString("skin-library.dialog.fileProvider.tooltip", extension), UIControl.State.DISABLED);
         confirmButton.setEnabled(false);
+
+        var setting = new UIButton(new CGRect(rect.width() - 24 - 8, 4, 24, 16));
+        setting.setBackgroundImage(UIImage.of(ModTextures.SKINNING_TABLE).uv(228, 0).resizable(24, 16).build(), UIControl.State.ALL);
+        //setting.setTooltip(getDisplayText(key));
+        //setting.setCanBecomeFocused(false);
+        setting.addTarget(this, UIControl.Event.MOUSE_LEFT_DOWN, FileProviderDialog::settingAction);
+        addSubview(setting);
 
         selectPath("");
     }
@@ -90,13 +97,22 @@ public class FileProviderDialog extends ConfirmDialog {
         addSubview(emptyView);
     }
 
+    private void settingAction(UIControl control) {
+        var alert = new FileProviderSettingDialog(properties);
+        alert.showInView(this, () -> {
+            if (!alert.isCancelled()) {
+                this.properties = alert.getProperties();
+            }
+        });
+    }
+
     private void selectFile(UIControl control) {
         var oldValue = selectedFile;
-        var newValue = (FileItem) fileList.getSelectedItem();
+        var newValue = fileList.getSelectedItem();
         selectedFile = newValue;
         confirmButton.setEnabled(newValue != null && !newValue.isDirectory());
         if (newValue != null && newValue.isDirectory() && oldValue == newValue) {
-            selectPath(newValue.path);
+            selectPath(newValue.getPath());
         }
     }
 
@@ -130,18 +146,10 @@ public class FileProviderDialog extends ConfirmDialog {
 
     private ArrayList<FileItem> getSkinFiles(File directory, boolean recursive) {
         var fileList = new ArrayList<FileItem>();
-        File[] templateFiles;
-        try {
-            templateFiles = directory.listFiles();
-            if (templateFiles == null) {
-                return fileList; // Armour file list load failed, not found.
-            }
-        } catch (Exception e) {
-            ModLog.error(extension + "file list load failed.");
-            e.printStackTrace();
-            return fileList;
+        var templateFiles = FileUtils.listFiles(directory);
+        if (templateFiles.isEmpty()) {
+            return fileList; // Armour file list load failed, not found.
         }
-
         for (var file : templateFiles) {
             var path = FileUtils.getRelativePath(file, rootPath, true);
             var filename = file.getName();
@@ -154,7 +162,7 @@ public class FileProviderDialog extends ConfirmDialog {
                 fileList.add(new FileItem(name, path, false));
             }
         }
-        Collections.sort(fileList);
+        fileList.sort(null);
 
         if (recursive) {
             for (var file : templateFiles) {
@@ -167,61 +175,19 @@ public class FileProviderDialog extends ConfirmDialog {
         return fileList;
     }
 
-    public static class FileItem implements Comparable<FileItem>, ISkinLibrary.Entry {
+    public SkinProperties getProperties() {
+        return properties;
+    }
 
-        private final String name;
-        private final String path;
-        private final boolean isDirectory;
+    public static class FileItem extends SkinFile {
 
         public FileItem(String name, String path, boolean isDirectory) {
-            this.name = name;
-            this.path = path;
-            this.isDirectory = isDirectory;
-        }
-
-        @Override
-        public String getName() {
-            return name;
-        }
-
-        @Override
-        public String getPath() {
-            return path;
+            super(DataDomain.LOCAL, name, path, null, isDirectory, false);
         }
 
         @Override
         public String getSkinIdentifier() {
             return null;
-        }
-
-        @Override
-        public ISkinType getSkinType() {
-            return null;
-        }
-
-        @Override
-        public ISkinFileHeader getSkinHeader() {
-            return null;
-        }
-
-        @Override
-        public boolean isDirectory() {
-            return isDirectory;
-        }
-
-        @Override
-        public boolean isPrivateDirectory() {
-            return false;
-        }
-
-        @Override
-        public int compareTo(FileItem o) {
-            if (isDirectory & !o.isDirectory) {
-                return path.compareToIgnoreCase(o.path) - 1000000;
-            } else if (!isDirectory & o.isDirectory) {
-                return path.compareToIgnoreCase(o.path) + 1000000;
-            }
-            return path.compareToIgnoreCase(o.path);
         }
     }
 }

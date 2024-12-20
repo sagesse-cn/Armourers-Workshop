@@ -1,11 +1,11 @@
 package moe.plushie.armourers_workshop.library.data;
 
 import moe.plushie.armourers_workshop.api.library.ISkinLibrary;
-import moe.plushie.armourers_workshop.api.skin.ISkinType;
-import moe.plushie.armourers_workshop.api.skin.property.ISkinProperties;
 import moe.plushie.armourers_workshop.core.data.DataDomain;
+import moe.plushie.armourers_workshop.core.skin.SkinType;
 import moe.plushie.armourers_workshop.core.skin.SkinTypes;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperty;
+import moe.plushie.armourers_workshop.core.skin.serializer.SkinFile;
 import moe.plushie.armourers_workshop.core.skin.serializer.SkinFileHeader;
 import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.core.utils.Constants;
@@ -14,36 +14,19 @@ import moe.plushie.armourers_workshop.core.utils.FileUtils;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class SkinLibraryFile implements Comparable<SkinLibraryFile>, ISkinLibrary.Entry {
-
-    protected final String name;
-    protected final String path;
-    protected final DataDomain domain;
-    protected final SkinFileHeader header;
-    protected final boolean isDirectory;
-    protected final boolean isPrivateDirectory;
+public class SkinLibraryFile extends SkinFile implements ISkinLibrary.Entry {
 
     private Collection<String> searchableContentList;
 
     public SkinLibraryFile(DataDomain domain, String name, String path) {
-        this.name = name;
-        this.path = path;
-        this.domain = domain;
-        this.header = null;
-        this.isDirectory = true;
-        this.isPrivateDirectory = domain.equals(DataDomain.DEDICATED_SERVER) && path.startsWith(Constants.PRIVATE);
+        super(domain, name, path, null, true, domain.equals(DataDomain.DEDICATED_SERVER) && path.startsWith(Constants.PRIVATE));
     }
 
     public SkinLibraryFile(DataDomain domain, String name, String path, SkinFileHeader header) {
-        this.name = name;
-        this.path = FileUtils.normalize(path, true);
-        this.domain = domain;
-        this.header = header;
-        this.isDirectory = false;
-        this.isPrivateDirectory = false;
+        super(domain, name, FileUtils.normalize(path, true), header, false, false);
     }
 
-    public boolean matches(String keywords, ISkinType skinType) {
+    public boolean matches(String keywords, SkinType skinType) {
         // when skin type not matches, ignore.
         if (skinType != SkinTypes.UNKNOWN && skinType != getSkinType()) {
             return false;
@@ -56,87 +39,6 @@ public class SkinLibraryFile implements Comparable<SkinLibraryFile>, ISkinLibrar
 
     public boolean isSameFile(SkinLibraryFile other) {
         return name.equals(other.name) && path.equals(other.path) && domain.equals(other.domain);
-    }
-
-    @Override
-    public int compareTo(SkinLibraryFile o) {
-        if (isDirectory & !o.isDirectory) {
-            return path.compareToIgnoreCase(o.path) - 1000000;
-        } else if (!isDirectory & o.isDirectory) {
-            return path.compareToIgnoreCase(o.path) + 1000000;
-        }
-        return path.compareToIgnoreCase(o.path);
-    }
-
-    @Override
-    public String toString() {
-        return domain.normalize(path);
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getNamespace() {
-        return domain.namespace();
-    }
-
-    public String getPath() {
-        return path;
-    }
-
-    public int getLastModified() {
-        if (header != null) {
-            return header.getLastModified();
-        }
-        return 0;
-    }
-
-    public int getSkinVersion() {
-        if (header != null) {
-            return header.getVersion();
-        }
-        return 0;
-    }
-
-    @Override
-    public String getSkinIdentifier() {
-        return getNamespace() + ":" + getPath();
-    }
-
-    @Override
-    public ISkinType getSkinType() {
-        if (header != null) {
-            return header.getType();
-        }
-        return null;
-    }
-
-    @Override
-    public SkinFileHeader getSkinHeader() {
-        return header;
-    }
-
-    public ISkinProperties getSkinProperties() {
-        if (header != null) {
-            return header.getProperties();
-        }
-        return null;
-    }
-
-    public boolean isDirectory() {
-        return isDirectory;
-    }
-
-    @Override
-    public boolean isPrivateDirectory() {
-        return isPrivateDirectory;
-    }
-
-    public boolean isChildDirectory(String rootPath) {
-        // /xxxx/
-        int length = rootPath.length();
-        return length < path.length() && path.startsWith(rootPath) && path.indexOf('/', length) < 0;
     }
 
     private boolean matchesInContentList(String keyword) {

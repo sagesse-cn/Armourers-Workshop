@@ -8,7 +8,7 @@ import com.mojang.math.Vector4f;
 import moe.plushie.armourers_workshop.api.annotation.Available;
 import moe.plushie.armourers_workshop.api.core.math.IMatrix3f;
 import moe.plushie.armourers_workshop.api.core.math.IMatrix4f;
-import moe.plushie.armourers_workshop.api.core.math.IQuaternion3f;
+import moe.plushie.armourers_workshop.api.core.math.IQuaternionf;
 import moe.plushie.armourers_workshop.core.data.cache.ObjectPool;
 import moe.plushie.armourers_workshop.core.math.OpenPoseStack;
 import moe.plushie.armourers_workshop.core.utils.MatrixUtils;
@@ -52,12 +52,12 @@ public abstract class AbstractPoseStackImpl {
         return CONVERTER_MAT4.mat;
     }
 
-    public static Quaternion convertQuaternion(IQuaternion3f q) {
+    public static Quaternion convertQuaternion(IQuaternionf q) {
         CONVERTER_QUAT.set(q.x(), q.y(), q.z(), q.w());
         return CONVERTER_QUAT;
     }
 
-    public static Quaternion copyQuaternion(IQuaternion3f q) {
+    public static Quaternion copyQuaternion(IQuaternionf q) {
         return new Quaternion(q.x(), q.y(), q.z(), q.w());
     }
 
@@ -101,7 +101,7 @@ public abstract class AbstractPoseStackImpl {
         }
 
         @Override
-        public void rotate(IQuaternion3f q) {
+        public void rotate(IQuaternionf q) {
             mat.mul(convertQuaternion(q));
         }
 
@@ -161,12 +161,14 @@ public abstract class AbstractPoseStackImpl {
             return mat.hashCode();
         }
 
+        // row-major <=> column-major
         private int bufferIndex(int i, int j) {
             return j * 3 + i;
         }
 
+        // row-major <=> column-major
         private int bufferIndex4(int i, int j) {
-            return j * 3 + i;
+            return j * 4 + i;
         }
     }
 
@@ -229,7 +231,7 @@ public abstract class AbstractPoseStackImpl {
         }
 
         @Override
-        public void rotate(IQuaternion3f q) {
+        public void rotate(IQuaternionf q) {
             mat.multiply(convertQuaternion(q));
         }
 
@@ -276,6 +278,7 @@ public abstract class AbstractPoseStackImpl {
             return mat.hashCode();
         }
 
+        // row-major <=> column-major
         private int bufferIndex(int i, int j) {
             return j * 4 + i;
         }

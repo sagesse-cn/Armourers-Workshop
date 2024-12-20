@@ -4,8 +4,7 @@ import moe.plushie.armourers_workshop.core.client.animation.handler.AnimationIns
 import moe.plushie.armourers_workshop.core.client.animation.handler.AnimationParticleHandler;
 import moe.plushie.armourers_workshop.core.client.animation.handler.AnimationSoundHandler;
 import moe.plushie.armourers_workshop.core.math.OpenMath;
-import moe.plushie.armourers_workshop.core.math.OpenTransform3f;
-import moe.plushie.armourers_workshop.core.math.Vector3f;
+import moe.plushie.armourers_workshop.core.math.OpenVector3f;
 import moe.plushie.armourers_workshop.core.skin.animation.SkinAnimation;
 import moe.plushie.armourers_workshop.core.skin.animation.SkinAnimationFunction;
 import moe.plushie.armourers_workshop.core.skin.animation.SkinAnimationKeyframe;
@@ -42,7 +41,7 @@ public class AnimationController {
 
     private final ArrayList<Animator<?>> animators = new ArrayList<>();
 
-    private final AnimatedMixMode mode;
+    private final AnimatedOutputMode mode;
     private final boolean isRequiresVirtualMachine;
 
     public AnimationController(SkinAnimation animation, Map<String, SkinPartTransform> partTransforms) {
@@ -58,7 +57,7 @@ public class AnimationController {
         animation.getKeyframes().forEach((partName, linkedValues) -> {
             var partTransform = partTransforms.get(partName);
             if (partTransform != null) {
-                this.animators.add(new Animator.Bone(partName, AnimationController.toTime(duration), linkedValues, new LinkedOutput(resolveAnimatedTransform(partTransform), mode)));
+                this.animators.add(new Animator.Bone(partName, AnimationController.toTime(duration), linkedValues, AnimatedTransform.of(partTransform), mode));
             }
             // TODO: remove "effects" in the future (23-rename-effect-part).
             if (partName.equals("armourers:effects") || partName.equals("effects")) {
@@ -137,22 +136,22 @@ public class AnimationController {
     }
 
     public boolean isParallel() {
-        return mode != AnimatedMixMode.MAIN;
+        return mode != AnimatedOutputMode.MAIN;
     }
 
     public boolean isEmpty() {
         return animators.isEmpty();
     }
 
-    public static AnimatedMixMode calcMixMode(String name) {
+    public static AnimatedOutputMode calcMixMode(String name) {
         name = name.toLowerCase();
         if (name.matches("^(.+\\.)?pre_parallel(\\d+)$")) {
-            return AnimatedMixMode.PRE_MAIN;
+            return AnimatedOutputMode.PRE_MAIN;
         }
         if (name.matches("^(.+\\.)?parallel(\\d+)$")) {
-            return AnimatedMixMode.POST_MAIN;
+            return AnimatedOutputMode.POST_MAIN;
         }
-        return AnimatedMixMode.MAIN;
+        return AnimatedOutputMode.MAIN;
     }
 
     private boolean calcRequiresVirtualMachine() {
@@ -168,30 +167,13 @@ public class AnimationController {
         return false;
     }
 
-    private AnimatedTransform resolveAnimatedTransform(SkinPartTransform partTransform) {
-        // when animation transform already been created, we just use it directly.
-        for (var childTransform : partTransform.getChildren()) {
-            if (childTransform instanceof AnimatedTransform animatedTransform) {
-                return animatedTransform;
-            }
-        }
-        // if part have a non-standard transform (preview mode),
-        // we wil think this part can't be support animation.
-        if (!(partTransform.getParent() instanceof OpenTransform3f parent)) {
-            return null;
-        }
-        // we will replace the standard transform to animated transform.
-        var animatedTransform = new AnimatedTransform(parent);
-        partTransform.replaceChild(parent, animatedTransform);
-        return animatedTransform;
-    }
 
     private static abstract class Selector {
 
         public abstract void apply(float x, float y, float z, AnimatedPoint output);
 
-        public void apply(Vector3f value, AnimatedPoint snapshot) {
-            apply(value.getX(), value.getY(), value.getZ(), snapshot);
+        public void apply(OpenVector3f value, AnimatedPoint snapshot) {
+            apply(value.x(), value.y(), value.z(), snapshot);
         }
 
         public static class Translation extends Selector {
@@ -248,19 +230,23 @@ public class AnimationController {
             return Objects.toString(this, "name", name);
         }
 
-        private static class Bone extends Animator<Vector3f> {
+        private static class Bone extends Animator<OpenVector3f> {
 
-            private final AnimatedPoint output;
+            private final AnimatedOutputPoint output;
             private final AnimatedTransform transform;
 
-            public Bone(String name, int duration, List<SkinAnimationKeyframe> linkedKeyframes, LinkedOutput output) {
+            public Bone(String name, int duration, List<SkinAnimationKeyframe> linkedKeyframes, AnimatedTransform transform, AnimatedOutputMode mode) {
                 super(name, duration, linkedKeyframes);
-                this.output = output;
-                this.transform = output.transform;
+                this.output = new AnimatedOutputPoint(transform, mode);
+                this.transform = transform;
+                // when the output is changed, send the changes to the transform.
+                if (transform != null) {
+                    transform.link(output);
+                }
             }
 
             @Override
-            public void apply(Channel<Vector3f> channel, int time, AnimationPlayState playState, ExecutionContext context) {
+            public void apply(Channel<OpenVector3f> channel, int time, AnimationPlayState playState, ExecutionContext context) {
                 // when can't found next fragment, ignore.
                 var fragment = channel.getFragmentAtTime(time);
                 if (fragment == null) {
@@ -283,14 +269,14 @@ public class AnimationController {
                 var from = startValue.evaluate(context);
                 var to = endValue.evaluate(context);
                 var t = function.apply(currentTime / (float) length);
-                var tx = OpenMath.lerp(t, from.getX(), to.getX());
-                var ty = OpenMath.lerp(t, from.getY(), to.getY());
-                var tz = OpenMath.lerp(t, from.getZ(), to.getZ());
+                var tx = OpenMath.lerp(t, from.x(), to.x());
+                var ty = OpenMath.lerp(t, from.y(), to.y());
+                var tz = OpenMath.lerp(t, from.z(), to.z());
                 selector.apply(tx, ty, tz, output);
             }
 
             @Override
-            public Channel<Vector3f> createChannel(String name, int duration, List<SkinAnimationKeyframe> keyframes) {
+            public Channel<OpenVector3f> createChannel(String name, int duration, List<SkinAnimationKeyframe> keyframes) {
                 var selector = select(name);
                 if (selector != null) {
                     return new Channel.Bone(name, duration, selector, keyframes);
@@ -411,7 +397,7 @@ public class AnimationController {
             return Collections.compactMap(builders, FragmentBuilder::build);
         }
 
-        private static class Bone extends Channel<Vector3f> {
+        private static class Bone extends Channel<OpenVector3f> {
 
             private final float defaultValue;
 
@@ -421,7 +407,7 @@ public class AnimationController {
             }
 
             @Override
-            public Pair<OptimizedExpression<Vector3f>, OptimizedExpression<Vector3f>> compile(List<SkinAnimationPoint> points) {
+            public Pair<OptimizedExpression<OpenVector3f>, OptimizedExpression<OpenVector3f>> compile(List<SkinAnimationPoint> points) {
                 var expressions = new ArrayList<Expression>();
                 for (var point : points) {
                     if (point instanceof SkinAnimationPoint.Bone bone) {
@@ -546,47 +532,6 @@ public class AnimationController {
 
         public Fragment<T> build() {
             return new Fragment<>(leftTime, leftValue, rightTime, rightValue, function);
-        }
-    }
-
-    private static class LinkedOutput extends AnimatedPoint {
-
-        private final AnimatedTransform transform;
-
-        public LinkedOutput(AnimatedTransform transform, AnimatedMixMode mode) {
-            this.transform = transform;
-            if (transform != null) {
-                transform.link(this, mode.ordinal(), mode == AnimatedMixMode.POST_MAIN);
-            }
-        }
-
-        @Override
-        public void setTranslate(float x, float y, float z) {
-            // always update and mark dirty, because relies on flags by method called.
-            translate.set(x, y, z);
-            setDirty(0x10);
-        }
-
-        @Override
-        public void setRotation(float x, float y, float z) {
-            // always update and mark dirty, because relies on flags by method called.
-            rotation.set(x, y, z);
-            setDirty(0x20);
-        }
-
-        @Override
-        public void setScale(float x, float y, float z) {
-            // always update and mark dirty, because relies on flags by method called.
-            scale.set(x, y, z);
-            setDirty(0x40);
-        }
-
-        @Override
-        public void setDirty(int newFlags) {
-            super.setDirty(newFlags);
-            if (transform != null) {
-                transform.setDirty(newFlags);
-            }
         }
     }
 }

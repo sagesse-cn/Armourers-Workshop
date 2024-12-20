@@ -2,7 +2,7 @@ package moe.plushie.armourers_workshop.core.client.layer;
 
 import moe.plushie.armourers_workshop.api.client.IBufferSource;
 import moe.plushie.armourers_workshop.api.core.math.IPoseStack;
-import moe.plushie.armourers_workshop.compatibility.AbstractRenderLayer;
+import moe.plushie.armourers_workshop.compatibility.client.AbstractRenderLayer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.model.EntityModel;

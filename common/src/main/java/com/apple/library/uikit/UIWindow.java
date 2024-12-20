@@ -302,8 +302,8 @@ public class UIWindow extends UIView {
                 context.saveGraphicsState();
                 context.translateCTM(0, 0, level);
             }
-            var mouseX = context.state().mousePos().getX();
-            var mouseY = context.state().mousePos().getY();
+            var mouseX = context.state().mousePos().x();
+            var mouseY = context.state().mousePos().y();
             applyAnimationPre();
             applyRender(mouseX, mouseY, 0, window, context);
             if (level != 0) {
@@ -542,7 +542,7 @@ public class UIWindow extends UIView {
                 var cornerRadius = layer.cornerRadius();
                 if (cornerRadius != 0) {
                     CGRect cornerBox = UIScreen.convertRectFromView(new CGRect(0, 0, cornerRadius, cornerRadius), view);
-                    context.addClip(clipBox, cornerBox.getWidth());
+                    context.addClip(clipBox, cornerBox.width());
                 } else {
                     context.addClip(clipBox);
                 }

@@ -1,22 +1,22 @@
 package moe.plushie.armourers_workshop.core.skin.part;
 
-import moe.plushie.armourers_workshop.api.core.IResourceLocation;
 import moe.plushie.armourers_workshop.api.skin.part.ISkinPartType;
-import moe.plushie.armourers_workshop.core.math.Rectangle3i;
-import moe.plushie.armourers_workshop.core.math.Vector3i;
+import moe.plushie.armourers_workshop.core.math.OpenRectangle3i;
+import moe.plushie.armourers_workshop.core.math.OpenVector3i;
 import moe.plushie.armourers_workshop.core.utils.Objects;
+import moe.plushie.armourers_workshop.core.utils.OpenResourceLocation;
 
 
 public abstract class SkinPartType implements ISkinPartType {
 
-    protected IResourceLocation registryName;
+    protected OpenResourceLocation registryName;
 
-    protected Rectangle3i bounds;
-    protected Rectangle3i buildingSpace;
-    protected Rectangle3i guideSpace;
-    protected Vector3i offset;
+    protected OpenRectangle3i bounds;
+    protected OpenRectangle3i buildingSpace;
+    protected OpenRectangle3i guideSpace;
+    protected OpenVector3i offset;
 
-    protected Vector3i renderOffset = Vector3i.ZERO;
+    protected OpenVector3i renderOffset = OpenVector3i.ZERO;
     protected float renderPolygonOffset = 0;
 
     public SkinPartType() {
@@ -28,32 +28,32 @@ public abstract class SkinPartType implements ISkinPartType {
     }
 
     @Override
-    public IResourceLocation getRegistryName() {
+    public OpenResourceLocation getRegistryName() {
         return registryName;
     }
 
-    public SkinPartType setRegistryName(IResourceLocation registryName) {
+    public SkinPartType setRegistryName(OpenResourceLocation registryName) {
         this.registryName = registryName;
         return this;
     }
 
     @Override
-    public Rectangle3i getBuildingSpace() {
+    public OpenRectangle3i getBuildingSpace() {
         return this.buildingSpace;
     }
 
     @Override
-    public Rectangle3i getGuideSpace() {
+    public OpenRectangle3i getGuideSpace() {
         return this.guideSpace;
     }
 
     @Override
-    public Vector3i getOffset() {
+    public OpenVector3i getOffset() {
         return this.offset;
     }
 
     @Override
-    public Rectangle3i getBounds() {
+    public OpenRectangle3i getBounds() {
         return bounds;
     }
 
@@ -73,7 +73,7 @@ public abstract class SkinPartType implements ISkinPartType {
     }
 
     @Override
-    public Vector3i getRenderOffset() {
+    public OpenVector3i getRenderOffset() {
         return renderOffset;
     }
 

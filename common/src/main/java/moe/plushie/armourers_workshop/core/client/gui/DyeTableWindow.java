@@ -29,7 +29,7 @@ public class DyeTableWindow extends MenuWindow<DyeTableMenu> {
     public DyeTableWindow(DyeTableMenu container, Inventory inventory, NSString title) {
         super(container, inventory, title);
         this.setFrame(new CGRect(0, 0, 330, 190));
-        this.inventoryView.setFrame(inventoryView.bounds().offset(0, bounds().getHeight() - 98));
+        this.inventoryView.setFrame(inventoryView.bounds().offset(0, bounds().height() - 98));
         this.menuDidChange();
     }
 

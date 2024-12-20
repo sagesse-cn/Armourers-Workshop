@@ -4,9 +4,9 @@ import moe.plushie.armourers_workshop.core.armature.ArmaturePlugin;
 import moe.plushie.armourers_workshop.core.armature.ArmatureTransformerContext;
 import moe.plushie.armourers_workshop.core.client.other.EntityRenderData;
 import moe.plushie.armourers_workshop.core.math.OpenMath;
-import moe.plushie.armourers_workshop.core.math.Vector3f;
+import moe.plushie.armourers_workshop.core.math.OpenVector3f;
 import moe.plushie.armourers_workshop.init.ModDebugger;
-import moe.plushie.armourers_workshop.utils.DataContainerKey;
+import moe.plushie.armourers_workshop.core.data.DataContainerKey;
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.entity.Entity;
@@ -30,14 +30,14 @@ public class MinecartModelArmaturePlugin extends ArmaturePlugin {
         if (isFlapped(minecart, context.getPartialTicks(), context.getRenderData())) {
             // the vanilla design doesn't care the minecart orientation,
             // but we need a precise orientation.
-            poseStack.rotate(Vector3f.YP.rotationDegrees(180));
+            poseStack.rotate(OpenVector3f.YP.rotationDegrees(180));
         }
 
         // fix the direction.
         poseStack.scale(-1, -1, 1);
         poseStack.translate(0, -0.125f, 0);  // 0, -2, 0
         ModDebugger.translate(poseStack);
-        poseStack.rotate(Vector3f.YP.rotationDegrees(180));
+        poseStack.rotate(OpenVector3f.YP.rotationDegrees(180));
     }
 
 

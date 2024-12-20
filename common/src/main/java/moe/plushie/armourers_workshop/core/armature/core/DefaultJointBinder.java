@@ -4,12 +4,13 @@ import moe.plushie.armourers_workshop.api.armature.IJoint;
 import moe.plushie.armourers_workshop.api.armature.IJointTransform;
 import moe.plushie.armourers_workshop.api.client.model.IModel;
 import moe.plushie.armourers_workshop.core.armature.JointModifier;
+import moe.plushie.armourers_workshop.core.skin.serializer.io.IODataObject;
 
 public class DefaultJointBinder extends JointModifier {
 
     private final String name;
 
-    public DefaultJointBinder(String name) {
+    public DefaultJointBinder(String name, IODataObject parameters) {
         this.name = name;
     }
 

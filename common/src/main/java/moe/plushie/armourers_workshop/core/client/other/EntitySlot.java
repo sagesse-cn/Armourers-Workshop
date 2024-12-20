@@ -1,8 +1,8 @@
 package moe.plushie.armourers_workshop.core.client.other;
 
-import moe.plushie.armourers_workshop.api.skin.ISkinType;
 import moe.plushie.armourers_workshop.core.client.bake.BakedSkin;
 import moe.plushie.armourers_workshop.core.skin.SkinDescriptor;
+import moe.plushie.armourers_workshop.core.skin.SkinType;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperty;
 import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintScheme;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -58,7 +58,7 @@ public class EntitySlot {
         return bakedSkin;
     }
 
-    public ISkinType getSkinType() {
+    public SkinType getSkinType() {
         return bakedSkin.getType();
     }
 

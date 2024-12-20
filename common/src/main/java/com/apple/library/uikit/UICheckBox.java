@@ -35,8 +35,8 @@ public class UICheckBox extends UIControl {
     public void layoutSubviews() {
         super.layoutSubviews();
         var rect = bounds();
-        var frame = new CGRect(0, (rect.getHeight() - boxSize) / 2, boxSize, boxSize);
-        this.titleView.setFrame(rect.insetBy(0, frame.getWidth() + boxSpacing, 0, 0));
+        var frame = new CGRect(0, (rect.height - boxSize) / 2, boxSize, boxSize);
+        this.titleView.setFrame(rect.insetBy(0, frame.width + boxSpacing, 0, 0));
         this.imageView.setFrame(frame);
         this.markerView.setFrame(frame.offset(0.5f, 0));
     }

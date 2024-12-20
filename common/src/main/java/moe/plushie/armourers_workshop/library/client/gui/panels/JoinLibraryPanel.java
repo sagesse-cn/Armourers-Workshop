@@ -62,21 +62,21 @@ public class JoinLibraryPanel extends AbstractLibraryPanel implements UILabelDel
         contentView.addSubview(label);
 
         CGRect frame = label.frame();
-        float buttonBottom = frame.getMaxY() - 16;
+        float buttonBottom = frame.maxY() - 16;
 
-        buttonPrevious.setFrame(new CGRect(frame.getMinX(), buttonBottom, 16, 16));
+        buttonPrevious.setFrame(new CGRect(frame.minX(), buttonBottom, 16, 16));
         buttonPrevious.setTooltip(NSString.localizedString("common.button.previousPage"));
         buttonPrevious.setImage(ModTextures.iconImage(208, 80, 16, 16, ModTextures.BUTTONS), UIControl.State.ALL);
         buttonPrevious.addTarget(this, UIControl.Event.MOUSE_LEFT_DOWN, JoinLibraryPanel::previous);
         contentView.addSubview(buttonPrevious);
 
-        buttonNext.setFrame(new CGRect(frame.getMaxX() - 16, buttonBottom, 16, 16));
+        buttonNext.setFrame(new CGRect(frame.maxX() - 16, buttonBottom, 16, 16));
         buttonNext.setTooltip(NSString.localizedString("common.button.nextPage"));
         buttonNext.setImage(ModTextures.iconImage(208, 96, 16, 16, ModTextures.BUTTONS), UIControl.State.ALL);
         buttonNext.addTarget(this, UIControl.Event.MOUSE_LEFT_DOWN, JoinLibraryPanel::next);
         contentView.addSubview(buttonNext);
 
-        buttonJoin.setFrame(new CGRect(frame.getMidX() - 70, buttonBottom, 140, 16));
+        buttonJoin.setFrame(new CGRect(frame.midX() - 70, buttonBottom, 140, 16));
         buttonJoin.setTitle(getDisplayText("button.join"), UIControl.State.NORMAL);
         buttonJoin.setTitleColor(UIColor.WHITE, UIControl.State.NORMAL);
         buttonJoin.setBackgroundImage(ModTextures.defaultButtonImage(), UIControl.State.ALL);

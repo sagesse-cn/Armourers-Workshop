@@ -4,8 +4,8 @@ import moe.plushie.armourers_workshop.api.client.model.IModel;
 import moe.plushie.armourers_workshop.api.client.model.IModelBabyPose;
 import moe.plushie.armourers_workshop.api.client.model.IModelPart;
 import moe.plushie.armourers_workshop.api.data.IAssociatedContainerKey;
-import moe.plushie.armourers_workshop.utils.DataContainer;
-import moe.plushie.armourers_workshop.utils.ModelPartHolder;
+import moe.plushie.armourers_workshop.compatibility.client.model.AbstractModelPartHolder;
+import moe.plushie.armourers_workshop.core.data.DataContainer;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -70,7 +70,7 @@ public class CachedModel<P> implements IModel {
             IModelPart holder = transformer.apply(part);
             parts.put(name, holder);
             values.add(holder);
-            if (holder instanceof ModelPartHolder holder1) {
+            if (holder instanceof AbstractModelPartHolder holder1) {
                 holder1.setName(name);
             }
         }

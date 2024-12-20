@@ -1,12 +1,10 @@
 package moe.plushie.armourers_workshop.core.skin;
 
-import moe.plushie.armourers_workshop.api.core.IResourceLocation;
-import moe.plushie.armourers_workshop.api.skin.ISkinArmorType;
-import moe.plushie.armourers_workshop.api.skin.ISkinEquipmentSlot;
-import moe.plushie.armourers_workshop.api.skin.ISkinToolType;
 import moe.plushie.armourers_workshop.api.skin.ISkinType;
-import moe.plushie.armourers_workshop.api.skin.part.ISkinPartType;
+import moe.plushie.armourers_workshop.core.skin.part.SkinPartType;
 import moe.plushie.armourers_workshop.core.utils.Objects;
+import moe.plushie.armourers_workshop.core.utils.OpenEquipmentSlot;
+import moe.plushie.armourers_workshop.core.utils.OpenResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
@@ -16,10 +14,10 @@ public class SkinType implements ISkinType {
 
     protected final String name;
     protected final int id;
-    protected IResourceLocation registryName;
-    protected List<? extends ISkinPartType> parts;
+    protected OpenResourceLocation registryName;
+    protected List<? extends SkinPartType> parts;
 
-    public SkinType(String name, int id, List<? extends ISkinPartType> parts) {
+    public SkinType(String name, int id, List<? extends SkinPartType> parts) {
         this.parts = parts;
         this.name = name;
         this.id = id;
@@ -36,11 +34,11 @@ public class SkinType implements ISkinType {
     }
 
     @Override
-    public IResourceLocation getRegistryName() {
+    public OpenResourceLocation getRegistryName() {
         return registryName;
     }
 
-    public void setRegistryName(IResourceLocation registryName) {
+    public void setRegistryName(OpenResourceLocation registryName) {
         this.registryName = registryName;
     }
 
@@ -50,35 +48,42 @@ public class SkinType implements ISkinType {
     }
 
     @Override
-    public List<? extends ISkinPartType> getParts() {
+    public List<? extends SkinPartType> getParts() {
         return parts;
     }
 
+    @Override
+    public boolean isArmour() {
+        return this instanceof Armor;
+    }
 
-    public static class Armor extends SkinType implements ISkinArmorType {
-        protected ISkinEquipmentSlot slotType;
+    @Override
+    public boolean isTool() {
+        return this instanceof Tool;
+    }
 
-        public Armor(String name, int id, ISkinEquipmentSlot slotType, List<? extends ISkinPartType> parts) {
+    public static class Armor extends SkinType {
+        protected OpenEquipmentSlot slotType;
+
+        public Armor(String name, int id, OpenEquipmentSlot slotType, List<? extends SkinPartType> parts) {
             super(name, id, parts);
             this.slotType = slotType;
         }
 
-        @Override
-        public ISkinEquipmentSlot getSlotType() {
+        public OpenEquipmentSlot getSlotType() {
             return slotType;
         }
     }
 
-    public static class Tool extends SkinType implements ISkinToolType {
+    public static class Tool extends SkinType {
 
         protected Predicate<ItemStack> predicate;
 
-        public Tool(String name, int id, List<? extends ISkinPartType> parts, Predicate<ItemStack> predicate) {
+        public Tool(String name, int id, List<? extends SkinPartType> parts, Predicate<ItemStack> predicate) {
             super(name, id, parts);
             this.predicate = predicate;
         }
 
-        @Override
         public boolean contains(ItemStack itemStack) {
             return predicate.test(itemStack);
         }

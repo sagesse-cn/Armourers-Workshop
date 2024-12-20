@@ -11,36 +11,36 @@ import java.io.IOException;
 
 public class OpenTransform3f implements ITransform3f, ITransform {
 
-    public static final int BYTES = Vector3f.BYTES * 5 + Integer.BYTES;
+    public static final int BYTES = OpenVector3f.BYTES * 5 + Integer.BYTES;
 
     public static final OpenTransform3f IDENTITY = new OpenTransform3f();
 
-    private Vector3f translate = Vector3f.ZERO;
-    private Vector3f rotation = Vector3f.ZERO;
-    private Vector3f scale = Vector3f.ONE;
-    private Vector3f afterTranslate = Vector3f.ZERO;
-    private Vector3f pivot = Vector3f.ZERO;
+    private OpenVector3f translate = OpenVector3f.ZERO;
+    private OpenVector3f rotation = OpenVector3f.ZERO;
+    private OpenVector3f scale = OpenVector3f.ONE;
+    private OpenVector3f afterTranslate = OpenVector3f.ZERO;
+    private OpenVector3f pivot = OpenVector3f.ZERO;
 
-    public static OpenTransform3f create(Vector3f translate, Vector3f rotation, Vector3f scale) {
-        return create(translate, rotation, scale, Vector3f.ZERO, Vector3f.ZERO);
+    public static OpenTransform3f create(OpenVector3f translate, OpenVector3f rotation, OpenVector3f scale) {
+        return create(translate, rotation, scale, OpenVector3f.ZERO, OpenVector3f.ZERO);
     }
 
-    public static OpenTransform3f create(Vector3f translate, Vector3f rotation, Vector3f scale, Vector3f pivot, Vector3f afterTranslate) {
-        //
-        if (translate.equals(Vector3f.ZERO) && rotation.equals(Vector3f.ZERO) && scale.equals(Vector3f.ONE) && pivot.equals(Vector3f.ZERO) && afterTranslate.equals(Vector3f.ZERO)) {
+    public static OpenTransform3f create(OpenVector3f translate, OpenVector3f rotation, OpenVector3f scale, OpenVector3f pivot, OpenVector3f afterTranslate) {
+        // quick optimization
+        if (translate.equals(OpenVector3f.ZERO) && rotation.equals(OpenVector3f.ZERO) && scale.equals(OpenVector3f.ONE) && pivot.equals(OpenVector3f.ZERO) && afterTranslate.equals(OpenVector3f.ZERO)) {
             return IDENTITY;
         }
         var transform = new OpenTransform3f();
-        transform.translate = optimize(translate, Vector3f.ZERO);
-        transform.rotation = optimize(rotation, Vector3f.ZERO);
-        transform.scale = optimize(scale, Vector3f.ONE);
-        transform.afterTranslate = optimize(afterTranslate, Vector3f.ZERO);
-        transform.pivot = optimize(pivot, Vector3f.ZERO);
+        transform.translate = optimize(translate, OpenVector3f.ZERO);
+        transform.rotation = optimize(rotation, OpenVector3f.ZERO);
+        transform.scale = optimize(scale, OpenVector3f.ONE);
+        transform.afterTranslate = optimize(afterTranslate, OpenVector3f.ZERO);
+        transform.pivot = optimize(pivot, OpenVector3f.ZERO);
         return transform;
     }
 
-    public static OpenTransform3f createRotationTransform(Vector3f rotation) {
-        if (!rotation.equals(Vector3f.ZERO)) {
+    public static OpenTransform3f createRotationTransform(OpenVector3f rotation) {
+        if (!rotation.equals(OpenVector3f.ZERO)) {
             var transform = new OpenTransform3f();
             transform.rotation = rotation;
             return transform;
@@ -51,14 +51,14 @@ public class OpenTransform3f implements ITransform3f, ITransform {
     public static OpenTransform3f createScaleTransform(float sx, float sy, float sz) {
         if (sx != 1 || sy != 1 || sz != 1) {
             var transform = new OpenTransform3f();
-            transform.scale = new Vector3f(sx, sy, sz);
+            transform.scale = new OpenVector3f(sx, sy, sz);
             return transform;
         }
         return IDENTITY;
     }
 
-    public static OpenTransform3f createScaleTransform(Vector3f scale) {
-        if (!scale.equals(Vector3f.ONE)) {
+    public static OpenTransform3f createScaleTransform(OpenVector3f scale) {
+        if (!scale.equals(OpenVector3f.ONE)) {
             var transform = new OpenTransform3f();
             transform.scale = scale;
             return transform;
@@ -69,14 +69,14 @@ public class OpenTransform3f implements ITransform3f, ITransform {
     public static OpenTransform3f createTranslateTransform(float tx, float ty, float tz) {
         if (tx != 0 || ty != 0 || tz != 0) {
             var transform = new OpenTransform3f();
-            transform.translate = new Vector3f(tx, ty, tz);
+            transform.translate = new OpenVector3f(tx, ty, tz);
             return transform;
         }
         return IDENTITY;
     }
 
-    public static OpenTransform3f createTranslateTransform(Vector3f offset) {
-        if (!offset.equals(Vector3f.ZERO)) {
+    public static OpenTransform3f createTranslateTransform(OpenVector3f offset) {
+        if (!offset.equals(OpenVector3f.ZERO)) {
             var transform = new OpenTransform3f();
             transform.translate = offset;
             return transform;
@@ -89,33 +89,33 @@ public class OpenTransform3f implements ITransform3f, ITransform {
         if (this == IDENTITY) {
             return;
         }
-        if (translate != Vector3f.ZERO) {
-            poseStack.translate(translate.getX(), translate.getY(), translate.getZ());
+        if (translate != OpenVector3f.ZERO) {
+            poseStack.translate(translate.x(), translate.y(), translate.z());
         }
-        if (rotation != Vector3f.ZERO) {
-            if (pivot != Vector3f.ZERO) {
-                poseStack.translate(pivot.getX(), pivot.getY(), pivot.getZ());
+        if (rotation != OpenVector3f.ZERO) {
+            if (pivot != OpenVector3f.ZERO) {
+                poseStack.translate(pivot.x(), pivot.y(), pivot.z());
             }
-            poseStack.rotate(OpenQuaternion3f.fromZYX(rotation, true));
-            if (pivot != Vector3f.ZERO) {
-                poseStack.translate(-pivot.getX(), -pivot.getY(), -pivot.getZ());
+            poseStack.rotate(OpenQuaternionf.fromEulerAnglesZYX(rotation, true));
+            if (pivot != OpenVector3f.ZERO) {
+                poseStack.translate(-pivot.x(), -pivot.y(), -pivot.z());
             }
         }
-        if (scale != Vector3f.ONE) {
-            poseStack.scale(scale.getX(), scale.getY(), scale.getZ());
+        if (scale != OpenVector3f.ONE) {
+            poseStack.scale(scale.x(), scale.y(), scale.z());
         }
-        if (afterTranslate != Vector3f.ZERO) {
-            poseStack.translate(afterTranslate.getX(), afterTranslate.getY(), afterTranslate.getZ());
+        if (afterTranslate != OpenVector3f.ZERO) {
+            poseStack.translate(afterTranslate.x(), afterTranslate.y(), afterTranslate.z());
         }
     }
 
     public void readFromStream(IInputStream stream) throws IOException {
         int flags = stream.readInt();
-        translate = optimize(stream.readVector3f(), Vector3f.ZERO);
-        rotation = optimize(stream.readVector3f(), Vector3f.ZERO);
-        scale = optimize(stream.readVector3f(), Vector3f.ONE);
-        afterTranslate = optimize(stream.readVector3f(), Vector3f.ZERO);
-        pivot = optimize(stream.readVector3f(), Vector3f.ZERO);
+        translate = optimize(stream.readVector3f(), OpenVector3f.ZERO);
+        rotation = optimize(stream.readVector3f(), OpenVector3f.ZERO);
+        scale = optimize(stream.readVector3f(), OpenVector3f.ONE);
+        afterTranslate = optimize(stream.readVector3f(), OpenVector3f.ZERO);
+        pivot = optimize(stream.readVector3f(), OpenVector3f.ZERO);
     }
 
     public void writeToStream(IOutputStream stream) throws IOException {
@@ -149,6 +149,31 @@ public class OpenTransform3f implements ITransform3f, ITransform {
         return this == IDENTITY;
     }
 
+    @Override
+    public OpenVector3f translate() {
+        return translate;
+    }
+
+    @Override
+    public OpenVector3f rotation() {
+        return rotation;
+    }
+
+    @Override
+    public OpenVector3f scale() {
+        return scale;
+    }
+
+    @Override
+    public OpenVector3f afterTranslate() {
+        return afterTranslate;
+    }
+
+    @Override
+    public OpenVector3f pivot() {
+        return pivot;
+    }
+
     public OpenTransform3f copy() {
         if (this == IDENTITY) {
             return IDENTITY;
@@ -160,31 +185,6 @@ public class OpenTransform3f implements ITransform3f, ITransform {
         transform.pivot = translate;
         transform.afterTranslate = translate;
         return transform;
-    }
-
-    @Override
-    public Vector3f getTranslate() {
-        return translate;
-    }
-
-    @Override
-    public Vector3f getRotation() {
-        return rotation;
-    }
-
-    @Override
-    public Vector3f getScale() {
-        return scale;
-    }
-
-    @Override
-    public Vector3f getAfterTranslate() {
-        return afterTranslate;
-    }
-
-    @Override
-    public Vector3f getPivot() {
-        return pivot;
     }
 
     private static <T> T optimize(T value, T targetValue) {

@@ -63,7 +63,7 @@ public class ModerationLibraryPanel extends AbstractLibraryPanel implements Repo
         if (isRequesting) {
             return;
         }
-        if (contentOffset.getY() + reportList.frame().getHeight() * 1.5f >= reportList.getContentHeight()) {
+        if (contentOffset.y() + reportList.frame().height() * 1.5f >= reportList.getContentHeight()) {
             pageIndex += getMaxPerPage();
             loadReportList();
         }

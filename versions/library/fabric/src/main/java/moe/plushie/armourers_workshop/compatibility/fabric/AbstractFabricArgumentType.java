@@ -4,7 +4,7 @@ import com.mojang.brigadier.arguments.ArgumentType;
 import moe.plushie.armourers_workshop.api.annotation.Available;
 import moe.plushie.armourers_workshop.api.common.IArgumentSerializer;
 import moe.plushie.armourers_workshop.api.core.IResourceLocation;
-import moe.plushie.armourers_workshop.compatibility.AbstractArgumentTypeInfo;
+import moe.plushie.armourers_workshop.compatibility.core.AbstractArgumentTypeInfo;
 import net.fabricmc.fabric.api.command.v2.ArgumentTypeRegistry;
 
 @Available("[1.19, )")

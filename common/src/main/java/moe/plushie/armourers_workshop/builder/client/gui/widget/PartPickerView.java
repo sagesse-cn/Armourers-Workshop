@@ -50,7 +50,7 @@ public class PartPickerView extends UIControl {
         // reset the location.
         var bounds = bounds().applying(transform());
         var rect = fromView.convertRectToView(fromView.bounds(), window).copy();
-        if (rect.x + bounds.width > window.bounds().getMaxX()) {
+        if (rect.x + bounds.width > window.bounds().maxX()) {
             rect.x -= bounds.width;
         }
         rect.x += bounds.width / 2;
@@ -141,8 +141,8 @@ public class PartPickerView extends UIControl {
     private void buildSections(List<List<PartItem>> sections) {
         float x = 4;
         float y = 4;
-        float width = bounds().getWidth() - 8;
-        float height = bounds().getHeight() - 8;
+        float width = bounds().width() - 8;
+        float height = bounds().height() - 8;
         for (int i = 0; i < sections.size(); ++i) {
             var items = sections.get(i);
             UIView contentView;
@@ -150,7 +150,7 @@ public class PartPickerView extends UIControl {
             titleView.setTextColor(UIColor.WHITE);
             titleView.setText(NSString.localizedString("advanced-skin-builder.picker.section" + (i + 1)));
             if (items.isEmpty()) {
-                UILabel emptyView = new UILabel(new CGRect(x, y + 12, width, 65));
+                var emptyView = new UILabel(new CGRect(x, y + 12, width, 65));
                 emptyView.setText(NSString.localizedString("advanced-skin-builder.picker.section" + (i + 1) + ".empty"));
                 emptyView.setTextColor(UIColor.LIGHT_GRAY);
                 emptyView.setNumberOfLines(0);
@@ -158,22 +158,22 @@ public class PartPickerView extends UIControl {
                 emptyView.setBackgroundColor(UIColor.rgba(0x22AAAAAA));
                 contentView = emptyView;
             } else {
-                PartItemList sectionView = buildSectionView(x, y + 12, width, height);
+                var sectionView = buildSectionView(x, y + 12, width, height);
                 sectionView.setEntries(new ArrayList<>(items));
-                CGSize size = sectionView.sizeThatFits(new CGSize(width, height));
-                sectionView.setFrame(new CGRect(x, y + 12, size.getWidth(), size.getHeight()));
+                var size = sectionView.sizeThatFits(new CGSize(width, height));
+                sectionView.setFrame(new CGRect(x, y + 12, size.width, size.height));
                 sectionView.reloadData();
                 contentView = sectionView;
             }
             scrollView.addSubview(titleView);
             scrollView.addSubview(contentView);
-            y = contentView.frame().getMaxY() + 10;
+            y = contentView.frame().maxY() + 10;
         }
         scrollView.setContentSize(new CGSize(width, y));
     }
 
     private PartItemList buildSectionView(float x, float y, float width, float height) {
-        PartItemList fileList = new PartItemList(new CGRect(x, y, width, height));
+        var fileList = new PartItemList(new CGRect(x, y, width, height));
         fileList.setItemSize(new CGSize(32, 32));
         fileList.setBackgroundColor(0);
         fileList.setShowsName(false);

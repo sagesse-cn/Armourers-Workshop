@@ -1,8 +1,8 @@
 package moe.plushie.armourers_workshop.core.skin.geometry.cube;
 
-import moe.plushie.armourers_workshop.core.math.Rectangle3f;
-import moe.plushie.armourers_workshop.core.math.Vector2f;
-import moe.plushie.armourers_workshop.core.math.Vector3f;
+import moe.plushie.armourers_workshop.core.math.OpenRectangle3f;
+import moe.plushie.armourers_workshop.core.math.OpenVector2f;
+import moe.plushie.armourers_workshop.core.math.OpenVector3f;
 import moe.plushie.armourers_workshop.core.skin.geometry.SkinGeometryVertex;
 import moe.plushie.armourers_workshop.core.utils.OpenDirection;
 
@@ -10,7 +10,7 @@ public class SkinCubeVertex extends SkinGeometryVertex {
 
     private final SkinCubeFace face;
 
-    public SkinCubeVertex(int id, Vector3f position, Vector3f normal, Vector2f textureCoords, Color color, SkinCubeFace face) {
+    public SkinCubeVertex(int id, OpenVector3f position, OpenVector3f normal, OpenVector2f textureCoords, Color color, SkinCubeFace face) {
         this.id = id;
         this.face = face;
         this.position = position;
@@ -19,7 +19,7 @@ public class SkinCubeVertex extends SkinGeometryVertex {
         this.color = color;
     }
 
-    public Rectangle3f getBoundingBox() {
+    public OpenRectangle3f getBoundingBox() {
         return face.getBoundingBox();
     }
 

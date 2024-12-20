@@ -1,7 +1,6 @@
 package moe.plushie.armourers_workshop.builder.client.gui.advancedbuilder.panel;
 
 import com.apple.library.coregraphics.CGRect;
-import com.apple.library.uikit.UIBarItem;
 import com.apple.library.uikit.UIControl;
 import com.apple.library.uikit.UIImage;
 import com.apple.library.uikit.UIMenuController;
@@ -83,7 +82,7 @@ public class AdvancedRightCardPanel extends UIView implements TreeViewDelegate {
         bg1.setAutoresizingMask(AutoresizingMask.flexibleWidth | AutoresizingMask.flexibleBottomMargin);
         addSubview(bg1);
 
-        typeListView.setFrame(new CGRect(0, 0, bg1.bounds().getWidth(), 20));
+        typeListView.setFrame(new CGRect(0, 0, bg1.bounds().width(), 20));
         typeListView.setMaxRows(16);
         typeListView.setAutoresizingMask(AutoresizingMask.flexibleWidth | AutoresizingMask.flexibleBottomMargin);
         typeListView.addTarget(this, UIControl.Event.VALUE_CHANGED, (self, it) -> {

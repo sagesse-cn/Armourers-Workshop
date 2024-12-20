@@ -91,10 +91,10 @@ public class ClipContextImpl {
         @Override
         public List<CGRect> offscreenPasses() {
             var passes = new ArrayList<CGRect>();
-            passes.add(new CGRect(rect.getMinX(), rect.getMinY(), cornerRadius, cornerRadius));
-            passes.add(new CGRect(rect.getMaxX(), rect.getMinY(), -cornerRadius, cornerRadius));
-            passes.add(new CGRect(rect.getMaxX(), rect.getMaxY(), -cornerRadius, -cornerRadius));
-            passes.add(new CGRect(rect.getMinX(), rect.getMaxY(), cornerRadius, -cornerRadius));
+            passes.add(new CGRect(rect.minX(), rect.minY(), cornerRadius, cornerRadius));
+            passes.add(new CGRect(rect.maxX(), rect.minY(), -cornerRadius, cornerRadius));
+            passes.add(new CGRect(rect.maxX(), rect.maxY(), -cornerRadius, -cornerRadius));
+            passes.add(new CGRect(rect.minX(), rect.maxY(), cornerRadius, -cornerRadius));
             return passes;
         }
     }
@@ -111,10 +111,10 @@ public class ClipContextImpl {
             clipBox = rect;
             if (rect != null) {
                 double scale = window.getGuiScale();
-                int x = (int) (rect.getX() * scale);
-                int y = (int) (window.getHeight() - rect.getMaxY() * scale);
-                int width = (int) (rect.getWidth() * scale);
-                int height = (int) (rect.getHeight() * scale);
+                int x = (int) (rect.x() * scale);
+                int y = (int) (window.getHeight() - rect.maxY() * scale);
+                int width = (int) (rect.width() * scale);
+                int height = (int) (rect.height() * scale);
                 RenderSystem.enableScissor(x, y, width, height);
             } else {
                 RenderSystem.disableScissor();
@@ -359,31 +359,31 @@ public class ClipContextImpl {
 
             public void blit(CGRect src, CGRect dst) {
                 var fh = frameHeight;
-                var sx0 = (int) (src.getMinX() * frameScale);
-                var sx1 = (int) (src.getMaxX() * frameScale);
-                var sy0 = (int) (src.getMinY() * frameScale);
-                var sy1 = (int) (src.getMaxY() * frameScale);
-                var dx0 = (int) (dst.getMinX() * frameScale);
-                var dx1 = (int) (dst.getMaxX() * frameScale);
-                var dy0 = (int) (dst.getMinY() * frameScale);
-                var dy1 = (int) (dst.getMaxY() * frameScale);
+                var sx0 = (int) (src.minX() * frameScale);
+                var sx1 = (int) (src.maxX() * frameScale);
+                var sy0 = (int) (src.minY() * frameScale);
+                var sy1 = (int) (src.maxY() * frameScale);
+                var dx0 = (int) (dst.minX() * frameScale);
+                var dx1 = (int) (dst.maxX() * frameScale);
+                var dy0 = (int) (dst.minY() * frameScale);
+                var dy1 = (int) (dst.maxY() * frameScale);
                 GL30.glBlitFramebuffer(sx0, fh - sy0, sx1, fh - sy1, dx0, fh - dy0, dx1, fh - dy1, GL30.GL_COLOR_BUFFER_BIT, GL30.GL_NEAREST);
             }
 
             public void blit(CGRect src, CGRect dst, IVertexConsumer buffer) {
                 var sw = 1 / line.maxWidth;
                 var sh = 1 / line.maxHeight;
-                buffer.vertex(dst.getMinX(), dst.getMinY(), 1f).uv(src.getMinX() * sw, 1f - src.getMinY() * sh).color(255, 255, 255, 255).endVertex();
-                buffer.vertex(dst.getMinX(), dst.getMaxY(), 1f).uv(src.getMinX() * sw, 1f - src.getMaxY() * sh).color(255, 255, 255, 255).endVertex();
-                buffer.vertex(dst.getMaxX(), dst.getMaxY(), 1f).uv(src.getMaxX() * sw, 1f - src.getMaxY() * sh).color(255, 255, 255, 255).endVertex();
-                buffer.vertex(dst.getMaxX(), dst.getMinY(), 1f).uv(src.getMaxX() * sw, 1f - src.getMinY() * sh).color(255, 255, 255, 255).endVertex();
+                buffer.vertex(dst.minX(), dst.minY(), 1f).uv(src.minX() * sw, 1f - src.minY() * sh).color(255, 255, 255, 255).endVertex();
+                buffer.vertex(dst.minX(), dst.maxY(), 1f).uv(src.minX() * sw, 1f - src.maxY() * sh).color(255, 255, 255, 255).endVertex();
+                buffer.vertex(dst.maxX(), dst.maxY(), 1f).uv(src.maxX() * sw, 1f - src.maxY() * sh).color(255, 255, 255, 255).endVertex();
+                buffer.vertex(dst.maxX(), dst.minY(), 1f).uv(src.maxX() * sw, 1f - src.minY() * sh).color(255, 255, 255, 255).endVertex();
             }
 
             public void mask(CGRect src, IVertexConsumer buffer) {
-                var x = src.getMaxX();
-                var y = src.getMaxY();
-                var width = src.getWidth();
-                var height = src.getHeight();
+                var x = src.maxX();
+                var y = src.maxY();
+                var width = src.width();
+                var height = src.height();
 
                 var tx1 = 0f;
                 var tx2 = 0f;
@@ -430,8 +430,8 @@ public class ClipContextImpl {
 
             @Nullable
             public Pass add(CGRect rect) {
-                var width = Math.min(Math.abs(rect.getWidth()), line.maxWidth);
-                var height = Math.min(Math.abs(rect.getHeight()), line.maxHeight);
+                var width = Math.min(Math.abs(rect.width()), line.maxWidth);
+                var height = Math.min(Math.abs(rect.height()), line.maxHeight);
                 var pass = line.add(width, height, rect);
                 if (pass != null) {
                     passes.add(pass);

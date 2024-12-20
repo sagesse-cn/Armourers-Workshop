@@ -1,17 +1,17 @@
 package moe.plushie.armourers_workshop.core.skin.serializer.importer;
 
 import com.google.gson.JsonElement;
-import moe.plushie.armourers_workshop.core.math.Rectangle2f;
-import moe.plushie.armourers_workshop.core.math.Size2f;
-import moe.plushie.armourers_workshop.core.math.Size3f;
-import moe.plushie.armourers_workshop.core.math.Vector2f;
-import moe.plushie.armourers_workshop.core.math.Vector2i;
-import moe.plushie.armourers_workshop.core.math.Vector3f;
+import moe.plushie.armourers_workshop.core.math.OpenRectangle2f;
+import moe.plushie.armourers_workshop.core.math.OpenSize2f;
+import moe.plushie.armourers_workshop.core.math.OpenSize3f;
+import moe.plushie.armourers_workshop.core.math.OpenVector2f;
+import moe.plushie.armourers_workshop.core.math.OpenVector2i;
+import moe.plushie.armourers_workshop.core.math.OpenVector3f;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IOConsumer;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IOConsumer2;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IODataObject;
 import moe.plushie.armourers_workshop.core.utils.JsonSerializer;
-import moe.plushie.armourers_workshop.core.utils.MolangExpression;
+import moe.plushie.armourers_workshop.core.utils.OpenExpression;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.BufferedInputStream;
@@ -37,41 +37,41 @@ public class PackObject implements IODataObject {
         }
     }
 
-    public MolangExpression expression() {
+    public OpenExpression expression() {
         if (isNull()) {
             return null;
         }
-        return new MolangExpression(stringValue());
+        return new OpenExpression(stringValue());
     }
 
-    public Vector2i vector2iValue() {
+    public OpenVector2i vector2iValue() {
         var values = allValues();
         if (values.size() >= 2) {
             var iterator = values.iterator();
-            return new Vector2i(iterator.next().intValue(), iterator.next().intValue());
+            return new OpenVector2i(iterator.next().intValue(), iterator.next().intValue());
         }
-        return Vector2i.ZERO;
+        return OpenVector2i.ZERO;
     }
 
-    public Vector2f vector2fValue() {
+    public OpenVector2f vector2fValue() {
         var values = allValues();
         if (values.size() >= 2) {
             var iterator = values.iterator();
-            return new Vector2f(iterator.next().floatValue(), iterator.next().floatValue());
+            return new OpenVector2f(iterator.next().floatValue(), iterator.next().floatValue());
         }
-        return Vector2f.ZERO;
+        return OpenVector2f.ZERO;
     }
 
-    public Size2f size2fValue() {
+    public OpenSize2f size2fValue() {
         var values = allValues();
         if (values.size() >= 2) {
             var iterator = values.iterator();
-            return new Size2f(iterator.next().floatValue(), iterator.next().floatValue());
+            return new OpenSize2f(iterator.next().floatValue(), iterator.next().floatValue());
         }
-        return Size2f.ZERO;
+        return OpenSize2f.ZERO;
     }
 
-    public Rectangle2f rectangle2fValue() {
+    public OpenRectangle2f rectangle2fValue() {
         var values = allValues();
         if (values.size() >= 4) {
             var iterator = values.iterator();
@@ -79,27 +79,27 @@ public class PackObject implements IODataObject {
             var y1 = iterator.next().floatValue();
             var x2 = iterator.next().floatValue();
             var y2 = iterator.next().floatValue();
-            return new Rectangle2f(x1, y1, x2 - x1, y2 - y1);
+            return new OpenRectangle2f(x1, y1, x2 - x1, y2 - y1);
         }
-        return Rectangle2f.ZERO;
+        return OpenRectangle2f.ZERO;
     }
 
-    public Size3f size3fValue() {
+    public OpenSize3f size3fValue() {
         var values = allValues();
         if (values.size() >= 3) {
             var iterator = values.iterator();
-            return new Size3f(iterator.next().floatValue(), iterator.next().floatValue(), iterator.next().floatValue());
+            return new OpenSize3f(iterator.next().floatValue(), iterator.next().floatValue(), iterator.next().floatValue());
         }
-        return Size3f.ZERO;
+        return OpenSize3f.ZERO;
     }
 
-    public Vector3f vector3fValue() {
+    public OpenVector3f vector3fValue() {
         var values = allValues();
         if (values.size() >= 3) {
             var iterator = values.iterator();
-            return new Vector3f(iterator.next().floatValue(), iterator.next().floatValue(), iterator.next().floatValue());
+            return new OpenVector3f(iterator.next().floatValue(), iterator.next().floatValue(), iterator.next().floatValue());
         }
-        return moe.plushie.armourers_workshop.core.math.Vector3f.ZERO;
+        return OpenVector3f.ZERO;
     }
 
     public void at(String keyPath, IOConsumer<PackObject> consumer) throws IOException {

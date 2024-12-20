@@ -243,7 +243,7 @@ public class UITextField extends UIControl implements TextInputTraits {
         CGRect visibleRect = bounds.offset(-offsetX, 0);
         // 1. when the cursor pos not in the visible rect.
         // 2. when the display width exceeds the actual width.
-        if (visibleRect.getMaxX() > contentWidth || !isSameRange(visibleRect, cursorRect)) {
+        if (visibleRect.maxX() > contentWidth || !isSameRange(visibleRect, cursorRect)) {
             float x1 = Math.min(cursorRect.x + visibleRect.width / 2, contentWidth);
             float x0 = Math.max(x1 - visibleRect.width, 0);
             offsetX = contentInsets.left - x0;
@@ -252,7 +252,7 @@ public class UITextField extends UIControl implements TextInputTraits {
     }
 
     private boolean isSameRange(CGRect rect, CGRect other) {
-        return rect.getMinX() <= other.getMinX() && other.getMaxX() <= rect.getMaxX();
+        return rect.minX() <= other.minX() && other.maxX() <= rect.maxX();
     }
 
     private UIColor getFillColor() {

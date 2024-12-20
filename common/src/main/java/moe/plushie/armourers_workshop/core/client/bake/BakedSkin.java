@@ -3,7 +3,6 @@ package moe.plushie.armourers_workshop.core.client.bake;
 import com.google.common.collect.Range;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import moe.plushie.armourers_workshop.api.skin.ISkinType;
 import moe.plushie.armourers_workshop.api.skin.part.features.ICanUse;
 import moe.plushie.armourers_workshop.core.client.animation.AnimatedTransform;
 import moe.plushie.armourers_workshop.core.client.animation.AnimationController;
@@ -16,19 +15,21 @@ import moe.plushie.armourers_workshop.core.client.texture.PlayerTextureLoader;
 import moe.plushie.armourers_workshop.core.data.cache.PrimaryKey;
 import moe.plushie.armourers_workshop.core.data.color.ColorDescriptor;
 import moe.plushie.armourers_workshop.core.math.OpenMatrix4f;
-import moe.plushie.armourers_workshop.core.math.OpenQuaternion3f;
+import moe.plushie.armourers_workshop.core.math.OpenQuaternionf;
+import moe.plushie.armourers_workshop.core.math.OpenRectangle3f;
+import moe.plushie.armourers_workshop.core.math.OpenVector3f;
+import moe.plushie.armourers_workshop.core.math.OpenVector3i;
+import moe.plushie.armourers_workshop.core.math.OpenVector4f;
 import moe.plushie.armourers_workshop.core.math.OpenVoxelShape;
-import moe.plushie.armourers_workshop.core.math.Rectangle3f;
-import moe.plushie.armourers_workshop.core.math.Vector3f;
-import moe.plushie.armourers_workshop.core.math.Vector3i;
-import moe.plushie.armourers_workshop.core.math.Vector4f;
 import moe.plushie.armourers_workshop.core.skin.Skin;
+import moe.plushie.armourers_workshop.core.skin.SkinType;
 import moe.plushie.armourers_workshop.core.skin.SkinTypes;
 import moe.plushie.armourers_workshop.core.skin.animation.SkinAnimation;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPartTransform;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPartTypes;
 import moe.plushie.armourers_workshop.core.skin.part.wings.WingPartTransform;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperties;
+import moe.plushie.armourers_workshop.core.skin.property.SkinProperty;
 import moe.plushie.armourers_workshop.core.skin.serializer.SkinUsedCounter;
 import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintScheme;
 import moe.plushie.armourers_workshop.core.utils.Collections;
@@ -52,10 +53,9 @@ public class BakedSkin {
 
     private final String identifier;
     private final Skin skin;
-    private final ISkinType skinType;
-    private final HashMap<Object, Rectangle3f> cachedBounds = new HashMap<>();
-    private final HashMap<Vector3i, Rectangle3f> cachedBlockBounds = new HashMap<>();
-
+    private final SkinType skinType;
+    private final HashMap<Object, OpenRectangle3f> cachedBounds = new HashMap<>();
+    private final HashMap<OpenVector3i, OpenRectangle3f> cachedBlockBounds = new HashMap<>();
 
     private final Range<Integer> useTickRange;
     private final List<BakedSkinPart> skinParts;
@@ -72,7 +72,7 @@ public class BakedSkin {
 
     private final BakedSkinAnimationHandler animationHandler = new BakedSkinAnimationHandler();
 
-    public BakedSkin(String identifier, ISkinType skinType, ArrayList<BakedSkinPart> bakedParts, Skin skin, SkinPaintScheme paintScheme, ColorDescriptor colorDescriptor, SkinUsedCounter usedCounter) {
+    public BakedSkin(String identifier, SkinType skinType, ArrayList<BakedSkinPart> bakedParts, Skin skin, SkinPaintScheme paintScheme, ColorDescriptor colorDescriptor, SkinUsedCounter usedCounter) {
         this.identifier = identifier;
         this.skin = skin;
         this.skinType = skinType;
@@ -88,7 +88,7 @@ public class BakedSkin {
     }
 
     public void setupAnim(Entity entity, BakedArmature bakedArmature, SkinRenderContext context) {
-        animationHandler.setup(this, entity, bakedArmature, context);
+        animationHandler.apply(this, entity, bakedArmature, context);
     }
 
     public SkinPaintScheme resolve(Entity entity, SkinPaintScheme scheme) {
@@ -119,7 +119,7 @@ public class BakedSkin {
         return skin;
     }
 
-    public ISkinType getType() {
+    public SkinType getType() {
         return skinType;
     }
 
@@ -155,15 +155,15 @@ public class BakedSkin {
         return usedCounter;
     }
 
-    public Map<Vector3i, Rectangle3f> getBlockBounds() {
+    public Map<OpenVector3i, OpenRectangle3f> getBlockBounds() {
         return cachedBlockBounds;
     }
 
-    public Rectangle3f getRenderBounds() {
+    public OpenRectangle3f getRenderBounds() {
         return getRenderBounds(ItemTransform.NO_TRANSFORM, OpenItemDisplayContext.NONE);
     }
 
-    public Rectangle3f getRenderBounds(ItemTransform itemTransform, OpenItemDisplayContext displayContext) {
+    public OpenRectangle3f getRenderBounds(ItemTransform itemTransform, OpenItemDisplayContext displayContext) {
         var rotation = itemTransform.getRotation();
         var key = PrimaryKey.of(rotation, displayContext);
         var bounds = cachedBounds.get(key);
@@ -173,18 +173,18 @@ public class BakedSkin {
         var entity = PlaceholderManager.MANNEQUIN.get();
         var matrix = OpenMatrix4f.createScaleMatrix(1, 1, 1);
         var shape = getRenderShape(entity, BakedArmature.defaultBy(skinType), displayContext);
-        if (!rotation.equals(Vector3f.ZERO)) {
-            matrix.rotate(new OpenQuaternion3f(rotation.getX(), rotation.getY(), rotation.getZ(), true));
+        if (!rotation.equals(OpenVector3f.ZERO)) {
+            matrix.rotate(new OpenQuaternionf(rotation.x(), rotation.y(), rotation.z(), true));
             shape.mul(matrix);
         }
         bounds = shape.bounds().copy();
-        if (!rotation.equals(Vector3f.ZERO)) {
-            var center = new Vector4f(bounds.getCenter());
+        if (!rotation.equals(OpenVector3f.ZERO)) {
+            var center = new OpenVector4f(bounds.getCenter());
             matrix.invert();
             center.transform(matrix);
-            bounds.setX(center.getX() - bounds.getWidth() / 2);
-            bounds.setY(center.getY() - bounds.getHeight() / 2);
-            bounds.setZ(center.getZ() - bounds.getDepth() / 2);
+            bounds.setX(center.x() - bounds.width() / 2);
+            bounds.setY(center.y() - bounds.height() / 2);
+            bounds.setZ(center.z() - bounds.depth() / 2);
         }
         cachedBounds.put(key.copy(), bounds);
         return bounds;
@@ -204,28 +204,35 @@ public class BakedSkin {
     }
 
     private void loadPartTransforms(List<BakedSkinPart> skinParts) {
-        // attach backpack part transform.
-        skinParts.forEach(it -> {
-            if (it.getType() == SkinPartTypes.ITEM_BACKPACK) {
-                var transform = new BakedBackpackPartTransform();
-                it.getTransform().insertChild(transform, 0);
-                animationHandler.register(1, (skin, entity, armature, context) -> transform.setup(entity, context));
+        // search all requires adapt mode parts, and then insert a adapter transform.
+        Collections.eachTree(skinParts, BakedSkinPart::getChildren, part -> {
+            if (part.getProperties().get(SkinProperty.USE_ADAPT_MODE)) {
+                var adapterTransform = new BakedAdapterJointTransform(part);
+                part.setJointTransformModifier(it -> adapterTransform);
+                animationHandler.normal((skin, entity, armature, context) -> adapterTransform.setup(entity, armature, context));
             }
         });
-        // search all transform
-        skinParts.forEach(it -> it.getTransform().getChildren().forEach(transform -> {
-            if (transform instanceof WingPartTransform transform1) {
-                animationHandler.register(1, (skin, entity, armature, context) -> transform1.setup(entity, context.getAnimationTicks()));
-            }
-        }));
+        // search all animated transform, we need to reset it before setup.
         Collections.eachTree(skinParts, BakedSkinPart::getChildren, part -> part.getTransform().getChildren().forEach(transform -> {
-            if (transform instanceof AnimatedTransform transform1) {
-                animationHandler.register(-1, (skin, entity, armature, context) -> transform1.reset());
+            if (transform instanceof AnimatedTransform animatedTransform) {
+                animationHandler.lowest((skin, entity, armature, context) -> animatedTransform.reset());
             }
         }));
-        // attach locator transform.
-        BakedAttachmentTransform.create(skinParts).forEach(it -> {
-            animationHandler.register(0, (skin, entity, armature, context) -> it.setup(entity, armature, context));
+        // search all wings transform.
+        skinParts.forEach(it -> it.getTransform().getChildren().forEach(transform -> {
+            if (transform instanceof WingPartTransform wingTransform) {
+                animationHandler.normal((skin, entity, armature, context) -> wingTransform.setup(entity, context.getAnimationTicks()));
+            }
+        }));
+        // search all locator part, and then a attachment transform.
+        BakedAttachmentPartTransform.create(skinParts).forEach(attachmentTransform -> {
+            animationHandler.normal((skin, entity, armature, context) -> attachmentTransform.setup(entity, armature, context));
+        });
+        // search all backpack part, and then attach a backpack part transform.
+        Collections.filter(skinParts, it -> it.getType() == SkinPartTypes.ITEM_BACKPACK).forEach(it -> {
+            var backpackTransform = new BakedBackpackPartTransform();
+            it.getTransform().insertChild(backpackTransform, 0);
+            animationHandler.highest((skin, entity, armature, context) -> backpackTransform.setup(entity, context.getRenderData()));
         });
     }
 
@@ -272,10 +279,9 @@ public class BakedSkin {
         }
         var namedParts = new HashMap<String, SkinPartTransform>();
         Collections.eachTree(skinParts, BakedSkinPart::getChildren, part -> {
-            var partType = part.getType();
-            var partName = partType.getName();
-            if (partType == SkinPartTypes.ADVANCED || partType == SkinPartTypes.ADVANCED_LOCATOR) {
-                partName = part.getName();
+            var partName = part.getName();
+            if (partName.isEmpty()) {
+                partName = part.getType().getName();
             }
             namedParts.put(partName, part.getTransform());
         });

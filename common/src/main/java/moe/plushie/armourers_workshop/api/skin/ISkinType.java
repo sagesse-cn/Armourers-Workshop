@@ -12,4 +12,12 @@ public interface ISkinType extends IRegistryEntry {
     String getName();
 
     List<? extends ISkinPartType> getParts();
+
+    boolean isTool();
+
+    boolean isArmour();
+
+    default boolean isEquipment() {
+        return isArmour() || isTool();
+    }
 }

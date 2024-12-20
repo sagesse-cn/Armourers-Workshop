@@ -1,6 +1,5 @@
 package moe.plushie.armourers_workshop.init.platform;
 
-import moe.plushie.armourers_workshop.api.skin.ISkinEquipmentType;
 import moe.plushie.armourers_workshop.compatibility.client.AbstractBufferSource;
 import moe.plushie.armourers_workshop.core.client.bake.BakedSkin;
 import moe.plushie.armourers_workshop.core.client.bake.SkinBakery;
@@ -9,14 +8,14 @@ import moe.plushie.armourers_workshop.core.data.ticket.Tickets;
 import moe.plushie.armourers_workshop.core.math.OpenMath;
 import moe.plushie.armourers_workshop.core.skin.SkinDescriptor;
 import moe.plushie.armourers_workshop.core.skin.geometry.SkinGeometryTypes;
+import moe.plushie.armourers_workshop.core.utils.TranslateUtils;
 import moe.plushie.armourers_workshop.core.utils.TypedRegistry;
 import moe.plushie.armourers_workshop.init.ModConfig;
 import moe.plushie.armourers_workshop.init.ModDebugger;
 import moe.plushie.armourers_workshop.init.ModItems;
 import moe.plushie.armourers_workshop.init.ModKeyBindings;
 import moe.plushie.armourers_workshop.init.ModTextures;
-import moe.plushie.armourers_workshop.init.platform.event.client.ItemTooltipEvent;
-import moe.plushie.armourers_workshop.utils.TranslateUtils;
+import moe.plushie.armourers_workshop.init.event.client.ItemTooltipEvent;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.screens.Screen;
@@ -129,7 +128,7 @@ public class ItemTooltipManager {
 //            }
 //        }
 
-        if (options.contains(SkinDescriptor.TooltipFlags.OPEN_WARDROBE) && isItemOwner && skin.getType() instanceof ISkinEquipmentType) {
+        if (options.contains(SkinDescriptor.TooltipFlags.OPEN_WARDROBE) && isItemOwner && skin.getType().isEquipment()) {
             var keyName = ModKeyBindings.OPEN_WARDROBE_KEY.getKeyName();
             tooltip.add(TranslateUtils.subtitle("item.armourers_workshop.rollover.skinOpenWardrobe", keyName));
         }
@@ -196,10 +195,10 @@ public class ItemTooltipManager {
         float dx, dy;
         float size = ModConfig.Client.skinPreSize;
         if (ModConfig.Client.skinPreLocFollowMouse) {
-            dx = frame.getX() - 28 - size;
-            dy = frame.getY() - 4;
-            if (frame.getX() < context.state().mousePos().getX()) {
-                dx = frame.getX() + frame.getWidth() + 28;
+            dx = frame.x - 28 - size;
+            dy = frame.y - 4;
+            if (frame.x < context.state().mousePos().x()) {
+                dx = frame.x + frame.width + 28;
             }
             dy = OpenMath.clamp(dy, 0, screenHeight - size);
         } else {

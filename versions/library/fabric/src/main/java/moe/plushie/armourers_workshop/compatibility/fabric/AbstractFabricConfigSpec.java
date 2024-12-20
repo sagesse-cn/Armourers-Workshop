@@ -3,7 +3,7 @@ package moe.plushie.armourers_workshop.compatibility.fabric;
 import moe.plushie.armourers_workshop.api.annotation.Available;
 import moe.plushie.armourers_workshop.api.config.IConfigBuilder;
 import moe.plushie.armourers_workshop.api.config.IConfigSpec;
-import moe.plushie.armourers_workshop.compatibility.AbstractConfigSpec;
+import moe.plushie.armourers_workshop.compatibility.core.AbstractConfigSpec;
 import moe.plushie.armourers_workshop.init.ModConstants;
 import moe.plushie.armourers_workshop.init.platform.fabric.config.FabricConfig;
 import moe.plushie.armourers_workshop.init.platform.fabric.config.FabricConfigSpec;

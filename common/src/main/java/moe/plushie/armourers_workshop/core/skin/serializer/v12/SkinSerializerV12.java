@@ -1,7 +1,7 @@
 package moe.plushie.armourers_workshop.core.skin.serializer.v12;
 
-import moe.plushie.armourers_workshop.api.skin.ISkinType;
 import moe.plushie.armourers_workshop.core.skin.Skin;
+import moe.plushie.armourers_workshop.core.skin.SkinType;
 import moe.plushie.armourers_workshop.core.skin.SkinTypes;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPart;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperties;
@@ -149,7 +149,7 @@ public final class SkinSerializerV12 implements IOSerializer {
             }
         }
 
-        ISkinType skinType = null;
+        SkinType skinType = null;
 
         if (fileVersion < 5) {
             if (loadedProps) {
@@ -304,7 +304,7 @@ public final class SkinSerializerV12 implements IOSerializer {
             }
         }
 
-        ISkinType equipmentSkinType = null;
+        SkinType equipmentSkinType = null;
 
         if (fileVersion < 5) {
             if (loadedProps) {

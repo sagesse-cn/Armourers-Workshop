@@ -4,7 +4,7 @@ import moe.plushie.armourers_workshop.api.armature.IJoint;
 import moe.plushie.armourers_workshop.api.armature.IJointTransform;
 import moe.plushie.armourers_workshop.api.client.model.IModel;
 import moe.plushie.armourers_workshop.core.armature.JointModifier;
-import moe.plushie.armourers_workshop.core.math.Vector3f;
+import moe.plushie.armourers_workshop.core.math.OpenVector3f;
 
 public class DefaultSkirtJointModifier extends JointModifier {
 
@@ -22,11 +22,11 @@ public class DefaultSkirtJointModifier extends JointModifier {
             var z = (leg1.pose().getZ() + leg2.pose().getZ()) / 2;
             poseStack.translate(body.pose().getX(), leg1.pose().getY(), z);
             if (body.pose().getYRot() != 0) {
-                poseStack.rotate(Vector3f.YP.rotation(body.pose().getYRot()));
+                poseStack.rotate(OpenVector3f.YP.rotation(body.pose().getYRot()));
             }
             var xRot = (ort(leg1.pose().getXRot()) + ort(leg2.pose().getXRot())) / 2;
             if (Float.compare(xRot, 0) != 0) {
-                poseStack.rotate(Vector3f.XP.rotation(xRot));
+                poseStack.rotate(OpenVector3f.XP.rotation(xRot));
             }
             // yep, we intentionally discard part binding result.
             // because, correct binding need to calculate from multiple parts.

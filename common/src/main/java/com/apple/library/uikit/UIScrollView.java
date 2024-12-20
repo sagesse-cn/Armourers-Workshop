@@ -33,8 +33,8 @@ public class UIScrollView extends UIView {
     @Override
     public void layoutSubviews() {
         super.layoutSubviews();
-        CGRect bounds = bounds();
-        CGRect rect = bounds.insetBy(scrollIndicatorInsets);
+        var bounds = bounds();
+        var rect = bounds.insetBy(scrollIndicatorInsets);
         verticalIndicator.setProgress(rect, contentOffset.y, contentSize.height - bounds.height);
         horizontalIndicator.setProgress(rect, contentOffset.x, contentSize.width - bounds.width);
     }
@@ -42,9 +42,9 @@ public class UIScrollView extends UIView {
     @Override
     public void mouseWheel(UIEvent event) {
         if (isVerticalScrollable()) {
-            double delta = event.delta().getY() * bounds().getHeight() / 5;
-            float tx = contentOffset.x;
-            float ty = contentOffset.y - (float) delta; // revert
+            var delta = event.delta().y() * bounds().height() / 5;
+            var tx = contentOffset.x;
+            var ty = contentOffset.y - delta; // revert
             this.setContentOffset(new CGPoint(tx, ty));
             return;
         }
@@ -62,7 +62,7 @@ public class UIScrollView extends UIView {
 
     public void setContentOffset(CGPoint contentOffset) {
         contentOffset = clamp(contentOffset);
-        CGRect rect = bounds();
+        var rect = bounds();
         this.contentOffset = contentOffset;
         super.setBounds(new CGRect(contentOffset.x, contentOffset.y, rect.width, rect.height));
         this.didScroll();
@@ -78,7 +78,7 @@ public class UIScrollView extends UIView {
         this.setNeedsLayout();
         // when the content size did changes,
         // we needs check the content offset is still valid.
-        CGPoint newContentOffset = clamp(contentOffset);
+        var newContentOffset = clamp(contentOffset);
         if (!newContentOffset.equals(contentOffset)) {
             setContentOffset(newContentOffset);
         }
@@ -150,12 +150,12 @@ public class UIScrollView extends UIView {
     }
 
     private boolean isVerticalScrollable() {
-        return bounds().getHeight() < contentSize.height;
+        return bounds().height() < contentSize.height;
     }
 
     private CGPoint clamp(CGPoint point) {
-        CGRect rect = bounds();
-        UIEdgeInsets edg = contentInsets;
+        var rect = bounds();
+        var edg = contentInsets;
         float tx = Math.max(Math.min(point.x, contentSize.width - rect.width + edg.right), -edg.left);
         float ty = Math.max(Math.min(point.y, contentSize.height - rect.height + edg.bottom), -edg.top);
         if (point.x == tx && point.y == ty) {
@@ -169,8 +169,8 @@ public class UIScrollView extends UIView {
     }
 
     private void updateIndicatorIfNeeded() {
-        CGRect bounds = bounds();
-        CGSize size = contentSize();
+        var bounds = bounds();
+        var size = contentSize();
         verticalIndicator.setRadio(bounds.height, size.height);
         horizontalIndicator.setRadio(bounds.width, size.width);
     }
@@ -214,8 +214,8 @@ public class UIScrollView extends UIView {
             float v = eval(offset, maxSize) * m * (1 - radio);
             float p = clamp(v, 0, m);
             float q = clamp(v + m * radio, 0, m);
-            float x = selector.apply(rect.getMinX() + (int) p, rect.getMaxX() - size);
-            float y = selector.apply(rect.getMaxY() - size, rect.getMinY() + (int) p);
+            float x = selector.apply(rect.minX() + (int) p, rect.maxX() - size);
+            float y = selector.apply(rect.maxY() - size, rect.minY() + (int) p);
             float width = selector.apply(q - p, size);
             float height = selector.apply(size, q - p);
             setFrame(new CGRect(x, y, width, height));

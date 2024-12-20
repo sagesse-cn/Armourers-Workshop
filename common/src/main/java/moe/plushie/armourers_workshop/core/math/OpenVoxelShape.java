@@ -13,11 +13,11 @@ import java.util.LinkedHashSet;
 import java.util.List;
 
 @SuppressWarnings("unused")
-public class OpenVoxelShape implements IVoxelShape, Iterable<Vector4f> {
+public class OpenVoxelShape implements IVoxelShape, Iterable<OpenVector4f> {
 
-    private OpenBoundingBox aabb;
-    private Rectangle3f box;
-    private List<Vector4f> vertexes;
+    private OpenAxisAlignedBoundingBox aabb;
+    private OpenRectangle3f box;
+    private List<OpenVector4f> vertexes;
 
     public OpenVoxelShape() {
     }
@@ -28,51 +28,51 @@ public class OpenVoxelShape implements IVoxelShape, Iterable<Vector4f> {
 
 
     public static OpenVoxelShape box(IRectangle3f bounds) {
-        if (bounds instanceof Rectangle3f rect) {
+        if (bounds instanceof OpenRectangle3f rect) {
             return box(rect);
         }
-        return box(new Rectangle3f(bounds));
+        return box(new OpenRectangle3f(bounds));
     }
 
     public static OpenVoxelShape box(IRectangle3i bounds) {
-        return box(new Rectangle3f(bounds));
+        return box(new OpenRectangle3f(bounds));
     }
 
-    public static OpenVoxelShape box(Rectangle3f bounds) {
+    public static OpenVoxelShape box(OpenRectangle3f bounds) {
         var shape = new OpenVoxelShape();
         shape.box = bounds;
         return shape;
     }
 
-    public OpenBoundingBox aabb() {
+    public OpenAxisAlignedBoundingBox aabb() {
         if (aabb != null) {
             return aabb;
         }
-        aabb = new OpenBoundingBox(bounds());
+        aabb = new OpenAxisAlignedBoundingBox(bounds());
         return aabb;
     }
 
-    public Rectangle3f bounds() {
+    public OpenRectangle3f bounds() {
         if (box != null) {
             return box;
         }
         if (vertexes == null || vertexes.isEmpty()) {
-            return Rectangle3f.ZERO;
+            return OpenRectangle3f.ZERO;
         }
         var iterator = vertexes.iterator();
         var fp = iterator.next();
-        float minX = fp.getX(), minY = fp.getY(), minZ = fp.getZ();
-        float maxX = fp.getX(), maxY = fp.getY(), maxZ = fp.getZ();
+        float minX = fp.x(), minY = fp.y(), minZ = fp.z();
+        float maxX = fp.x(), maxY = fp.y(), maxZ = fp.z();
         while (iterator.hasNext()) {
-            Vector4f point = iterator.next();
-            minX = Math.min(minX, point.getX());
-            minY = Math.min(minY, point.getY());
-            minZ = Math.min(minZ, point.getZ());
-            maxX = Math.max(maxX, point.getX());
-            maxY = Math.max(maxY, point.getY());
-            maxZ = Math.max(maxZ, point.getZ());
+            var point = iterator.next();
+            minX = Math.min(minX, point.x());
+            minY = Math.min(minY, point.y());
+            minZ = Math.min(minZ, point.z());
+            maxX = Math.max(maxX, point.x());
+            maxY = Math.max(maxY, point.y());
+            maxZ = Math.max(maxZ, point.z());
         }
-        box = new Rectangle3f(minX, minY, minZ, maxX - minX, maxY - minY, maxZ - minZ);
+        box = new OpenRectangle3f(minX, minY, minZ, maxX - minX, maxY - minY, maxZ - minZ);
         return box;
     }
 
@@ -86,14 +86,14 @@ public class OpenVoxelShape implements IVoxelShape, Iterable<Vector4f> {
 
     public void add(float x, float y, float z, float width, float height, float depth) {
         var list = getVertexes();
-        list.add(new Vector4f(x, y, z, 1.0f));
-        list.add(new Vector4f(x + width, y, z, 1.0f));
-        list.add(new Vector4f(x + width, y + height, z, 1.0f));
-        list.add(new Vector4f(x, y + height, z, 1.0f));
-        list.add(new Vector4f(x, y, z + depth, 1.0f));
-        list.add(new Vector4f(x + width, y, z + depth, 1.0f));
-        list.add(new Vector4f(x + width, y + height, z + depth, 1.0f));
-        list.add(new Vector4f(x, y + height, z + depth, 1.0f));
+        list.add(new OpenVector4f(x, y, z, 1.0f));
+        list.add(new OpenVector4f(x + width, y, z, 1.0f));
+        list.add(new OpenVector4f(x + width, y + height, z, 1.0f));
+        list.add(new OpenVector4f(x, y + height, z, 1.0f));
+        list.add(new OpenVector4f(x, y, z + depth, 1.0f));
+        list.add(new OpenVector4f(x + width, y, z + depth, 1.0f));
+        list.add(new OpenVector4f(x + width, y + height, z + depth, 1.0f));
+        list.add(new OpenVector4f(x, y + height, z + depth, 1.0f));
         box = null;
         aabb = null;
     }
@@ -105,14 +105,14 @@ public class OpenVoxelShape implements IVoxelShape, Iterable<Vector4f> {
     }
 
     public void add(IRectangle3f rect) {
-        add(rect.getX(), rect.getY(), rect.getZ(), rect.getWidth(), rect.getHeight(), rect.getDepth());
+        add(rect.x(), rect.y(), rect.z(), rect.width(), rect.height(), rect.depth());
     }
 
     public void add(IVector3f vertex) {
-        add(new Vector4f(vertex.getX(), vertex.getY(), vertex.getZ(), 1.0f));
+        add(new OpenVector4f(vertex.x(), vertex.y(), vertex.z(), 1.0f));
     }
 
-    public void add(Vector4f vertex) {
+    public void add(OpenVector4f vertex) {
         var list = getVertexes();
         list.add(vertex);
         box = null;
@@ -127,7 +127,7 @@ public class OpenVoxelShape implements IVoxelShape, Iterable<Vector4f> {
             return;
         }
         var list = getVertexes();
-        var uniquesVertexes = new LinkedHashSet<Vector4f>(list.size());
+        var uniquesVertexes = new LinkedHashSet<OpenVector4f>(list.size());
         uniquesVertexes.addAll(list);
         vertexes = Collections.newList(uniquesVertexes);
     }
@@ -137,7 +137,7 @@ public class OpenVoxelShape implements IVoxelShape, Iterable<Vector4f> {
         shape.box = box;
         shape.aabb = aabb;
         if (vertexes != null) {
-            var newVertexes = new ArrayList<Vector4f>();
+            var newVertexes = new ArrayList<OpenVector4f>();
             newVertexes.ensureCapacity(vertexes.size());
             for (var vector : vertexes) {
                 newVertexes.add(vector.copy());
@@ -148,33 +148,33 @@ public class OpenVoxelShape implements IVoxelShape, Iterable<Vector4f> {
     }
 
     @Override
-    public Iterator<Vector4f> iterator() {
+    public Iterator<OpenVector4f> iterator() {
         if (vertexes != null) {
             return vertexes.iterator();
         }
         return getVertexes(box).iterator();
     }
 
-    private List<Vector4f> getVertexes() {
+    private List<OpenVector4f> getVertexes() {
         if (vertexes == null) {
             vertexes = getVertexes(box);
         }
         return vertexes;
     }
 
-    private List<Vector4f> getVertexes(IRectangle3f box) {
+    private List<OpenVector4f> getVertexes(IRectangle3f box) {
         if (box == null) {
             return Collections.newList();
         }
         return Collections.newList(
-                new Vector4f(box.getMinX(), box.getMinY(), box.getMinZ(), 1.0f),
-                new Vector4f(box.getMaxX(), box.getMinY(), box.getMinZ(), 1.0f),
-                new Vector4f(box.getMaxX(), box.getMaxY(), box.getMinZ(), 1.0f),
-                new Vector4f(box.getMinX(), box.getMaxY(), box.getMinZ(), 1.0f),
-                new Vector4f(box.getMinX(), box.getMinY(), box.getMaxZ(), 1.0f),
-                new Vector4f(box.getMaxX(), box.getMinY(), box.getMaxZ(), 1.0f),
-                new Vector4f(box.getMaxX(), box.getMaxY(), box.getMaxZ(), 1.0f),
-                new Vector4f(box.getMinX(), box.getMaxY(), box.getMaxZ(), 1.0f)
+                new OpenVector4f(box.minX(), box.minY(), box.minZ(), 1.0f),
+                new OpenVector4f(box.maxX(), box.minY(), box.minZ(), 1.0f),
+                new OpenVector4f(box.maxX(), box.maxY(), box.minZ(), 1.0f),
+                new OpenVector4f(box.minX(), box.maxY(), box.minZ(), 1.0f),
+                new OpenVector4f(box.minX(), box.minY(), box.maxZ(), 1.0f),
+                new OpenVector4f(box.maxX(), box.minY(), box.maxZ(), 1.0f),
+                new OpenVector4f(box.maxX(), box.maxY(), box.maxZ(), 1.0f),
+                new OpenVector4f(box.minX(), box.maxY(), box.maxZ(), 1.0f)
         );
     }
 }

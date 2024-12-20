@@ -7,7 +7,7 @@ import com.mojang.blaze3d.platform.Window;
 import moe.plushie.armourers_workshop.compatibility.client.AbstractRenderSystem;
 import moe.plushie.armourers_workshop.core.math.OpenMatrix3f;
 import moe.plushie.armourers_workshop.core.math.OpenMatrix4f;
-import moe.plushie.armourers_workshop.core.math.Vector4f;
+import moe.plushie.armourers_workshop.core.math.OpenVector4f;
 import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintColor;
 import moe.plushie.armourers_workshop.core.utils.MatrixUtils;
 import net.fabricmc.api.EnvType;
@@ -29,7 +29,7 @@ public final class RenderSystem extends AbstractRenderSystem {
     private static final Storage<OpenMatrix4f> extendedOverlayTextureMatrix = new Storage<>(OpenMatrix4f.createScaleMatrix(1, 1, 1));
     private static final Storage<OpenMatrix4f> extendedLightmapTextureMatrix = new Storage<>(OpenMatrix4f.createScaleMatrix(1, 1, 1));
     private static final Storage<OpenMatrix4f> extendedModelViewMatrix = new Storage<>(OpenMatrix4f.createScaleMatrix(1, 1, 1));
-    private static final Storage<Vector4f> extendedColorModulator = new Storage<>(Vector4f.ONE);
+    private static final Storage<OpenVector4f> extendedColorModulator = new Storage<>(OpenVector4f.ONE);
     private static final Storage<SkinPaintColor> extendedTintColor = new Storage<>(SkinPaintColor.WHITE);
 
     private static final Storage<Float> extendedFogStart = new Storage<>(0.0f);
@@ -80,11 +80,11 @@ public final class RenderSystem extends AbstractRenderSystem {
     }
 
 
-    public static Vector4f getExtendedColorModulator() {
+    public static OpenVector4f getExtendedColorModulator() {
         return extendedColorModulator.get();
     }
 
-    public static void setExtendedColorModulator(Vector4f value) {
+    public static void setExtendedColorModulator(OpenVector4f value) {
         extendedColorModulator.set(value);
     }
 
@@ -178,7 +178,7 @@ public final class RenderSystem extends AbstractRenderSystem {
         setShaderFogEnd(extendedFogEnd.value);
     }
 
-    public static class Storage<T> {
+    private static class Storage<T> {
 
         private T value;
         private T backup;

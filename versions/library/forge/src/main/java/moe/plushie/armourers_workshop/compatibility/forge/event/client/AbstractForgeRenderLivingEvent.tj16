@@ -4,7 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import moe.plushie.armourers_workshop.api.annotation.Available;
 import moe.plushie.armourers_workshop.api.registry.IEventHandler;
 import moe.plushie.armourers_workshop.compatibility.forge.AbstractForgeClientEventsImpl;
-import moe.plushie.armourers_workshop.init.platform.event.client.RenderLivingEntityEvent;
+import moe.plushie.armourers_workshop.init.event.client.RenderLivingEntityEvent;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.world.entity.LivingEntity;

@@ -94,7 +94,7 @@ public class ArmourerBaseSkinPanel extends UIView {
     @Override
     public void addSubview(UIView view) {
         super.addSubview(view);
-        cursorY += view.bounds().getHeight() + 2;
+        cursorY += view.bounds().height() + 2;
     }
 
     protected NSString getDisplayText(String key, Object... objects) {

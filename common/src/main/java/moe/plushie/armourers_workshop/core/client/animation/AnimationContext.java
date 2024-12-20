@@ -128,9 +128,9 @@ public class AnimationContext {
                 snapshotValue.setScale(currentValue.getScale());
             } else {
                 var original = transform.getParent();
-                snapshotValue.setTranslate(original.getTranslate());
-                snapshotValue.setRotation(original.getRotation());
-                snapshotValue.setScale(original.getScale());
+                snapshotValue.setTranslate(original.translate());
+                snapshotValue.setRotation(original.rotation());
+                snapshotValue.setScale(original.scale());
             }
         }
 
@@ -170,15 +170,15 @@ public class AnimationContext {
             var rt = currentValue.getTranslate();
             var rr = currentValue.getRotation();
             var rs = currentValue.getScale();
-            float tx = OpenMath.lerp(progress, lt.getX(), rt.getX());
-            float ty = OpenMath.lerp(progress, lt.getY(), rt.getY());
-            float tz = OpenMath.lerp(progress, lt.getZ(), rt.getZ());
-            float sx = OpenMath.lerp(progress, ls.getX(), rs.getX());
-            float sy = OpenMath.lerp(progress, ls.getY(), rs.getY());
-            float sz = OpenMath.lerp(progress, ls.getZ(), rs.getZ());
-            float rx = OpenMath.lerp(progress, lr.getX(), rr.getX());
-            float ry = OpenMath.lerp(progress, lr.getY(), rr.getY());
-            float rz = OpenMath.lerp(progress, lr.getZ(), rr.getZ());
+            float tx = OpenMath.lerp(progress, lt.x(), rt.x());
+            float ty = OpenMath.lerp(progress, lt.y(), rt.y());
+            float tz = OpenMath.lerp(progress, lt.z(), rt.z());
+            float sx = OpenMath.lerp(progress, ls.x(), rs.x());
+            float sy = OpenMath.lerp(progress, ls.y(), rs.y());
+            float sz = OpenMath.lerp(progress, ls.z(), rs.z());
+            float rx = OpenMath.lerp(progress, lr.x(), rr.x());
+            float ry = OpenMath.lerp(progress, lr.y(), rr.y());
+            float rz = OpenMath.lerp(progress, lr.z(), rr.z());
             outputValue.clear();
             outputValue.setTranslate(tx, ty, tz);
             outputValue.setScale(sx, sy, sz);

@@ -2,7 +2,7 @@ package moe.plushie.armourers_workshop.core.client.shader;
 
 import moe.plushie.armourers_workshop.core.math.OpenMatrix3f;
 import moe.plushie.armourers_workshop.core.math.OpenMatrix4f;
-import moe.plushie.armourers_workshop.core.math.Vector4f;
+import moe.plushie.armourers_workshop.core.math.OpenVector4f;
 import moe.plushie.armourers_workshop.core.utils.MatrixUtils;
 import moe.plushie.armourers_workshop.utils.RenderSystem;
 import net.fabricmc.api.EnvType;
@@ -89,10 +89,10 @@ public abstract class ShaderUniform {
 
     public static class Vec4f extends ShaderUniform {
 
-        private final Supplier<Vector4f> value;
-        private Vector4f cachedValue = Vector4f.ZERO;
+        private final Supplier<OpenVector4f> value;
+        private OpenVector4f cachedValue = OpenVector4f.ZERO;
 
-        Vec4f(String name, int program, int location, Supplier<Vector4f> value) {
+        Vec4f(String name, int program, int location, Supplier<OpenVector4f> value) {
             super(name, program, location);
             this.value = value;
         }
@@ -102,7 +102,7 @@ public abstract class ShaderUniform {
             var newValue = value.get();
             if (!newValue.equals(cachedValue)) {
                 cachedValue = newValue;
-                GL20.glUniform4f(location, newValue.getX(), newValue.getY(), newValue.getZ(), newValue.getW());
+                GL20.glUniform4f(location, newValue.x(), newValue.y(), newValue.z(), newValue.w());
             }
         }
     }

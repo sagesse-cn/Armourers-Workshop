@@ -11,7 +11,7 @@ import com.apple.library.uikit.UITextField;
 import com.apple.library.uikit.UITextFieldDelegate;
 import com.apple.library.uikit.UIView;
 import com.google.common.base.Objects;
-import moe.plushie.armourers_workshop.api.data.IDataProperty;
+import moe.plushie.armourers_workshop.builder.data.properties.DataProperty;
 import moe.plushie.armourers_workshop.core.client.gui.widget.SkinIconView;
 import moe.plushie.armourers_workshop.core.skin.SkinDescriptor;
 import moe.plushie.armourers_workshop.init.ModTextures;
@@ -36,7 +36,7 @@ public class AdvancedHeaderView extends UIView implements UITextFieldDelegate {
 
     protected Consumer<UIControl> picker;
 
-    public AdvancedHeaderView(IDataProperty<String> name, IDataProperty<SkinDescriptor> part, CGRect frame) {
+    public AdvancedHeaderView(DataProperty<String> name, DataProperty<SkinDescriptor> part, CGRect frame) {
         super(frame);
         this.setContents(UIImage.of(ModTextures.ADVANCED_SKIN_BUILDER).uv(24, 24).fixed(24, 24).clip(4, 4, 4, 4).build());
         this.setupSelectionView();
@@ -50,7 +50,7 @@ public class AdvancedHeaderView extends UIView implements UITextFieldDelegate {
         return true;
     }
 
-    private void setupPartView(IDataProperty<SkinDescriptor> property) {
+    private void setupPartView(DataProperty<SkinDescriptor> property) {
         partEmptyView.setUserInteractionEnabled(false);
         partEmptyView.setFrame(contentView.bounds());
         partEmptyView.layer().setBorderWidth(1);
@@ -72,13 +72,13 @@ public class AdvancedHeaderView extends UIView implements UITextFieldDelegate {
     private void setupSelectionView() {
         var rect = bounds().insetBy(1, 1, 1, 1);
 
-        selectionView.setFrame(new CGRect(1, 1, rect.getHeight() + 8 + 4, rect.getHeight()));
+        selectionView.setFrame(new CGRect(1, 1, rect.height + 8 + 4, rect.height));
         selectionView.setAutoresizingMask(AutoresizingMask.flexibleRightMargin | AutoresizingMask.flexibleHeight);
         addSubview(selectionView);
-        contentView.setFrame(new CGRect(6, 4, rect.getHeight() - 8, rect.getHeight() - 8));
+        contentView.setFrame(new CGRect(6, 4, rect.height - 8, rect.height - 8));
         contentView.setAutoresizingMask(AutoresizingMask.flexibleWidth | AutoresizingMask.flexibleHeight);
         selectionView.addSubview(contentView);
-        arrowView.setFrame(new CGRect(rect.getHeight() + 2, (rect.getHeight() - 8) / 2, 8, 8));
+        arrowView.setFrame(new CGRect(rect.height + 2, (rect.height - 8) / 2, 8, 8));
         arrowView.setAutoresizingMask(AutoresizingMask.flexibleLeftMargin | AutoresizingMask.flexibleTopMargin | AutoresizingMask.flexibleBottomMargin);
         arrowView.setImage(UIImage.of(ModTextures.LIST).uv(0, 248).fixed(8, 8).build());
         selectionView.addSubview(arrowView);
@@ -90,12 +90,12 @@ public class AdvancedHeaderView extends UIView implements UITextFieldDelegate {
         });
     }
 
-    private void setupInputView(IDataProperty<String> property) {
+    private void setupInputView(DataProperty<String> property) {
         var rect = bounds().insetBy(1, 1, 1, 1);
         textView.setBordered(false);
         textView.setBackgroundColor(UIColor.CLEAR);
         textView.setFont(UIFont.systemFont(11));
-        textView.setFrame(new CGRect(selectionView.frame().getMaxX() + 1, 1, rect.getWidth() - selectionView.frame().getMaxX() - 1, rect.getHeight()));
+        textView.setFrame(new CGRect(selectionView.frame().maxX() + 1, 1, rect.width() - selectionView.frame().maxX() - 1, rect.height()));
         textView.setEditable(false);
         textView.setDelegate(this);
         textView.setAutoresizingMask(AutoresizingMask.flexibleWidth | AutoresizingMask.flexibleHeight);

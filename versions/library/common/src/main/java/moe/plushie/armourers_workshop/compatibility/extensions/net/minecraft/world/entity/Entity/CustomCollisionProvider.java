@@ -1,9 +1,9 @@
 package moe.plushie.armourers_workshop.compatibility.extensions.net.minecraft.world.entity.Entity;
 
 import moe.plushie.armourers_workshop.api.annotation.Available;
+import moe.plushie.armourers_workshop.core.data.DataContainer;
+import moe.plushie.armourers_workshop.core.data.DataContainerKey;
 import moe.plushie.armourers_workshop.core.data.EntityCollisionShape;
-import moe.plushie.armourers_workshop.utils.DataContainer;
-import moe.plushie.armourers_workshop.utils.DataContainerKey;
 import net.minecraft.world.entity.Entity;
 
 import manifold.ext.rt.api.Extension;

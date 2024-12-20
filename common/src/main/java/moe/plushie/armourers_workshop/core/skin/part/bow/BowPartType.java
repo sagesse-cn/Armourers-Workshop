@@ -3,8 +3,8 @@ package moe.plushie.armourers_workshop.core.skin.part.bow;
 import com.google.common.collect.Range;
 import moe.plushie.armourers_workshop.api.skin.part.features.ICanHeld;
 import moe.plushie.armourers_workshop.api.skin.part.features.ICanUse;
-import moe.plushie.armourers_workshop.core.math.Rectangle3i;
-import moe.plushie.armourers_workshop.core.math.Vector3i;
+import moe.plushie.armourers_workshop.core.math.OpenRectangle3i;
+import moe.plushie.armourers_workshop.core.math.OpenVector3i;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPartType;
 
 public class BowPartType extends SkinPartType implements ICanHeld, ICanUse {
@@ -15,8 +15,8 @@ public class BowPartType extends SkinPartType implements ICanHeld, ICanUse {
     public BowPartType(int frame) {
         super();
         this.frame = frame;
-        this.buildingSpace = new Rectangle3i(-12, -42, -46, 24, 84, 64);
-        this.guideSpace = new Rectangle3i(-2, -2, 2, 4, 4, 8);
+        this.buildingSpace = new OpenRectangle3i(-12, -42, -46, 24, 84, 64);
+        this.guideSpace = new OpenRectangle3i(-2, -2, 2, 4, 4, 8);
         this.offset = getFrameOffset(frame);
         this.useRange = getFrameUseRange(frame);
     }
@@ -34,12 +34,12 @@ public class BowPartType extends SkinPartType implements ICanHeld, ICanUse {
         };
     }
 
-    public static Vector3i getFrameOffset(int frame) {
+    public static OpenVector3i getFrameOffset(int frame) {
         return switch (frame) {
-            case 0 -> new Vector3i(-50, 0, 0);
-            case 1 -> new Vector3i(-25, 0, 0);
-            case 2 -> new Vector3i(0, 0, 0);
-            case 3 -> new Vector3i(25, 0, 0);
+            case 0 -> new OpenVector3i(-50, 0, 0);
+            case 1 -> new OpenVector3i(-25, 0, 0);
+            case 2 -> new OpenVector3i(0, 0, 0);
+            case 3 -> new OpenVector3i(25, 0, 0);
             default -> null;
         };
     }

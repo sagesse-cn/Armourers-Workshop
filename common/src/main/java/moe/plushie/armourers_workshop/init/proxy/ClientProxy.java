@@ -3,6 +3,7 @@ package moe.plushie.armourers_workshop.init.proxy;
 import moe.plushie.armourers_workshop.api.common.IBlockTintColorProvider;
 import moe.plushie.armourers_workshop.api.common.IItemPropertiesProvider;
 import moe.plushie.armourers_workshop.api.common.IItemTintColorProvider;
+import moe.plushie.armourers_workshop.api.event.EventBus;
 import moe.plushie.armourers_workshop.builder.client.render.PaintingHighlightPlacementRenderer;
 import moe.plushie.armourers_workshop.compatibility.client.AbstractBufferSource;
 import moe.plushie.armourers_workshop.compatibility.client.AbstractPoseStack;
@@ -37,20 +38,19 @@ import moe.plushie.armourers_workshop.init.ModKeyBindings;
 import moe.plushie.armourers_workshop.init.client.ClientWardrobeHandler;
 import moe.plushie.armourers_workshop.init.environment.EnvironmentExecutor;
 import moe.plushie.armourers_workshop.init.environment.EnvironmentType;
+import moe.plushie.armourers_workshop.init.event.client.ClientPlayerEvent;
+import moe.plushie.armourers_workshop.init.event.client.ItemTooltipEvent;
+import moe.plushie.armourers_workshop.init.event.client.RegisterColorHandlersEvent;
+import moe.plushie.armourers_workshop.init.event.client.RegisterItemPropertyEvent;
+import moe.plushie.armourers_workshop.init.event.client.RegisterTextureEvent;
+import moe.plushie.armourers_workshop.init.event.client.RenderFrameEvent;
+import moe.plushie.armourers_workshop.init.event.client.RenderHighlightEvent;
+import moe.plushie.armourers_workshop.init.event.client.RenderLivingEntityEvent;
+import moe.plushie.armourers_workshop.init.event.client.RenderScreenEvent;
+import moe.plushie.armourers_workshop.init.event.client.RenderSpecificHandEvent;
 import moe.plushie.armourers_workshop.init.platform.DataPackManager;
 import moe.plushie.armourers_workshop.init.platform.EnvironmentManager;
-import moe.plushie.armourers_workshop.init.platform.EventManager;
 import moe.plushie.armourers_workshop.init.platform.ItemTooltipManager;
-import moe.plushie.armourers_workshop.init.platform.event.client.ClientPlayerEvent;
-import moe.plushie.armourers_workshop.init.platform.event.client.ItemTooltipEvent;
-import moe.plushie.armourers_workshop.init.platform.event.client.RegisterColorHandlersEvent;
-import moe.plushie.armourers_workshop.init.platform.event.client.RegisterItemPropertyEvent;
-import moe.plushie.armourers_workshop.init.platform.event.client.RegisterTextureEvent;
-import moe.plushie.armourers_workshop.init.platform.event.client.RenderFrameEvent;
-import moe.plushie.armourers_workshop.init.platform.event.client.RenderHighlightEvent;
-import moe.plushie.armourers_workshop.init.platform.event.client.RenderLivingEntityEvent;
-import moe.plushie.armourers_workshop.init.platform.event.client.RenderScreenEvent;
-import moe.plushie.armourers_workshop.init.platform.event.client.RenderSpecificHandEvent;
 import moe.plushie.armourers_workshop.library.data.GlobalSkinLibrary;
 import moe.plushie.armourers_workshop.library.data.SkinLibraryManager;
 import moe.plushie.armourers_workshop.library.data.impl.MinecraftAuth;
@@ -87,7 +87,7 @@ public class ClientProxy {
 
     private static void register() {
         // register custom item property.
-        EventManager.listen(RegisterItemPropertyEvent.class, event -> TypedRegistry.findEntries(Item.class).forEach(it -> {
+        EventBus.register(RegisterItemPropertyEvent.class, event -> TypedRegistry.findEntries(Item.class).forEach(it -> {
             var item = it.get();
             if (item instanceof IItemPropertiesProvider provider) {
                 provider.createModelProperties((key, property) -> event.register(key, item, property));
@@ -105,13 +105,13 @@ public class ClientProxy {
         }));
 
         // register item/block color handler.
-        EventManager.listen(RegisterColorHandlersEvent.Item.class, event -> TypedRegistry.findEntries(Item.class).forEach(it -> {
+        EventBus.register(RegisterColorHandlersEvent.Item.class, event -> TypedRegistry.findEntries(Item.class).forEach(it -> {
             var item = it.get();
             if (item instanceof IItemTintColorProvider provider) {
                 event.register(provider, item);
             }
         }));
-        EventManager.listen(RegisterColorHandlersEvent.Block.class, event -> TypedRegistry.findEntries(Block.class).forEach(it -> {
+        EventBus.register(RegisterColorHandlersEvent.Block.class, event -> TypedRegistry.findEntries(Block.class).forEach(it -> {
             var block = it.get();
             if (block instanceof IBlockTintColorProvider provider) {
                 event.register(provider, block);
@@ -119,11 +119,11 @@ public class ClientProxy {
         }));
 
         // register custom sprite
-        EventManager.listen(RegisterTextureEvent.class, event -> Stream.of(SkinSlotType.values()).forEach(slotType -> {
+        EventBus.register(RegisterTextureEvent.class, event -> Stream.of(SkinSlotType.values()).forEach(slotType -> {
             event.register(slotType.getIconSprite());
         }));
 
-        EventManager.listen(ClientPlayerEvent.LoggingIn.class, event -> {
+        EventBus.register(ClientPlayerEvent.LoggingIn.class, event -> {
             var player = event.getPlayer();
             if (player == null || !player.equals(EnvironmentManager.getPlayer())) {
                 return; // other players join
@@ -133,7 +133,7 @@ public class ClientProxy {
             SmartSoundManager.getInstance().start();
             SmartTextureManager.getInstance().start();
         });
-        EventManager.listen(ClientPlayerEvent.LoggingOut.class, event -> {
+        EventBus.register(ClientPlayerEvent.LoggingOut.class, event -> {
             var player = event.getPlayer();
             if (player == null || !player.equals(EnvironmentManager.getPlayer())) {
                 return; // other players leave
@@ -152,7 +152,7 @@ public class ClientProxy {
             ModConfigSpec.COMMON.apply(null);
         });
 
-        EventManager.listen(ClientPlayerEvent.Clone.class, event -> {
+        EventBus.register(ClientPlayerEvent.Clone.class, event -> {
             // we can use the old wardrobe data until the next wardrobe sync packet.
             var oldWardrobe = SkinWardrobe.of(event.getOldPlayer());
             var newWardrobe = SkinWardrobe.of(event.getNewPlayer());
@@ -163,23 +163,23 @@ public class ClientProxy {
             }
         });
 
-        EventManager.listen(RenderFrameEvent.Pre.class, event -> {
+        EventBus.register(RenderFrameEvent.Pre.class, event -> {
             Scheduler.CLIENT.begin();
             AutoreleasePool.begin();
             TickUtils.tick(event.getDeltaTracker().isPaused() || event.getDeltaTracker().isFrozen()); // respect the /tick frozen command.
             SkinPreloadManager.tick(event.getDeltaTracker().isPaused());
         });
 
-        EventManager.listen(RenderFrameEvent.Post.class, event -> {
+        EventBus.register(RenderFrameEvent.Post.class, event -> {
             AutoreleasePool.end();
             Scheduler.CLIENT.end();
         });
 
-        EventManager.listen(RenderScreenEvent.Pre.class, event -> SkinRenderMode.push(SkinRenderMode.GUI));
-        EventManager.listen(RenderScreenEvent.Post.class, event -> SkinRenderMode.pop());
+        EventBus.register(RenderScreenEvent.Pre.class, event -> SkinRenderMode.push(SkinRenderMode.GUI));
+        EventBus.register(RenderScreenEvent.Post.class, event -> SkinRenderMode.pop());
 
         // listen the block highlight events.
-        EventManager.listen(RenderHighlightEvent.Block.class, event -> {
+        EventBus.register(RenderHighlightEvent.Block.class, event -> {
             var player = EnvironmentManager.getPlayer();
             if (player == null) {
                 return;
@@ -206,17 +206,17 @@ public class ClientProxy {
             }
         });
 
-        EventManager.listen(RenderLivingEntityEvent.Pre.class, event -> {
+        EventBus.register(RenderLivingEntityEvent.Pre.class, event -> {
             ClientWardrobeHandler.onRenderLivingEntityPre(event.getEntity(), event.getPartialTicks(), event.getPackedLight(), event.getPoseStack(), event.getMultiBufferSource(), event.getRenderer());
         });
-        EventManager.listen(RenderLivingEntityEvent.Setup.class, event -> {
+        EventBus.register(RenderLivingEntityEvent.Setup.class, event -> {
             ClientWardrobeHandler.onRenderLivingEntity(event.getEntity(), event.getPartialTicks(), event.getPackedLight(), event.getPoseStack(), event.getMultiBufferSource(), event.getRenderer());
         });
-        EventManager.listen(RenderLivingEntityEvent.Post.class, event -> {
+        EventBus.register(RenderLivingEntityEvent.Post.class, event -> {
             ClientWardrobeHandler.onRenderLivingEntityPost(event.getEntity(), event.getPartialTicks(), event.getPackedLight(), event.getPoseStack(), event.getMultiBufferSource(), event.getRenderer());
         });
 
-        EventManager.listen(RenderSpecificHandEvent.class, event -> {
+        EventBus.register(RenderSpecificHandEvent.class, event -> {
             if (!ModConfig.enableFirstPersonSkinRenderer()) {
                 return;
             }
@@ -229,7 +229,7 @@ public class ClientProxy {
             });
         });
 
-        EventManager.listen(ItemTooltipEvent.Gather.class, ItemTooltipManager::gatherSkinTooltip);
-        EventManager.listen(ItemTooltipEvent.Render.class, ItemTooltipManager::renderSkinTooltip);
+        EventBus.register(ItemTooltipEvent.Gather.class, ItemTooltipManager::gatherSkinTooltip);
+        EventBus.register(ItemTooltipEvent.Render.class, ItemTooltipManager::renderSkinTooltip);
     }
 }

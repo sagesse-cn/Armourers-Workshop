@@ -3,7 +3,7 @@ package moe.plushie.armourers_workshop.init.mixin;
 import com.mojang.blaze3d.vertex.PoseStack;
 import moe.plushie.armourers_workshop.api.data.IAssociatedContainerKey;
 import moe.plushie.armourers_workshop.api.data.IAssociatedContainerProvider;
-import moe.plushie.armourers_workshop.utils.DataContainer;
+import moe.plushie.armourers_workshop.core.data.DataContainer;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;

@@ -6,8 +6,8 @@ import moe.plushie.armourers_workshop.core.client.bake.BakedSkin;
 import moe.plushie.armourers_workshop.core.client.bake.BakedSkinPart;
 import moe.plushie.armourers_workshop.core.client.other.ConcurrentBufferBuilder;
 import moe.plushie.armourers_workshop.core.client.other.ConcurrentRenderingContext;
+import moe.plushie.armourers_workshop.core.math.OpenVector3f;
 import moe.plushie.armourers_workshop.core.math.OpenVoxelShape;
-import moe.plushie.armourers_workshop.core.math.Vector3f;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPartTypes;
 import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintScheme;
 import moe.plushie.armourers_workshop.core.utils.ColorUtils;
@@ -39,7 +39,7 @@ public class SkinRenderer {
             bufferBuilder.addShape(getShape(entity, armature, bakedSkin, poseStack), 0xffff0000, context);
         }
         if (ModDebugger.skinOrigin) {
-            bufferBuilder.addShape(Vector3f.ZERO, context);
+            bufferBuilder.addShape(OpenVector3f.ZERO, context);
         }
         if (ModDebugger.armature) {
             bufferBuilder.addShape(armature, context);
@@ -66,10 +66,10 @@ public class SkinRenderer {
             builder.addShape(bakedPart.getRenderShape(), ColorUtils.getPaletteColor(bakedPart.getId()), context);
         }
         if (ModDebugger.skinPartOrigin && bakedPart.getType() != SkinPartTypes.ADVANCED_LOCATOR) {
-            builder.addShape(Vector3f.ZERO, context);
+            builder.addShape(OpenVector3f.ZERO, context);
         }
         if (ModDebugger.skinLocatorOrigin && bakedPart.getType() == SkinPartTypes.ADVANCED_LOCATOR) {
-            builder.addShape(Vector3f.ZERO, context);
+            builder.addShape(OpenVector3f.ZERO, context);
         }
     }
 

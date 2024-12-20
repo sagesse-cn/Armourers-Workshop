@@ -47,7 +47,7 @@ public class ConfigurableToolWindow extends MenuWindow<AbstractContainerMenu> {
             var view = createOptionView(property);
             if (view != null) {
                 this.properties.add(Pair.of(property, view));
-                this.contentHeight += view.frame().getHeight() + 8;
+                this.contentHeight += view.frame().height() + 8;
                 this.addSubview(view);
             }
         });

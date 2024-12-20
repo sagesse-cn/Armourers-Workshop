@@ -3,10 +3,10 @@ package moe.plushie.armourers_workshop.compatibility.extensions.net.minecraft.wo
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import moe.plushie.armourers_workshop.api.annotation.Available;
 import moe.plushie.armourers_workshop.core.client.other.EntityRenderData;
-import moe.plushie.armourers_workshop.core.math.Vector3f;
+import moe.plushie.armourers_workshop.core.math.OpenVector3f;
 import moe.plushie.armourers_workshop.core.skin.attachment.SkinAttachmentTypes;
-import moe.plushie.armourers_workshop.utils.DataContainer;
-import moe.plushie.armourers_workshop.utils.DataContainerKey;
+import moe.plushie.armourers_workshop.core.data.DataContainer;
+import moe.plushie.armourers_workshop.core.data.DataContainerKey;
 import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.Nullable;
 
@@ -20,7 +20,7 @@ public class CustomRiddingProvider {
     private static final DataContainerKey<IndexMap> KEY = DataContainerKey.of("Passengers", IndexMap.class);
 
     @Nullable
-    public static Vector3f getCustomRidding(@This Entity entity, int index) {
+    public static OpenVector3f getCustomRidding(@This Entity entity, int index) {
         var container = DataContainer.getValue(entity, KEY);
         if (container == null) {
             return null; // not provided.
@@ -39,7 +39,7 @@ public class CustomRiddingProvider {
         return container.get(-1); // get from fallback.
     }
 
-    public static void setCustomRidding(@This Entity entity, int index, @Nullable Vector3f position) {
+    public static void setCustomRidding(@This Entity entity, int index, @Nullable OpenVector3f position) {
         var container = DataContainer.getValue(entity, KEY);
         if (container == null) {
             container = new IndexMap();
@@ -48,7 +48,7 @@ public class CustomRiddingProvider {
         container.put(index, position);
     }
 
-    private static class IndexMap extends Int2ObjectOpenHashMap<Vector3f> {
+    private static class IndexMap extends Int2ObjectOpenHashMap<OpenVector3f> {
 
     }
 }

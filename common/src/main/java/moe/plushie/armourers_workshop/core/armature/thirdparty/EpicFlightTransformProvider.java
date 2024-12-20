@@ -1,11 +1,12 @@
 package moe.plushie.armourers_workshop.core.armature.thirdparty;
 
-import moe.plushie.armourers_workshop.api.armature.IJointTransform;
-import moe.plushie.armourers_workshop.utils.DataContainerKey;
+import moe.plushie.armourers_workshop.core.data.DataContainerKey;
+import moe.plushie.armourers_workshop.core.math.OpenPoseStack;
 
+@FunctionalInterface
 public interface EpicFlightTransformProvider {
 
     DataContainerKey<EpicFlightTransformProvider> KEY = DataContainerKey.of("transforms", EpicFlightTransformProvider.class);
 
-    IJointTransform apply(String name);
+    OpenPoseStack.Pose getJointPose(String name);
 }

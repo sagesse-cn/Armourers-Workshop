@@ -2,7 +2,7 @@ package moe.plushie.armourers_workshop.core.utils;
 
 import moe.plushie.armourers_workshop.api.core.IDataCodec;
 import moe.plushie.armourers_workshop.core.math.OpenTransform3f;
-import moe.plushie.armourers_workshop.core.math.Vector3f;
+import moe.plushie.armourers_workshop.core.math.OpenVector3f;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.FloatTag;
 import net.minecraft.nbt.ListTag;
@@ -53,20 +53,20 @@ public class OpenItemTransforms extends LinkedHashMap<String, OpenTransform3f> {
         if (transform.isIdentity()) {
             return tag;
         }
-        var translate = transform.getTranslate();
-        tag.add(FloatTag.valueOf(translate.getX()));
-        tag.add(FloatTag.valueOf(translate.getY()));
-        tag.add(FloatTag.valueOf(translate.getZ()));
+        var translate = transform.translate();
+        tag.add(FloatTag.valueOf(translate.x()));
+        tag.add(FloatTag.valueOf(translate.y()));
+        tag.add(FloatTag.valueOf(translate.z()));
 
-        var rotation = transform.getRotation();
-        tag.add(FloatTag.valueOf(rotation.getX()));
-        tag.add(FloatTag.valueOf(rotation.getY()));
-        tag.add(FloatTag.valueOf(rotation.getZ()));
+        var rotation = transform.rotation();
+        tag.add(FloatTag.valueOf(rotation.x()));
+        tag.add(FloatTag.valueOf(rotation.y()));
+        tag.add(FloatTag.valueOf(rotation.z()));
 
-        var scale = transform.getScale();
-        tag.add(FloatTag.valueOf(scale.getX()));
-        tag.add(FloatTag.valueOf(scale.getY()));
-        tag.add(FloatTag.valueOf(scale.getZ()));
+        var scale = transform.scale();
+        tag.add(FloatTag.valueOf(scale.x()));
+        tag.add(FloatTag.valueOf(scale.y()));
+        tag.add(FloatTag.valueOf(scale.z()));
 
         return tag;
     }
@@ -78,17 +78,17 @@ public class OpenItemTransforms extends LinkedHashMap<String, OpenTransform3f> {
         var tx = tag.getFloat(0);
         var ty = tag.getFloat(1);
         var tz = tag.getFloat(2);
-        var translate = new Vector3f(tx, ty, tz);
+        var translate = new OpenVector3f(tx, ty, tz);
 
         var rx = tag.getFloat(3);
         var ry = tag.getFloat(4);
         var rz = tag.getFloat(5);
-        var rotation = new Vector3f(rx, ry, rz);
+        var rotation = new OpenVector3f(rx, ry, rz);
 
         var sx = tag.getFloat(6);
         var sy = tag.getFloat(7);
         var sz = tag.getFloat(8);
-        var scale = new Vector3f(sx, sy, sz);
+        var scale = new OpenVector3f(sx, sy, sz);
 
         return OpenTransform3f.create(translate, rotation, scale);
     }

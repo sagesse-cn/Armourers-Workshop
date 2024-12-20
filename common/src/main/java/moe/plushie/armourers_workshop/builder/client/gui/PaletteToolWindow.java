@@ -11,7 +11,6 @@ import com.apple.library.uikit.UIImage;
 import com.apple.library.uikit.UIImageView;
 import com.apple.library.uikit.UILabel;
 import com.apple.library.uikit.UITextFieldDelegate;
-import moe.plushie.armourers_workshop.api.skin.texture.ISkinPaintColor;
 import moe.plushie.armourers_workshop.builder.client.gui.widget.PaletteEditingWindow;
 import moe.plushie.armourers_workshop.core.client.gui.widget.ClientMenuScreen;
 import moe.plushie.armourers_workshop.core.client.gui.widget.HSBSliderBox;
@@ -19,10 +18,10 @@ import moe.plushie.armourers_workshop.core.menu.AbstractContainerMenu;
 import moe.plushie.armourers_workshop.core.network.UpdateConfigurableToolPacket;
 import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintColor;
 import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintTypes;
+import moe.plushie.armourers_workshop.core.utils.TranslateUtils;
 import moe.plushie.armourers_workshop.init.ModDataComponents;
 import moe.plushie.armourers_workshop.init.ModTextures;
 import moe.plushie.armourers_workshop.init.platform.NetworkManager;
-import moe.plushie.armourers_workshop.utils.TranslateUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.screens.Screen;
@@ -183,7 +182,7 @@ public class PaletteToolWindow extends PaletteEditingWindow<AbstractContainerMen
         reloadPalettes();
     }
 
-    protected ISkinPaintColor getItemColor(ItemStack itemStack) {
+    protected SkinPaintColor getItemColor(ItemStack itemStack) {
         var paintColor = itemStack.get(ModDataComponents.TOOL_COLOR.get());
         if (paintColor != null) {
             return paintColor;

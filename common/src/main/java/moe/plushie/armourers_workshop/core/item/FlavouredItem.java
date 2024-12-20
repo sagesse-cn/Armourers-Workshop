@@ -2,7 +2,7 @@ package moe.plushie.armourers_workshop.core.item;
 
 import moe.plushie.armourers_workshop.api.common.ITooltipContext;
 import moe.plushie.armourers_workshop.compatibility.core.AbstractItem;
-import moe.plushie.armourers_workshop.utils.TranslateUtils;
+import moe.plushie.armourers_workshop.core.utils.TranslateUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.network.chat.Component;

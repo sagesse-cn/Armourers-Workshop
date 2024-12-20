@@ -9,7 +9,6 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.context.ParsedCommandNode;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
-import moe.plushie.armourers_workshop.api.skin.texture.ISkinPaintType;
 import moe.plushie.armourers_workshop.core.capability.SkinWardrobe;
 import moe.plushie.armourers_workshop.core.data.DataDomain;
 import moe.plushie.armourers_workshop.core.data.UserNotifications;
@@ -21,8 +20,10 @@ import moe.plushie.armourers_workshop.core.skin.SkinDescriptor;
 import moe.plushie.armourers_workshop.core.skin.SkinLoader;
 import moe.plushie.armourers_workshop.core.skin.serializer.exporter.SkinExportManager;
 import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintScheme;
+import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintType;
 import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintTypes;
 import moe.plushie.armourers_workshop.core.utils.Collections;
+import moe.plushie.armourers_workshop.core.utils.TranslateUtils;
 import moe.plushie.armourers_workshop.core.utils.TypedRegistry;
 import moe.plushie.armourers_workshop.init.command.ColorArgumentType;
 import moe.plushie.armourers_workshop.init.command.ColorSchemeArgumentType;
@@ -30,11 +31,10 @@ import moe.plushie.armourers_workshop.init.command.FileArgumentType;
 import moe.plushie.armourers_workshop.init.command.ListArgumentType;
 import moe.plushie.armourers_workshop.init.command.ReflectArgumentBuilder;
 import moe.plushie.armourers_workshop.init.environment.EnvironmentExecutor;
+import moe.plushie.armourers_workshop.init.event.common.RegisterCommandsEvent;
 import moe.plushie.armourers_workshop.init.platform.EnvironmentManager;
 import moe.plushie.armourers_workshop.init.platform.NetworkManager;
-import moe.plushie.armourers_workshop.init.platform.event.common.RegisterCommandsEvent;
 import moe.plushie.armourers_workshop.library.data.SkinLibraryManager;
-import moe.plushie.armourers_workshop.utils.TranslateUtils;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.CompoundTagArgument;
@@ -53,7 +53,7 @@ import java.util.function.Function;
 
 public class ModCommands {
 
-    private static final Map<String, ISkinPaintType> DYE_TYPES = Collections.immutableMap(builder -> {
+    private static final Map<String, SkinPaintType> DYE_TYPES = Collections.immutableMap(builder -> {
         for (int i = 0; i < 8; ++i) {
             var paintType = SkinPaintTypes.byId(i + 1);
             var name = paintType.getRegistryName().getPath();

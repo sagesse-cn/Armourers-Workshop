@@ -6,7 +6,7 @@ import com.apple.library.coregraphics.CGRect;
 import com.apple.library.uikit.UIControl;
 import com.apple.library.uikit.UIEvent;
 import moe.plushie.armourers_workshop.core.client.render.MannequinEntityRenderer;
-import moe.plushie.armourers_workshop.core.math.Vector3f;
+import moe.plushie.armourers_workshop.core.math.OpenVector3f;
 import moe.plushie.armourers_workshop.utils.RenderSystem;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -16,7 +16,7 @@ import net.minecraft.world.entity.Entity;
 public class EntityPreviewView extends UIControl {
 
     private CGPoint lastMousePos;
-    private Vector3f lastPlayerRotation = new Vector3f(-20, 45, 0);
+    private OpenVector3f lastPlayerRotation = new OpenVector3f(-20, 45, 0);
 
     public EntityPreviewView(CGRect frame) {
         super(frame);
@@ -35,9 +35,9 @@ public class EntityPreviewView extends UIControl {
         context.saveGraphicsState();
 
         context.translateCTM(0, 0, 300);
-        context.translateCTM(bounds.getMidX(), bounds.getMaxY() - 8, 50);
-        context.rotateCTM(lastPlayerRotation.getX(), 0, 0);
-        context.rotateCTM(0, lastPlayerRotation.getY(), 0);
+        context.translateCTM(bounds.midX(), bounds.maxY() - 8, 50);
+        context.rotateCTM(lastPlayerRotation.x(), 0, 0);
+        context.rotateCTM(0, lastPlayerRotation.y(), 0);
         context.translateCTM(0, 0, -50);
         context.drawEntity(entity, CGPoint.ZERO, 45, CGPoint.ZERO);
 
@@ -69,7 +69,7 @@ public class EntityPreviewView extends UIControl {
         if (oldMousePos == null) {
             return;
         }
-        var yRot = lastPlayerRotation.getY();
+        var yRot = lastPlayerRotation.y();
         this.lastMousePos = event.locationInWindow();
         this.lastPlayerRotation.setY((yRot + (lastMousePos.x - oldMousePos.x) + 360) % 360);
     }

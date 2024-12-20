@@ -2,7 +2,7 @@ package moe.plushie.armourers_workshop.core.client.model;
 
 import moe.plushie.armourers_workshop.api.data.IAssociatedContainerProvider;
 import moe.plushie.armourers_workshop.core.client.other.SkinItemProperties;
-import moe.plushie.armourers_workshop.utils.EmbeddedSkinStack;
+import moe.plushie.armourers_workshop.core.client.other.EmbeddedSkinStack;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.resources.model.BakedModel;

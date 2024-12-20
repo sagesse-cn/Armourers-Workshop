@@ -2,11 +2,11 @@ package moe.plushie.armourers_workshop.core.client.texture;
 
 import com.mojang.blaze3d.platform.NativeImage;
 import moe.plushie.armourers_workshop.api.core.IResourceLocation;
-import moe.plushie.armourers_workshop.api.skin.part.ISkinPartType;
 import moe.plushie.armourers_workshop.core.data.color.TexturedPaintColor;
 import moe.plushie.armourers_workshop.core.math.OpenMath;
-import moe.plushie.armourers_workshop.core.math.Rectangle3i;
-import moe.plushie.armourers_workshop.core.math.Vector2i;
+import moe.plushie.armourers_workshop.core.math.OpenRectangle3i;
+import moe.plushie.armourers_workshop.core.math.OpenVector2i;
+import moe.plushie.armourers_workshop.core.skin.part.SkinPartType;
 import moe.plushie.armourers_workshop.core.skin.texture.EntityTextureModel;
 import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintColor;
 import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintTypes;
@@ -25,8 +25,8 @@ import java.util.Objects;
 public class BakedEntityTexture {
 
     private final HashMap<Integer, SkinPaintColor> allColors = new HashMap<>();
-    private final HashMap<ISkinPartType, HashMap<Integer, SkinPaintColor>> allParts = new HashMap<>();
-    private final HashMap<ISkinPartType, Rectangle3i> allBounds = new HashMap<>();
+    private final HashMap<SkinPartType, HashMap<Integer, SkinPaintColor>> allParts = new HashMap<>();
+    private final HashMap<SkinPartType, OpenRectangle3i> allBounds = new HashMap<>();
 
     private String model;
     private IResourceLocation resourceLocation;
@@ -67,34 +67,34 @@ public class BakedEntityTexture {
             var part = allParts.computeIfAbsent(entry.getKey(), k -> new HashMap<>());
             allBounds.put(entry.getKey(), box.getBounds());
             box.forEach((texture, x, y, z, dir) -> {
-                int color = accessor.getRGB(texture.getX(), texture.getY());
+                int color = accessor.getRGB(texture.x(), texture.y());
                 if (SkinPaintColor.isOpaque(color)) {
                     var paintColor = TexturedPaintColor.of(color, SkinPaintTypes.NORMAL);
                     part.put(getPosKey(x, y, z, dir), paintColor);
-                    allColors.put(getUVKey(texture.getX(), texture.getY()), paintColor);
+                    allColors.put(getUVKey(texture.x(), texture.y()), paintColor);
                 }
             });
         }
         this.isLoaded = true;
     }
 
-    public SkinPaintColor getColor(Vector2i texturePos) {
-        return getColor(texturePos.getX(), texturePos.getY());
+    public SkinPaintColor getColor(OpenVector2i texturePos) {
+        return getColor(texturePos.x(), texturePos.y());
     }
 
     public SkinPaintColor getColor(int u, int v) {
         return allColors.get(getUVKey(u, v));
     }
 
-    public SkinPaintColor getColor(int x, int y, int z, OpenDirection dir, ISkinPartType partType) {
+    public SkinPaintColor getColor(int x, int y, int z, OpenDirection dir, SkinPartType partType) {
         var part = allParts.get(partType);
         var bounds = allBounds.get(partType);
         if (part == null || bounds == null) {
             return null;
         }
-        x = OpenMath.clamp(x, bounds.getMinX(), bounds.getMaxX() - 1);
-        y = OpenMath.clamp(y, bounds.getMinY(), bounds.getMaxY() - 1);
-        z = OpenMath.clamp(z, bounds.getMinZ(), bounds.getMaxZ() - 1);
+        x = OpenMath.clamp(x, bounds.minX(), bounds.maxX() - 1);
+        y = OpenMath.clamp(y, bounds.minY(), bounds.maxY() - 1);
+        z = OpenMath.clamp(z, bounds.minZ(), bounds.maxZ() - 1);
         return part.get(getPosKey(x, y, z, dir));
     }
 

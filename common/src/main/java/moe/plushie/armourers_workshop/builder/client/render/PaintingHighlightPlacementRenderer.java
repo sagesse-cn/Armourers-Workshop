@@ -6,7 +6,7 @@ import moe.plushie.armourers_workshop.api.common.IPaintable;
 import moe.plushie.armourers_workshop.api.core.math.IPoseStack;
 import moe.plushie.armourers_workshop.builder.item.option.PaintingToolOptions;
 import moe.plushie.armourers_workshop.core.client.other.SkinRenderType;
-import moe.plushie.armourers_workshop.utils.BlockUtils;
+import moe.plushie.armourers_workshop.builder.other.BlockUtils;
 import moe.plushie.armourers_workshop.utils.ShapeTesselator;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;

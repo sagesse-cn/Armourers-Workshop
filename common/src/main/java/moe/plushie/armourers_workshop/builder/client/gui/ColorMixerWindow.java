@@ -18,7 +18,7 @@ import moe.plushie.armourers_workshop.core.client.gui.widget.HSBSliderBox;
 import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintTypes;
 import moe.plushie.armourers_workshop.init.ModTextures;
 import moe.plushie.armourers_workshop.init.platform.NetworkManager;
-import moe.plushie.armourers_workshop.utils.TranslateUtils;
+import moe.plushie.armourers_workshop.core.utils.TranslateUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.world.entity.player.Inventory;

@@ -97,7 +97,7 @@ public class SkinLibrarySettingWindow extends ConfirmDialog {
     }
 
     private UICheckBox addOptionView(Option<Boolean> property) {
-        var checkBox = new UICheckBox(new CGRect(8, contentHeight, bounds().getWidth() - 16, 9));
+        var checkBox = new UICheckBox(new CGRect(8, contentHeight, bounds().width() - 16, 9));
         checkBox.setTitle(NSString.localizedString("skin-library.setting." + property.getKey()));
         checkBox.setSelected(properties.get(property));
         checkBox.addTarget(this, UIControl.Event.VALUE_CHANGED, (self, sender) -> {
@@ -115,7 +115,7 @@ public class SkinLibrarySettingWindow extends ConfirmDialog {
         if (defaultSelectedIndex >= modes.size()) {
             defaultSelectedIndex = 0;
         }
-        float width = bounds().getWidth();
+        float width = bounds().width();
         var comboBox = new UIComboBox(new CGRect(16, contentHeight, 80, 20));
         var textBox = new UITextField(new CGRect(104, contentHeight, width - 104 - 16, 20));
         comboBox.setSelectedIndex(defaultSelectedIndex);
@@ -138,7 +138,7 @@ public class SkinLibrarySettingWindow extends ConfirmDialog {
 
     @Override
     public void sizeToFit() {
-        setBounds(new CGRect(0, 0, bounds().getWidth(), contentHeight + 30));
+        setBounds(new CGRect(0, 0, bounds().width(), contentHeight + 30));
     }
 
     public SkinProperties getProperties() {

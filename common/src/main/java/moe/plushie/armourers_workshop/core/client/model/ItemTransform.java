@@ -1,46 +1,46 @@
 package moe.plushie.armourers_workshop.core.client.model;
 
 import moe.plushie.armourers_workshop.api.core.math.IPoseStack;
-import moe.plushie.armourers_workshop.core.math.OpenQuaternion3f;
+import moe.plushie.armourers_workshop.core.math.OpenQuaternionf;
 import moe.plushie.armourers_workshop.core.math.OpenTransform3f;
-import moe.plushie.armourers_workshop.core.math.Vector3f;
+import moe.plushie.armourers_workshop.core.math.OpenVector3f;
 
 public class ItemTransform {
 
-    public static final ItemTransform NO_TRANSFORM = new ItemTransform(Vector3f.ZERO, Vector3f.ZERO, Vector3f.ONE);
+    public static final ItemTransform NO_TRANSFORM = new ItemTransform(OpenVector3f.ZERO, OpenVector3f.ZERO, OpenVector3f.ONE);
 
-    private final Vector3f translation;
-    private final Vector3f rotation;
-    private final Vector3f scale;
+    private final OpenVector3f translation;
+    private final OpenVector3f rotation;
+    private final OpenVector3f scale;
 
-    public ItemTransform(Vector3f translation, Vector3f rotation, Vector3f scale) {
+    public ItemTransform(OpenVector3f translation, OpenVector3f rotation, OpenVector3f scale) {
         this.translation = translation;
         this.rotation = rotation;
         this.scale = scale;
     }
 
     public static ItemTransform create(OpenTransform3f transform) {
-        return new ItemTransform(transform.getTranslate(), transform.getRotation(), transform.getScale());
+        return new ItemTransform(transform.translate(), transform.rotation(), transform.scale());
     }
 
-    public static ItemTransform create(Vector3f translation, Vector3f rotation, Vector3f scale) {
-        translation = optimize(translation, Vector3f.ZERO);
-        rotation = optimize(rotation, Vector3f.ZERO);
-        scale = optimize(scale, Vector3f.ONE);
-        if (translation == Vector3f.ZERO && rotation == Vector3f.ZERO && scale == Vector3f.ONE) {
+    public static ItemTransform create(OpenVector3f translation, OpenVector3f rotation, OpenVector3f scale) {
+        translation = optimize(translation, OpenVector3f.ZERO);
+        rotation = optimize(rotation, OpenVector3f.ZERO);
+        scale = optimize(scale, OpenVector3f.ONE);
+        if (translation == OpenVector3f.ZERO && rotation == OpenVector3f.ZERO && scale == OpenVector3f.ONE) {
             return NO_TRANSFORM;
         }
         return new ItemTransform(translation, rotation, scale);
     }
 
-    public static ItemTransform create(Vector3f translation, Vector3f rotation, Vector3f scale, Vector3f rightTranslation, Vector3f rightRotation) {
+    public static ItemTransform create(OpenVector3f translation, OpenVector3f rotation, OpenVector3f scale, OpenVector3f rightTranslation, OpenVector3f rightRotation) {
         var leftTransform = create(translation, rotation, scale);
-        rightTranslation = optimize(rightTranslation, Vector3f.ZERO);
-        rightRotation = optimize(rightRotation, Vector3f.ZERO);
-        if (rightTranslation == Vector3f.ZERO && rightRotation == Vector3f.ZERO) {
+        rightTranslation = optimize(rightTranslation, OpenVector3f.ZERO);
+        rightRotation = optimize(rightRotation, OpenVector3f.ZERO);
+        if (rightTranslation == OpenVector3f.ZERO && rightRotation == OpenVector3f.ZERO) {
             return leftTransform;
         }
-        return new Post(leftTransform, rightTranslation, rightRotation, Vector3f.ONE);
+        return new Post(leftTransform, rightTranslation, rightRotation, OpenVector3f.ONE);
     }
 
 
@@ -49,33 +49,33 @@ public class ItemTransform {
             return;
         }
         int i = applyLeftHandTransform ? -1 : 1;
-        if (translation != Vector3f.ZERO) {
-            poseStack.translate(i * translation.getX(), translation.getY(), translation.getZ());
+        if (translation != OpenVector3f.ZERO) {
+            poseStack.translate(i * translation.x(), translation.y(), translation.z());
         }
-        if (rotation != Vector3f.ZERO) {
-            float f = rotation.getX();
-            float g = rotation.getY();
-            float h = rotation.getZ();
+        if (rotation != OpenVector3f.ZERO) {
+            float f = rotation.x();
+            float g = rotation.y();
+            float h = rotation.z();
             if (applyLeftHandTransform) {
                 g = -g;
                 h = -h;
             }
-            poseStack.rotate(OpenQuaternion3f.fromXYZ(f, g, h, true));
+            poseStack.rotate(OpenQuaternionf.fromEulerAnglesXYZ(f, g, h, true));
         }
-        if (scale != Vector3f.ONE) {
-            poseStack.scale(scale.getX(), scale.getY(), scale.getZ());
+        if (scale != OpenVector3f.ONE) {
+            poseStack.scale(scale.x(), scale.y(), scale.z());
         }
     }
 
-    public Vector3f getTranslation() {
+    public OpenVector3f getTranslation() {
         return translation;
     }
 
-    public Vector3f getRotation() {
+    public OpenVector3f getRotation() {
         return rotation;
     }
 
-    public Vector3f getScale() {
+    public OpenVector3f getScale() {
         return scale;
     }
 
@@ -91,7 +91,7 @@ public class ItemTransform {
 
         private final ItemTransform leftTransform;
 
-        public Post(ItemTransform leftTransform, Vector3f translation, Vector3f rotation, Vector3f scale) {
+        public Post(ItemTransform leftTransform, OpenVector3f translation, OpenVector3f rotation, OpenVector3f scale) {
             super(translation, rotation, scale);
             this.leftTransform = leftTransform;
         }

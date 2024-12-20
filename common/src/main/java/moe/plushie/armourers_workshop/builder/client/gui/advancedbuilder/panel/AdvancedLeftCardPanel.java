@@ -8,7 +8,6 @@ import com.apple.library.uikit.UIControl;
 import com.apple.library.uikit.UILabel;
 import com.apple.library.uikit.UITextField;
 import com.apple.library.uikit.UIView;
-import moe.plushie.armourers_workshop.api.data.IDataProperty;
 import moe.plushie.armourers_workshop.builder.client.gui.advancedbuilder.document.DocumentConnector;
 import moe.plushie.armourers_workshop.builder.client.gui.advancedbuilder.document.DocumentEditor;
 import moe.plushie.armourers_workshop.builder.data.properties.DataProperty;
@@ -40,7 +39,7 @@ public class AdvancedLeftCardPanel extends UIView {
     }
 
     private void setupLabel(int x, int y, String key) {
-        var label = new UILabel(new CGRect(x, y, bounds().getWidth(), 9));
+        var label = new UILabel(new CGRect(x, y, bounds().width(), 9));
         label.setText(NSString.localizedString(key));
         label.setTextColor(UIColor.WHITE);
         addSubview(label);
@@ -66,7 +65,7 @@ public class AdvancedLeftCardPanel extends UIView {
         addSubview(textField);
     }
 
-    private void setupCheckBox(float x, float y, float width, String key, IDataProperty<Boolean> property) {
+    private void setupCheckBox(float x, float y, float width, String key, DataProperty<Boolean> property) {
         UICheckBox checkBox = new UICheckBox(new CGRect(x, y, width, 10));
         checkBox.setTitle(NSString.localizedString(key));
         checkBox.setTitleColor(UIColor.WHITE);

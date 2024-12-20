@@ -38,7 +38,7 @@ public class ContainerMenuScreen<M extends AbstractContainerMenu, W extends UIWi
     @Override
     public void init() {
         var screenSize = getScreenSize();
-        manager.layout(screenSize.getWidth(), screenSize.getHeight());
+        manager.layout(screenSize.width, screenSize.height);
         var rect = window.bounds();
         setContentSize(new CGSize(rect.width, rect.height));
         super.init();
@@ -175,7 +175,7 @@ public class ContainerMenuScreen<M extends AbstractContainerMenu, W extends UIWi
     }
 
     protected boolean _mouseScrolled(double mouseX, double mouseY, CGPoint delta) {
-        return super.mouseScrolled(mouseX, mouseY, delta.x, delta.y);
+        return super.mouseScrolled(mouseX, mouseY, delta.x(), delta.y());
     }
 
     protected boolean _mouseReleased(double mouseX, double mouseY, int button) {

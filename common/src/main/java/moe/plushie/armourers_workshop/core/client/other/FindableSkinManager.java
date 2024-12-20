@@ -1,6 +1,7 @@
 package moe.plushie.armourers_workshop.core.client.other;
 
 import moe.plushie.armourers_workshop.api.core.IResourceLocation;
+import moe.plushie.armourers_workshop.api.event.EventBus;
 import moe.plushie.armourers_workshop.core.client.bake.BakedSkin;
 import moe.plushie.armourers_workshop.core.client.bake.SkinBakery;
 import moe.plushie.armourers_workshop.core.data.DataDomain;
@@ -13,7 +14,7 @@ import moe.plushie.armourers_workshop.init.ModConfig;
 import moe.plushie.armourers_workshop.init.ModLog;
 import moe.plushie.armourers_workshop.init.platform.EnvironmentManager;
 import moe.plushie.armourers_workshop.init.platform.EventManager;
-import moe.plushie.armourers_workshop.init.platform.event.common.DataPackEvent;
+import moe.plushie.armourers_workshop.init.event.common.DataPackEvent;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.Util;
@@ -40,7 +41,7 @@ public class FindableSkinManager {
     private SkinBakery bakery;
 
     private FindableSkinManager() {
-        EventManager.listen(DataPackEvent.Reloading.class, this::didReload);
+        EventBus.register(DataPackEvent.Reloading.class, this::didReload);
     }
 
     public static FindableSkinManager getInstance() {

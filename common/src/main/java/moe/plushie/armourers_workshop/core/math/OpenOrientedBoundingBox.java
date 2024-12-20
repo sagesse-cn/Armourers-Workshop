@@ -7,20 +7,20 @@ package moe.plushie.armourers_workshop.core.math;
  */
 public class OpenOrientedBoundingBox {
 
-    private final OpenQuaternion3f orientation;
-    private final OpenBoundingBox boundingBox;
+    private final OpenQuaternionf orientation;
+    private final OpenAxisAlignedBoundingBox boundingBox;
 
-    private Vector3f[] vertices;
-    private Vector3f right;
-    private Vector3f up;
-    private Vector3f forward;
+    private OpenVector3f[] vertices;
+    private OpenVector3f right;
+    private OpenVector3f up;
+    private OpenVector3f forward;
 
-    public OpenOrientedBoundingBox(OpenQuaternion3f orientation, OpenBoundingBox boundingBox) {
+    public OpenOrientedBoundingBox(OpenQuaternionf orientation, OpenAxisAlignedBoundingBox boundingBox) {
         this.orientation = orientation;
         this.boundingBox = boundingBox;
     }
 
-    public boolean intersects(OpenBoundingBox box) {
+    public boolean intersects(OpenAxisAlignedBoundingBox box) {
 //
 //        if (Separated(a.Vertices, b.Vertices, a.Right))
 //            return false;
@@ -60,11 +60,11 @@ public class OpenOrientedBoundingBox {
         return false;
     }
 
-    public OpenQuaternion3f getOrientation() {
+    public OpenQuaternionf getOrientation() {
         return orientation;
     }
 
-    public OpenBoundingBox getBoundingBox() {
+    public OpenAxisAlignedBoundingBox getBoundingBox() {
         return boundingBox;
     }
 

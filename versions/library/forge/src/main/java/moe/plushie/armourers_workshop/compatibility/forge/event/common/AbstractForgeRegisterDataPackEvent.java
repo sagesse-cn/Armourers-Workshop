@@ -2,7 +2,7 @@ package moe.plushie.armourers_workshop.compatibility.forge.event.common;
 
 import moe.plushie.armourers_workshop.api.registry.IEventHandler;
 import moe.plushie.armourers_workshop.compatibility.forge.AbstractForgeCommonEventsImpl;
-import moe.plushie.armourers_workshop.init.platform.event.common.RegisterDataPackEvent;
+import moe.plushie.armourers_workshop.init.event.common.RegisterDataPackEvent;
 
 public class AbstractForgeRegisterDataPackEvent {
 

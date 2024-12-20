@@ -1,6 +1,7 @@
 package moe.plushie.armourers_workshop.core.skin.serializer.importer.bedrock;
 
-import moe.plushie.armourers_workshop.core.utils.MolangExpression;
+import moe.plushie.armourers_workshop.core.utils.OpenExpression;
+import moe.plushie.armourers_workshop.core.utils.OpenExpression;
 
 import java.util.List;
 
@@ -8,12 +9,12 @@ public class BedrockCurve {
 
     private final String type;
 
-    private final MolangExpression input;
-    private final MolangExpression range;
+    private final OpenExpression input;
+    private final OpenExpression range;
 
     private final List<Float> parameters;
 
-    public BedrockCurve(String type, MolangExpression input, MolangExpression range, List<Float> parameters) {
+    public BedrockCurve(String type, OpenExpression input, OpenExpression range, List<Float> parameters) {
         this.type = type;
         this.input = input;
         this.range = range;
@@ -24,12 +25,12 @@ public class BedrockCurve {
         return type;
     }
 
-    public MolangExpression getInput() {
+    public OpenExpression getInput() {
         return input;
     }
 
 
-    public MolangExpression getRange() {
+    public OpenExpression getRange() {
         return range;
     }
 
@@ -41,19 +42,19 @@ public class BedrockCurve {
 
         private String type = "linear"; // catmull_rom, linear, bezier, bezier_chain
 
-        private MolangExpression input;
-        private MolangExpression range;
+        private OpenExpression input;
+        private OpenExpression range;
         private List<Float> parameters = null;
 
         public void type(String type) {
             this.type = type;
         }
 
-        public void input(MolangExpression input) {
+        public void input(OpenExpression input) {
             this.input = input;
         }
 
-        public void range(MolangExpression range) {
+        public void range(OpenExpression range) {
             this.range = range;
         }
 

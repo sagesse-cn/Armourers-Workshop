@@ -8,7 +8,7 @@ import moe.plushie.armourers_workshop.compatibility.client.AbstractPoseStack;
 import moe.plushie.armourers_workshop.core.client.other.SkinRenderType;
 import moe.plushie.armourers_workshop.core.data.MannequinHitResult;
 import moe.plushie.armourers_workshop.core.data.SkinBlockPlaceContext;
-import moe.plushie.armourers_workshop.core.math.Vector3f;
+import moe.plushie.armourers_workshop.core.math.OpenVector3f;
 import moe.plushie.armourers_workshop.core.skin.SkinDescriptor;
 import moe.plushie.armourers_workshop.core.skin.SkinTypes;
 import moe.plushie.armourers_workshop.utils.ShapeTesselator;
@@ -64,7 +64,7 @@ public class HighlightPlacementRenderer {
         var location = target.getLocation();
 
         poseStack.translate((float) (location.x() - origin.x()), (float) (location.y() - origin.y()), (float) (location.z() - origin.z()));
-        poseStack.rotate(Vector3f.YP.rotationDegrees(-target.getRotation()));
+        poseStack.rotate(OpenVector3f.YP.rotationDegrees(-target.getRotation()));
 
         var model = SkinItemRenderer.getInstance().getMannequinModel();
         if (model != null) {

@@ -160,13 +160,7 @@ public class UIView extends UIResponder implements ViewImpl {
     }
 
     public void sizeToFit() {
-        CGPoint center = center();
-        CGRect rect = bounds();
-        CGSize size = sizeThatFits(rect.size());
-        float dx = (size.getWidth() - rect.getWidth()) / 2;
-        float dy = (size.getHeight() - rect.getHeight()) / 2;
-        setBounds(new CGRect(rect.getX(), rect.getY(), size.getWidth(), size.getHeight()));
-        setCenter(new CGPoint(center.getX() + dx, center.getY() + dy));
+        _setSize(sizeThatFits(bounds().size()));
     }
 
     public CGSize sizeThatFits(CGSize size) {
@@ -174,7 +168,7 @@ public class UIView extends UIResponder implements ViewImpl {
     }
 
     public boolean isDescendantOfView(UIView superview) {
-        UIView searchingView = this;
+        var searchingView = this;
         while (searchingView != null) {
             if (searchingView == superview) {
                 return true;
@@ -283,8 +277,8 @@ public class UIView extends UIResponder implements ViewImpl {
         if (frame().equals(frame)) {
             return;
         }
-        CGRect bounds = bounds().copy();
-        CGPoint center = new CGPoint(frame.x + frame.width * 0.5f, frame.y + frame.height * 0.5f);
+        var bounds = bounds().copy();
+        var center = new CGPoint(frame.x + frame.width * 0.5f, frame.y + frame.height * 0.5f);
         bounds.width = frame.width;
         bounds.height = frame.height;
         // we don't need fully checks of the identity transform,
@@ -506,7 +500,7 @@ public class UIView extends UIResponder implements ViewImpl {
     }
 
     private CGRect _remakeFrame() {
-        CGRect rect = _bounds.copy();
+        var rect = _bounds.copy();
         // when transform is anything other than the identity transform,
         // the frame is undefined and should be ignored.
         if (_transform != CGAffineTransform.IDENTITY) {
@@ -524,6 +518,15 @@ public class UIView extends UIResponder implements ViewImpl {
         return _transform.inverted();
     }
 
+    public void _setSize(CGSize size) {
+        var center = center();
+        var rect = bounds();
+        var dx = (size.width - rect.width) / 2;
+        var dy = (size.height - rect.height) / 2;
+        setBounds(new CGRect(rect.x, rect.y, size.width, size.height));
+        setCenter(new CGPoint(center.x + dx, center.y + dy));
+    }
+
     @Override
     public CGAffineTransform _invertedTransform() {
         if (_invertedTransform == null) {
@@ -533,8 +536,8 @@ public class UIView extends UIResponder implements ViewImpl {
     }
 
     public Iterable<UIView> _invertedSubviews() {
-        List<UIView> subviews = subviews();
-        ReversedIteratorImpl<UIView> iterator = new ReversedIteratorImpl<>(subviews.listIterator(subviews.size()));
+        var subviews = subviews();
+        var iterator = new ReversedIteratorImpl<>(subviews.listIterator(subviews.size()));
         return () -> iterator;
     }
 

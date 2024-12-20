@@ -21,7 +21,7 @@ public class ContainerMenuToast<W extends ToastWindow> extends AbstractMenuToast
         this.manager.init();
 
         var screenSize = getScreenSize();
-        this.manager.layout(screenSize.getWidth(), screenSize.getHeight());
+        this.manager.layout(screenSize.width(), screenSize.height());
     }
 
     @Override

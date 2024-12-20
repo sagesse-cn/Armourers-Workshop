@@ -1,8 +1,8 @@
 package moe.plushie.armourers_workshop.core.skin.geometry;
 
 import moe.plushie.armourers_workshop.api.skin.geometry.ISkinGeometryVertex;
-import moe.plushie.armourers_workshop.core.math.Vector2f;
-import moe.plushie.armourers_workshop.core.math.Vector3f;
+import moe.plushie.armourers_workshop.core.math.OpenVector2f;
+import moe.plushie.armourers_workshop.core.math.OpenVector3f;
 import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintColor;
 import moe.plushie.armourers_workshop.core.utils.Objects;
 
@@ -10,16 +10,16 @@ public class SkinGeometryVertex implements ISkinGeometryVertex {
 
     protected int id;
 
-    protected Vector3f position = Vector3f.ZERO;
-    protected Vector3f normal = Vector3f.ZERO;
-    protected Vector2f textureCoords = Vector2f.ZERO;
+    protected OpenVector3f position = OpenVector3f.ZERO;
+    protected OpenVector3f normal = OpenVector3f.ZERO;
+    protected OpenVector2f textureCoords = OpenVector2f.ZERO;
 
     protected Color color = Color.WHITE;
 
     public SkinGeometryVertex() {
     }
 
-    public SkinGeometryVertex(int id, Vector3f position, Vector3f normal, Vector2f textureCoords) {
+    public SkinGeometryVertex(int id, OpenVector3f position, OpenVector3f normal, OpenVector2f textureCoords) {
         this.id = id;
         this.position = position;
         this.normal = normal;
@@ -32,17 +32,17 @@ public class SkinGeometryVertex implements ISkinGeometryVertex {
     }
 
     @Override
-    public Vector3f getPosition() {
+    public OpenVector3f getPosition() {
         return position;
     }
 
     @Override
-    public Vector3f getNormal() {
+    public OpenVector3f getNormal() {
         return normal;
     }
 
     @Override
-    public Vector2f getTextureCoords() {
+    public OpenVector2f getTextureCoords() {
         return textureCoords;
     }
 

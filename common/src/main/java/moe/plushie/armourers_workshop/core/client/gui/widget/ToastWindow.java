@@ -14,9 +14,7 @@ import moe.plushie.armourers_workshop.core.utils.OpenResourceLocation;
 import moe.plushie.armourers_workshop.init.ModTextures;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 
 import java.util.function.Consumer;
 
@@ -99,14 +97,14 @@ public class ToastWindow extends UIWindow {
             return;
         }
         if (tag.contains("Skin")) {
-            String skinId = tag.getString("Skin");
-            SkinDescriptor descriptor = new SkinDescriptor(skinId);
+            var skinId = tag.getString("Skin");
+            var descriptor = new SkinDescriptor(skinId);
             this.icon = descriptor.asItemStack();
         }
         if (tag.contains("Image")) {
             this.icon = new CustomTexture(tag);
         }
-        Level level = Minecraft.getInstance().level;
+        var level = Minecraft.getInstance().level;
         if (tag.contains("id") && level != null) {
             this.icon = ItemStack.parseOptional(level.registryAccess(), tag);
         }
@@ -131,9 +129,9 @@ public class ToastWindow extends UIWindow {
 
     private void updateIconRect() {
         float x1 = 0;
-        float x2 = titleLabel.frame().getMaxX();
+        float x2 = titleLabel.frame().maxX();
         float x3 = 0;
-        float x4 = messageLabel.frame().getMaxX();
+        float x4 = messageLabel.frame().maxX();
 
         if (icon != null) {
             x1 = 30;
@@ -142,11 +140,11 @@ public class ToastWindow extends UIWindow {
             x1 = 8;
             x3 = 8;
         }
-        CGRect nf1 = new CGRect(titleLabel.frame());
+        var nf1 = new CGRect(titleLabel.frame());
         nf1.x = x1;
         nf1.width = x2 - x1;
         titleLabel.setFrame(nf1);
-        CGRect nf2 = new CGRect(messageLabel.frame());
+        var nf2 = new CGRect(messageLabel.frame());
         nf2.x = x3;
         nf2.width = x4 - x3;
         messageLabel.setFrame(nf2);
@@ -159,7 +157,7 @@ public class ToastWindow extends UIWindow {
 
         public CustomTexture(CompoundTag tag) {
             int[] offset = {0, 0};
-            UIImage.Builder builder = UIImage.of(OpenResourceLocation.parse(tag.getString("Image")));
+            var builder = UIImage.of(OpenResourceLocation.parse(tag.getString("Image")));
             apply(tag, "UV", 2, it -> builder.uv(it[0], it[1]));
             apply(tag, "Fixed", 2, it -> builder.fixed(it[0], it[1]));
             apply(tag, "Resizable", 2, it -> builder.resizable(it[0], it[1]));
@@ -178,7 +176,7 @@ public class ToastWindow extends UIWindow {
             if (!tag.contains(key)) {
                 return;
             }
-            ListTag list = tag.getList(key, 3);
+            var list = tag.getList(key, 3);
             if (list.size() < limit) {
                 return;
             }

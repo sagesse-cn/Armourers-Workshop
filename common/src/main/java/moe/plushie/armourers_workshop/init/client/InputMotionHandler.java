@@ -8,19 +8,18 @@ import moe.plushie.armourers_workshop.init.platform.EnvironmentManager;
 import moe.plushie.armourers_workshop.init.platform.NetworkManager;
 import moe.plushie.armourers_workshop.utils.OpenKeyModifier;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.world.entity.player.Player;
 
 public class InputMotionHandler {
 
     public static void sendOpenWardrobe() {
-        Player player = EnvironmentManager.getPlayer();
+        var player = EnvironmentManager.getPlayer();
         if (player != null && ModConfig.Common.canOpenWardrobe(player, player)) {
             NetworkManager.sendToServer(new OpenWardrobePacket(player));
         }
     }
 
     public static void sendUndo() {
-        boolean isRedo = Screen.hasShiftDown();
+        var isRedo = Screen.hasShiftDown();
         if (ModKeyBindings.UNDO_KEY.getKeyModifier() == OpenKeyModifier.SHIFT) {
             // If the player set shift key to undo key binding,
             // we will change the control key to redo key modifier.

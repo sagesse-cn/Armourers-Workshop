@@ -5,7 +5,7 @@ import moe.plushie.armourers_workshop.api.common.ILootContext;
 import moe.plushie.armourers_workshop.api.common.ILootContextParam;
 import moe.plushie.armourers_workshop.api.common.ITooltipContext;
 import moe.plushie.armourers_workshop.compatibility.core.data.AbstractTooltipContext;
-import moe.plushie.armourers_workshop.core.math.Vector3f;
+import moe.plushie.armourers_workshop.core.math.OpenVector3f;
 import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.core.utils.Objects;
 import net.minecraft.core.BlockPos;
@@ -129,7 +129,7 @@ public abstract class AbstractHorizontalBlockImpl extends HorizontalDirectionalB
         private Object convert(Object value) {
             Vec3 pos = Objects.safeCast(value, Vec3.class);
             if (pos != null) {
-                return new Vector3f((float) pos.x, (float) pos.y, (float) pos.z);
+                return new OpenVector3f(pos.x, pos.y, pos.z);
             }
             return value;
         }

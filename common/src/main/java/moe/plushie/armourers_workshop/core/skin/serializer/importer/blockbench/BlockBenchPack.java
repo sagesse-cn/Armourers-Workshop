@@ -1,7 +1,7 @@
 package moe.plushie.armourers_workshop.core.skin.serializer.importer.blockbench;
 
-import moe.plushie.armourers_workshop.core.math.Size2f;
-import moe.plushie.armourers_workshop.core.math.Size3f;
+import moe.plushie.armourers_workshop.core.math.OpenSize2f;
+import moe.plushie.armourers_workshop.core.math.OpenSize3f;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -19,8 +19,8 @@ public class BlockBenchPack {
 
     private final List<String> authors;
 
-    private final Size2f resolution;
-    private final Size3f visibleBox;
+    private final OpenSize2f resolution;
+    private final OpenSize3f visibleBox;
 
     private final BlockBenchOutliner rootOutliner;
 
@@ -31,7 +31,7 @@ public class BlockBenchPack {
     private final Map<String, BlockBenchDisplay> transforms;
     private final Map<String, BlockBenchObject> objects = new HashMap<>();
 
-    public BlockBenchPack(String name, String description, String version, String format, List<String> authors, Size2f resolution, Size3f visibleBox, BlockBenchOutliner rootOutliner, List<BlockBenchElement> elements, List<BlockBenchTexture> textures, List<BlockBenchAnimation> animations, Map<String, BlockBenchDisplay> transforms) {
+    public BlockBenchPack(String name, String description, String version, String format, List<String> authors, OpenSize2f resolution, OpenSize3f visibleBox, BlockBenchOutliner rootOutliner, List<BlockBenchElement> elements, List<BlockBenchTexture> textures, List<BlockBenchAnimation> animations, Map<String, BlockBenchDisplay> transforms) {
         this.name = name;
         this.description = description;
         this.version = version;
@@ -73,11 +73,11 @@ public class BlockBenchPack {
         return authors;
     }
 
-    public Size2f getResolution() {
+    public OpenSize2f getResolution() {
         return resolution;
     }
 
-    public Size3f getVisibleBox() {
+    public OpenSize3f getVisibleBox() {
         return visibleBox;
     }
 
@@ -115,8 +115,8 @@ public class BlockBenchPack {
         private String format = "free";
         private List<String> authors;
 
-        private Size2f resolution = new Size2f(64, 64);
-        private Size3f visibleBox = new Size3f(8, 7, 1.5f);
+        private OpenSize2f resolution = new OpenSize2f(64, 64);
+        private OpenSize3f visibleBox = new OpenSize3f(8, 7, 1.5f);
 
         private boolean useItemTransforms = false;
 
@@ -148,11 +148,11 @@ public class BlockBenchPack {
             this.authors = author;
         }
 
-        public void resolution(Size2f resolution) {
+        public void resolution(OpenSize2f resolution) {
             this.resolution = resolution;
         }
 
-        public void visibleBox(Size3f visibleBox) {
+        public void visibleBox(OpenSize3f visibleBox) {
             this.visibleBox = visibleBox;
         }
 

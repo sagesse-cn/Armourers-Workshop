@@ -3,7 +3,7 @@ package moe.plushie.armourers_workshop.core.client.other;
 import moe.plushie.armourers_workshop.api.client.IBufferBuilder;
 import moe.plushie.armourers_workshop.api.client.IBufferSource;
 import moe.plushie.armourers_workshop.api.client.IRenderAttachable;
-import moe.plushie.armourers_workshop.compatibility.AbstractShader;
+import moe.plushie.armourers_workshop.compatibility.client.AbstractShader;
 import moe.plushie.armourers_workshop.compatibility.client.AbstractBufferBuilder;
 import moe.plushie.armourers_workshop.compatibility.client.AbstractBufferSource;
 import moe.plushie.armourers_workshop.compatibility.client.AbstractRenderSheet;

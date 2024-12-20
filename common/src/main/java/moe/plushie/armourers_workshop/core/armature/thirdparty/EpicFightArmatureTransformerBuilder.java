@@ -6,6 +6,7 @@ import moe.plushie.armourers_workshop.api.core.IResourceLocation;
 import moe.plushie.armourers_workshop.core.armature.ArmatureTransformerBuilder;
 import moe.plushie.armourers_workshop.core.armature.ArmatureTransformerContext;
 import moe.plushie.armourers_workshop.core.armature.JointModifier;
+import moe.plushie.armourers_workshop.core.skin.serializer.io.IODataObject;
 
 import java.util.Collection;
 
@@ -25,7 +26,7 @@ public class EpicFightArmatureTransformerBuilder extends ArmatureTransformerBuil
     }
 
     @Override
-    protected JointModifier buildJointTarget(String name) {
-        return new EpicFightJointBinder(name);
+    protected JointModifier buildJointTarget(String name, IODataObject parameters) {
+        return new EpicFightJointBinder(name, parameters);
     }
 }

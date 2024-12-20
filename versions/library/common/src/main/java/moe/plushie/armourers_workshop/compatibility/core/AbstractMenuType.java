@@ -4,7 +4,7 @@ import moe.plushie.armourers_workshop.api.common.IGlobalPos;
 import moe.plushie.armourers_workshop.api.common.IMenuType;
 import moe.plushie.armourers_workshop.api.core.IResourceLocation;
 import moe.plushie.armourers_workshop.init.ModPermissions;
-import moe.plushie.armourers_workshop.utils.TranslateUtils;
+import moe.plushie.armourers_workshop.core.utils.TranslateUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;

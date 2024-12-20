@@ -1,8 +1,8 @@
 package moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk;
 
 import moe.plushie.armourers_workshop.core.math.OpenMath;
-import moe.plushie.armourers_workshop.core.math.Rectangle2f;
-import moe.plushie.armourers_workshop.core.math.Vector2f;
+import moe.plushie.armourers_workshop.core.math.OpenRectangle2f;
+import moe.plushie.armourers_workshop.core.math.OpenVector2f;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperty;
 import moe.plushie.armourers_workshop.core.skin.texture.SkinTextureData;
 import moe.plushie.armourers_workshop.core.skin.texture.SkinTextureOptions;
@@ -18,8 +18,8 @@ public class ChunkTextureData {
 
     private static final SkinProperty<List<Float>> USED_RECT_KEY = SkinProperty.normal("usedRect", null);
 
-    protected Rectangle2f rect = Rectangle2f.ZERO;
-    protected Rectangle2f usedRect = Rectangle2f.ZERO;
+    protected OpenRectangle2f rect = OpenRectangle2f.ZERO;
+    protected OpenRectangle2f usedRect = OpenRectangle2f.ZERO;
     protected SkinTextureData provider;
     protected boolean isResolved = false;
 
@@ -32,7 +32,7 @@ public class ChunkTextureData {
     }
 
     public ChunkTextureData(SkinTextureData provider) {
-        this.rect = new Rectangle2f(0, 0, provider.getWidth(), provider.getHeight());
+        this.rect = new OpenRectangle2f(0, 0, provider.getWidth(), provider.getHeight());
         this.usedRect = rect;
         this.provider = provider;
     }
@@ -47,7 +47,7 @@ public class ChunkTextureData {
         var y = stream.readFloat();
         var width = stream.readFloat();
         var height = stream.readFloat();
-        this.rect = new Rectangle2f(x, y, width, height);
+        this.rect = new OpenRectangle2f(x, y, width, height);
         this.usedRect = rect;
         var animation = stream.readTextureAnimation();
         var properties = readAdditionalData(stream.readTextureProperties());
@@ -64,10 +64,10 @@ public class ChunkTextureData {
             // TODO: when id is 0, this is a builtin texture.
 
         }
-        stream.writeFloat(rect.getX());
-        stream.writeFloat(rect.getY());
-        stream.writeFloat(rect.getWidth());
-        stream.writeFloat(rect.getHeight());
+        stream.writeFloat(rect.x());
+        stream.writeFloat(rect.y());
+        stream.writeFloat(rect.width());
+        stream.writeFloat(rect.height());
         stream.writeTextureAnimation(provider.getAnimation());
         stream.writeTextureProperties(writeAdditionalData(provider.getProperties()));
         stream.writeFile(ChunkFile.image(provider.getName(), provider.getBuffer()));
@@ -78,33 +78,33 @@ public class ChunkTextureData {
         Collections.compactMap(provider.getVariants(), childProvider).forEach(it -> it.parentId = this.id);
 
         // alignment the coordinate 16x16.
-        float minX = OpenMath.floori((usedRect.getMinX() - rect.getMinX()) / 16f) * 16f;
-        float minY = OpenMath.floori((usedRect.getMinY() - rect.getMinY()) / 16f) * 16f;
-        float maxX = OpenMath.ceili((usedRect.getMaxX() - rect.getMinX()) / 16f) * 16f;
-        float maxY = OpenMath.ceili((usedRect.getMaxY() - rect.getMinY()) / 16f) * 16f;
+        float minX = OpenMath.floori((usedRect.minX() - rect.minX()) / 16f) * 16f;
+        float minY = OpenMath.floori((usedRect.minY() - rect.minY()) / 16f) * 16f;
+        float maxX = OpenMath.ceili((usedRect.maxX() - rect.minX()) / 16f) * 16f;
+        float maxY = OpenMath.ceili((usedRect.maxY() - rect.minY()) / 16f) * 16f;
 
-        this.rect = new Rectangle2f(x - minX, y - minY, rect.getWidth(), rect.getHeight());
-        this.usedRect = new Rectangle2f(x, y, maxX - minX, maxY - minY);
+        this.rect = new OpenRectangle2f(x - minX, y - minY, rect.width(), rect.height());
+        this.usedRect = new OpenRectangle2f(x, y, maxX - minX, maxY - minY);
         this.isResolved = true;
     }
 
-    public boolean contains(Vector2f uv) {
+    public boolean contains(OpenVector2f uv) {
         return usedRect.contains(uv);
     }
 
-    public TextureRef get(Vector2f uv, ChunkColorSection section) {
-        return new TextureRef(section, this, new Vector2f(uv.getX() - rect.getX(), uv.getY() - rect.getY()));
+    public TextureRef get(OpenVector2f uv, ChunkColorSection section) {
+        return new TextureRef(section, this, new OpenVector2f(uv.x() - rect.x(), uv.y() - rect.y()));
     }
 
-    public TextureRef add(Vector2f uv, ChunkColorSection section) {
+    public TextureRef add(OpenVector2f uv, ChunkColorSection section) {
         var ref = new TextureRef(section, this, uv);
         // the texture coordinates maybe exceed the texture itself.
         if (!usedRect.contains(uv)) {
-            float x0 = Math.min(usedRect.getMinX(), uv.getX());
-            float y0 = Math.min(usedRect.getMinY(), uv.getY());
-            float x1 = Math.max(usedRect.getMaxX(), uv.getX());
-            float y1 = Math.max(usedRect.getMaxY(), uv.getY());
-            usedRect = new Rectangle2f(x0, y0, x1 - x0, y1 - y0);
+            float x0 = Math.min(usedRect.minX(), uv.x());
+            float y0 = Math.min(usedRect.minY(), uv.y());
+            float x1 = Math.max(usedRect.maxX(), uv.x());
+            float y1 = Math.max(usedRect.maxY(), uv.y());
+            usedRect = new OpenRectangle2f(x0, y0, x1 - x0, y1 - y0);
         }
         uvs.add(ref);
         return ref;
@@ -118,11 +118,11 @@ public class ChunkTextureData {
         return id;
     }
 
-    public Rectangle2f getRect() {
+    public OpenRectangle2f getRect() {
         return rect;
     }
 
-    public Rectangle2f getUsedRect() {
+    public OpenRectangle2f getUsedRect() {
         return usedRect;
     }
 
@@ -142,7 +142,7 @@ public class ChunkTextureData {
             float y = rectValues.get(1);
             float w = rectValues.get(2);
             float h = rectValues.get(3);
-            this.usedRect = new Rectangle2f(x, y, w, h);
+            this.usedRect = new OpenRectangle2f(x, y, w, h);
         }
         return properties;
     }
@@ -150,10 +150,10 @@ public class ChunkTextureData {
     private SkinTextureProperties writeAdditionalData(SkinTextureProperties properties) {
         // have custom used rect?
         if (!rect.equals(usedRect)) {
-            float x = usedRect.getX();
-            float y = usedRect.getY();
-            float w = usedRect.getWidth();
-            float h = usedRect.getHeight();
+            float x = usedRect.x();
+            float y = usedRect.y();
+            float w = usedRect.width();
+            float h = usedRect.height();
             var newProperties = properties.copy();
             newProperties.set(USED_RECT_KEY, Collections.newList(x, y, w, h));
             properties = newProperties;
@@ -164,11 +164,11 @@ public class ChunkTextureData {
 
     public static class TextureRef implements ChunkVariable {
 
-        private final Vector2f uv;
+        private final OpenVector2f uv;
         private final ChunkTextureData list;
         private final ChunkColorSection section;
 
-        public TextureRef(ChunkColorSection section, ChunkTextureData list, Vector2f uv) {
+        public TextureRef(ChunkColorSection section, ChunkTextureData list, OpenVector2f uv) {
             this.section = section;
             this.list = list;
             this.uv = uv;
@@ -177,8 +177,8 @@ public class ChunkTextureData {
         @Override
         public void writeToStream(ChunkOutputStream stream) throws IOException {
             var rect = list.getRect();
-            stream.writeFixedFloat(rect.getX() + uv.getX(), section.textureIndexBytes);
-            stream.writeFixedFloat(rect.getY() + uv.getY(), section.textureIndexBytes);
+            stream.writeFixedFloat(rect.x() + uv.x(), section.textureIndexBytes);
+            stream.writeFixedFloat(rect.y() + uv.y(), section.textureIndexBytes);
         }
 
         @Override
@@ -187,14 +187,14 @@ public class ChunkTextureData {
         }
 
         public float getU() {
-            return uv.getX();
+            return uv.x();
         }
 
         public float getV() {
-            return uv.getY();
+            return uv.y();
         }
 
-        public Vector2f getPos() {
+        public OpenVector2f getPos() {
             return uv;
         }
 

@@ -1,9 +1,8 @@
 package moe.plushie.armourers_workshop.builder.client.gui.advancedbuilder.guide;
 
-import moe.plushie.armourers_workshop.api.core.math.ITransform3f;
-import moe.plushie.armourers_workshop.api.skin.part.ISkinPartType;
 import moe.plushie.armourers_workshop.core.math.OpenTransform3f;
-import moe.plushie.armourers_workshop.core.math.Vector3f;
+import moe.plushie.armourers_workshop.core.math.OpenVector3f;
+import moe.plushie.armourers_workshop.core.skin.part.SkinPartType;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
@@ -43,48 +42,48 @@ public class AdvancedPartOffset {
 
     public static class Builder<T> {
 
-        private final HashMap<ISkinPartType, Function<T, ITransform3f>> poses = new HashMap<>();
+        private final HashMap<SkinPartType, Function<T, OpenTransform3f>> poses = new HashMap<>();
 
-//        public Builder<T> put(ISkinPartType partType) {
+//        public Builder<T> put(SkinPartType partType) {
 //            return put(partType, partType.getRenderOffset());
 //        }
 //
-//        public Builder<T> put(ISkinPartType partType, Function<T, Rotations> provider) {
+//        public Builder<T> put(SkinPartType partType, Function<T, Rotations> provider) {
 //            return put(partType, partType.getRenderOffset(), provider);
 //        }
 //
-//        public Builder<T> put(ISkinPartType partType, IVector3i off) {
+//        public Builder<T> put(SkinPartType partType, IVector3i off) {
 //            ModelPartPose pose = new ModelPartPose(off.getX(), off.getY(), off.getZ(), 0, 0, 0);
 //            return add(partType, it -> pose);
 //        }
 
-        public Builder<T> put(ISkinPartType partType, float tx, float ty, float tz) {
+        public Builder<T> put(SkinPartType partType, float tx, float ty, float tz) {
             return put(partType, tx, ty, tz, 0, 0, 0, 0, 0, 0);
         }
 
-        public Builder<T> put(ISkinPartType partType, float tx, float ty, float tz, float xRot, float yRot, float zRot) {
+        public Builder<T> put(SkinPartType partType, float tx, float ty, float tz, float xRot, float yRot, float zRot) {
             return put(partType, tx, ty, tz, xRot, yRot, zRot, 0, 0, 0);
         }
 
-        public Builder<T> put(ISkinPartType partType, float tx, float ty, float tz, float xRot, float yRot, float zRot, float ax, float ay, float az) {
-            Vector3f translate = new Vector3f(tx, ty, tz);
-            Vector3f rotation = new Vector3f(xRot, yRot, zRot);
-            Vector3f afterTranslate = new Vector3f(ax, ay, az);
-            OpenTransform3f transform = OpenTransform3f.create(translate, rotation, Vector3f.ONE, Vector3f.ZERO, afterTranslate);
+        public Builder<T> put(SkinPartType partType, float tx, float ty, float tz, float xRot, float yRot, float zRot, float ax, float ay, float az) {
+            var translate = new OpenVector3f(tx, ty, tz);
+            var rotation = new OpenVector3f(xRot, yRot, zRot);
+            var afterTranslate = new OpenVector3f(ax, ay, az);
+            var transform = OpenTransform3f.create(translate, rotation, OpenVector3f.ONE, OpenVector3f.ZERO, afterTranslate);
             return add(partType, it -> transform);
         }
 
 
         @Nullable
-        public ITransform3f get(T entity, ISkinPartType partType) {
-            Function<T, ITransform3f> provider = poses.get(partType);
+        public OpenTransform3f get(T entity, SkinPartType partType) {
+            var provider = poses.get(partType);
             if (provider != null) {
                 return provider.apply(entity);
             }
             return null;
         }
 
-        private Builder<T> add(ISkinPartType partType, Function<T, ITransform3f> provider) {
+        private Builder<T> add(SkinPartType partType, Function<T, OpenTransform3f> provider) {
             poses.put(partType, provider);
             return this;
         }

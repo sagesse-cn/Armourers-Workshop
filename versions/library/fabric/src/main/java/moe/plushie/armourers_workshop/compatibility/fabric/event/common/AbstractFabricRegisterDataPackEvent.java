@@ -3,7 +3,7 @@ package moe.plushie.armourers_workshop.compatibility.fabric.event.common;
 import moe.plushie.armourers_workshop.api.annotation.Available;
 import moe.plushie.armourers_workshop.api.registry.IEventHandler;
 import moe.plushie.armourers_workshop.init.ModConstants;
-import moe.plushie.armourers_workshop.init.platform.event.common.RegisterDataPackEvent;
+import moe.plushie.armourers_workshop.init.event.common.RegisterDataPackEvent;
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.resources.ResourceLocation;

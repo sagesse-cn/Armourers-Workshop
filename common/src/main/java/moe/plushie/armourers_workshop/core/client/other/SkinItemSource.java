@@ -1,6 +1,6 @@
 package moe.plushie.armourers_workshop.core.client.other;
 
-import moe.plushie.armourers_workshop.core.math.Vector3f;
+import moe.plushie.armourers_workshop.core.math.OpenVector3f;
 import moe.plushie.armourers_workshop.core.utils.OpenItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
@@ -13,8 +13,8 @@ public class SkinItemSource {
     private ItemStack itemStack;
     private SkinItemProperties itemProperties;
 
-    private Vector3f itemScale;
-    private Vector3f itemRotation;
+    private OpenVector3f itemScale;
+    private OpenVector3f itemRotation;
     private OpenItemDisplayContext itemDisplayContext;
 
     public SkinItemSource() {
@@ -70,19 +70,19 @@ public class SkinItemSource {
         return renderPriority;
     }
 
-    public void setRotation(Vector3f rotation) {
+    public void setRotation(OpenVector3f rotation) {
         this.itemRotation = rotation;
     }
 
-    public Vector3f getRotation() {
+    public OpenVector3f getRotation() {
         return itemRotation;
     }
 
-    public void setScale(Vector3f scale) {
+    public void setScale(OpenVector3f scale) {
         this.itemScale = scale;
     }
 
-    public Vector3f getScale() {
+    public OpenVector3f getScale() {
         return itemScale;
     }
 

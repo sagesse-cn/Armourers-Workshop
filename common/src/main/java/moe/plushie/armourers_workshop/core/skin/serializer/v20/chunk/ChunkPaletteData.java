@@ -1,6 +1,6 @@
 package moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk;
 
-import moe.plushie.armourers_workshop.core.math.Vector2f;
+import moe.plushie.armourers_workshop.core.math.OpenVector2f;
 import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintColor;
 import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintType;
 import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintTypes;
@@ -74,12 +74,12 @@ public class ChunkPaletteData implements ChunkVariable {
     }
 
 
-    public ChunkTextureData.TextureRef writeTexture(Vector2f uv, SkinTextureData provider) {
+    public ChunkTextureData.TextureRef writeTexture(OpenVector2f uv, SkinTextureData provider) {
         // texture + black(0x000000) + 0(used bytes)
         return _mutableSectionAt(SkinPaintTypes.TEXTURE, 0).putTexture(uv, provider);
     }
 
-    public ChunkTextureData.TextureRef readTexture(Vector2f uv) {
+    public ChunkTextureData.TextureRef readTexture(OpenVector2f uv) {
         // texture + black(0x000000) + 0(used bytes)
         return _sectionAt(SkinPaintTypes.TEXTURE, 0).getTexture(uv);
     }

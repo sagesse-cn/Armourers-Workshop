@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.function.Function;
 
 @SuppressWarnings("unused")
-class UIPresentationDelegate implements ViewImpl {
+public class UIPresentationDelegate implements ViewImpl {
 
     protected final UIView view;
     protected HashMap<String, CAAnimation> animations;
@@ -53,7 +53,7 @@ class UIPresentationDelegate implements ViewImpl {
         if (!CATransaction._isEnabled()) {
             return;
         }
-        CAAnimation animation = CAAnimation.animationWithKeyPath(keyPath);
+        var animation = CAAnimation.animationWithKeyPath(keyPath);
         animation.setFromValue(oldValue);
         animation.setToValue(newValue);
         addAnimationForKeyPath(animation, keyPath);
@@ -75,7 +75,7 @@ class UIPresentationDelegate implements ViewImpl {
         if (animations == null) {
             return;
         }
-        CAAnimation oldValue = animations.remove(key);
+        var oldValue = animations.remove(key);
         if (oldValue != null && notify) {
             CATransaction._removeAnimation(oldValue, key);
         }
@@ -90,7 +90,7 @@ class UIPresentationDelegate implements ViewImpl {
 
     @Override
     public CGAffineTransform _invertedTransform() {
-        CGAffineTransform transform = transform();
+        var transform = transform();
         if (transform != view.transform()) {
             return transform.inverted();
         }
@@ -117,7 +117,7 @@ class UIPresentationDelegate implements ViewImpl {
 
     @Override
     public ViewImpl _superviewInViewHierarchy(ViewImpl searchingView) {
-        UIView superview = searchingView.self().superview();
+        var superview = searchingView.self().superview();
         if (superview == null) {
             return null;
         }

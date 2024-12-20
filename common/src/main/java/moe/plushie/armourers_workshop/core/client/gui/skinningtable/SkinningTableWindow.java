@@ -25,7 +25,7 @@ public class SkinningTableWindow extends MenuWindow<SkinningTableMenu> {
     }
 
     private void setup() {
-        float x = bounds().getWidth() - 24 - 4;
+        float x = bounds().width() - 24 - 4;
         UIButton settingView = new UIButton(new CGRect(x, 4, 24, 16));
         settingView.setAutoresizingMask(AutoresizingMask.flexibleLeftMargin | AutoresizingMask.flexibleBottomMargin);
         settingView.setContents(UIImage.of(ModTextures.SKINNING_TABLE).uv(228, 0).fixed(24, 16).build());

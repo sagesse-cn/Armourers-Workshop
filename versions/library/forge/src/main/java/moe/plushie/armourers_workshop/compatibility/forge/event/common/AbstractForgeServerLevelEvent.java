@@ -3,8 +3,8 @@ package moe.plushie.armourers_workshop.compatibility.forge.event.common;
 import moe.plushie.armourers_workshop.api.annotation.Available;
 import moe.plushie.armourers_workshop.api.registry.IEventHandler;
 import moe.plushie.armourers_workshop.compatibility.forge.AbstractForgeCommonEventsImpl;
-import moe.plushie.armourers_workshop.init.platform.event.common.ServerLevelAddEntityEvent;
-import moe.plushie.armourers_workshop.init.platform.event.common.ServerLevelTickEvent;
+import moe.plushie.armourers_workshop.init.event.common.ServerLevelAddEntityEvent;
+import moe.plushie.armourers_workshop.init.event.common.ServerLevelTickEvent;
 import net.minecraft.server.level.ServerLevel;
 
 @Available("[1.21, )")

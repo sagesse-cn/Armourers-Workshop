@@ -7,7 +7,7 @@ import moe.plushie.armourers_workshop.compatibility.client.model.AbstractPlayerM
 import moe.plushie.armourers_workshop.core.client.render.MannequinEntityRenderer;
 import moe.plushie.armourers_workshop.core.entity.MannequinEntity;
 import moe.plushie.armourers_workshop.core.math.OpenMath;
-import moe.plushie.armourers_workshop.core.math.OpenQuaternion3f;
+import moe.plushie.armourers_workshop.core.math.OpenQuaternionf;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.Rotations;
@@ -70,7 +70,7 @@ public class MannequinModel<T extends MannequinEntity> extends AbstractPlayerMod
         if (MannequinEntityRenderer.enableLimitYRot) {
             ry = 0;
         }
-        poseStack.mulPose(new OpenQuaternion3f(rx, ry, rz, true));
+        poseStack.mulPose(new OpenQuaternionf(rx, ry, rz, true));
         super.renderToBuffer(poseStack, builder, light, overlay, color);
     }
 }

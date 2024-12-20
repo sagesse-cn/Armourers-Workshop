@@ -202,6 +202,6 @@ public class UILabel extends UIView {
         }
         cachedTextLayout = new SimpleTextLayoutImpl(title, font, numberOfLines, lineSpacing, width);
         cachedTextWidth = width;
-        cachedTextHeight = cachedTextLayout.contentSize().getHeight();
+        cachedTextHeight = cachedTextLayout.contentSize().height();
     }
 }

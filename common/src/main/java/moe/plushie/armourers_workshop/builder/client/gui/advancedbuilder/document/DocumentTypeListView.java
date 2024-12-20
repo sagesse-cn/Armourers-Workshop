@@ -6,12 +6,12 @@ import com.apple.library.foundation.NSString;
 import com.apple.library.uikit.UIComboItem;
 import com.apple.library.uikit.UIImage;
 import moe.plushie.armourers_workshop.ArmourersWorkshop;
-import moe.plushie.armourers_workshop.api.skin.ISkinType;
 import moe.plushie.armourers_workshop.builder.client.gui.widget.NewComboBox;
 import moe.plushie.armourers_workshop.builder.client.gui.widget.NewComboItem;
+import moe.plushie.armourers_workshop.core.skin.SkinType;
 import moe.plushie.armourers_workshop.core.skin.serializer.document.SkinDocumentType;
 import moe.plushie.armourers_workshop.core.skin.serializer.document.SkinDocumentTypes;
-import moe.plushie.armourers_workshop.utils.TranslateUtils;
+import moe.plushie.armourers_workshop.core.utils.TranslateUtils;
 
 import java.util.ArrayList;
 
@@ -91,7 +91,7 @@ public class DocumentTypeListView extends NewComboBox {
             this.category = category;
         }
 
-        public ISkinType getSkinType() {
+        public SkinType getSkinType() {
             return category.getSkinType();
         }
     }

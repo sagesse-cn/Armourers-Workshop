@@ -1,10 +1,10 @@
 package moe.plushie.armourers_workshop.core.client.skinrender.plugin;
 
 import moe.plushie.armourers_workshop.api.client.model.IModelPart;
+import moe.plushie.armourers_workshop.compatibility.client.model.AbstractModelHolder;
 import moe.plushie.armourers_workshop.core.armature.ArmaturePlugin;
 import moe.plushie.armourers_workshop.core.armature.ArmatureTransformerContext;
 import moe.plushie.armourers_workshop.core.client.model.TransformModel;
-import moe.plushie.armourers_workshop.utils.ModelHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 
@@ -16,7 +16,7 @@ public class VillagerModelArmaturePlugin extends ArmaturePlugin {
 
     public VillagerModelArmaturePlugin(ArmatureTransformerContext context) {
         var model = context.getEntityModel();
-        var transformModel = ModelHolder.of(transformModelRef);
+        var transformModel = AbstractModelHolder.of(transformModelRef);
         sourcePart = model.getPart("head");
         destinationPart = transformModel.getPart("head");
         context.setEntityModel0(transformModel);

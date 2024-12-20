@@ -4,7 +4,7 @@ import moe.plushie.armourers_workshop.api.client.model.IModel;
 import moe.plushie.armourers_workshop.api.client.model.IModelBabyPose;
 import moe.plushie.armourers_workshop.api.client.model.IModelPart;
 import moe.plushie.armourers_workshop.api.data.IAssociatedContainerKey;
-import moe.plushie.armourers_workshop.utils.DataContainer;
+import moe.plushie.armourers_workshop.core.data.DataContainer;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -85,6 +85,10 @@ public class LinkedModel implements IModel {
             return parent.getType();
         }
         return getClass();
+    }
+
+    public IModel getParent() {
+        return parent;
     }
 
     @Override

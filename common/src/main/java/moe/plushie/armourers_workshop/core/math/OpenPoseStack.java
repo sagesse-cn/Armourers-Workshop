@@ -3,7 +3,7 @@ package moe.plushie.armourers_workshop.core.math;
 import moe.plushie.armourers_workshop.api.core.math.IMatrix3f;
 import moe.plushie.armourers_workshop.api.core.math.IMatrix4f;
 import moe.plushie.armourers_workshop.api.core.math.IPoseStack;
-import moe.plushie.armourers_workshop.api.core.math.IQuaternion3f;
+import moe.plushie.armourers_workshop.api.core.math.IQuaternionf;
 
 import java.util.Stack;
 
@@ -64,19 +64,19 @@ public class OpenPoseStack implements IPoseStack {
     }
 
     @Override
-    public void rotate(IQuaternion3f quaternion) {
+    public void rotate(IQuaternionf quaternion) {
         entry.pose.rotate(quaternion);
         entry.normal.rotate(quaternion);
     }
 
     @Override
     public void multiply(IMatrix3f matrix) {
-        entry.normal.multiply(OpenMatrix3f.of(matrix));
+        entry.normal.multiply(matrix);
     }
 
     @Override
     public void multiply(IMatrix4f matrix) {
-        entry.pose.multiply(OpenMatrix4f.of(matrix));
+        entry.pose.multiply(matrix);
         //        if (!MatrixUtil.isTranslation(matrix)) {
 //            if (MatrixUtil.isOrthonormal(matrix)) {
 //                entry.normalMatrix.mul(new Matrix3f(matrix));

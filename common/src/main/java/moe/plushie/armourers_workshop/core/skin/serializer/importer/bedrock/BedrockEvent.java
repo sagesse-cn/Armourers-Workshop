@@ -1,16 +1,16 @@
 package moe.plushie.armourers_workshop.core.skin.serializer.importer.bedrock;
 
-import moe.plushie.armourers_workshop.core.utils.MolangExpression;
+import moe.plushie.armourers_workshop.core.utils.OpenExpression;
 
 public class BedrockEvent {
 
-    private final MolangExpression expression;
+    private final OpenExpression expression;
     private final String soundId;
     private final String particleId;
     private final String particleType;
-    private final MolangExpression particlePreExpression;
+    private final OpenExpression particlePreExpression;
 
-    public BedrockEvent(MolangExpression expression, String soundId, String particleId, String particleType, MolangExpression particlePreExpression) {
+    public BedrockEvent(OpenExpression expression, String soundId, String particleId, String particleType, OpenExpression particlePreExpression) {
         this.expression = expression;
         this.soundId = soundId;
         this.particleId = particleId;
@@ -18,7 +18,7 @@ public class BedrockEvent {
         this.particlePreExpression = particlePreExpression;
     }
 
-    public MolangExpression getExpression() {
+    public OpenExpression getExpression() {
         return expression;
     }
 
@@ -34,19 +34,19 @@ public class BedrockEvent {
         return particleType;
     }
 
-    public MolangExpression getParticlePreExpression() {
+    public OpenExpression getParticlePreExpression() {
         return particlePreExpression;
     }
 
     protected static class Builder {
 
-        private MolangExpression expression;
+        private OpenExpression expression;
         private String soundId;
         private String particleId;
         private String particleType;
-        private MolangExpression particlePreExpression;
+        private OpenExpression particlePreExpression;
 
-        public void expression(MolangExpression expression) {
+        public void expression(OpenExpression expression) {
             this.expression = expression;
         }
 
@@ -54,7 +54,7 @@ public class BedrockEvent {
             this.soundId = soundId;
         }
 
-        public void particle(String particleId, String type, MolangExpression pre) {
+        public void particle(String particleId, String type, OpenExpression pre) {
             this.particleId = particleId;
             this.particleType = type;
             this.particlePreExpression = pre;

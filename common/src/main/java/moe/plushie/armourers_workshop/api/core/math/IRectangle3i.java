@@ -2,51 +2,51 @@ package moe.plushie.armourers_workshop.api.core.math;
 
 public interface IRectangle3i {
 
-    int getX();
+    int x();
 
-    int getY();
+    int y();
 
-    int getZ();
+    int z();
 
-    int getWidth();
+    int width();
 
-    int getHeight();
+    int height();
 
-    int getDepth();
+    int depth();
 
-    default int getMinX() {
-        return this.getX();
+    default int minX() {
+        return x();
     }
 
-    default int getMinY() {
-        return this.getY();
+    default int minY() {
+        return y();
     }
 
-    default int getMinZ() {
-        return this.getZ();
+    default int minZ() {
+        return z();
     }
 
-    default int getMidX() {
-        return this.getX() + this.getWidth() / 2;
+    default int midX() {
+        return x() + width() / 2;
     }
 
-    default int getMidY() {
-        return this.getY() + this.getHeight() / 2;
+    default int midY() {
+        return y() + height() / 2;
     }
 
-    default int getMidZ() {
-        return this.getZ() + this.getDepth() / 2;
+    default int midZ() {
+        return z() + depth() / 2;
     }
 
-    default int getMaxX() {
-        return this.getX() + this.getWidth();
+    default int maxX() {
+        return x() + width();
     }
 
-    default int getMaxY() {
-        return this.getY() + this.getHeight();
+    default int maxY() {
+        return y() + height();
     }
 
-    default int getMaxZ() {
-        return this.getZ() + this.getDepth();
+    default int maxZ() {
+        return z() + depth();
     }
 }

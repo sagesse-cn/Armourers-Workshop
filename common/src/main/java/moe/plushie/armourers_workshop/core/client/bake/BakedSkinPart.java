@@ -1,11 +1,12 @@
 package moe.plushie.armourers_workshop.core.client.bake;
 
-import moe.plushie.armourers_workshop.api.skin.part.ISkinPartType;
+import moe.plushie.armourers_workshop.api.armature.IJointTransform;
 import moe.plushie.armourers_workshop.core.client.texture.PlayerTextureLoader;
 import moe.plushie.armourers_workshop.core.data.color.ColorDescriptor;
 import moe.plushie.armourers_workshop.core.math.OpenVoxelShape;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPart;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPartTransform;
+import moe.plushie.armourers_workshop.core.skin.part.SkinPartType;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperties;
 import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintScheme;
 import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintTypes;
@@ -15,6 +16,7 @@ import net.fabricmc.api.Environment;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.function.Function;
 
 @Environment(EnvType.CLIENT)
 public class BakedSkinPart {
@@ -29,6 +31,7 @@ public class BakedSkinPart {
 
     private float renderPolygonOffset;
     private boolean shouldRender = true;
+    private Function<IJointTransform, IJointTransform> jointTransformModifier;
 
     public BakedSkinPart(SkinPart part, SkinPartTransform transform, BakedGeometryQuads quads) {
         this.part = part;
@@ -90,7 +93,7 @@ public class BakedSkinPart {
         return part;
     }
 
-    public ISkinPartType getType() {
+    public SkinPartType getType() {
         return part.getType();
     }
 
@@ -132,6 +135,14 @@ public class BakedSkinPart {
 
     public SkinProperties getProperties() {
         return part.getProperties();
+    }
+
+    public void setJointTransformModifier(Function<IJointTransform, IJointTransform> jointTransformModifier) {
+        this.jointTransformModifier = jointTransformModifier;
+    }
+
+    public Function<IJointTransform, IJointTransform> getJointTransformModifier() {
+        return jointTransformModifier;
     }
 
     public BakedGeometryQuads getQuads() {

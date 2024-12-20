@@ -5,10 +5,9 @@ import com.apple.library.coregraphics.CGSize;
 import com.apple.library.uikit.UICheckBox;
 import com.apple.library.uikit.UIImage;
 import com.apple.library.uikit.UIScrollView;
-import moe.plushie.armourers_workshop.api.skin.ISkinType;
-import moe.plushie.armourers_workshop.api.skin.property.ISkinProperty;
 import moe.plushie.armourers_workshop.builder.client.gui.advancedbuilder.document.DocumentEditor;
 import moe.plushie.armourers_workshop.builder.client.gui.widget.PropertySettingView;
+import moe.plushie.armourers_workshop.core.skin.SkinType;
 import moe.plushie.armourers_workshop.core.skin.SkinTypes;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperties;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperty;
@@ -22,7 +21,7 @@ import java.util.Map;
 
 public class AdvancedSettingPanel extends AdvancedPanel {
 
-    private static final Map<ISkinType, Collection<ISkinProperty<?>>> VALUES = Collections.immutableMap(builder -> {
+    private static final Map<SkinType, Collection<SkinProperty<?>>> VALUES = Collections.immutableMap(builder -> {
         builder.put(SkinTypes.OUTFIT, Collections.newList(
                 SkinProperty.OVERRIDE_MODEL_HEAD,
                 SkinProperty.OVERRIDE_MODEL_CHEST,
@@ -123,11 +122,24 @@ public class AdvancedSettingPanel extends AdvancedPanel {
     private final ArrayList<UICheckBox> boxes = new ArrayList<>();
     private PropertySettingView settingView;
     private final UIScrollView scrollView = new UIScrollView(CGRect.ZERO);
+    private CGSize cachedSize = CGSize.ZERO;
 
     public AdvancedSettingPanel(DocumentEditor editor) {
         super(editor);
         this.barItem.setImage(UIImage.of(ModTextures.TAB_ICONS).uv(208, 0).fixed(16, 16).build());
         this.setup();
+    }
+
+    @Override
+    public void layoutSubviews() {
+        super.layoutSubviews();
+        var size = bounds().size();
+        if (settingView != null && !cachedSize.equals(size)) {
+            var rect = settingView.frame().copy();
+            rect.setWidth(size.width - 20);
+            settingView.setFrame(rect);
+            cachedSize = size;
+        }
     }
 
     private void setup() {
@@ -145,12 +157,12 @@ public class AdvancedSettingPanel extends AdvancedPanel {
         addProperties(document.getType().getSkinType());
     }
 
-    private void addProperties(ISkinType skinType) {
+    private void addProperties(SkinType skinType) {
         if (settingView != null) {
             settingView.removeFromSuperview();
         }
-        CGRect rect = scrollView.frame();
-        Collection<ISkinProperty<?>> properties = VALUES.get(skinType);
+        var rect = scrollView.frame();
+        var properties = VALUES.get(skinType);
         if (properties == null || properties.isEmpty()) {
             return;
         }
@@ -161,12 +173,12 @@ public class AdvancedSettingPanel extends AdvancedPanel {
             }
 
             @Override
-            public <T> void putValue(ISkinProperty<T> property, T value) {
+            public <T> void putValue(SkinProperty<T> property, T value) {
                 document.put(property, value);
             }
 
             @Override
-            public <T> T getValue(ISkinProperty<T> property) {
+            public <T> T getValue(SkinProperty<T> property) {
                 return document.get(property);
             }
 
@@ -177,6 +189,6 @@ public class AdvancedSettingPanel extends AdvancedPanel {
 
         };
         scrollView.addSubview(settingView);
-        scrollView.setContentSize(new CGSize(0, settingView.frame().getMaxY() + 10));
+        scrollView.setContentSize(new CGSize(0, settingView.frame().maxY() + 10));
     }
 }

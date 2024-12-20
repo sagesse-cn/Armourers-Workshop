@@ -1,6 +1,6 @@
 package moe.plushie.armourers_workshop.core.skin.serializer.importer.blockbench;
 
-import moe.plushie.armourers_workshop.core.math.Size2f;
+import moe.plushie.armourers_workshop.core.math.OpenSize2f;
 import moe.plushie.armourers_workshop.core.skin.texture.SkinTextureAnimation;
 import moe.plushie.armourers_workshop.core.skin.texture.SkinTextureProperties;
 
@@ -12,15 +12,15 @@ public class BlockBenchTexture extends BlockBenchObject {
     private final String renderMode;
     private final String source;
 
-    private final Size2f imageSize;
-    private final Size2f textureSize;
+    private final OpenSize2f imageSize;
+    private final OpenSize2f textureSize;
 
     private final int frameTime;
     private final String frameOrderType;
     private final String frameOrder;
     private final boolean frameInterpolate;
 
-    public BlockBenchTexture(String uuid, String name, boolean particle, String renderMode, String source, Size2f imageSize, Size2f textureSize, int frameTime, String frameOrderType, String frameOrder, boolean frameInterpolate) {
+    public BlockBenchTexture(String uuid, String name, boolean particle, String renderMode, String source, OpenSize2f imageSize, OpenSize2f textureSize, int frameTime, String frameOrderType, String frameOrder, boolean frameInterpolate) {
         super(uuid, name);
         this.particle = particle;
         this.renderMode = renderMode;
@@ -41,11 +41,11 @@ public class BlockBenchTexture extends BlockBenchObject {
         return source;
     }
 
-    public Size2f getImageSize() {
+    public OpenSize2f getImageSize() {
         return imageSize;
     }
 
-    public Size2f getTextureSize() {
+    public OpenSize2f getTextureSize() {
         return textureSize;
     }
 
@@ -109,8 +109,8 @@ public class BlockBenchTexture extends BlockBenchObject {
         private String frameOrder = "";
         private boolean frameInterpolate = false;
 
-        private Size2f imageSize;
-        private Size2f textureSize;
+        private OpenSize2f imageSize;
+        private OpenSize2f textureSize;
 
         public void renderMode(String renderMode) {
             this.renderMode = renderMode;
@@ -124,11 +124,11 @@ public class BlockBenchTexture extends BlockBenchObject {
             this.source = source;
         }
 
-        public void imageSize(Size2f size) {
+        public void imageSize(OpenSize2f size) {
             this.imageSize = size;
         }
 
-        public void textureSize(Size2f size) {
+        public void textureSize(OpenSize2f size) {
             this.textureSize = size;
         }
 

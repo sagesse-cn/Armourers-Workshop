@@ -2,7 +2,6 @@ package moe.plushie.armourers_workshop.core.client.skinrender;
 
 import moe.plushie.armourers_workshop.api.common.IEntityTypeProvider;
 import moe.plushie.armourers_workshop.api.core.IResourceLocation;
-import moe.plushie.armourers_workshop.api.data.IDataPackBuilder;
 import moe.plushie.armourers_workshop.compatibility.client.model.AbstractModelHolder;
 import moe.plushie.armourers_workshop.compatibility.client.model.AbstractSkinnableModel;
 import moe.plushie.armourers_workshop.core.armature.ArmatureSerializers;
@@ -24,6 +23,7 @@ import moe.plushie.armourers_workshop.core.client.skinrender.plugin.FishingModel
 import moe.plushie.armourers_workshop.core.client.skinrender.plugin.MinecartModelArmaturePlugin;
 import moe.plushie.armourers_workshop.core.client.skinrender.plugin.TridentModelArmaturePlugin;
 import moe.plushie.armourers_workshop.core.client.skinrender.plugin.VillagerModelArmaturePlugin;
+import moe.plushie.armourers_workshop.core.data.DataPackBuilder;
 import moe.plushie.armourers_workshop.core.data.DataPackType;
 import moe.plushie.armourers_workshop.core.entity.EntityProfile;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IODataObject;
@@ -302,7 +302,7 @@ public class SkinRendererManager {
         }
     }
 
-    private static class TransformerLoaderImpl implements IDataPackBuilder {
+    private static class TransformerLoaderImpl implements DataPackBuilder {
 
         private static final Map<String, ArmatureTransformerManager> MANAGERS = Collections.immutableMap(builder -> {
             builder.put("armourers_workshop:armature", DEFAULT);

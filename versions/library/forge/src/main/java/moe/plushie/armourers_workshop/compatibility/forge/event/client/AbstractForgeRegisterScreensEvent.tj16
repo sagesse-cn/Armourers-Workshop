@@ -3,7 +3,7 @@ package moe.plushie.armourers_workshop.compatibility.forge.event.client;
 import moe.plushie.armourers_workshop.api.annotation.Available;
 import moe.plushie.armourers_workshop.api.registry.IEventHandler;
 import moe.plushie.armourers_workshop.compatibility.forge.AbstractForgeCommonEventsImpl;
-import moe.plushie.armourers_workshop.init.platform.event.client.RegisterScreensEvent;
+import moe.plushie.armourers_workshop.init.event.client.RegisterScreensEvent;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;

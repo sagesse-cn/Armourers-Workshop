@@ -3,7 +3,7 @@ package moe.plushie.armourers_workshop.compatibility.forge.event.client;
 import moe.plushie.armourers_workshop.api.annotation.Available;
 import moe.plushie.armourers_workshop.api.registry.IEventHandler;
 import moe.plushie.armourers_workshop.compatibility.forge.AbstractForgeClientEventsImpl;
-import moe.plushie.armourers_workshop.init.platform.event.client.RenderScreenEvent;
+import moe.plushie.armourers_workshop.init.event.client.RenderScreenEvent;
 
 @Available("[1.16, )")
 public class AbstractForgeRenderScreenEvent {

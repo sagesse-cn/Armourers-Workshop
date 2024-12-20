@@ -2,11 +2,10 @@ package moe.plushie.armourers_workshop.core.skin.part;
 
 import moe.plushie.armourers_workshop.api.core.math.ITransform;
 import moe.plushie.armourers_workshop.api.skin.part.ISkinPart;
-import moe.plushie.armourers_workshop.api.skin.part.ISkinPartType;
 import moe.plushie.armourers_workshop.core.math.OpenMath;
+import moe.plushie.armourers_workshop.core.math.OpenRectangle3f;
 import moe.plushie.armourers_workshop.core.math.OpenTransform3f;
-import moe.plushie.armourers_workshop.core.math.Rectangle3f;
-import moe.plushie.armourers_workshop.core.math.Vector3i;
+import moe.plushie.armourers_workshop.core.math.OpenVector3i;
 import moe.plushie.armourers_workshop.core.skin.SkinMarker;
 import moe.plushie.armourers_workshop.core.skin.geometry.SkinGeometrySet;
 import moe.plushie.armourers_workshop.core.skin.geometry.collection.SkinGeometrySetV0;
@@ -23,7 +22,7 @@ public class SkinPart implements ISkinPart {
 
     protected final String name;
 
-    protected final ISkinPartType type;
+    protected final SkinPartType type;
     protected final ITransform transform;
 
     protected final SkinGeometrySet<?> geometries;
@@ -35,13 +34,15 @@ public class SkinPart implements ISkinPart {
 
     protected SkinProperties properties = SkinProperties.EMPTY;
 
-    private HashMap<Vector3i, Rectangle3f> blockBounds;
+    private HashMap<OpenVector3i, OpenRectangle3f> blockBounds;
 
 
-    protected SkinPart(String name, ISkinPartType type, ITransform transform, SkinGeometrySet<?> geometries, List<SkinMarker> markers, Object blobs) {
+    protected SkinPart(String name, SkinPartType type, SkinProperties properties, ITransform transform, SkinGeometrySet<?> geometries, List<SkinMarker> markers, Object blobs) {
         this.name = name;
 
         this.type = type;
+        this.properties = properties;
+
         this.transform = transform;
 
         this.geometries = geometries;
@@ -72,22 +73,22 @@ public class SkinPart implements ISkinPart {
         return 0;
     }
 
-    public Map<Vector3i, Rectangle3f> getBlockBounds() {
+    public Map<OpenVector3i, OpenRectangle3f> getBlockBounds() {
         if (blockBounds != null) {
             return blockBounds;
         }
-        var blockGrid = new HashMap<Vector3i, Rectangle3f>();
+        var blockGrid = new HashMap<OpenVector3i, OpenRectangle3f>();
         blockBounds = new HashMap<>();
         geometries.forEach(geometry -> {
             var boundingBox = geometry.getShape().bounds();
-            var x = boundingBox.getX();
-            var y = boundingBox.getY();
-            var z = boundingBox.getZ();
+            var x = boundingBox.x();
+            var y = boundingBox.y();
+            var z = boundingBox.z();
             var tx = OpenMath.floori((x + 8) / 16f);
             var ty = OpenMath.floori((y + 8) / 16f);
             var tz = OpenMath.floori((z + 8) / 16f);
-            var rec = new Rectangle3f(-(x - tx * 16) - 1, -(y - ty * 16) - 1, z - tz * 16, 1, 1, 1);
-            blockGrid.computeIfAbsent(new Vector3i(-tx, -ty, tz), k -> rec).union(rec);
+            var rec = new OpenRectangle3f(-(x - tx * 16) - 1, -(y - ty * 16) - 1, z - tz * 16, 1, 1, 1);
+            blockGrid.computeIfAbsent(new OpenVector3i(-tx, -ty, tz), k -> rec).union(rec);
         });
         blockGrid.forEach((key, value) -> blockBounds.put(key, value));
         return blockBounds;
@@ -99,7 +100,7 @@ public class SkinPart implements ISkinPart {
     }
 
     @Override
-    public ISkinPartType getType() {
+    public SkinPartType getType() {
         return this.type;
     }
 
@@ -134,17 +135,17 @@ public class SkinPart implements ISkinPart {
 
     public static class Builder {
 
-        private final ISkinPartType type;
+        private final SkinPartType type;
 
         private String name;
         private SkinGeometrySet<?> geometries = SkinGeometrySetV0.EMPTY;
         private ITransform transform = OpenTransform3f.IDENTITY;
         private ArrayList<SkinMarker> markers = new ArrayList<>();
         private ArrayList<SkinPart> children = new ArrayList<>();
-        private SkinProperties properties;
+        private SkinProperties properties = SkinProperties.EMPTY;
         private Object blobs;
 
-        public Builder(ISkinPartType type) {
+        public Builder(SkinPartType type) {
             this.type = type;
         }
 
@@ -201,7 +202,7 @@ public class SkinPart implements ISkinPart {
         }
 
         public SkinPart build() {
-            var skinPart = new SkinPart(name, type, transform, geometries, markers, blobs);
+            var skinPart = new SkinPart(name, type, properties, transform, geometries, markers, blobs);
             children.forEach(skinPart::addPart);
             return skinPart;
         }

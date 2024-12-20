@@ -1,20 +1,19 @@
 package moe.plushie.armourers_workshop.core.skin.part.other;
 
-import moe.plushie.armourers_workshop.api.skin.part.ISkinPartType;
-import moe.plushie.armourers_workshop.core.math.Rectangle3i;
-import moe.plushie.armourers_workshop.core.math.Vector3i;
+import moe.plushie.armourers_workshop.core.math.OpenRectangle3i;
+import moe.plushie.armourers_workshop.core.math.OpenVector3i;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPartType;
 
 public class PartitionPartType extends SkinPartType {
 
-    public final ISkinPartType parentPartType;
+    public final SkinPartType parentPartType;
 
-    public PartitionPartType(ISkinPartType parentPartType) {
+    public PartitionPartType(SkinPartType parentPartType) {
         super();
-        this.buildingSpace = new Rectangle3i(-32, -32, -32, 64, 64, 64);
-        this.guideSpace = Rectangle3i.ZERO;
-        this.offset = Vector3i.ZERO;
-        this.renderOffset = new Vector3i(parentPartType.getRenderOffset());
+        this.buildingSpace = new OpenRectangle3i(-32, -32, -32, 64, 64, 64);
+        this.guideSpace = OpenRectangle3i.ZERO;
+        this.offset = OpenVector3i.ZERO;
+        this.renderOffset = new OpenVector3i(parentPartType.getRenderOffset());
         this.renderPolygonOffset = parentPartType.getRenderPolygonOffset();
         this.parentPartType = parentPartType;
     }

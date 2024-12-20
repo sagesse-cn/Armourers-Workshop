@@ -65,11 +65,19 @@ public class CGSize implements InterpolableImpl<CGSize> {
         return String.format("(%f %f)", width, height);
     }
 
-    public float getWidth() {
+    public void setWidth(float width) {
+        this.width = width;
+    }
+
+    public void setHeight(float height) {
+        this.height = height;
+    }
+
+    public float width() {
         return width;
     }
 
-    public float getHeight() {
+    public float height() {
         return height;
     }
 }

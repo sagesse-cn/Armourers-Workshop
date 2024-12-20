@@ -2,7 +2,7 @@ package moe.plushie.armourers_workshop.api.core.math;
 
 public interface IVector2i {
 
-    int getX();
+    int x();
 
-    int getY();
+    int y();
 }

@@ -3,10 +3,10 @@ package moe.plushie.armourers_workshop.core.client.bake;
 import moe.plushie.armourers_workshop.api.armature.IJoint;
 import moe.plushie.armourers_workshop.api.armature.IJointFilter;
 import moe.plushie.armourers_workshop.api.armature.IJointTransform;
-import moe.plushie.armourers_workshop.api.skin.ISkinType;
-import moe.plushie.armourers_workshop.api.skin.part.ISkinPartType;
 import moe.plushie.armourers_workshop.core.armature.Armature;
 import moe.plushie.armourers_workshop.core.armature.Armatures;
+import moe.plushie.armourers_workshop.core.skin.SkinType;
+import moe.plushie.armourers_workshop.core.skin.part.SkinPartType;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPartTypes;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperty;
 
@@ -37,7 +37,7 @@ public class BakedArmature {
         return DEFAULT_IMMUTABLE_ARMATURES.computeIfAbsent(armature, BakedArmature::new);
     }
 
-    public static BakedArmature defaultBy(ISkinType skinType) {
+    public static BakedArmature defaultBy(SkinType skinType) {
         return defaultBy(Armatures.byType(skinType));
     }
 
@@ -45,7 +45,7 @@ public class BakedArmature {
         return DEFAULT_MUTABLE_ARMATURES.computeIfAbsent(armature, BakedArmature::new);
     }
 
-    public static BakedArmature mutableBy(ISkinType skinType) {
+    public static BakedArmature mutableBy(SkinType skinType) {
         return mutableBy(Armatures.byType(skinType));
     }
 
@@ -55,6 +55,50 @@ public class BakedArmature {
 
     public IJointFilter getFilter() {
         return filter;
+    }
+
+
+    public IJoint getJoint(SkinPartType partType) {
+        var joint = armature.getJoint(partType);
+        if (joint != null && filter != null && !filter.test(joint)) {
+            return null;
+        }
+        return joint;
+    }
+
+    public IJoint getJoint(BakedSkinPart bakedPart) {
+        var partType = bakedPart.getType();
+        if (partType == SkinPartTypes.BIPPED_LEFT_WING) {
+            if (bakedPart.getProperties().get(SkinProperty.WINGS_MATCHING_POSE)) {
+                return getJoint(SkinPartTypes.BIPPED_LEFT_PHALANX);
+            }
+        }
+        if (partType == SkinPartTypes.BIPPED_RIGHT_WING) {
+            if (bakedPart.getProperties().get(SkinProperty.WINGS_MATCHING_POSE)) {
+                return getJoint(SkinPartTypes.BIPPED_RIGHT_PHALANX);
+            }
+        }
+        return getJoint(partType);
+    }
+
+    public IJointTransform getTransform(IJoint joint) {
+        if (joint != null) {
+            return finalTransforms[joint.getId()];
+        }
+        return null;
+    }
+
+    public IJointTransform getTransform(SkinPartType partType) {
+        return getTransform(getJoint(partType));
+    }
+
+    public IJointTransform getTransform(BakedSkinPart bakedPart) {
+        var transform = getTransform(getJoint(bakedPart));
+        var transformModifier = bakedPart.getJointTransformModifier();
+        if (transformModifier != null) {
+            return transformModifier.apply(transform);
+        }
+        return transform;
     }
 
     public void seTransforms(IJointTransform[] transforms) {
@@ -69,38 +113,7 @@ public class BakedArmature {
         return finalTransforms;
     }
 
-    public IJointTransform getTransform(ISkinPartType partType) {
-        var joint = getJoint(partType);
-        if (joint != null) {
-            return finalTransforms[joint.getId()];
-        }
-        return null;
-    }
-
-    public IJoint getJoint(ISkinPartType partType) {
-        var joint = armature.getJoint(partType);
-        if (joint != null && filter != null && !filter.test(joint)) {
-            return null;
-        }
-        return joint;
-    }
-
     public Armature getArmature() {
         return armature;
-    }
-
-    public IJointTransform getTransform(BakedSkinPart bakedPart) {
-        var partType = bakedPart.getType();
-        if (partType == SkinPartTypes.BIPPED_LEFT_WING) {
-            if (bakedPart.getProperties().get(SkinProperty.WINGS_MATCHING_POSE)) {
-                return getTransform(SkinPartTypes.BIPPED_LEFT_PHALANX);
-            }
-        }
-        if (partType == SkinPartTypes.BIPPED_RIGHT_WING) {
-            if (bakedPart.getProperties().get(SkinProperty.WINGS_MATCHING_POSE)) {
-                return getTransform(SkinPartTypes.BIPPED_RIGHT_PHALANX);
-            }
-        }
-        return getTransform(partType);
     }
 }

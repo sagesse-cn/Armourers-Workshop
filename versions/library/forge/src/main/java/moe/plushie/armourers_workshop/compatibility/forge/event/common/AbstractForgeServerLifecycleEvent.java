@@ -3,10 +3,10 @@ package moe.plushie.armourers_workshop.compatibility.forge.event.common;
 import moe.plushie.armourers_workshop.api.annotation.Available;
 import moe.plushie.armourers_workshop.api.registry.IEventHandler;
 import moe.plushie.armourers_workshop.compatibility.forge.AbstractForgeCommonEventsImpl;
-import moe.plushie.armourers_workshop.init.platform.event.common.ServerStartedEvent;
-import moe.plushie.armourers_workshop.init.platform.event.common.ServerStartingEvent;
-import moe.plushie.armourers_workshop.init.platform.event.common.ServerStoppedEvent;
-import moe.plushie.armourers_workshop.init.platform.event.common.ServerStoppingEvent;
+import moe.plushie.armourers_workshop.init.event.common.ServerStartedEvent;
+import moe.plushie.armourers_workshop.init.event.common.ServerStartingEvent;
+import moe.plushie.armourers_workshop.init.event.common.ServerStoppedEvent;
+import moe.plushie.armourers_workshop.init.event.common.ServerStoppingEvent;
 
 @Available("[1.16, )")
 public class AbstractForgeServerLifecycleEvent {

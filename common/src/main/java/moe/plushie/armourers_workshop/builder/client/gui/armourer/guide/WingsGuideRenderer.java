@@ -1,7 +1,6 @@
 package moe.plushie.armourers_workshop.builder.client.gui.armourer.guide;
 
 import moe.plushie.armourers_workshop.api.client.IBufferSource;
-import moe.plushie.armourers_workshop.api.client.guide.IGuideDataProvider;
 import moe.plushie.armourers_workshop.api.core.math.IPoseStack;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPartTypes;
 import net.fabricmc.api.EnvType;
@@ -26,7 +25,7 @@ public class WingsGuideRenderer extends AbstractGuideRenderer {
     }
 
 
-    public void render(IPoseStack poseStack, IGuideDataProvider provider, int light, int overlay, IBufferSource bufferSource) {
+    public void render(IPoseStack poseStack, GuideDataProvider provider, int light, int overlay, IBufferSource bufferSource) {
         float f = 1 / 16f;
         poseStack.pushPose();
         poseStack.translate(0, 0, -2 * f);

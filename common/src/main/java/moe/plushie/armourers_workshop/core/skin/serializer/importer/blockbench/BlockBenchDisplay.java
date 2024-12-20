@@ -1,46 +1,46 @@
 package moe.plushie.armourers_workshop.core.skin.serializer.importer.blockbench;
 
-import moe.plushie.armourers_workshop.core.math.Vector3f;
+import moe.plushie.armourers_workshop.core.math.OpenVector3f;
 
 public class BlockBenchDisplay {
 
-    private final Vector3f translation;
-    private final Vector3f rotation;
-    private final Vector3f scale;
+    private final OpenVector3f translation;
+    private final OpenVector3f rotation;
+    private final OpenVector3f scale;
 
-    public BlockBenchDisplay(Vector3f translation, Vector3f rotation, Vector3f scale) {
+    public BlockBenchDisplay(OpenVector3f translation, OpenVector3f rotation, OpenVector3f scale) {
         this.translation = translation;
         this.rotation = rotation;
         this.scale = scale;
     }
 
-    public Vector3f getTranslation() {
+    public OpenVector3f getTranslation() {
         return translation;
     }
 
-    public Vector3f getRotation() {
+    public OpenVector3f getRotation() {
         return rotation;
     }
 
-    public Vector3f getScale() {
+    public OpenVector3f getScale() {
         return scale;
     }
 
     protected static class Builder {
 
-        private Vector3f translation = Vector3f.ZERO;
-        private Vector3f rotation = Vector3f.ZERO;
-        private Vector3f scale = Vector3f.ONE;
+        private OpenVector3f translation = OpenVector3f.ZERO;
+        private OpenVector3f rotation = OpenVector3f.ZERO;
+        private OpenVector3f scale = OpenVector3f.ONE;
 
-        public void translation(Vector3f translation) {
+        public void translation(OpenVector3f translation) {
             this.translation = translation;
         }
 
-        public void rotation(Vector3f rotation) {
+        public void rotation(OpenVector3f rotation) {
             this.rotation = rotation;
         }
 
-        public void scale(Vector3f scale) {
+        public void scale(OpenVector3f scale) {
             this.scale = scale;
         }
 

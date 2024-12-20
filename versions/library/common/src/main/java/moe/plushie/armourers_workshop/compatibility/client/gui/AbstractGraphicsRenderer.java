@@ -54,13 +54,13 @@ public class AbstractGraphicsRenderer implements CGGraphicsRenderer, CGGraphicsS
         // but we can to handle the break the newline.
         var font1 = font.impl();
         var texts = font1.split(text.component(), 100000);
-        graphics.renderTooltip(font1, texts, (int) mousePos.getX(), (int) mousePos.getY());
+        graphics.renderTooltip(font1, texts, (int) mousePos.x(), (int) mousePos.y());
     }
 
     @Override
     public void renderTooltip(ItemStack itemStack, CGRect rect, UIFont font, CGGraphicsContext context) {
         var font1 = font.impl();
-        graphics.renderTooltip(font1, itemStack, (int) mousePos.getX(), (int) mousePos.getY());
+        graphics.renderTooltip(font1, itemStack, (int) mousePos.x(), (int) mousePos.y());
     }
 
     @Override

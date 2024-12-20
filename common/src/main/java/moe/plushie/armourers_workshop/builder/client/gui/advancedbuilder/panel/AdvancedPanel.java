@@ -13,10 +13,10 @@ import com.apple.library.uikit.UIEdgeInsets;
 import com.apple.library.uikit.UIImage;
 import com.apple.library.uikit.UILabel;
 import com.apple.library.uikit.UIView;
-import moe.plushie.armourers_workshop.api.data.IDataProperty;
 import moe.plushie.armourers_workshop.builder.client.gui.advancedbuilder.document.DocumentEditor;
 import moe.plushie.armourers_workshop.builder.client.gui.widget.NewSlider;
-import moe.plushie.armourers_workshop.builder.data.properties.VectorProperty;
+import moe.plushie.armourers_workshop.builder.data.properties.DataProperty;
+import moe.plushie.armourers_workshop.builder.data.properties.Vector3fProperty;
 import moe.plushie.armourers_workshop.core.skin.serializer.document.SkinDocument;
 import moe.plushie.armourers_workshop.init.ModTextures;
 import org.apache.commons.lang3.tuple.Pair;
@@ -96,7 +96,7 @@ public abstract class AdvancedPanel extends UIView {
             super(CGRect.ZERO);
             this.titleView.setText(name);
             this.titleView.setTextColor(UIColor.WHITE);
-            this.titleView.setFrame(new CGRect(8, 4, bounds().getWidth(), 10));
+            this.titleView.setFrame(new CGRect(8, 4, bounds().width(), 10));
             this.titleView.setAutoresizingMask(AutoresizingMask.flexibleWidth | AutoresizingMask.flexibleBottomMargin);
             this.setContents(UIImage.of(ModTextures.ADVANCED_SKIN_BUILDER).uv(24, 24).fixed(24, 24).clip(4, 4, 4, 4).build());
             this.addSubview(titleView);
@@ -104,23 +104,23 @@ public abstract class AdvancedPanel extends UIView {
 
         @Override
         public float layout(float x0, float x1, float x2, float x3, float spacing) {
-            float top = titleView.frame().getMaxY() + 4f + spacing;
+            float top = titleView.frame().maxY() + 4f + spacing;
             for (var it : lines) {
                 var rightView = it.getValue();
                 var rightFrame = rightView.frame().copy();
                 var leftView = it.getLeft();
-                float height = rightFrame.getHeight();
+                var height = rightFrame.height;
                 if (leftView != null) {
                     var leftFrame = leftView.frame().copy();
-                    height = Math.max(height, leftFrame.getHeight());
+                    height = Math.max(height, leftFrame.height);
                     leftFrame.x = x0;
-                    leftFrame.y = top + (height - leftFrame.getHeight()) / 2;
+                    leftFrame.y = top + (height - leftFrame.height) / 2;
                     leftFrame.width = x1 - x0;
                     leftView.setFrame(leftFrame);
                     leftView.setAutoresizingMask(AutoresizingMask.flexibleRightMargin | AutoresizingMask.flexibleBottomMargin);
                 }
                 rightFrame.x = x2;
-                rightFrame.y = top + (height - rightFrame.getHeight()) / 2;
+                rightFrame.y = top + (height - rightFrame.height) / 2;
                 rightFrame.width = x3 - x2;
                 rightView.setFrame(rightFrame);
                 rightView.setAutoresizingMask(AutoresizingMask.flexibleWidth | AutoresizingMask.flexibleBottomMargin);
@@ -131,12 +131,12 @@ public abstract class AdvancedPanel extends UIView {
         }
 
         // [x] name
-        public void bool(@Nullable NSString name, IDataProperty<Boolean> property) {
+        public void bool(@Nullable NSString name, DataProperty<Boolean> property) {
             bool(name, null, property);
         }
 
         // [x] name
-        public void bool(@Nullable NSString name, @Nullable NSString desc, IDataProperty<Boolean> property) {
+        public void bool(@Nullable NSString name, @Nullable NSString desc, DataProperty<Boolean> property) {
             var box = new UICheckBox(new CGRect(0, 0, 80, 16));
             box.setTitle(desc);
             box.addTarget(property, UIControl.Event.VALUE_CHANGED, (pro, ctrl) -> {
@@ -148,7 +148,7 @@ public abstract class AdvancedPanel extends UIView {
         }
 
         // name [ --- ]
-        public void slider(@Nullable NSString name, IDataProperty<Float> property, Unit unit) {
+        public void slider(@Nullable NSString name, DataProperty<Float> property, Unit unit) {
             var view = new NewSlider(new CGRect(0, 0, 80, 16));
             view.setFormatter(unit);
             view.setStepValue(unit.stepValue);
@@ -167,7 +167,7 @@ public abstract class AdvancedPanel extends UIView {
         // name x [ --- ]
         //      y [ --- ]
         //      z [ --- ]
-        public void vector(NSString name, VectorProperty property, Unit unit) {
+        public void vector(NSString name, Vector3fProperty property, Unit unit) {
             var name1 = new NSMutableString(name);
             name1.append(" ");
             name1.append("X");
@@ -252,7 +252,7 @@ public abstract class AdvancedPanel extends UIView {
 
         @Override
         public float layout(float x0, float x1, float x2, float x3, float spacing) {
-            return contentView.bounds().getHeight();
+            return contentView.bounds().height();
         }
 
         @Override

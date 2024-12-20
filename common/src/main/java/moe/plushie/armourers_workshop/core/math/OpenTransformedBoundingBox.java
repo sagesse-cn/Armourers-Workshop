@@ -6,15 +6,15 @@ import java.util.ArrayList;
 public class OpenTransformedBoundingBox {
 
     private final OpenMatrix4f transform;
-    private final OpenBoundingBox boundingBox;
+    private final OpenAxisAlignedBoundingBox boundingBox;
 
-    private OpenBoundingBox transformedBoundingBox;
+    private OpenAxisAlignedBoundingBox transformedBoundingBox;
 
-    private Vector3f size;
-    private ArrayList<Vector3f> vertices;
+    private OpenVector3f size;
+    private ArrayList<OpenVector3f> vertices;
 
 
-    public OpenTransformedBoundingBox(OpenMatrix4f transform, OpenBoundingBox boundingBox) {
+    public OpenTransformedBoundingBox(OpenMatrix4f transform, OpenAxisAlignedBoundingBox boundingBox) {
         this.transform = transform;
         this.boundingBox = boundingBox;
 
@@ -40,10 +40,10 @@ public class OpenTransformedBoundingBox {
 
     }
 
-    public ArrayList<Vector3f> getVertices() {
+    public ArrayList<OpenVector3f> getVertices() {
         if (vertices == null) {
             vertices = _vertexs(boundingBox);
-            for (Vector3f v : vertices) {
+            for (OpenVector3f v : vertices) {
                 v.transform(transform);
             }
         }
@@ -51,7 +51,7 @@ public class OpenTransformedBoundingBox {
     }
 
 
-    public boolean intersects(OpenBoundingBox box) {
+    public boolean intersects(OpenAxisAlignedBoundingBox box) {
 //        ArrayList<Vector3f> v1 = getVertices();
 //        ArrayList<Vector3f> v2 = box.getVertices();
 //
@@ -59,7 +59,7 @@ public class OpenTransformedBoundingBox {
         return getTransformedBoundingBox().intersects(box);
     }
 
-//    public boolean intersects(float d, float e, float f, float g, float h, float i) {
+    //    public boolean intersects(float d, float e, float f, float g, float h, float i) {
 //        return getTransformedBoundingBox().intersects(d, e, f, g, h, i);
 //    }
 //
@@ -67,27 +67,27 @@ public class OpenTransformedBoundingBox {
         return transform;
     }
 
-    public OpenBoundingBox getBoundingBox() {
+    public OpenAxisAlignedBoundingBox getBoundingBox() {
         return boundingBox;
     }
 
-    public OpenBoundingBox getTransformedBoundingBox() {
+    public OpenAxisAlignedBoundingBox getTransformedBoundingBox() {
         if (transformedBoundingBox == null) {
             transformedBoundingBox = boundingBox.transforming(transform);
         }
         return transformedBoundingBox;
     }
 
-    private ArrayList<Vector3f> _vertexs(OpenBoundingBox box) {
-        ArrayList<Vector3f> v = new ArrayList<>();
-        v.add(new Vector3f(box.getMinX(), box.getMinY(), box.getMinZ()));
-        v.add(new Vector3f(box.getMaxX(), box.getMinY(), box.getMinZ()));
-        v.add(new Vector3f(box.getMinX(), box.getMaxY(), box.getMinZ()));
-        v.add(new Vector3f(box.getMaxX(), box.getMaxY(), box.getMinZ()));
-        v.add(new Vector3f(box.getMinX(), box.getMinY(), box.getMaxZ()));
-        v.add(new Vector3f(box.getMaxX(), box.getMinY(), box.getMaxZ()));
-        v.add(new Vector3f(box.getMinX(), box.getMaxY(), box.getMaxZ()));
-        v.add(new Vector3f(box.getMaxX(), box.getMaxY(), box.getMaxZ()));
+    private ArrayList<OpenVector3f> _vertexs(OpenAxisAlignedBoundingBox box) {
+        var v = new ArrayList<OpenVector3f>();
+        v.add(new OpenVector3f(box.minX(), box.minY(), box.minZ()));
+        v.add(new OpenVector3f(box.maxX(), box.minY(), box.minZ()));
+        v.add(new OpenVector3f(box.minX(), box.maxY(), box.minZ()));
+        v.add(new OpenVector3f(box.maxX(), box.maxY(), box.minZ()));
+        v.add(new OpenVector3f(box.minX(), box.minY(), box.maxZ()));
+        v.add(new OpenVector3f(box.maxX(), box.minY(), box.maxZ()));
+        v.add(new OpenVector3f(box.minX(), box.maxY(), box.maxZ()));
+        v.add(new OpenVector3f(box.maxX(), box.maxY(), box.maxZ()));
         return v;
     }
 }

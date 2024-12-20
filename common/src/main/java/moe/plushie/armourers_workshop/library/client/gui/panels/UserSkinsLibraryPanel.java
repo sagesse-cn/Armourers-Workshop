@@ -2,7 +2,7 @@ package moe.plushie.armourers_workshop.library.client.gui.panels;
 
 import com.apple.library.foundation.NSString;
 import moe.plushie.armourers_workshop.api.core.IResultHandler;
-import moe.plushie.armourers_workshop.api.skin.ISkinType;
+import moe.plushie.armourers_workshop.core.skin.SkinType;
 import moe.plushie.armourers_workshop.library.client.gui.GlobalSkinLibraryWindow;
 import moe.plushie.armourers_workshop.library.data.GlobalSkinLibrary;
 import moe.plushie.armourers_workshop.library.data.impl.SearchResult;
@@ -31,7 +31,7 @@ public class UserSkinsLibraryPanel extends SearchResultsLibraryPanel {
     }
 
     @Override
-    protected void doSearch(int pageIndex, int pageSize, ISkinType searchType, IResultHandler<SearchResult> handler) {
+    protected void doSearch(int pageIndex, int pageSize, SkinType searchType, IResultHandler<SearchResult> handler) {
         GlobalSkinLibrary.getInstance().getUserSkinList(user.getId(), pageIndex, pageSize, searchType, handler);
     }
 

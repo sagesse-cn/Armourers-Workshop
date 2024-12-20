@@ -27,6 +27,7 @@ import moe.plushie.armourers_workshop.core.data.ticket.Ticket;
 import moe.plushie.armourers_workshop.core.math.OpenMath;
 import moe.plushie.armourers_workshop.core.skin.SkinDescriptor;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperty;
+import moe.plushie.armourers_workshop.core.skin.serializer.SkinFile;
 import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintScheme;
 import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.init.ModConfig;
@@ -41,7 +42,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 @Environment(EnvType.CLIENT)
-public class SkinFileList extends UIControl implements UITableViewDataSource, UITableViewDelegate {
+public class SkinFileList<T extends SkinFile> extends UIControl implements UITableViewDataSource, UITableViewDelegate {
 
     private final EntryList tableView = new EntryList(CGRect.ZERO);
     private final EntryListIndicator scrollIndicator = new EntryListIndicator(new CGRect(0, 0, 10, 100));
@@ -79,7 +80,7 @@ public class SkinFileList extends UIControl implements UITableViewDataSource, UI
         addSubview(scrollIndicator);
     }
 
-    public void reloadData(Collection<ISkinLibrary.Entry> entries) {
+    public void reloadData(Collection<T> entries) {
         loadTicket.invalidate();
         cells.clear();
         entries.forEach(entry -> cells.add(new Entry(entry)));
@@ -122,7 +123,7 @@ public class SkinFileList extends UIControl implements UITableViewDataSource, UI
     }
 
     @Nullable
-    public ISkinLibrary.Entry getSelectedItem() {
+    public T getSelectedItem() {
         if (selectedItem != null) {
             return selectedItem.entry;
         }
@@ -143,19 +144,19 @@ public class SkinFileList extends UIControl implements UITableViewDataSource, UI
     }
 
     private void updateContentOffsetIfNeeded(UIControl sender) {
-        CGPoint offset = tableView.contentOffset();
-        CGSize size = tableView.contentSize();
-        int value = (int) ((size.height - tableView.frame().getHeight()) * scrollIndicator.value());
+        var offset = tableView.contentOffset();
+        var size = tableView.contentSize();
+        var value = ((size.height - tableView.frame().height()) * scrollIndicator.value());
         if (offset.y != value) {
             tableView.setContentOffset(new CGPoint(offset.x, value));
         }
     }
 
     private void updateProgressIfNeeded() {
-        CGPoint offset = tableView.contentOffset();
-        CGSize size = tableView.contentSize();
-        float value = 0;
-        float height = size.height - tableView.frame().getHeight();
+        var offset = tableView.contentOffset();
+        var size = tableView.contentSize();
+        var value = 0f;
+        var height = size.height - tableView.frame().height();
         if (offset.y != 0 && height > 0) {
             value = offset.y / height;
         }
@@ -166,7 +167,7 @@ public class SkinFileList extends UIControl implements UITableViewDataSource, UI
         if (entry == null) {
             return null;
         }
-        for (Entry cell : cells) {
+        for (var cell : cells) {
             if (cell.entry.equals(entry)) {
                 return cell;
             }
@@ -174,8 +175,8 @@ public class SkinFileList extends UIControl implements UITableViewDataSource, UI
         return null;
     }
 
-    public ISkinLibrary.Entry getItem(int index) {
-        Entry entry = getEntry(index);
+    public SkinFile getItem(int index) {
+        var entry = getEntry(index);
         if (entry != null) {
             return entry.entry;
         }
@@ -192,7 +193,7 @@ public class SkinFileList extends UIControl implements UITableViewDataSource, UI
     public class Entry extends UITableViewCell {
 
         private final NSString title;
-        private final ISkinLibrary.Entry entry;
+        private final T entry;
         private final UIFont font = UIFont.systemFont(7);
 
         private final UIView iconView = new UIView(CGRect.ZERO);
@@ -200,7 +201,7 @@ public class SkinFileList extends UIControl implements UITableViewDataSource, UI
         private SkinDescriptor descriptor = SkinDescriptor.EMPTY;
         private String securityData;
 
-        public Entry(ISkinLibrary.Entry entry) {
+        public Entry(T entry) {
             super(CGRect.ZERO);
             this.title = new NSString(entry.getName());
             this.entry = entry;
@@ -216,8 +217,8 @@ public class SkinFileList extends UIControl implements UITableViewDataSource, UI
         public void render(CGPoint point, CGGraphicsContext context) {
             float left = 0;
             float top = 0;
-            float width = bounds().getWidth();
-            float height = bounds().getHeight();
+            float width = bounds().width();
+            float height = bounds().height();
 
             int textColor = 0xffaaaaaa;
             int backgroundColor = 0;
@@ -285,7 +286,7 @@ public class SkinFileList extends UIControl implements UITableViewDataSource, UI
             var point = convertPointToView(CGPoint.ZERO, null);
             float size = 144;
             float dx = point.x - size - 5;
-            float dy = OpenMath.clamp(context.state().mousePos().getY() - size / 2f, 0, bounds.height - size);
+            float dy = OpenMath.clamp(context.state().mousePos().y() - size / 2f, 0, bounds.height - size);
             context.drawTilableImage(ModTextures.GUI_PREVIEW, dx, dy, size, size, 0, 0, 62, 62, 4, 4, 4, 4);
 
             var tooltips = Collections.compactMap(ItemTooltipManager.createSkinInfo(bakedSkin), NSString::new);

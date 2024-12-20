@@ -1,7 +1,7 @@
 package moe.plushie.armourers_workshop.core.utils;
 
 import moe.plushie.armourers_workshop.api.core.utils.IDirection;
-import moe.plushie.armourers_workshop.core.math.Vector3i;
+import moe.plushie.armourers_workshop.core.math.OpenVector3i;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -14,12 +14,12 @@ import java.util.stream.Stream;
 
 public enum OpenDirection implements IDirection {
 
-    DOWN(0, 1, -1, "down", AxisDirection.NEGATIVE, Axis.Y, new Vector3i(0, -1, 0)),
-    UP(1, 0, -1, "up", AxisDirection.POSITIVE, Axis.Y, new Vector3i(0, 1, 0)),
-    NORTH(2, 3, 2, "north", AxisDirection.NEGATIVE, Axis.Z, new Vector3i(0, 0, -1)),
-    SOUTH(3, 2, 0, "south", AxisDirection.POSITIVE, Axis.Z, new Vector3i(0, 0, 1)),
-    WEST(4, 5, 1, "west", AxisDirection.NEGATIVE, Axis.X, new Vector3i(-1, 0, 0)),
-    EAST(5, 4, 3, "east", AxisDirection.POSITIVE, Axis.X, new Vector3i(1, 0, 0));
+    DOWN(0, 1, -1, "down", AxisDirection.NEGATIVE, Axis.Y, new OpenVector3i(0, -1, 0)),
+    UP(1, 0, -1, "up", AxisDirection.POSITIVE, Axis.Y, new OpenVector3i(0, 1, 0)),
+    NORTH(2, 3, 2, "north", AxisDirection.NEGATIVE, Axis.Z, new OpenVector3i(0, 0, -1)),
+    SOUTH(3, 2, 0, "south", AxisDirection.POSITIVE, Axis.Z, new OpenVector3i(0, 0, 1)),
+    WEST(4, 5, 1, "west", AxisDirection.NEGATIVE, Axis.X, new OpenVector3i(-1, 0, 0)),
+    EAST(5, 4, 3, "east", AxisDirection.POSITIVE, Axis.X, new OpenVector3i(1, 0, 0));
 
     private final int data3d;
     private final int oppositeIndex;
@@ -27,7 +27,7 @@ public enum OpenDirection implements IDirection {
     private final String name;
     private final Axis axis;
     private final AxisDirection axisDirection;
-    private final Vector3i normal;
+    private final OpenVector3i normal;
     private static final OpenDirection[] VALUES = values();
     private static final OpenDirection[] BY_3D_DATA = Arrays.stream(VALUES)
             .sorted(Comparator.comparingInt(direction -> direction.data3d))
@@ -41,7 +41,7 @@ public enum OpenDirection implements IDirection {
 
 
     OpenDirection(
-            final int j, final int k, final int l, final String string2, final AxisDirection axisDirection, final Axis axis, final Vector3i vec3i
+            final int j, final int k, final int l, final String string2, final AxisDirection axisDirection, final Axis axis, final OpenVector3i vec3i
     ) {
         this.data3d = j;
         this.data2d = l;
@@ -63,14 +63,6 @@ public enum OpenDirection implements IDirection {
             }
             return dirs;
         });
-    }
-
-    public static OpenDirection of(Enum<?> value) {
-        return values()[value.ordinal()];
-    }
-
-    public static OpenDirection of(IDirection direction) {
-        return (OpenDirection) direction;
     }
 
     public static Stream<OpenDirection> stream() {
@@ -115,15 +107,15 @@ public enum OpenDirection implements IDirection {
     }
 
     public int getStepX() {
-        return this.normal.getX();
+        return this.normal.x();
     }
 
     public int getStepY() {
-        return this.normal.getY();
+        return this.normal.y();
     }
 
     public int getStepZ() {
-        return this.normal.getZ();
+        return this.normal.z();
     }
 
     public String getName() {
@@ -157,7 +149,7 @@ public enum OpenDirection implements IDirection {
         throw new IllegalArgumentException("No such direction: " + axisDirection + " " + axis);
     }
 
-    public Vector3i getNormal() {
+    public OpenVector3i getNormal() {
         return this.normal;
     }
 

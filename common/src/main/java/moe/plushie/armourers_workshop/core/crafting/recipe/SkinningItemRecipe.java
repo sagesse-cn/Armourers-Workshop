@@ -1,16 +1,15 @@
 package moe.plushie.armourers_workshop.core.crafting.recipe;
 
-import moe.plushie.armourers_workshop.api.skin.ISkinToolType;
-import moe.plushie.armourers_workshop.api.skin.ISkinType;
+import moe.plushie.armourers_workshop.core.skin.SkinType;
 import net.minecraft.world.item.ItemStack;
 
 public class SkinningItemRecipe extends SkinningRecipe {
 
-    private ISkinToolType toolType;
+    private SkinType.Tool toolType;
 
-    public SkinningItemRecipe(ISkinType skinType) {
+    public SkinningItemRecipe(SkinType skinType) {
         super(skinType);
-        if (skinType instanceof ISkinToolType toolType) {
+        if (skinType instanceof SkinType.Tool toolType) {
             this.toolType = toolType;
         }
     }

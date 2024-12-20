@@ -16,7 +16,7 @@ public class UIPopoverView extends UIWindow {
     }
 
     public void dismiss() {
-        UIWindowManager windowManager = getWindowManagerFromView(this);
+        var windowManager = getWindowManagerFromView(this);
         if (windowManager != null) {
             windowManager.removeWindow(this);
             windowManager._setNeedsUpdateFocus();
@@ -24,7 +24,7 @@ public class UIPopoverView extends UIWindow {
     }
 
     public void showInView(UIView view) {
-        UIWindowManager windowManager = getWindowManagerFromView(view);
+        var windowManager = getWindowManagerFromView(view);
         if (windowManager != null) {
             windowManager.addWindow(this);
         }
@@ -33,7 +33,7 @@ public class UIPopoverView extends UIWindow {
     @Override
     public void layoutSubviews() {
         super.layoutSubviews();
-        CGRect rect = bounds();
+        var rect = bounds();
         if (contentView != null) {
             contentView.setCenter(new CGPoint(rect.width / 2, rect.height / 2));
         }
@@ -51,7 +51,7 @@ public class UIPopoverView extends UIWindow {
 
     @Override
     public UIView hitTest(CGPoint point, UIEvent event) {
-        UIView view = super.hitTest(point, event);
+        var view = super.hitTest(point, event);
         if (view != null) {
             return view;
         }
@@ -60,7 +60,7 @@ public class UIPopoverView extends UIWindow {
 
     @Override
     public UIView firstTooltipResponder() {
-        UIView view = super.firstTooltipResponder();
+        var view = super.firstTooltipResponder();
         if (view != null) {
             return view;
         }
@@ -89,7 +89,7 @@ public class UIPopoverView extends UIWindow {
         if (view instanceof UIWindow window) {
             return window.getWindowManager();
         }
-        UIWindow window = view.window();
+        var window = view.window();
         if (window != null) {
             return window.getWindowManager();
         }

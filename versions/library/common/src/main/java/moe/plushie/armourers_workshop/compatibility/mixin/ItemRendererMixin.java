@@ -2,10 +2,10 @@ package moe.plushie.armourers_workshop.compatibility.mixin;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import moe.plushie.armourers_workshop.api.annotation.Available;
+import moe.plushie.armourers_workshop.compatibility.client.AbstractItemDisplayContext;
 import moe.plushie.armourers_workshop.core.client.model.BakedModelStorage;
 import moe.plushie.armourers_workshop.init.client.ClientWardrobeHandler;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.world.entity.LivingEntity;
@@ -42,6 +42,6 @@ public class ItemRendererMixin {
         var level = storage.getLevel();
         var embeddedStack = storage.getEmbeddedStack();
         var embeddedProperties = storage.getEmbeddedProperties();
-        ClientWardrobeHandler.renderEmbeddedSkin(entity, level, itemStack, embeddedStack, embeddedProperties, ItemTransforms.ofType(transformType), leftHandHackery, poseStack, buffers, resolvedModel, packedLight, overlay, ci);
+        ClientWardrobeHandler.renderEmbeddedSkin(entity, level, itemStack, embeddedStack, embeddedProperties, AbstractItemDisplayContext.wrap(transformType), leftHandHackery, poseStack, buffers, resolvedModel, packedLight, overlay, ci);
     }
 }

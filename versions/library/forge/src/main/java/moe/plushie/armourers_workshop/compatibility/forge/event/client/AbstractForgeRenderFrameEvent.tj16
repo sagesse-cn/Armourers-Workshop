@@ -4,7 +4,7 @@ import moe.plushie.armourers_workshop.api.annotation.Available;
 import moe.plushie.armourers_workshop.api.registry.IEventHandler;
 import moe.plushie.armourers_workshop.compatibility.core.AbstractDeltaTracker;
 import moe.plushie.armourers_workshop.compatibility.forge.AbstractForgeClientEventsImpl;
-import moe.plushie.armourers_workshop.init.platform.event.client.RenderFrameEvent;
+import moe.plushie.armourers_workshop.init.event.client.RenderFrameEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.event.TickEvent;
 

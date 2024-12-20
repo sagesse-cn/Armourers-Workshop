@@ -167,10 +167,10 @@ public class TextStorageImpl {
         var buffers = AbstractBufferSource.buffer();
         var builder = buffers.getBuffer(SkinRenderType.GUI_HIGHLIGHTED_TEXT);
         for (var rect : highlightedRects) {
-            builder.vertex(pose, rect.getMinX(), rect.getMaxY(), 0).endVertex();
-            builder.vertex(pose, rect.getMaxX(), rect.getMaxY(), 0).endVertex();
-            builder.vertex(pose, rect.getMaxX(), rect.getMinY(), 0).endVertex();
-            builder.vertex(pose, rect.getMinX(), rect.getMinY(), 0).endVertex();
+            builder.vertex(pose, rect.minX(), rect.maxY(), 0).endVertex();
+            builder.vertex(pose, rect.maxX(), rect.maxY(), 0).endVertex();
+            builder.vertex(pose, rect.maxX(), rect.minY(), 0).endVertex();
+            builder.vertex(pose, rect.minX(), rect.minY(), 0).endVertex();
         }
         context.setBlendColor(AppearanceImpl.TEXT_HIGHLIGHTED_COLOR);
         buffers.endBatch();
@@ -595,11 +595,11 @@ public class TextStorageImpl {
         }
 
         boolean insideAtX(float x) {
-            return rect.getMinX() <= x && x < rect.getMaxX();
+            return rect.minX() <= x && x < rect.maxX();
         }
 
         boolean insideAtY(float y) {
-            return rect.getMinY() <= y && y < rect.getMaxY();
+            return rect.minY() <= y && y < rect.maxY();
         }
 
         CGPoint startPoint() {

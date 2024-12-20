@@ -3,11 +3,11 @@ package moe.plushie.armourers_workshop.init.platform.fabric.proxy;
 import moe.plushie.armourers_workshop.ArmourersWorkshop;
 import moe.plushie.armourers_workshop.api.common.IBlockHandler;
 import moe.plushie.armourers_workshop.api.common.IItemHandler;
+import moe.plushie.armourers_workshop.api.event.EventBus;
 import moe.plushie.armourers_workshop.init.environment.EnvironmentExecutor;
 import moe.plushie.armourers_workshop.init.environment.EnvironmentType;
-import moe.plushie.armourers_workshop.init.platform.EventManager;
-import moe.plushie.armourers_workshop.init.platform.event.common.ServerStartingEvent;
-import moe.plushie.armourers_workshop.init.platform.event.common.ServerStoppedEvent;
+import moe.plushie.armourers_workshop.init.event.common.ServerStartingEvent;
+import moe.plushie.armourers_workshop.init.event.common.ServerStoppedEvent;
 import moe.plushie.armourers_workshop.init.platform.fabric.EnvironmentManagerImpl;
 import moe.plushie.armourers_workshop.init.platform.fabric.config.FabricConfig;
 import moe.plushie.armourers_workshop.init.platform.fabric.config.FabricConfigTracker;
@@ -35,8 +35,8 @@ public class CommonProxyImpl implements ModInitializer {
         ArmourersWorkshop.init();
 
         // prioritize handle.
-        EventManager.listen(ServerStartingEvent.class, event -> EnvironmentManagerImpl.attach(event.getServer()));
-        EventManager.listen(ServerStoppedEvent.class, event -> EnvironmentManagerImpl.detach(event.getServer()));
+        EventBus.register(ServerStartingEvent.class, event -> EnvironmentManagerImpl.attach(event.getServer()));
+        EventBus.register(ServerStoppedEvent.class, event -> EnvironmentManagerImpl.detach(event.getServer()));
 
         EnvironmentExecutor.willInit(EnvironmentType.COMMON);
         EnvironmentExecutor.willSetup(EnvironmentType.COMMON);

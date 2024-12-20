@@ -9,6 +9,7 @@ import moe.plushie.armourers_workshop.api.core.IDataSerializerKey;
 import moe.plushie.armourers_workshop.compatibility.core.AbstractLivingEntity;
 import moe.plushie.armourers_workshop.core.capability.SkinWardrobe;
 import moe.plushie.armourers_workshop.core.item.option.MannequinToolOptions;
+import moe.plushie.armourers_workshop.core.math.OpenMath;
 import moe.plushie.armourers_workshop.core.skin.texture.EntityTextureDescriptor;
 import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.core.utils.Constants;
@@ -19,7 +20,6 @@ import moe.plushie.armourers_workshop.init.ModEntityTypes;
 import moe.plushie.armourers_workshop.init.ModItems;
 import moe.plushie.armourers_workshop.init.ModMenuTypes;
 import moe.plushie.armourers_workshop.init.environment.EnvironmentExecutorIO;
-import moe.plushie.armourers_workshop.utils.TrigUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.Rotations;
@@ -237,7 +237,7 @@ public class MannequinEntity extends AbstractLivingEntity.ArmorStand implements 
             if (EnvironmentExecutorIO.hasControlDown()) {
                 return super.interactAt(player, pos, hand);
             }
-            var ry = TrigUtils.getAngleDegrees(player.getX(), player.getZ(), getX(), getZ()) + 90.0;
+            var ry = OpenMath.getAngleDegrees(player.getX(), player.getZ(), getX(), getZ()) + 90.0;
             var rotations = getBodyPose();
             var yRot = this.getYRot();
             setBodyPose(new Rotations(rotations.getX(), (float) ry - yRot, rotations.getZ()));

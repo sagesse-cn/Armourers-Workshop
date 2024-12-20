@@ -4,9 +4,9 @@ import moe.plushie.armourers_workshop.api.skin.texture.ISkinPaintColor;
 import moe.plushie.armourers_workshop.core.data.ItemStackStorage;
 import moe.plushie.armourers_workshop.core.data.color.BlockPaintColor;
 import moe.plushie.armourers_workshop.core.math.OpenMath;
+import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintType;
 import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintTypes;
 import moe.plushie.armourers_workshop.init.ModDataComponents;
-import moe.plushie.armourers_workshop.utils.TranslateUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -247,7 +247,7 @@ public class ColorUtils {
         }
         var paintType = color.getPaintType();
         var hexColor = String.format("#%06x", rgb & 0xffffff);
-        var paintName = TranslateUtils.Name.of(paintType);
+        var paintName = TranslateUtils.Name.of((SkinPaintType) paintType);
         tooltips.add(TranslateUtils.subtitle("item.armourers_workshop.rollover.colour", rgb & 0xffffff));
         tooltips.add(TranslateUtils.subtitle("item.armourers_workshop.rollover.hex", hexColor));
         tooltips.add(TranslateUtils.subtitle("item.armourers_workshop.rollover.paintType", paintName));

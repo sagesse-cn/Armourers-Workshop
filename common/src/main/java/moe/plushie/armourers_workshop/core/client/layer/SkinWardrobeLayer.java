@@ -3,8 +3,9 @@ package moe.plushie.armourers_workshop.core.client.layer;
 import moe.plushie.armourers_workshop.api.client.IBufferSource;
 import moe.plushie.armourers_workshop.api.client.model.IModel;
 import moe.plushie.armourers_workshop.api.core.math.IPoseStack;
-import moe.plushie.armourers_workshop.compatibility.AbstractRenderLayer;
 import moe.plushie.armourers_workshop.compatibility.client.AbstractPoseStack;
+import moe.plushie.armourers_workshop.compatibility.client.AbstractRenderLayer;
+import moe.plushie.armourers_workshop.compatibility.client.model.AbstractModelHolder;
 import moe.plushie.armourers_workshop.core.client.bake.BakedArmature;
 import moe.plushie.armourers_workshop.core.client.bake.BakedArmatureTransformer;
 import moe.plushie.armourers_workshop.core.client.other.EntityRenderData;
@@ -12,7 +13,6 @@ import moe.plushie.armourers_workshop.core.client.other.SkinItemSource;
 import moe.plushie.armourers_workshop.core.client.skinrender.SkinRenderer;
 import moe.plushie.armourers_workshop.core.client.skinrender.patch.EpicFightEntityRendererPatch;
 import moe.plushie.armourers_workshop.core.utils.Objects;
-import moe.plushie.armourers_workshop.utils.ModelHolder;
 import moe.plushie.armourers_workshop.utils.RenderSystem;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -64,7 +64,7 @@ public class SkinWardrobeLayer<T extends Entity, V extends EntityModel<T>, M ext
 
         // apply the model baby scale.
         if (epicFlightContext == null) {
-            applyModelScale(poseStack, ModelHolder.of(getParentModel()));
+            applyModelScale(poseStack, AbstractModelHolder.of(getParentModel()));
         }
 
         var f = 1 / 16f;
@@ -104,7 +104,7 @@ public class SkinWardrobeLayer<T extends Entity, V extends EntityModel<T>, M ext
             var scale = 1 / babyPose.getHeadScale();
             var offset = babyPose.getHeadOffset();
             poseStack.scale(scale, scale, scale);
-            poseStack.translate(offset.getX() / 16f, offset.getY() / 16f, offset.getZ() / 16f);
+            poseStack.translate(offset.x() / 16f, offset.y() / 16f, offset.z() / 16f);
         }
     }
 }

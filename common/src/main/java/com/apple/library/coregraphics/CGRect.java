@@ -31,18 +31,18 @@ public class CGRect implements InterpolableImpl<CGRect> {
     }
 
     public void apply(CGAffineTransform t) {
-        CGPoint tl = new CGPoint(getMinX(), getMinY());
-        CGPoint tr = new CGPoint(getMaxX(), getMinY());
-        CGPoint bl = new CGPoint(getMinX(), getMaxY());
-        CGPoint br = new CGPoint(getMaxX(), getMaxY());
+        var tl = new CGPoint(minX(), minY());
+        var tr = new CGPoint(maxX(), minY());
+        var bl = new CGPoint(minX(), maxY());
+        var br = new CGPoint(maxX(), maxY());
         tl.apply(t);
         tr.apply(t);
         bl.apply(t);
         br.apply(t);
-        float minX = Math.min(Math.min(tl.x, tr.x), Math.min(bl.x, br.x));
-        float minY = Math.min(Math.min(tl.y, tr.y), Math.min(bl.y, br.y));
-        float maxX = Math.max(Math.max(tl.x, tr.x), Math.max(bl.x, br.x));
-        float maxY = Math.max(Math.max(tl.y, tr.y), Math.max(bl.y, br.y));
+        float minX = Math.min(Math.min(tl.x(), tr.x()), Math.min(bl.x(), br.x()));
+        float minY = Math.min(Math.min(tl.y(), tr.y()), Math.min(bl.y(), br.y()));
+        float maxX = Math.max(Math.max(tl.x(), tr.x()), Math.max(bl.x(), br.x()));
+        float maxY = Math.max(Math.max(tl.y(), tr.y()), Math.max(bl.y(), br.y()));
         this.x = minX;
         this.y = minY;
         this.width = maxX - minX;
@@ -90,9 +90,9 @@ public class CGRect implements InterpolableImpl<CGRect> {
         if (w <= 0 || h <= 0) {
             return false;
         }
-        double x0 = getX();
-        double y0 = getY();
-        return (x + w > x0 && y + h > y0 && x < x0 + getWidth() && y < y0 + getHeight());
+        double x0 = x();
+        double y0 = y();
+        return (x + w > x0 && y + h > y0 && x < x0 + width() && y < y0 + height());
     }
 
     public CGRect offset(CGPoint point) {
@@ -120,15 +120,15 @@ public class CGRect implements InterpolableImpl<CGRect> {
     }
 
     public boolean contains(double x, double y) {
-        double x0 = getX();
-        double y0 = getY();
-        return (x >= x0 && y >= y0 && x <= x0 + getWidth() && y <= y0 + getHeight());
+        double x0 = x();
+        double y0 = y();
+        return (x >= x0 && y >= y0 && x <= x0 + width() && y <= y0 + height());
     }
 
     private boolean contains(float x, float y) {
-        float x0 = getX();
-        float y0 = getY();
-        return (x >= x0 && y >= y0 && x < x0 + getWidth() && y < y0 + getHeight());
+        float x0 = x();
+        float y0 = y();
+        return (x >= x0 && y >= y0 && x < x0 + width() && y < y0 + height());
     }
 
     public CGRect copy() {
@@ -172,60 +172,16 @@ public class CGRect implements InterpolableImpl<CGRect> {
         this.x = x;
     }
 
-    public float getX() {
-        return x;
-    }
-
     public void setY(float y) {
         this.y = y;
-    }
-
-    public float getY() {
-        return y;
-    }
-
-    public float getMinX() {
-        return x;
     }
 
     public void setWidth(float width) {
         this.width = width;
     }
 
-    public float getWidth() {
-        return width;
-    }
-
     public void setHeight(float height) {
         this.height = height;
-    }
-
-    public float getHeight() {
-        return height;
-    }
-
-    public float getMinY() {
-        return y;
-    }
-
-    public float getMidX() {
-        return x + width / 2;
-    }
-
-    public float getMidY() {
-        return y + height / 2;
-    }
-
-    public float getMaxX() {
-        return x + width;
-    }
-
-    public float getMaxY() {
-        return y + height;
-    }
-
-    public CGSize size() {
-        return new CGSize(width, height);
     }
 
     public void setSize(CGSize size) {
@@ -233,12 +189,56 @@ public class CGRect implements InterpolableImpl<CGRect> {
         this.height = size.height;
     }
 
-    public CGPoint origin() {
-        return new CGPoint(x, y);
-    }
-
     public void setOrigin(CGPoint origin) {
         this.x = origin.x;
         this.y = origin.y;
+    }
+
+    public float x() {
+        return x;
+    }
+
+    public float y() {
+        return y;
+    }
+
+    public float width() {
+        return width;
+    }
+
+    public float height() {
+        return height;
+    }
+
+    public float minX() {
+        return x;
+    }
+
+    public float minY() {
+        return y;
+    }
+
+    public float midX() {
+        return x + width / 2;
+    }
+
+    public float midY() {
+        return y + height / 2;
+    }
+
+    public float maxX() {
+        return x + width;
+    }
+
+    public float maxY() {
+        return y + height;
+    }
+
+    public CGSize size() {
+        return new CGSize(width, height);
+    }
+
+    public CGPoint origin() {
+        return new CGPoint(x, y);
     }
 }

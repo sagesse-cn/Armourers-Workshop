@@ -13,18 +13,18 @@ import moe.plushie.armourers_workshop.compatibility.fabric.event.client.Abstract
 import moe.plushie.armourers_workshop.compatibility.fabric.event.client.AbstractFabricRenderScreenEvent;
 import moe.plushie.armourers_workshop.compatibility.fabric.event.client.AbstractFabricRenderSpecificHandEvent;
 import moe.plushie.armourers_workshop.init.platform.EventManager;
-import moe.plushie.armourers_workshop.init.platform.event.client.ClientPlayerEvent;
-import moe.plushie.armourers_workshop.init.platform.event.client.ItemTooltipEvent;
-import moe.plushie.armourers_workshop.init.platform.event.client.RegisterColorHandlersEvent;
-import moe.plushie.armourers_workshop.init.platform.event.client.RegisterItemPropertyEvent;
-import moe.plushie.armourers_workshop.init.platform.event.client.RegisterKeyMappingsEvent;
-import moe.plushie.armourers_workshop.init.platform.event.client.RegisterScreensEvent;
-import moe.plushie.armourers_workshop.init.platform.event.client.RegisterTextureEvent;
-import moe.plushie.armourers_workshop.init.platform.event.client.RenderFrameEvent;
-import moe.plushie.armourers_workshop.init.platform.event.client.RenderHighlightEvent;
-import moe.plushie.armourers_workshop.init.platform.event.client.RenderLivingEntityEvent;
-import moe.plushie.armourers_workshop.init.platform.event.client.RenderScreenEvent;
-import moe.plushie.armourers_workshop.init.platform.event.client.RenderSpecificHandEvent;
+import moe.plushie.armourers_workshop.init.event.client.ClientPlayerEvent;
+import moe.plushie.armourers_workshop.init.event.client.ItemTooltipEvent;
+import moe.plushie.armourers_workshop.init.event.client.RegisterColorHandlersEvent;
+import moe.plushie.armourers_workshop.init.event.client.RegisterItemPropertyEvent;
+import moe.plushie.armourers_workshop.init.event.client.RegisterKeyMappingsEvent;
+import moe.plushie.armourers_workshop.init.event.client.RegisterScreensEvent;
+import moe.plushie.armourers_workshop.init.event.client.RegisterTextureEvent;
+import moe.plushie.armourers_workshop.init.event.client.RenderFrameEvent;
+import moe.plushie.armourers_workshop.init.event.client.RenderHighlightEvent;
+import moe.plushie.armourers_workshop.init.event.client.RenderLivingEntityEvent;
+import moe.plushie.armourers_workshop.init.event.client.RenderScreenEvent;
+import moe.plushie.armourers_workshop.init.event.client.RenderSpecificHandEvent;
 
 public class AbstractFabricClientEvents {
 

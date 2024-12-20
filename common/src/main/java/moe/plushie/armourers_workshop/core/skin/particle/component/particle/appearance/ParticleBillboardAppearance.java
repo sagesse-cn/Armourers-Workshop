@@ -1,6 +1,6 @@
 package moe.plushie.armourers_workshop.core.skin.particle.component.particle.appearance;
 
-import moe.plushie.armourers_workshop.core.math.Size2i;
+import moe.plushie.armourers_workshop.core.math.OpenSize2i;
 import moe.plushie.armourers_workshop.core.skin.particle.SkinParticleBuilder;
 import moe.plushie.armourers_workshop.core.skin.particle.SkinParticleComponent;
 import moe.plushie.armourers_workshop.core.skin.particle.SkinParticleFacing;
@@ -15,7 +15,7 @@ public class ParticleBillboardAppearance extends SkinParticleComponent {
     private final OpenPrimitive width;
     private final OpenPrimitive height;
     private final SkinParticleFacing facingCameraMode;
-    private final Size2i textureSize;
+    private final OpenSize2i textureSize;
     private final OpenPrimitive textureCoordsX;
     private final OpenPrimitive textureCoordsY;
     private final OpenPrimitive textureCoordsWidth;
@@ -28,7 +28,7 @@ public class ParticleBillboardAppearance extends SkinParticleComponent {
     private final boolean isStretchToLifetime;
     private final boolean isLoop;
 
-    public ParticleBillboardAppearance(OpenPrimitive width, OpenPrimitive height, SkinParticleFacing facingCameraMode, Size2i textureSize, OpenPrimitive textureCoordsX, OpenPrimitive textureCoordsY, OpenPrimitive textureCoordsWidth, OpenPrimitive textureCoordsHeight, OpenPrimitive stepX, OpenPrimitive stepY, boolean isUseAnimation, int fps, OpenPrimitive maxFrame, boolean isStretchToLifetime, boolean isLoop) {
+    public ParticleBillboardAppearance(OpenPrimitive width, OpenPrimitive height, SkinParticleFacing facingCameraMode, OpenSize2i textureSize, OpenPrimitive textureCoordsX, OpenPrimitive textureCoordsY, OpenPrimitive textureCoordsWidth, OpenPrimitive textureCoordsHeight, OpenPrimitive stepX, OpenPrimitive stepY, boolean isUseAnimation, int fps, OpenPrimitive maxFrame, boolean isStretchToLifetime, boolean isLoop) {
         this.width = width;
         this.height = height;
         this.facingCameraMode = facingCameraMode;
@@ -52,7 +52,7 @@ public class ParticleBillboardAppearance extends SkinParticleComponent {
         this.facingCameraMode = stream.readEnum(SkinParticleFacing.class);
         int textureWidth = stream.readInt();
         int textureHeight = stream.readInt();
-        this.textureSize = new Size2i(textureWidth, textureHeight);
+        this.textureSize = new OpenSize2i(textureWidth, textureHeight);
         this.textureCoordsX = stream.readPrimitiveObject();
         this.textureCoordsY = stream.readPrimitiveObject();
         this.textureCoordsWidth = stream.readPrimitiveObject();
@@ -71,8 +71,8 @@ public class ParticleBillboardAppearance extends SkinParticleComponent {
         stream.writePrimitiveObject(width);
         stream.writePrimitiveObject(height);
         stream.writeEnum(facingCameraMode);
-        stream.writeInt(textureSize.getWidth());
-        stream.writeInt(textureSize.getHeight());
+        stream.writeInt(textureSize.width());
+        stream.writeInt(textureSize.height());
         stream.writePrimitiveObject(textureCoordsX);
         stream.writePrimitiveObject(textureCoordsY);
         stream.writePrimitiveObject(textureCoordsWidth);

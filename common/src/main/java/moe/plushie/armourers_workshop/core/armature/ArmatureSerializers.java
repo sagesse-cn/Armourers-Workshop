@@ -2,10 +2,10 @@ package moe.plushie.armourers_workshop.core.armature;
 
 import moe.plushie.armourers_workshop.api.common.IEntityTypeProvider;
 import moe.plushie.armourers_workshop.api.core.IResourceLocation;
+import moe.plushie.armourers_workshop.core.math.OpenRectangle2f;
 import moe.plushie.armourers_workshop.core.math.OpenTransform3f;
-import moe.plushie.armourers_workshop.core.math.Rectangle2f;
-import moe.plushie.armourers_workshop.core.math.Vector2f;
-import moe.plushie.armourers_workshop.core.math.Vector3f;
+import moe.plushie.armourers_workshop.core.math.OpenVector2f;
+import moe.plushie.armourers_workshop.core.math.OpenVector3f;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IODataObject;
 import moe.plushie.armourers_workshop.core.skin.texture.SkinTextureBox;
 import moe.plushie.armourers_workshop.core.skin.texture.SkinTextureData;
@@ -25,7 +25,7 @@ public class ArmatureSerializers {
     private static final HashMap<String, Supplier<? extends JointModifier>> NAMED_MODIFIERS = new HashMap<>();
     private static final HashMap<String, Function<ArmatureTransformerContext, ? extends ArmaturePlugin>> NAMED_PLUGINS = new HashMap<>();
 
-    public static Vector3f readVector(IODataObject object, Vector3f defaultValue) {
+    public static OpenVector3f readVector(IODataObject object, OpenVector3f defaultValue) {
         switch (object.type()) {
             case ARRAY: {
                 if (object.size() != 3) {
@@ -34,13 +34,13 @@ public class ArmatureSerializers {
                 float f1 = object.at(0).floatValue();
                 float f2 = object.at(1).floatValue();
                 float f3 = object.at(2).floatValue();
-                return new Vector3f(f1, f2, f3);
+                return new OpenVector3f(f1, f2, f3);
             }
             case DICTIONARY: {
                 float f1 = object.get("x").floatValue();
                 float f2 = object.get("y").floatValue();
                 float f3 = object.get("z").floatValue();
-                return new Vector3f(f1, f2, f3);
+                return new OpenVector3f(f1, f2, f3);
             }
             default: {
                 break;
@@ -53,11 +53,11 @@ public class ArmatureSerializers {
         if (object.isNull()) {
             return OpenTransform3f.IDENTITY;
         }
-        var translate = readVector(object.get("translate"), Vector3f.ZERO);
-        var scale = readVector(object.get("scale"), Vector3f.ONE);
-        var rotation = readVector(object.get("rotation"), Vector3f.ZERO);
-        var pivot = readVector(object.get("pivot"), Vector3f.ZERO);
-        var afterTranslate = readVector(object.get("afterTranslate"), Vector3f.ZERO);
+        var translate = readVector(object.get("translate"), OpenVector3f.ZERO);
+        var scale = readVector(object.get("scale"), OpenVector3f.ONE);
+        var rotation = readVector(object.get("rotation"), OpenVector3f.ZERO);
+        var pivot = readVector(object.get("pivot"), OpenVector3f.ZERO);
+        var afterTranslate = readVector(object.get("afterTranslate"), OpenVector3f.ZERO);
         return OpenTransform3f.create(translate, rotation, scale, pivot, afterTranslate);
     }
 
@@ -65,8 +65,8 @@ public class ArmatureSerializers {
         if (object.isNull()) {
             return null;
         }
-        var origin = readVector(object.get("origin"), Vector3f.ZERO);
-        var size = readVector(object.get("size"), Vector3f.ZERO);
+        var origin = readVector(object.get("origin"), OpenVector3f.ZERO);
+        var size = readVector(object.get("size"), OpenVector3f.ZERO);
         var inflate = object.get("inflate").floatValue();
         var transform = readTransform(object);
         var textureBox = readShapeTextureUVs(object.get("uv"), size);
@@ -75,7 +75,7 @@ public class ArmatureSerializers {
         return new JointShape(origin, size, inflate, transform, textureBox, children);
     }
 
-    public static Map<OpenDirection, Rectangle2f> readShapeTextureUVs(IODataObject object, Vector3f size) {
+    public static Map<OpenDirection, OpenRectangle2f> readShapeTextureUVs(IODataObject object, OpenVector3f size) {
         switch (object.type()) {
             case ARRAY: {
                 if (object.size() < 2) {
@@ -89,19 +89,19 @@ public class ArmatureSerializers {
                     mirror = true;
                 }
                 var textureData = new SkinTextureData("", 255, 255);
-                var textureBox = new SkinTextureBox(size.getX(), size.getY(), size.getZ(), mirror, new Vector2f(u, v), textureData);
-                var uvs = new EnumMap<OpenDirection, Rectangle2f>(OpenDirection.class);
+                var textureBox = new SkinTextureBox(size.x(), size.y(), size.z(), mirror, new OpenVector2f(u, v), textureData);
+                var uvs = new EnumMap<OpenDirection, OpenRectangle2f>(OpenDirection.class);
                 for (var dir : OpenDirection.values()) {
                     var key = textureBox.getTexture(dir);
                     if (key != null) {
-                        uvs.put(dir, new Rectangle2f(key.getU(), key.getV(), key.getWidth(), key.getHeight()));
+                        uvs.put(dir, new OpenRectangle2f(key.getU(), key.getV(), key.getWidth(), key.getHeight()));
                     }
                 }
                 return uvs;
             }
             case DICTIONARY: {
                 var textureData = new SkinTextureData("", 255, 255);
-                var textureBox = new SkinTextureBox(size.getX(), size.getY(), size.getZ(), false, null, textureData);
+                var textureBox = new SkinTextureBox(size.x(), size.y(), size.z(), false, null, textureData);
                 for (var dir : OpenDirection.values()) {
                     var ob = object.get(dir.getName());
                     if (ob.size() >= 4) {
@@ -109,14 +109,14 @@ public class ArmatureSerializers {
                         float v = ob.at(1).floatValue();
                         float n = ob.at(2).floatValue();
                         float m = ob.at(3).floatValue();
-                        textureBox.putTextureRect(dir, new Rectangle2f(u, v, n - u, m - v));
+                        textureBox.putTextureRect(dir, new OpenRectangle2f(u, v, n - u, m - v));
                     }
                 }
-                var uvs = new EnumMap<OpenDirection, Rectangle2f>(OpenDirection.class);
+                var uvs = new EnumMap<OpenDirection, OpenRectangle2f>(OpenDirection.class);
                 for (var dir : OpenDirection.values()) {
                     var key = textureBox.getTexture(dir);
                     if (key != null) {
-                        uvs.put(dir, new Rectangle2f(key.getU(), key.getV(), key.getWidth(), key.getHeight()));
+                        uvs.put(dir, new OpenRectangle2f(key.getU(), key.getV(), key.getWidth(), key.getHeight()));
                     }
                 }
                 return uvs;

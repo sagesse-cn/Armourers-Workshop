@@ -6,16 +6,15 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
-import moe.plushie.armourers_workshop.api.skin.texture.ISkinPaintType;
 import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintColor;
+import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintType;
 import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintTypes;
 import moe.plushie.armourers_workshop.core.utils.Collections;
-import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
@@ -27,13 +26,11 @@ public class ColorParser {
 
     private static final List<String> DEFAULT_COLORS = Collections.newList("#ffffff", "0xffffff", "255,255,255");
 
-    private static final HashMap<String, ISkinPaintType> PAINT_TYPES = Util.make(() -> {
-        var map = new HashMap<String, ISkinPaintType>();
+    private static final Map<String, SkinPaintType> PAINT_TYPES = Collections.immutableMap(builder -> {
         for (var paintType : SkinPaintTypes.values()) {
-            String name = paintType.getRegistryName().getPath();
-            map.put(name.replaceAll("_", ""), paintType);
+            var name = paintType.getRegistryName().getPath();
+            builder.put(name.replaceAll("_", ""), paintType);
         }
-        return map;
     });
     private static final Function<SuggestionsBuilder, CompletableFuture<Suggestions>> SUGGEST_NOTHING = SuggestionsBuilder::buildFuture;
 
@@ -48,7 +45,7 @@ public class ColorParser {
 
     public ColorParser parse() throws CommandSyntaxException {
         suggestions = this::suggestPropertyTypeAndColor;
-        ISkinPaintType paintType = SkinPaintTypes.NORMAL;
+        var paintType = SkinPaintTypes.NORMAL;
         if (reader.canRead(2)) {
             paintType = readPaintType();
         }
@@ -65,16 +62,16 @@ public class ColorParser {
         return paintColor;
     }
 
-    private ISkinPaintType readPaintType() throws CommandSyntaxException {
+    private SkinPaintType readPaintType() throws CommandSyntaxException {
         // hair:#333 rainbow:12,12,12 #333333 hair:red
-        int start = reader.getCursor();
-        String name = reader.readString();
+        var start = reader.getCursor();
+        var name = reader.readString();
         if (!reader.canRead() || reader.peek() != ':') {
             reader.setCursor(start);
             return SkinPaintTypes.NORMAL;
         }
         reader.skip();
-        ISkinPaintType paintType = PAINT_TYPES.get(name.toLowerCase(Locale.ROOT));
+        var paintType = PAINT_TYPES.get(name.toLowerCase(Locale.ROOT));
         if (paintType == null) {
             throw ERROR_INVALID_COLOR_FORMAT.createWithContext(reader, name);
         }
@@ -83,7 +80,7 @@ public class ColorParser {
     }
 
     private int readPaintColor() throws CommandSyntaxException {
-        String colorString = getColorString();
+        var colorString = getColorString();
         // #RRGGBB 0xRRGGBB R,G,B
         if (colorString.startsWith("#")) {
             // suggestions #000000
@@ -108,8 +105,8 @@ public class ColorParser {
         if (colorString.contains(",")) {
             // suggestions 255,0,0
             suggestions = addDecimalSuggestions(colorString, "255,255,255");
-            StringReader newReader = new StringReader(reader);
-            int r = parseInt(newReader);
+            var newReader = new StringReader(reader);
+            var r = parseInt(newReader);
             if (!newReader.canRead() || newReader.peek() != ',') {
                 throw ERROR_INVALID_COLOR_FORMAT.createWithContext(reader, colorString);
             }
@@ -168,13 +165,13 @@ public class ColorParser {
     }
 
     private CompletableFuture<Suggestions> suggestPropertyTypeAndColor(SuggestionsBuilder builder) {
-        String value = builder.getRemaining();
-        for (String key : DEFAULT_COLORS) {
+        var value = builder.getRemaining();
+        for (var key : DEFAULT_COLORS) {
             if (value.isEmpty() || key.startsWith(value)) {
                 builder.suggest(key);
             }
         }
-        for (String key : PAINT_TYPES.keySet()) {
+        for (var key : PAINT_TYPES.keySet()) {
             if (value.isEmpty() || key.startsWith(value)) {
                 builder.suggest(key + ":");
             }
@@ -183,8 +180,8 @@ public class ColorParser {
     }
 
     private CompletableFuture<Suggestions> suggestPropertyColor(SuggestionsBuilder builder) {
-        String value = builder.getRemaining();
-        for (String key : DEFAULT_COLORS) {
+        var value = builder.getRemaining();
+        for (var key : DEFAULT_COLORS) {
             if (value.isEmpty() || key.startsWith(value)) {
                 builder.suggest(key);
             }
@@ -193,9 +190,9 @@ public class ColorParser {
     }
 
     private static Function<SuggestionsBuilder, CompletableFuture<Suggestions>> addDecimalSuggestions(String inputValue, String value) {
-        String[] values = inputValue.split(String.valueOf(','));
-        String[] targets = value.split(String.valueOf(','));
-        StringBuilder targetBuilder = new StringBuilder();
+        var values = inputValue.split(String.valueOf(','));
+        var targets = value.split(String.valueOf(','));
+        var targetBuilder = new StringBuilder();
         try {
             for (int i = 0; i < targets.length; ++i) {
                 if (i != 0) {
@@ -214,7 +211,7 @@ public class ColorParser {
         } catch (Exception e) {
             return SUGGEST_NOTHING;
         }
-        String targetValue = targetBuilder.toString();
+        var targetValue = targetBuilder.toString();
         return (builder) -> builder.suggest(targetValue).buildFuture();
     }
 
@@ -222,7 +219,7 @@ public class ColorParser {
         if (inputValue.length() >= value.length()) {
             return SUGGEST_NOTHING;
         }
-        String newValue = inputValue + value.substring(inputValue.length());
+        var newValue = inputValue + value.substring(inputValue.length());
         if (newValue.matches("(0x|#)[0-9A-Fa-f]{6}")) {
             return (builder) -> builder.suggest(newValue).buildFuture();
         }

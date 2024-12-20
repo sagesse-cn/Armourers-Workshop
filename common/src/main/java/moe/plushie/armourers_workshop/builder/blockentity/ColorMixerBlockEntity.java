@@ -6,7 +6,7 @@ import moe.plushie.armourers_workshop.api.skin.texture.ISkinPaintColor;
 import moe.plushie.armourers_workshop.core.blockentity.UpdatableBlockEntity;
 import moe.plushie.armourers_workshop.core.item.impl.IPaintProvider;
 import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintColor;
-import moe.plushie.armourers_workshop.utils.BlockUtils;
+import moe.plushie.armourers_workshop.builder.other.BlockUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;

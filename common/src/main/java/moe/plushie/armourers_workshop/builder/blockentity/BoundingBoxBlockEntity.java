@@ -5,17 +5,17 @@ import moe.plushie.armourers_workshop.api.common.IPaintable;
 import moe.plushie.armourers_workshop.api.core.IDataCodec;
 import moe.plushie.armourers_workshop.api.core.IDataSerializer;
 import moe.plushie.armourers_workshop.api.core.IDataSerializerKey;
-import moe.plushie.armourers_workshop.api.skin.part.ISkinPartType;
 import moe.plushie.armourers_workshop.api.skin.texture.ISkinPaintColor;
 import moe.plushie.armourers_workshop.builder.data.BoundingBox;
+import moe.plushie.armourers_workshop.builder.other.BlockUtils;
 import moe.plushie.armourers_workshop.core.blockentity.UpdatableBlockEntity;
-import moe.plushie.armourers_workshop.core.math.Vector2i;
-import moe.plushie.armourers_workshop.core.math.Vector3i;
+import moe.plushie.armourers_workshop.core.math.OpenVector2i;
+import moe.plushie.armourers_workshop.core.math.OpenVector3i;
+import moe.plushie.armourers_workshop.core.skin.part.SkinPartType;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPartTypes;
 import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintColor;
 import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintTypes;
-import moe.plushie.armourers_workshop.utils.BlockUtils;
-import moe.plushie.armourers_workshop.utils.TextureUtils;
+import moe.plushie.armourers_workshop.core.utils.TextureUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
@@ -29,10 +29,10 @@ import java.util.Map;
 
 public class BoundingBoxBlockEntity extends UpdatableBlockEntity implements IPaintable, IBlockEntityExtendedRenderer {
 
-    protected Vector3i guide = Vector3i.ZERO;
+    protected OpenVector3i guide = OpenVector3i.ZERO;
     protected BlockPos parent = null;
 
-    protected ISkinPartType partType = SkinPartTypes.UNKNOWN;
+    protected SkinPartType partType = SkinPartTypes.UNKNOWN;
 
     private ArmourerBlockEntity cachedParentBlockEntity;
     private boolean customRenderer = false;
@@ -41,6 +41,7 @@ public class BoundingBoxBlockEntity extends UpdatableBlockEntity implements IPai
         super(blockEntityType, blockPos, blockState);
     }
 
+    @Override
     public void readAdditionalData(IDataSerializer serializer) {
         parent = serializer.read(CodingKeys.REFER);
         guide = serializer.read(CodingKeys.OFFSET);
@@ -49,17 +50,18 @@ public class BoundingBoxBlockEntity extends UpdatableBlockEntity implements IPai
         cachedParentBlockEntity = null;
     }
 
+    @Override
     public void writeAdditionalData(IDataSerializer serializer) {
         serializer.write(CodingKeys.REFER, parent);
         serializer.write(CodingKeys.OFFSET, guide);
         serializer.write(CodingKeys.PART_TYPE, partType);
     }
 
-    public ISkinPartType getPartType() {
+    public SkinPartType getPartType() {
         return partType;
     }
 
-    public void setPartType(ISkinPartType partType) {
+    public void setPartType(SkinPartType partType) {
         this.partType = partType;
     }
 
@@ -72,11 +74,11 @@ public class BoundingBoxBlockEntity extends UpdatableBlockEntity implements IPai
         this.parent = parent;
     }
 
-    public Vector3i getGuide() {
+    public OpenVector3i getGuide() {
         return guide;
     }
 
-    public void setGuide(Vector3i guide) {
+    public void setGuide(OpenVector3i guide) {
         this.guide = guide;
     }
 
@@ -132,7 +134,7 @@ public class BoundingBoxBlockEntity extends UpdatableBlockEntity implements IPai
     @Override
     public void setColors(Map<Direction, ISkinPaintColor> colors) {
         var blockEntity = getParentBlockEntity();
-        colors.forEach((dir, color) -> setArmourerTextureColor(blockEntity, getTexturePos(blockEntity, dir), color));
+        colors.forEach((dir, color) -> setArmourerTextureColor(blockEntity, getTexturePos(blockEntity, dir), (SkinPaintColor) color));
     }
 
     @Override
@@ -151,7 +153,7 @@ public class BoundingBoxBlockEntity extends UpdatableBlockEntity implements IPai
         }
     }
 
-    public ISkinPaintColor getArmourerTextureColor(ArmourerBlockEntity blockEntity, Vector2i texturePos) {
+    public SkinPaintColor getArmourerTextureColor(ArmourerBlockEntity blockEntity, OpenVector2i texturePos) {
         if (texturePos != null && blockEntity != null) {
             var color = blockEntity.getPaintColor(texturePos);
             if (color != null) {
@@ -161,7 +163,7 @@ public class BoundingBoxBlockEntity extends UpdatableBlockEntity implements IPai
         return SkinPaintColor.CLEAR;
     }
 
-    public void setArmourerTextureColor(ArmourerBlockEntity blockEntity, Vector2i texturePos, ISkinPaintColor color) {
+    public void setArmourerTextureColor(ArmourerBlockEntity blockEntity, OpenVector2i texturePos, SkinPaintColor color) {
         if (texturePos != null && blockEntity != null) {
             blockEntity.setPaintColor(texturePos, color);
             BlockUtils.combine(blockEntity, blockEntity::sendBlockUpdates);
@@ -169,7 +171,7 @@ public class BoundingBoxBlockEntity extends UpdatableBlockEntity implements IPai
     }
 
     @Environment(EnvType.CLIENT)
-    private ISkinPaintColor getTextureColor(ArmourerBlockEntity blockEntity, Vector2i texturePos) {
+    private SkinPaintColor getTextureColor(ArmourerBlockEntity blockEntity, OpenVector2i texturePos) {
         if (texturePos != null && blockEntity != null) {
             var color = TextureUtils.getPlayerTextureModelColor(blockEntity.getTextureDescriptor(), texturePos);
             if (color != null) {
@@ -179,7 +181,7 @@ public class BoundingBoxBlockEntity extends UpdatableBlockEntity implements IPai
         return SkinPaintColor.CLEAR;
     }
 
-    private Vector2i getTexturePos(ArmourerBlockEntity blockEntity, Direction direction) {
+    private OpenVector2i getTexturePos(ArmourerBlockEntity blockEntity, Direction direction) {
         return BoundingBox.getTexturePos(partType, guide, getResolvedDirection(blockEntity, direction));
     }
 
@@ -227,7 +229,7 @@ public class BoundingBoxBlockEntity extends UpdatableBlockEntity implements IPai
     private static class CodingKeys {
 
         public static final IDataSerializerKey<BlockPos> REFER = IDataSerializerKey.create("Refer", IDataCodec.BLOCK_POS, null);
-        public static final IDataSerializerKey<Vector3i> OFFSET = IDataSerializerKey.create("Offset", Vector3i.CODEC, Vector3i.ZERO);
-        public static final IDataSerializerKey<ISkinPartType> PART_TYPE = IDataSerializerKey.create("PartType", SkinPartTypes.CODEC, SkinPartTypes.UNKNOWN);
+        public static final IDataSerializerKey<OpenVector3i> OFFSET = IDataSerializerKey.create("Offset", OpenVector3i.CODEC, OpenVector3i.ZERO);
+        public static final IDataSerializerKey<SkinPartType> PART_TYPE = IDataSerializerKey.create("PartType", SkinPartTypes.CODEC, SkinPartTypes.UNKNOWN);
     }
 }

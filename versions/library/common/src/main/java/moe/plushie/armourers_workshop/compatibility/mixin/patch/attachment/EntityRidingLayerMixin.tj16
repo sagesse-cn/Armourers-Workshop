@@ -30,9 +30,9 @@ public abstract class EntityRidingLayerMixin {
         if (offset == null) {
             return; // can't found custom riding position.
         }
-        double x = entity.getX() + offset.getX();
-        double y = entity.getY() + offset.getY() + passenger.getMyRidingOffset();
-        double z = entity.getZ() + offset.getZ();
+        double x = entity.getX() + offset.x();
+        double y = entity.getY() + offset.y() + passenger.getMyRidingOffset();
+        double z = entity.getZ() + offset.z();
         passenger.setPos(x, y, z);
         ci.cancel();
     }

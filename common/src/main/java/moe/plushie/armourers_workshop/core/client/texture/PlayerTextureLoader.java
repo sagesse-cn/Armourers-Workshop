@@ -12,7 +12,7 @@ import moe.plushie.armourers_workshop.core.utils.OpenResourceLocation;
 import moe.plushie.armourers_workshop.init.ModLog;
 import moe.plushie.armourers_workshop.init.ModTextures;
 import moe.plushie.armourers_workshop.init.platform.EnvironmentManager;
-import moe.plushie.armourers_workshop.utils.TextureUtils;
+import moe.plushie.armourers_workshop.core.utils.TextureUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;

@@ -1,9 +1,9 @@
 package moe.plushie.armourers_workshop.core.skin.geometry.cube;
 
 import moe.plushie.armourers_workshop.api.skin.geometry.ISkinGeometryType;
+import moe.plushie.armourers_workshop.core.math.OpenRectangle3f;
+import moe.plushie.armourers_workshop.core.math.OpenVector3i;
 import moe.plushie.armourers_workshop.core.math.OpenVoxelShape;
-import moe.plushie.armourers_workshop.core.math.Rectangle3f;
-import moe.plushie.armourers_workshop.core.math.Vector3i;
 import moe.plushie.armourers_workshop.core.skin.geometry.SkinGeometry;
 import moe.plushie.armourers_workshop.core.skin.geometry.SkinGeometryTypes;
 import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintColor;
@@ -16,7 +16,7 @@ import java.util.EnumMap;
 
 public abstract class SkinCube extends SkinGeometry {
 
-    protected Rectangle3f boundingBox = Rectangle3f.ZERO;
+    protected OpenRectangle3f boundingBox = OpenRectangle3f.ZERO;
 
     protected final EnumMap<OpenDirection, SkinPaintColor> paintColors = new EnumMap<>(OpenDirection.class);
 
@@ -25,7 +25,7 @@ public abstract class SkinCube extends SkinGeometry {
         throw new UnsupportedOperationException();
     }
 
-    public void setBoundingBox(Rectangle3f box) {
+    public void setBoundingBox(OpenRectangle3f box) {
         throw new UnsupportedOperationException();
     }
 
@@ -33,7 +33,7 @@ public abstract class SkinCube extends SkinGeometry {
         throw new UnsupportedOperationException();
     }
 
-    public Rectangle3f getBoundingBox() {
+    public OpenRectangle3f getBoundingBox() {
         return boundingBox;
     }
 
@@ -68,8 +68,8 @@ public abstract class SkinCube extends SkinGeometry {
         return Collections.compactMap(OpenDirection.values(), this::getFace);
     }
 
-    public Vector3i getBlockPos() {
+    public OpenVector3i getBlockPos() {
         var boundingBox = getBoundingBox();
-        return new Vector3i(boundingBox.getX(), boundingBox.getY(), boundingBox.getZ());
+        return new OpenVector3i(boundingBox.x(), boundingBox.y(), boundingBox.z());
     }
 }

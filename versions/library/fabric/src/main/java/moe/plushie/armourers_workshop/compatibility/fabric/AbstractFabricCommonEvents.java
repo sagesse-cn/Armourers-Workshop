@@ -13,24 +13,24 @@ import moe.plushie.armourers_workshop.compatibility.fabric.event.common.Abstract
 import moe.plushie.armourers_workshop.compatibility.fabric.event.common.AbstractFabricServerLifecycleEvent;
 import moe.plushie.armourers_workshop.compatibility.fabric.event.common.AbstractFabricServerTickEvent;
 import moe.plushie.armourers_workshop.init.platform.EventManager;
-import moe.plushie.armourers_workshop.init.platform.event.common.BlockEvent;
-import moe.plushie.armourers_workshop.init.platform.event.common.DataPackEvent;
-import moe.plushie.armourers_workshop.init.platform.event.common.EntityEvent;
-import moe.plushie.armourers_workshop.init.platform.event.common.LauncherClientSetupEvent;
-import moe.plushie.armourers_workshop.init.platform.event.common.LauncherCommonSetupEvent;
-import moe.plushie.armourers_workshop.init.platform.event.common.LauncherConfigSetupEvent;
-import moe.plushie.armourers_workshop.init.platform.event.common.LauncherLoadCompleteEvent;
-import moe.plushie.armourers_workshop.init.platform.event.common.PlayerEvent;
-import moe.plushie.armourers_workshop.init.platform.event.common.RegisterCommandsEvent;
-import moe.plushie.armourers_workshop.init.platform.event.common.RegisterDataPackEvent;
-import moe.plushie.armourers_workshop.init.platform.event.common.RegisterEntityAttributesEvent;
-import moe.plushie.armourers_workshop.init.platform.event.common.ServerLevelAddEntityEvent;
-import moe.plushie.armourers_workshop.init.platform.event.common.ServerLevelTickEvent;
-import moe.plushie.armourers_workshop.init.platform.event.common.ServerStartedEvent;
-import moe.plushie.armourers_workshop.init.platform.event.common.ServerStartingEvent;
-import moe.plushie.armourers_workshop.init.platform.event.common.ServerStoppedEvent;
-import moe.plushie.armourers_workshop.init.platform.event.common.ServerStoppingEvent;
-import moe.plushie.armourers_workshop.init.platform.event.common.ServerTickEvent;
+import moe.plushie.armourers_workshop.init.event.common.BlockEvent;
+import moe.plushie.armourers_workshop.init.event.common.DataPackEvent;
+import moe.plushie.armourers_workshop.init.event.common.EntityEvent;
+import moe.plushie.armourers_workshop.init.event.common.LauncherClientSetupEvent;
+import moe.plushie.armourers_workshop.init.event.common.LauncherCommonSetupEvent;
+import moe.plushie.armourers_workshop.init.event.common.LauncherConfigSetupEvent;
+import moe.plushie.armourers_workshop.init.event.common.LauncherLoadCompleteEvent;
+import moe.plushie.armourers_workshop.init.event.common.PlayerEvent;
+import moe.plushie.armourers_workshop.init.event.common.RegisterCommandsEvent;
+import moe.plushie.armourers_workshop.init.event.common.RegisterDataPackEvent;
+import moe.plushie.armourers_workshop.init.event.common.RegisterEntityAttributesEvent;
+import moe.plushie.armourers_workshop.init.event.common.ServerLevelAddEntityEvent;
+import moe.plushie.armourers_workshop.init.event.common.ServerLevelTickEvent;
+import moe.plushie.armourers_workshop.init.event.common.ServerStartedEvent;
+import moe.plushie.armourers_workshop.init.event.common.ServerStartingEvent;
+import moe.plushie.armourers_workshop.init.event.common.ServerStoppedEvent;
+import moe.plushie.armourers_workshop.init.event.common.ServerStoppingEvent;
+import moe.plushie.armourers_workshop.init.event.common.ServerTickEvent;
 
 public class AbstractFabricCommonEvents {
 

@@ -2,7 +2,7 @@ package moe.plushie.armourers_workshop.core.skin.serializer.v20.geometry.impl;
 
 import moe.plushie.armourers_workshop.api.skin.geometry.ISkinGeometryType;
 import moe.plushie.armourers_workshop.core.math.OpenTransform3f;
-import moe.plushie.armourers_workshop.core.math.Vector2f;
+import moe.plushie.armourers_workshop.core.math.OpenVector2f;
 import moe.plushie.armourers_workshop.core.skin.geometry.SkinGeometryVertex;
 import moe.plushie.armourers_workshop.core.skin.geometry.mesh.SkinMesh;
 import moe.plushie.armourers_workshop.core.skin.geometry.mesh.SkinMeshFace;
@@ -149,13 +149,13 @@ public class ChunkGeometrySerializerV3 extends ChunkGeometrySerializer {
             return new SkinGeometryVertex(i, position, normal, textureCoords);
         }
 
-        protected Vector2f parseTextureCoords(Vector2f uv) {
+        protected OpenVector2f parseTextureCoords(OpenVector2f uv) {
             var ref = palette.readTexture(uv);
             if (ref != null) {
                 textureProvider = ref.getProvider();
                 return ref.getPos();
             }
-            return Vector2f.ZERO;
+            return OpenVector2f.ZERO;
         }
     }
 

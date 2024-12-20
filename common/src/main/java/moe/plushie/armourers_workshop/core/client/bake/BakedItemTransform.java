@@ -2,7 +2,6 @@ package moe.plushie.armourers_workshop.core.client.bake;
 
 import com.apple.library.uikit.UIColor;
 import moe.plushie.armourers_workshop.api.core.math.IPoseStack;
-import moe.plushie.armourers_workshop.api.skin.ISkinType;
 import moe.plushie.armourers_workshop.compatibility.client.AbstractBufferSource;
 import moe.plushie.armourers_workshop.core.client.model.ItemModel;
 import moe.plushie.armourers_workshop.core.client.model.ItemModelManager;
@@ -11,7 +10,8 @@ import moe.plushie.armourers_workshop.core.client.model.ItemTransform;
 import moe.plushie.armourers_workshop.core.client.other.SkinItemProperties;
 import moe.plushie.armourers_workshop.core.client.other.SkinRenderContext;
 import moe.plushie.armourers_workshop.core.math.OpenTransform3f;
-import moe.plushie.armourers_workshop.core.math.Vector3f;
+import moe.plushie.armourers_workshop.core.math.OpenVector3f;
+import moe.plushie.armourers_workshop.core.skin.SkinType;
 import moe.plushie.armourers_workshop.core.utils.OpenItemDisplayContext;
 import moe.plushie.armourers_workshop.core.utils.OpenItemTransforms;
 import moe.plushie.armourers_workshop.init.ModDebugger;
@@ -37,7 +37,7 @@ public abstract class BakedItemTransform {
         this.offsetTransform = offsetTransform;
     }
 
-    public static BakedItemTransform create(List<BakedSkinPart> skinParts, OpenItemTransforms itemTransforms, ISkinType skinType) {
+    public static BakedItemTransform create(List<BakedSkinPart> skinParts, OpenItemTransforms itemTransforms, SkinType skinType) {
         // ..
         if (itemTransforms == null) {
             var itemModel = ItemModelManager.getInstance().getModel(skinType);
@@ -105,16 +105,16 @@ public abstract class BakedItemTransform {
         }
     }
 
-    protected void applyScaleInBox(ItemTransform itemTransform, OpenItemDisplayContext displayContext, BakedSkin skin, Vector3f displayBox, IPoseStack poseStack) {
+    protected void applyScaleInBox(ItemTransform itemTransform, OpenItemDisplayContext displayContext, BakedSkin skin, OpenVector3f displayBox, IPoseStack poseStack) {
         var renderBounds = skin.getRenderBounds(itemTransform, displayContext);
         // calculate and apply skin scale.
-        float dx = displayBox.getX() * 16;
-        float dy = displayBox.getY() * 16;
-        float dz = displayBox.getZ() * 16;
-        float scale = Math.min(Math.min(dx / renderBounds.getWidth(), dy / renderBounds.getHeight()), dz / renderBounds.getDepth());
+        float dx = displayBox.x() * 16;
+        float dy = displayBox.y() * 16;
+        float dz = displayBox.z() * 16;
+        float scale = Math.min(Math.min(dx / renderBounds.width(), dy / renderBounds.height()), dz / renderBounds.depth());
         //poseStack.scale(scale / scale.getX(), scale / scale.getY(), scale / scale.getZ());
         poseStack.scale(scale, scale, scale);
-        poseStack.translate(-renderBounds.getMidX(), -renderBounds.getMidY(), -renderBounds.getMidZ());
+        poseStack.translate(-renderBounds.midX(), -renderBounds.midY(), -renderBounds.midZ());
     }
 
     protected ItemModel resolve(Entity entity, ItemStack itemStack, SkinItemProperties itemProperties) {
@@ -152,7 +152,7 @@ public abstract class BakedItemTransform {
         }
 
         @Override
-        protected void applyScaleInBox(ItemTransform itemTransform, OpenItemDisplayContext displayContext, BakedSkin skin, Vector3f displayBox, IPoseStack poseStack) {
+        protected void applyScaleInBox(ItemTransform itemTransform, OpenItemDisplayContext displayContext, BakedSkin skin, OpenVector3f displayBox, IPoseStack poseStack) {
             // in the none case, we need render it in display box inside if specified.
             if (displayContext == OpenItemDisplayContext.NONE) {
                 super.applyScaleInBox(itemTransform, displayContext, skin, displayBox, poseStack);

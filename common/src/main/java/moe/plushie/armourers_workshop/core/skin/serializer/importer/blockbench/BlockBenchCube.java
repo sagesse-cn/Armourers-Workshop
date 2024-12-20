@@ -1,7 +1,7 @@
 package moe.plushie.armourers_workshop.core.skin.serializer.importer.blockbench;
 
-import moe.plushie.armourers_workshop.core.math.Vector2f;
-import moe.plushie.armourers_workshop.core.math.Vector3f;
+import moe.plushie.armourers_workshop.core.math.OpenVector2f;
+import moe.plushie.armourers_workshop.core.math.OpenVector3f;
 import moe.plushie.armourers_workshop.core.utils.OpenDirection;
 
 import java.util.HashMap;
@@ -13,18 +13,18 @@ public class BlockBenchCube extends BlockBenchElement {
     private final boolean mirrorUV;
     private final boolean allowMirrorModeling;
 
-    private final Vector2f uvOffset;
+    private final OpenVector2f uvOffset;
 
-    private final Vector3f from;
-    private final Vector3f to;
+    private final OpenVector3f from;
+    private final OpenVector3f to;
 
-    private final Vector3f origin;
-    private final Vector3f rotation;
+    private final OpenVector3f origin;
+    private final OpenVector3f rotation;
     private final float inflate;
 
     private final Map<OpenDirection, BlockBenchCubeFace> faces;
 
-    public BlockBenchCube(String uuid, String name, String type, boolean allowExport, boolean allowMirrorModeling, boolean boxUV, boolean mirrorUV, Vector2f uvOffset, Vector3f from, Vector3f to, Vector3f origin, Vector3f rotation, float inflate, Map<OpenDirection, BlockBenchCubeFace> faces) {
+    public BlockBenchCube(String uuid, String name, String type, boolean allowExport, boolean allowMirrorModeling, boolean boxUV, boolean mirrorUV, OpenVector2f uvOffset, OpenVector3f from, OpenVector3f to, OpenVector3f origin, OpenVector3f rotation, float inflate, Map<OpenDirection, BlockBenchCubeFace> faces) {
         super(uuid, name, type, allowExport);
         this.boxUV = boxUV;
         this.mirrorUV = mirrorUV;
@@ -38,19 +38,19 @@ public class BlockBenchCube extends BlockBenchElement {
         this.faces = faces;
     }
 
-    public Vector3f getFrom() {
+    public OpenVector3f getFrom() {
         return from;
     }
 
-    public Vector3f getTo() {
+    public OpenVector3f getTo() {
         return to;
     }
 
-    public Vector3f getOrigin() {
+    public OpenVector3f getOrigin() {
         return origin;
     }
 
-    public Vector3f getRotation() {
+    public OpenVector3f getRotation() {
         return rotation;
     }
 
@@ -66,7 +66,7 @@ public class BlockBenchCube extends BlockBenchElement {
         return mirrorUV;
     }
 
-    public Vector2f getUVOffset() {
+    public OpenVector2f getUVOffset() {
         return uvOffset;
     }
 
@@ -80,13 +80,13 @@ public class BlockBenchCube extends BlockBenchElement {
         protected boolean mirrorUV = false;
         protected boolean allowMirrorModeling = false;
 
-        protected Vector2f uvOffset = Vector2f.ZERO;
+        protected OpenVector2f uvOffset = OpenVector2f.ZERO;
 
-        protected Vector3f from = Vector3f.ZERO;
-        protected Vector3f to = Vector3f.ZERO;
+        protected OpenVector3f from = OpenVector3f.ZERO;
+        protected OpenVector3f to = OpenVector3f.ZERO;
 
-        protected Vector3f origin = Vector3f.ZERO;
-        protected Vector3f rotation = Vector3f.ZERO;
+        protected OpenVector3f origin = OpenVector3f.ZERO;
+        protected OpenVector3f rotation = OpenVector3f.ZERO;
 
         protected float inflate = 0;
 
@@ -104,19 +104,19 @@ public class BlockBenchCube extends BlockBenchElement {
             this.allowMirrorModeling = allowMirrorModeling;
         }
 
-        public void from(Vector3f from) {
+        public void from(OpenVector3f from) {
             this.from = from;
         }
 
-        public void to(Vector3f to) {
+        public void to(OpenVector3f to) {
             this.to = to;
         }
 
-        public void origin(Vector3f origin) {
+        public void origin(OpenVector3f origin) {
             this.origin = origin;
         }
 
-        public void rotation(Vector3f rotation) {
+        public void rotation(OpenVector3f rotation) {
             this.rotation = rotation;
         }
 
@@ -124,7 +124,7 @@ public class BlockBenchCube extends BlockBenchElement {
             this.inflate = inflate;
         }
 
-        public void uvOffset(Vector2f uvOffset) {
+        public void uvOffset(OpenVector2f uvOffset) {
             this.uvOffset = uvOffset;
         }
 

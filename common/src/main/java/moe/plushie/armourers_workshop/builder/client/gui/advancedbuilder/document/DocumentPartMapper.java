@@ -1,14 +1,14 @@
 package moe.plushie.armourers_workshop.builder.client.gui.advancedbuilder.document;
 
 import moe.plushie.armourers_workshop.api.armature.IJoint;
-import moe.plushie.armourers_workshop.api.skin.ISkinType;
-import moe.plushie.armourers_workshop.api.skin.part.ISkinPartType;
 import moe.plushie.armourers_workshop.core.armature.Armature;
 import moe.plushie.armourers_workshop.core.armature.Armatures;
-import moe.plushie.armourers_workshop.core.math.Vector3f;
+import moe.plushie.armourers_workshop.core.math.OpenVector3f;
+import moe.plushie.armourers_workshop.core.skin.SkinType;
 import moe.plushie.armourers_workshop.core.skin.SkinTypes;
 import moe.plushie.armourers_workshop.core.skin.attachment.SkinAttachmentType;
 import moe.plushie.armourers_workshop.core.skin.attachment.SkinAttachmentTypes;
+import moe.plushie.armourers_workshop.core.skin.part.SkinPartType;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPartTypes;
 import moe.plushie.armourers_workshop.core.utils.Collections;
 
@@ -20,7 +20,7 @@ import java.util.function.Function;
 
 public class DocumentPartMapper {
 
-    private static final Set<ISkinType> SINGLE_TYPES = Collections.immutableSet(builder -> {
+    private static final Set<SkinType> SINGLE_TYPES = Collections.immutableSet(builder -> {
         builder.add(SkinTypes.ITEM_SWORD);
         builder.add(SkinTypes.ITEM_SHIELD);
         //builder.add(SkinTypes.ITEM_BOW);
@@ -38,7 +38,7 @@ public class DocumentPartMapper {
         builder.add(SkinTypes.BLOCK);
     });
 
-    private static final Map<String, ISkinPartType> BOW_PARTS = Collections.immutableMap(builder -> {
+    private static final Map<String, SkinPartType> BOW_PARTS = Collections.immutableMap(builder -> {
         builder.put("Arrow", SkinPartTypes.ITEM_ARROW);
         builder.put("Frame0", SkinPartTypes.ITEM_BOW0);
         builder.put("Frame1", SkinPartTypes.ITEM_BOW1);
@@ -46,24 +46,24 @@ public class DocumentPartMapper {
         builder.put("Frame3", SkinPartTypes.ITEM_BOW3);
     });
 
-    private static final Map<String, ISkinPartType> FINISHING_PARTS = Collections.immutableMap(builder -> {
+    private static final Map<String, SkinPartType> FINISHING_PARTS = Collections.immutableMap(builder -> {
         builder.put("Hook", SkinPartTypes.ITEM_FISHING_HOOK);
         builder.put("Frame0", SkinPartTypes.ITEM_FISHING_ROD);
         builder.put("Frame1", SkinPartTypes.ITEM_FISHING_ROD1);
     });
 
-    private final ISkinType type;
+    private final SkinType type;
     private final Function<String, Entry> provider;
 
     private final Map<Node, Node> overrideNodes = new HashMap<>();
 
-    public DocumentPartMapper(ISkinType type, Function<String, Entry> provider) {
+    public DocumentPartMapper(SkinType type, Function<String, Entry> provider) {
         this.type = type;
         this.provider = provider;
         this.setup();
     }
 
-    public static DocumentPartMapper of(ISkinType type) {
+    public static DocumentPartMapper of(SkinType type) {
         // read bow item
         if (type == SkinTypes.ITEM_BOW) {
             return of(type, BOW_PARTS);
@@ -76,7 +76,7 @@ public class DocumentPartMapper {
         return of(type, Armatures.byType(type));
     }
 
-    private static DocumentPartMapper of(ISkinType type, Armature armature) {
+    private static DocumentPartMapper of(SkinType type, Armature armature) {
         return new DocumentPartMapper(type, name -> {
             var joint = armature.getJoint(name);
             if (joint != null) {
@@ -89,7 +89,7 @@ public class DocumentPartMapper {
         });
     }
 
-    private static DocumentPartMapper of(ISkinType type, Map<String, ISkinPartType> map) {
+    private static DocumentPartMapper of(SkinType type, Map<String, SkinPartType> map) {
         return new DocumentPartMapper(type, name -> {
             var partType = map.get(name);
             if (partType != null) {
@@ -117,9 +117,17 @@ public class DocumentPartMapper {
         return null;
     }
 
-    public Node resolve(String name, ISkinPartType partType) {
+    public Node resolve(String name, SkinPartType partType) {
         var node = new Node(name, partType);
-        return overrideNodes.getOrDefault(node, node);
+        var overridedNode = overrideNodes.get(node);
+        if (overridedNode != null) {
+            return overridedNode;
+        }
+        var overrideEntry = provider.apply(name);
+        if (overrideEntry != null) {
+            return new Node(name, overrideEntry.type);
+        }
+        return node;
     }
 
     public boolean isEmpty() {
@@ -176,9 +184,9 @@ public class DocumentPartMapper {
 
         public static final Entry NONE = new Entry(null, SkinPartTypes.ADVANCED);
 
-        private final ISkinPartType type;
+        private final SkinPartType type;
 
-        public Entry(IJoint joint, ISkinPartType type) {
+        public Entry(IJoint joint, SkinPartType type) {
             this.type = type;
         }
 
@@ -186,14 +194,14 @@ public class DocumentPartMapper {
             return type != SkinPartTypes.ADVANCED;
         }
 
-        public Vector3f getOffset() {
+        public OpenVector3f getOffset() {
             if (type == SkinPartTypes.BIPPED_CHEST || type == SkinPartTypes.BIPPED_TORSO) {
-                return new Vector3f(0, 6, 0);
+                return new OpenVector3f(0, 6, 0);
             }
-            return Vector3f.ZERO;
+            return OpenVector3f.ZERO;
         }
 
-        public ISkinPartType getType() {
+        public SkinPartType getType() {
             return type;
         }
     }
@@ -201,9 +209,9 @@ public class DocumentPartMapper {
     public static class Node {
 
         private final String name;
-        private final ISkinPartType type;
+        private final SkinPartType type;
 
-        public Node(String name, ISkinPartType type) {
+        public Node(String name, SkinPartType type) {
             this.name = name;
             this.type = type;
         }
@@ -220,7 +228,7 @@ public class DocumentPartMapper {
             return name;
         }
 
-        public ISkinPartType getType() {
+        public SkinPartType getType() {
             return type;
         }
 

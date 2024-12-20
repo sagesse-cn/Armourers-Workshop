@@ -1,6 +1,6 @@
 package moe.plushie.armourers_workshop.core.skin.serializer.importer.blockbench;
 
-import moe.plushie.armourers_workshop.core.math.Vector3f;
+import moe.plushie.armourers_workshop.core.math.OpenVector3f;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,12 +9,12 @@ public class BlockBenchOutliner extends BlockBenchObject {
 
     private final boolean allowExport;
 
-    private final Vector3f origin;
-    private final Vector3f rotation;
+    private final OpenVector3f origin;
+    private final OpenVector3f rotation;
 
     private final List<Object> children;
 
-    public BlockBenchOutliner(String uuid, String name, Vector3f origin, Vector3f rotation, boolean allowExport, List<Object> children) {
+    public BlockBenchOutliner(String uuid, String name, OpenVector3f origin, OpenVector3f rotation, boolean allowExport, List<Object> children) {
         super(uuid, name);
         this.origin = origin;
         this.rotation = rotation;
@@ -26,11 +26,11 @@ public class BlockBenchOutliner extends BlockBenchObject {
         return allowExport;
     }
 
-    public Vector3f getOrigin() {
+    public OpenVector3f getOrigin() {
         return origin;
     }
 
-    public Vector3f getRotation() {
+    public OpenVector3f getRotation() {
         return rotation;
     }
 
@@ -42,16 +42,16 @@ public class BlockBenchOutliner extends BlockBenchObject {
 
         private boolean allowExport = true;
 
-        private Vector3f origin = Vector3f.ZERO;
-        private Vector3f rotation = Vector3f.ZERO;
+        private OpenVector3f origin = OpenVector3f.ZERO;
+        private OpenVector3f rotation = OpenVector3f.ZERO;
 
         private final List<Object> children = new ArrayList<>();
 
-        public void origin(Vector3f origin) {
+        public void origin(OpenVector3f origin) {
             this.origin = origin;
         }
 
-        public void rotation(Vector3f rotation) {
+        public void rotation(OpenVector3f rotation) {
             this.rotation = rotation;
         }
 

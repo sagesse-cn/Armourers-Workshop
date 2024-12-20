@@ -40,7 +40,7 @@ public class ReportList extends UIScrollView {
     @Override
     public void layoutSubviews() {
         super.layoutSubviews();
-        float width = bounds().getWidth();
+        float width = bounds().width();
         if (lastWidth != width) {
             lastWidth = width;
             this.contentHeight = 0;

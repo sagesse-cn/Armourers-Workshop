@@ -2,7 +2,7 @@ package moe.plushie.armourers_workshop.core.skin;
 
 import moe.plushie.armourers_workshop.api.core.IDataCodec;
 import moe.plushie.armourers_workshop.api.skin.ISkinMarker;
-import moe.plushie.armourers_workshop.core.math.Vector3i;
+import moe.plushie.armourers_workshop.core.math.OpenVector3i;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IInputStream;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IOutputStream;
 import moe.plushie.armourers_workshop.core.utils.Objects;
@@ -54,8 +54,8 @@ public class SkinMarker implements ISkinMarker {
     }
 
     @Override
-    public Vector3i getPosition() {
-        return new Vector3i(x, y, z);
+    public OpenVector3i getPosition() {
+        return new OpenVector3i(x, y, z);
     }
 
     @Nullable

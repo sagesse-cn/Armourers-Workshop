@@ -17,11 +17,11 @@ import moe.plushie.armourers_workshop.core.item.impl.IPaintToolPicker;
 import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintColor;
 import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintTypes;
 import moe.plushie.armourers_workshop.core.utils.ColorUtils;
+import moe.plushie.armourers_workshop.core.utils.TranslateUtils;
 import moe.plushie.armourers_workshop.init.ModConstants;
 import moe.plushie.armourers_workshop.init.ModDataComponents;
 import moe.plushie.armourers_workshop.init.ModSounds;
 import moe.plushie.armourers_workshop.init.platform.NetworkManager;
-import moe.plushie.armourers_workshop.utils.TranslateUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -73,7 +73,7 @@ public class ColorPickerItem extends AbstractPaintToolItem implements IItemTintC
                 return InteractionResult.CONSUME;
             }
             if (!itemStack.get(PaintingToolOptions.CHANGE_PAINT_TYPE)) {
-                newColor = SkinPaintColor.of(newColor.getRGB(), provider.getColor().getPaintType());
+                newColor = newColor.withPaintType(provider.getColor().getPaintType());
             }
             provider.setColor(newColor);
             return InteractionResult.sidedSuccess(level.isClientSide());
@@ -107,7 +107,7 @@ public class ColorPickerItem extends AbstractPaintToolItem implements IItemTintC
     }
 
     @Override
-    public ISkinPaintColor getItemColor(ItemStack itemStack) {
+    public SkinPaintColor getItemColor(ItemStack itemStack) {
         return itemStack.get(ModDataComponents.TOOL_COLOR.get());
     }
 

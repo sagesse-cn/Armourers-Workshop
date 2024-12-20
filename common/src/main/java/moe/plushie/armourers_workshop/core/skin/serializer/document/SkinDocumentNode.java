@@ -4,16 +4,16 @@ import moe.plushie.armourers_workshop.api.core.IDataCodec;
 import moe.plushie.armourers_workshop.api.core.IDataSerializable;
 import moe.plushie.armourers_workshop.api.core.IDataSerializer;
 import moe.plushie.armourers_workshop.api.core.IDataSerializerKey;
-import moe.plushie.armourers_workshop.api.skin.part.ISkinPartType;
 import moe.plushie.armourers_workshop.core.math.OpenMath;
 import moe.plushie.armourers_workshop.core.math.OpenTransform3f;
-import moe.plushie.armourers_workshop.core.math.Vector3f;
+import moe.plushie.armourers_workshop.core.math.OpenVector3f;
 import moe.plushie.armourers_workshop.core.skin.SkinDescriptor;
+import moe.plushie.armourers_workshop.core.skin.part.SkinPartType;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPartTypes;
 import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.core.utils.OpenUUID;
 import moe.plushie.armourers_workshop.core.utils.TagSerializer;
-import moe.plushie.armourers_workshop.utils.TranslateUtils;
+import moe.plushie.armourers_workshop.core.utils.TranslateUtils;
 import net.minecraft.nbt.CompoundTag;
 
 import java.util.ArrayList;
@@ -23,13 +23,13 @@ public class SkinDocumentNode implements IDataSerializable.Immutable {
 
     public static final IDataCodec<SkinDocumentNode> CODEC = IDataCodec.COMPOUND_TAG.serializer(SkinDocumentNode::new);
 
-    private Vector3f location = Vector3f.ZERO;
-    private Vector3f rotation = Vector3f.ZERO;
-    private Vector3f scale = Vector3f.ONE;
-    private Vector3f pivot = Vector3f.ZERO;
+    private OpenVector3f location = OpenVector3f.ZERO;
+    private OpenVector3f rotation = OpenVector3f.ZERO;
+    private OpenVector3f scale = OpenVector3f.ONE;
+    private OpenVector3f pivot = OpenVector3f.ZERO;
     private OpenTransform3f transform = null;
 
-    private ISkinPartType type;
+    private SkinPartType type;
     private SkinDescriptor skin = SkinDescriptor.EMPTY;
 
     private String name;
@@ -52,7 +52,7 @@ public class SkinDocumentNode implements IDataSerializable.Immutable {
         this(id, name, SkinPartTypes.ADVANCED);
     }
 
-    public SkinDocumentNode(String id, String name, ISkinPartType type) {
+    public SkinDocumentNode(String id, String name, SkinPartType type) {
         this.id = id;
         this.name = name;
         this.type = type;
@@ -207,12 +207,12 @@ public class SkinDocumentNode implements IDataSerializable.Immutable {
         return cachedTypeName;
     }
 
-    public void setType(ISkinPartType type) {
+    public void setType(SkinPartType type) {
         this.type = type;
         this.cachedTypeName = null;
     }
 
-    public ISkinPartType getType() {
+    public SkinPartType getType() {
         return type;
     }
 
@@ -229,7 +229,7 @@ public class SkinDocumentNode implements IDataSerializable.Immutable {
         return skin;
     }
 
-    public void setLocation(Vector3f value) {
+    public void setLocation(OpenVector3f value) {
         location = value;
         transform = null;
         if (listener != null) {
@@ -239,11 +239,11 @@ public class SkinDocumentNode implements IDataSerializable.Immutable {
         }
     }
 
-    public Vector3f getLocation() {
+    public OpenVector3f getLocation() {
         return location;
     }
 
-    public void setRotation(Vector3f value) {
+    public void setRotation(OpenVector3f value) {
         rotation = value;
         transform = null;
         if (listener != null) {
@@ -253,12 +253,12 @@ public class SkinDocumentNode implements IDataSerializable.Immutable {
         }
     }
 
-    public Vector3f getRotation() {
+    public OpenVector3f getRotation() {
         return rotation;
     }
 
     public void setScale(float value) {
-        scale = new Vector3f(value, value, value);
+        scale = new OpenVector3f(value, value, value);
         transform = null;
         if (listener != null) {
             var builder = new TagSerializer();
@@ -268,10 +268,10 @@ public class SkinDocumentNode implements IDataSerializable.Immutable {
     }
 
     public float getScale() {
-        return scale.getX();
+        return scale.x();
     }
 
-    public void setPivot(Vector3f value) {
+    public void setPivot(OpenVector3f value) {
         pivot = value;
         transform = null;
         if (listener != null) {
@@ -281,7 +281,7 @@ public class SkinDocumentNode implements IDataSerializable.Immutable {
         }
     }
 
-    public Vector3f getPivot() {
+    public OpenVector3f getPivot() {
         return pivot;
     }
 
@@ -292,17 +292,17 @@ public class SkinDocumentNode implements IDataSerializable.Immutable {
         }
         var translate = this.location;
         var pivot = this.pivot;
-        if (!translate.equals(Vector3f.ZERO)) {
-            translate = new Vector3f(-translate.getX(), -translate.getY(), translate.getZ());
+        if (!translate.equals(OpenVector3f.ZERO)) {
+            translate = new OpenVector3f(-translate.x(), -translate.y(), translate.z());
         }
-        if (!pivot.equals(Vector3f.ZERO)) {
-            pivot = new Vector3f(-pivot.getX(), -pivot.getY(), pivot.getZ());
+        if (!pivot.equals(OpenVector3f.ZERO)) {
+            pivot = new OpenVector3f(-pivot.x(), -pivot.y(), pivot.z());
         }
         var scale = this.scale;
         if (isMirror) {
             scale = scale.scaling(-1, 1, 1);
         }
-        transform = OpenTransform3f.create(translate, rotation, scale, pivot, Vector3f.ZERO);
+        transform = OpenTransform3f.create(translate, rotation, scale, pivot, OpenVector3f.ZERO);
         return transform;
     }
 
@@ -395,22 +395,22 @@ public class SkinDocumentNode implements IDataSerializable.Immutable {
 
         public static final IDataSerializerKey<String> UID = IDataSerializerKey.create("UID", IDataCodec.STRING, "");
         public static final IDataSerializerKey<String> NAME = IDataSerializerKey.create("Name", IDataCodec.STRING, null);
-        public static final IDataSerializerKey<ISkinPartType> TYPE = IDataSerializerKey.create("Type", SkinPartTypes.CODEC, SkinPartTypes.ADVANCED);
+        public static final IDataSerializerKey<SkinPartType> TYPE = IDataSerializerKey.create("Type", SkinPartTypes.CODEC, SkinPartTypes.ADVANCED);
         public static final IDataSerializerKey<SkinDescriptor> SKIN = IDataSerializerKey.create("Skin", SkinDescriptor.CODEC, SkinDescriptor.EMPTY);
-        public static final IDataSerializerKey<Vector3f> LOCATION = IDataSerializerKey.create("Location", Vector3f.CODEC, Vector3f.ZERO);
-        public static final IDataSerializerKey<Vector3f> ROTATION = IDataSerializerKey.create("Rotation", Vector3f.CODEC, Vector3f.ZERO);
-        public static final IDataSerializerKey<Vector3f> SCALE = IDataSerializerKey.create("Scale", Vector3f.CODEC, Vector3f.ONE);
-        public static final IDataSerializerKey<Vector3f> PIVOT = IDataSerializerKey.create("Pivot", Vector3f.CODEC, Vector3f.ZERO);
+        public static final IDataSerializerKey<OpenVector3f> LOCATION = IDataSerializerKey.create("Location", OpenVector3f.CODEC, OpenVector3f.ZERO);
+        public static final IDataSerializerKey<OpenVector3f> ROTATION = IDataSerializerKey.create("Rotation", OpenVector3f.CODEC, OpenVector3f.ZERO);
+        public static final IDataSerializerKey<OpenVector3f> SCALE = IDataSerializerKey.create("Scale", OpenVector3f.CODEC, OpenVector3f.ONE);
+        public static final IDataSerializerKey<OpenVector3f> PIVOT = IDataSerializerKey.create("Pivot", OpenVector3f.CODEC, OpenVector3f.ZERO);
         public static final IDataSerializerKey<List<SkinDocumentNode>> CHILDREN = IDataSerializerKey.create("Children", SkinDocumentNode.CODEC.listOf(), Collections.emptyList());
         public static final IDataSerializerKey<Boolean> ENABLED = IDataSerializerKey.create("Enabled", IDataCodec.BOOL, true);
         public static final IDataSerializerKey<Boolean> MIRROR = IDataSerializerKey.create("Mirror", IDataCodec.BOOL, false);
 
         public static final IDataSerializerKey<String> INC_NAME = IDataSerializerKey.create("Name", IDataCodec.STRING, null);
         public static final IDataSerializerKey<SkinDescriptor> INC_SKIN = IDataSerializerKey.create("Skin", SkinDescriptor.CODEC, null);
-        public static final IDataSerializerKey<Vector3f> INC_LOCATION = IDataSerializerKey.create("Location", Vector3f.CODEC, null);
-        public static final IDataSerializerKey<Vector3f> INC_ROTATION = IDataSerializerKey.create("Rotation", Vector3f.CODEC, null);
-        public static final IDataSerializerKey<Vector3f> INC_SCALE = IDataSerializerKey.create("Scale", Vector3f.CODEC, null);
-        public static final IDataSerializerKey<Vector3f> INC_PIVOT = IDataSerializerKey.create("Pivot", Vector3f.CODEC, null);
+        public static final IDataSerializerKey<OpenVector3f> INC_LOCATION = IDataSerializerKey.create("Location", OpenVector3f.CODEC, null);
+        public static final IDataSerializerKey<OpenVector3f> INC_ROTATION = IDataSerializerKey.create("Rotation", OpenVector3f.CODEC, null);
+        public static final IDataSerializerKey<OpenVector3f> INC_SCALE = IDataSerializerKey.create("Scale", OpenVector3f.CODEC, null);
+        public static final IDataSerializerKey<OpenVector3f> INC_PIVOT = IDataSerializerKey.create("Pivot", OpenVector3f.CODEC, null);
         public static final IDataSerializerKey<Boolean> INC_ENABLED = IDataSerializerKey.create("Enabled", IDataCodec.BOOL, null);
         public static final IDataSerializerKey<Boolean> INC_MIRROR = IDataSerializerKey.create("Mirror", IDataCodec.BOOL, null);
     }

@@ -3,11 +3,11 @@ package moe.plushie.armourers_workshop.core.skin.serializer.io;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import moe.plushie.armourers_workshop.api.core.IRegistryEntry;
+import moe.plushie.armourers_workshop.core.math.OpenRectangle3f;
+import moe.plushie.armourers_workshop.core.math.OpenRectangle3i;
 import moe.plushie.armourers_workshop.core.math.OpenTransform3f;
-import moe.plushie.armourers_workshop.core.math.Rectangle3f;
-import moe.plushie.armourers_workshop.core.math.Rectangle3i;
-import moe.plushie.armourers_workshop.core.math.Vector3f;
-import moe.plushie.armourers_workshop.core.math.Vector3i;
+import moe.plushie.armourers_workshop.core.math.OpenVector3f;
+import moe.plushie.armourers_workshop.core.math.OpenVector3i;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperties;
 import moe.plushie.armourers_workshop.core.skin.texture.SkinTextureAnimation;
 import moe.plushie.armourers_workshop.core.skin.texture.SkinTextureProperties;
@@ -186,23 +186,23 @@ public interface IInputStream {
         };
     }
 
-    default Vector3i readVector3i() throws IOException {
+    default OpenVector3i readVector3i() throws IOException {
         var stream = getInputStream();
         int x = stream.readInt();
         int y = stream.readInt();
         int z = stream.readInt();
-        return new Vector3i(x, y, z);
+        return new OpenVector3i(x, y, z);
     }
 
-    default Vector3f readVector3f() throws IOException {
+    default OpenVector3f readVector3f() throws IOException {
         var stream = getInputStream();
         float x = stream.readFloat();
         float y = stream.readFloat();
         float z = stream.readFloat();
-        return new Vector3f(x, y, z);
+        return new OpenVector3f(x, y, z);
     }
 
-    default Rectangle3i readRectangle3i() throws IOException {
+    default OpenRectangle3i readRectangle3i() throws IOException {
         var stream = getInputStream();
         int x = stream.readInt();
         int y = stream.readInt();
@@ -210,10 +210,10 @@ public interface IInputStream {
         int width = stream.readInt();
         int height = stream.readInt();
         int depth = stream.readInt();
-        return new Rectangle3i(x, y, z, width, height, depth);
+        return new OpenRectangle3i(x, y, z, width, height, depth);
     }
 
-    default Rectangle3f readRectangle3f() throws IOException {
+    default OpenRectangle3f readRectangle3f() throws IOException {
         var stream = getInputStream();
         float x = stream.readFloat();
         float y = stream.readFloat();
@@ -221,7 +221,7 @@ public interface IInputStream {
         float width = stream.readFloat();
         float height = stream.readFloat();
         float depth = stream.readFloat();
-        return new Rectangle3f(x, y, z, width, height, depth);
+        return new OpenRectangle3f(x, y, z, width, height, depth);
     }
 
     default OpenTransform3f readTransformf() throws IOException {

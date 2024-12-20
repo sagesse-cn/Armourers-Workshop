@@ -7,8 +7,8 @@ import com.apple.library.uikit.UIComboItem;
 import com.apple.library.uikit.UIEdgeInsets;
 import com.apple.library.uikit.UIImage;
 import moe.plushie.armourers_workshop.ArmourersWorkshop;
-import moe.plushie.armourers_workshop.api.skin.ISkinType;
-import moe.plushie.armourers_workshop.utils.TranslateUtils;
+import moe.plushie.armourers_workshop.core.skin.SkinType;
+import moe.plushie.armourers_workshop.core.utils.TranslateUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import org.jetbrains.annotations.Nullable;
@@ -19,13 +19,13 @@ import java.util.List;
 @Environment(EnvType.CLIENT)
 public class SkinComboBox extends UIComboBox {
 
-    protected final ArrayList<ISkinType> skinTypes = new ArrayList<>();
+    protected final ArrayList<SkinType> skinTypes = new ArrayList<>();
 
     public SkinComboBox(CGRect frame) {
         super(frame);
     }
 
-    public void reloadSkins(List<ISkinType> skinTypes) {
+    public void reloadSkins(List<SkinType> skinTypes) {
         var items = new ArrayList<UIComboItem>();
         for (var skinType : skinTypes) {
             var title = new NSString(TranslateUtils.Name.of(skinType));
@@ -42,7 +42,7 @@ public class SkinComboBox extends UIComboBox {
     }
 
     @Nullable
-    public ISkinType selectedSkin() {
+    public SkinType selectedSkin() {
         int index = selectedIndex();
         if (index >= 0 && index < skinTypes.size()) {
             return skinTypes.get(index);
@@ -50,11 +50,11 @@ public class SkinComboBox extends UIComboBox {
         return null;
     }
 
-    public void setSelectedSkin(@Nullable ISkinType skinType) {
+    public void setSelectedSkin(@Nullable SkinType skinType) {
         super.setSelectedIndex(skinTypes.indexOf(skinType));
     }
 
-    public List<ISkinType> skinTypes() {
+    public List<SkinType> skinTypes() {
         return skinTypes;
     }
 

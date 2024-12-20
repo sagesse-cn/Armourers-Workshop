@@ -9,7 +9,6 @@ import com.apple.library.uikit.UIComboItem;
 import com.apple.library.uikit.UIControl;
 import com.apple.library.uikit.UITextField;
 import com.apple.library.uikit.UITextFieldDelegate;
-import moe.plushie.armourers_workshop.api.skin.texture.ISkinPaintType;
 import moe.plushie.armourers_workshop.builder.data.palette.Palette;
 import moe.plushie.armourers_workshop.builder.data.palette.PaletteManager;
 import moe.plushie.armourers_workshop.core.client.gui.widget.ConfirmDialog;
@@ -17,6 +16,7 @@ import moe.plushie.armourers_workshop.core.client.gui.widget.HSBSliderBox;
 import moe.plushie.armourers_workshop.core.client.gui.widget.InputDialog;
 import moe.plushie.armourers_workshop.core.client.gui.widget.MenuWindow;
 import moe.plushie.armourers_workshop.core.client.gui.widget.PaintColorView;
+import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintType;
 import moe.plushie.armourers_workshop.core.utils.ColorUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -40,7 +40,7 @@ public abstract class PaletteEditingWindow<M extends AbstractContainerMenu> exte
     protected final PaletteManager paletteManager = PaletteManager.getInstance();
 
     protected ArrayList<Palette> palettes = new ArrayList<>();
-    protected ArrayList<ISkinPaintType> paintTypes;
+    protected ArrayList<SkinPaintType> paintTypes;
 
     public PaletteEditingWindow(M menu, Inventory inventory, NSString title) {
         super(menu, inventory, title);

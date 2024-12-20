@@ -7,10 +7,11 @@ import moe.plushie.armourers_workshop.compatibility.core.data.AbstractDataSerial
 import moe.plushie.armourers_workshop.core.data.EntityCollisionContainer;
 import moe.plushie.armourers_workshop.core.menu.SkinSlotType;
 import moe.plushie.armourers_workshop.core.utils.NonNullItemList;
-import moe.plushie.armourers_workshop.utils.DataFixerUtils;
+import moe.plushie.armourers_workshop.init.ModLog;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
 import java.util.BitSet;
@@ -37,8 +38,8 @@ public class SkinWardrobeStorage {
         var version = serializer.read(CodingKeys.VERSION);
         if (version <= 0) {
             var inventory = wardrobe.getInventory();
-            DataFixerUtils.move(inventory, 67, SkinSlotType.DYE.getIndex(), 16, "align dye slots storage");
-            DataFixerUtils.move(inventory, 57, SkinSlotType.OUTFIT.getIndex(), 10, "align outfit slots storage");
+            moveSlots(inventory, 67, SkinSlotType.DYE.getIndex(), 16, "align dye slots storage");
+            moveSlots(inventory, 57, SkinSlotType.OUTFIT.getIndex(), 10, "align outfit slots storage");
         }
     }
 
@@ -115,6 +116,23 @@ public class SkinWardrobeStorage {
             if (slotType != null) {
                 slots.put(slotType, encoded & 0xff);
             }
+        }
+    }
+
+
+
+    private static void moveSlots(Container inventory, int src, int dest, int size, String reason) {
+        int changes = 0;
+        for (int i = size - 1; i >= 0; --i) {
+            var itemStack = inventory.getItem(src + i);
+            if (!itemStack.isEmpty()) {
+                inventory.setItem(src + i, ItemStack.EMPTY);
+                inventory.setItem(dest + i, itemStack);
+                changes += 1;
+            }
+        }
+        if (changes != 0) {
+            ModLog.info("move {} items from {} - {}, to {} - {}, reason: {}", changes, src, src + size, dest, dest + size, reason);
         }
     }
 

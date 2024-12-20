@@ -1,6 +1,6 @@
 package moe.plushie.armourers_workshop.core.skin.serializer.importer.blockbench;
 
-import moe.plushie.armourers_workshop.core.math.Vector2f;
+import moe.plushie.armourers_workshop.core.math.OpenVector2f;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -9,12 +9,12 @@ import java.util.Map;
 
 public class BlockBenchMeshFace {
 
-    protected final Map<String, Vector2f> uv;
+    protected final Map<String, OpenVector2f> uv;
     protected final List<String> vertices;
 
     protected final int textureId;
 
-    public BlockBenchMeshFace(int textureId, Map<String, Vector2f> uv, List<String> vertices) {
+    public BlockBenchMeshFace(int textureId, Map<String, OpenVector2f> uv, List<String> vertices) {
         this.textureId = textureId;
         this.uv = uv;
         this.vertices = vertices;
@@ -24,7 +24,7 @@ public class BlockBenchMeshFace {
         return textureId;
     }
 
-    public Map<String, Vector2f> getUV() {
+    public Map<String, OpenVector2f> getUV() {
         return uv;
     }
 
@@ -34,7 +34,7 @@ public class BlockBenchMeshFace {
 
     protected static class Builder {
 
-        protected final Map<String, Vector2f> uv = new LinkedHashMap<>();
+        protected final Map<String, OpenVector2f> uv = new LinkedHashMap<>();
         protected final List<String> vertices = new ArrayList<>();
 
         protected int texture = -1;
@@ -43,7 +43,7 @@ public class BlockBenchMeshFace {
             this.texture = texture;
         }
 
-        public void addUV(String key, Vector2f pos) {
+        public void addUV(String key, OpenVector2f pos) {
             this.uv.put(key, pos);
         }
 

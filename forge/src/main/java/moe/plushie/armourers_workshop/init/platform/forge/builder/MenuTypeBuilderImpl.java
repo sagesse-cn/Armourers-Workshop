@@ -5,6 +5,7 @@ import moe.plushie.armourers_workshop.api.common.IMenuProvider;
 import moe.plushie.armourers_workshop.api.common.IMenuSerializer;
 import moe.plushie.armourers_workshop.api.common.IMenuType;
 import moe.plushie.armourers_workshop.api.core.IRegistryHolder;
+import moe.plushie.armourers_workshop.api.event.EventBus;
 import moe.plushie.armourers_workshop.api.registry.IMenuTypeBuilder;
 import moe.plushie.armourers_workshop.api.registry.IRegistryBinder;
 import moe.plushie.armourers_workshop.compatibility.client.AbstractMenuWindowProvider;
@@ -13,8 +14,7 @@ import moe.plushie.armourers_workshop.compatibility.forge.AbstractForgeRegistrie
 import moe.plushie.armourers_workshop.core.utils.TypedRegistry;
 import moe.plushie.armourers_workshop.init.environment.EnvironmentExecutor;
 import moe.plushie.armourers_workshop.init.environment.EnvironmentType;
-import moe.plushie.armourers_workshop.init.platform.EventManager;
-import moe.plushie.armourers_workshop.init.platform.event.client.RegisterScreensEvent;
+import moe.plushie.armourers_workshop.init.event.client.RegisterScreensEvent;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 
@@ -35,7 +35,7 @@ public class MenuTypeBuilderImpl<T extends AbstractContainerMenu, D> implements 
     public <U extends UIWindow> IMenuTypeBuilder<T> bind(Supplier<AbstractMenuWindowProvider<T, U>> provider) {
         this.binder = () -> menuType -> {
             // here is safe call client registry.
-            EventManager.listen(RegisterScreensEvent.class, event -> {
+            EventBus.register(RegisterScreensEvent.class, event -> {
                 event.register(menuType.get(), provider.get()::createScreen);
             });
         };

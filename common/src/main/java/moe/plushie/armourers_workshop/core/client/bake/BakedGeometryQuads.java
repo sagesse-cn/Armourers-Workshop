@@ -1,14 +1,13 @@
 package moe.plushie.armourers_workshop.core.client.bake;
 
 import moe.plushie.armourers_workshop.api.core.math.ITransform;
-import moe.plushie.armourers_workshop.api.skin.part.ISkinPartType;
 import moe.plushie.armourers_workshop.core.data.color.ColorDescriptor;
 import moe.plushie.armourers_workshop.core.math.OpenPoseStack;
+import moe.plushie.armourers_workshop.core.math.OpenRectangle3f;
+import moe.plushie.armourers_workshop.core.math.OpenRectangle3i;
 import moe.plushie.armourers_workshop.core.math.OpenTransform3f;
+import moe.plushie.armourers_workshop.core.math.OpenVector3f;
 import moe.plushie.armourers_workshop.core.math.OpenVoxelShape;
-import moe.plushie.armourers_workshop.core.math.Rectangle3f;
-import moe.plushie.armourers_workshop.core.math.Rectangle3i;
-import moe.plushie.armourers_workshop.core.math.Vector3f;
 import moe.plushie.armourers_workshop.core.skin.SkinPreviewData;
 import moe.plushie.armourers_workshop.core.skin.geometry.SkinGeometryFace;
 import moe.plushie.armourers_workshop.core.skin.geometry.SkinGeometryTypes;
@@ -16,6 +15,7 @@ import moe.plushie.armourers_workshop.core.skin.geometry.cube.SkinCubeFace;
 import moe.plushie.armourers_workshop.core.skin.geometry.cube.SkinCubeFaceCuller;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPart;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPartTransform;
+import moe.plushie.armourers_workshop.core.skin.part.SkinPartType;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPartTypes;
 import moe.plushie.armourers_workshop.core.skin.texture.EntityTextureModel;
 import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintColor;
@@ -48,14 +48,14 @@ public class BakedGeometryQuads {
         this.colorInfo = colorInfo;
     }
 
-    public static QuadsList<ISkinPartType> from(SkinPart part) {
-        var quads = new QuadsList<ISkinPartType>();
+    public static QuadsList<SkinPartType> from(SkinPart part) {
+        var quads = new QuadsList<SkinPartType>();
         var geometries = part.getGeometries();
         var shape = geometries.getShape();
-        var bounds = new Rectangle3i(shape.bounds());
+        var bounds = new OpenRectangle3i(shape.bounds());
         SkinCubeFaceCuller.cullFaces2(geometries, bounds, part.getType()).forEach(result -> {
             // when has a different part type, it means the skin part was split.
-            var newTransform = OpenTransform3f.createTranslateTransform(new Vector3f(result.getOrigin()));
+            var newTransform = OpenTransform3f.createTranslateTransform(new OpenVector3f(result.getOrigin()));
             var newShape = shape;
             if (result.getPartType() != part.getType()) {
                 var fixedBounds = result.getBounds().offset(bounds.getOrigin());
@@ -68,14 +68,14 @@ public class BakedGeometryQuads {
         return quads;
     }
 
-    public static QuadsList<ISkinPartType> from(SkinPreviewData previewData) {
-        var allQuads = new QuadsList<ISkinPartType>();
+    public static QuadsList<SkinPartType> from(SkinPreviewData previewData) {
+        var allQuads = new QuadsList<SkinPartType>();
         if (previewData == null) {
             return allQuads;
         }
         previewData.forEach((transform, data) -> {
             var shape = data.getShape();
-            var bounds = new Rectangle3i(shape.bounds());
+            var bounds = new OpenRectangle3i(shape.bounds());
             SkinCubeFaceCuller.cullFaces2(data, bounds, SkinPartTypes.BLOCK).forEach(result -> {
                 var quad = new BakedGeometryQuads(shape, new ColorDescriptor());
                 quad.loadFaces(result.getFaces());
@@ -85,8 +85,8 @@ public class BakedGeometryQuads {
         return allQuads;
     }
 
-    public static QuadsList<ISkinPartType> from(SkinPaintData paintData) {
-        var allQuads = new QuadsList<ISkinPartType>();
+    public static QuadsList<SkinPartType> from(SkinPaintData paintData) {
+        var allQuads = new QuadsList<SkinPartType>();
         if (paintData == null) {
             return allQuads;
         }
@@ -100,7 +100,7 @@ public class BakedGeometryQuads {
                 }
                 // in the vanilla's player textures are rendering without diffuse lighting.
                 var id = dir.get3DDataValue();
-                var shape = new Rectangle3f(x, y, z, 1, 1, 1);
+                var shape = new OpenRectangle3f(x, y, z, 1, 1, 1);
                 var transform = OpenTransform3f.IDENTITY;
                 faces.add(new SkinCubeFace(id, SkinGeometryTypes.BLOCK_SOLID, transform, null, shape, dir, paintColor, 255));
             });

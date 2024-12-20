@@ -8,7 +8,7 @@ import moe.plushie.armourers_workshop.api.registry.IEventHandler;
 import moe.plushie.armourers_workshop.compatibility.client.gui.AbstractGraphicsRenderer;
 import moe.plushie.armourers_workshop.compatibility.core.data.AbstractTooltipContext;
 import moe.plushie.armourers_workshop.compatibility.forge.AbstractForgeClientEventsImpl;
-import moe.plushie.armourers_workshop.init.platform.event.client.ItemTooltipEvent;
+import moe.plushie.armourers_workshop.init.event.client.ItemTooltipEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 

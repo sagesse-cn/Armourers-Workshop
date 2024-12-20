@@ -3,7 +3,7 @@ package moe.plushie.armourers_workshop.compatibility.client;
 import moe.plushie.armourers_workshop.api.annotation.Available;
 import moe.plushie.armourers_workshop.api.core.math.IMatrix3f;
 import moe.plushie.armourers_workshop.api.core.math.IMatrix4f;
-import moe.plushie.armourers_workshop.api.core.math.IQuaternion3f;
+import moe.plushie.armourers_workshop.api.core.math.IQuaternionf;
 import moe.plushie.armourers_workshop.core.data.cache.ObjectPool;
 import moe.plushie.armourers_workshop.core.math.OpenPoseStack;
 import moe.plushie.armourers_workshop.core.utils.MatrixUtils;
@@ -65,12 +65,12 @@ public abstract class AbstractPoseStackImpl {
         return CONVERTER_MAT4;
     }
 
-    public static Quaternionf convertQuaternion(IQuaternion3f q) {
+    public static Quaternionf convertQuaternion(IQuaternionf q) {
         CONVERTER_QUAT.set(q.x(), q.y(), q.z(), q.w());
         return CONVERTER_QUAT;
     }
 
-    public static Quaternionf copyQuaternion(IQuaternion3f q) {
+    public static Quaternionf copyQuaternion(IQuaternionf q) {
         return new Quaternionf(q.x(), q.y(), q.z(), q.w());
     }
 
@@ -98,7 +98,7 @@ public abstract class AbstractPoseStackImpl {
         }
 
         @Override
-        public void rotate(IQuaternion3f q) {
+        public void rotate(IQuaternionf q) {
             mat.rotate(convertQuaternion(q));
         }
 
@@ -177,7 +177,7 @@ public abstract class AbstractPoseStackImpl {
         }
 
         @Override
-        public void rotate(IQuaternion3f q) {
+        public void rotate(IQuaternionf q) {
             mat.rotate(convertQuaternion(q));
         }
 

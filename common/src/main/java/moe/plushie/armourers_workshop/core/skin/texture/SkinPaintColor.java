@@ -22,10 +22,6 @@ public class SkinPaintColor implements ISkinPaintColor {
     protected final int rgb;
     protected final SkinPaintType paintType;
 
-//    private PaintColor(int rgb, ISkinPaintType paintType) {
-//        this((rgb & 0xffffff) | ((paintType.getId() & 0xff) << 24), rgb, paintType);
-//    }
-
     protected SkinPaintColor(int value, int rgb, SkinPaintType paintType) {
         this.value = value;
         this.paintType = paintType;
@@ -58,14 +54,6 @@ public class SkinPaintColor implements ISkinPaintColor {
             POOL.put(value, paintColor);
         }
         return paintColor;
-    }
-
-    public static SkinPaintColor of(int r, int g, int b, ISkinPaintType paintType) {
-        return of(r, g, b, (SkinPaintType) paintType);
-    }
-
-    public static SkinPaintColor of(int rgb, ISkinPaintType paintType) {
-        return of(rgb, (SkinPaintType) paintType);
     }
 
     public static SkinPaintType getPaintType(int value) {
@@ -137,5 +125,20 @@ public class SkinPaintColor implements ISkinPaintColor {
     @Override
     public String toString() {
         return String.format("#%08x", value);
+    }
+
+    @Override
+    public SkinPaintColor withPaintType(ISkinPaintType paintType) {
+        return SkinPaintColor.of(rgb, (SkinPaintType) paintType);
+    }
+
+    @Override
+    public SkinPaintColor withColor(int rgb) {
+        return SkinPaintColor.of(rgb, paintType);
+    }
+
+    @Override
+    public SkinPaintColor withColor(int red, int green, int blue) {
+        return SkinPaintColor.of(red, green, blue, paintType);
     }
 }

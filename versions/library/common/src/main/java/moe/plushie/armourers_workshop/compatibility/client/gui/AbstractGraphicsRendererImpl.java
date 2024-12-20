@@ -4,7 +4,7 @@ import com.apple.library.impl.EntityRendererImpl;
 import com.mojang.blaze3d.platform.Lighting;
 import moe.plushie.armourers_workshop.api.annotation.Available;
 import moe.plushie.armourers_workshop.compatibility.client.AbstractPoseStack;
-import moe.plushie.armourers_workshop.core.math.Vector3f;
+import moe.plushie.armourers_workshop.core.math.OpenVector3f;
 import moe.plushie.armourers_workshop.utils.RenderSystem;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -30,17 +30,17 @@ public class AbstractGraphicsRendererImpl {
         poseStack.translate(0, 0, 50);
         poseStack.scale(s, s, s);
         poseStack.translate(0, 0, -50);
-        InventoryScreen.renderEntityInInventoryFollowsMouse(guiGraphics, tx, ty, tx, ty, scale, f, focus.getX(), focus.getY(), entity);
+        InventoryScreen.renderEntityInInventoryFollowsMouse(guiGraphics, tx, ty, tx, ty, scale, f, focus.x(), focus.y(), entity);
         poseStack.popPose();
     };
 
     private static final EntityRendererImpl<Entity> CUSTOM_ENTITY_RENDERER = (entity, origin, scale, focus, context) -> {
         // custom entity renderer from the InventoryScreen.renderEntityInInventory
-        float p = (float) Math.atan((0 - focus.getX()) / 40.0f);
-        float q = (float) Math.atan((0 - focus.getY()) / 40.0f);
-        var quaternion = Vector3f.ZP.rotationDegrees(180.0f);
-        var quaternion2 = Vector3f.XP.rotationDegrees(q * 20.0f);
-        quaternion.mul(Vector3f.YP.rotationDegrees(180.0f));
+        float p = (float) Math.atan((0 - focus.x) / 40.0f);
+        float q = (float) Math.atan((0 - focus.y) / 40.0f);
+        var quaternion = OpenVector3f.ZP.rotationDegrees(180.0f);
+        var quaternion2 = OpenVector3f.XP.rotationDegrees(q * 20.0f);
+        quaternion.mul(OpenVector3f.YP.rotationDegrees(180.0f));
         quaternion.mul(quaternion2);
         //float m = livingEntity.yBodyRot;
         float s = entity.getYRot();

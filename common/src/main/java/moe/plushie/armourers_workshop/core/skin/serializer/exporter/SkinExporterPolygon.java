@@ -2,9 +2,9 @@ package moe.plushie.armourers_workshop.core.skin.serializer.exporter;
 
 import moe.plushie.armourers_workshop.api.skin.geometry.ISkinGeometryType;
 import moe.plushie.armourers_workshop.core.math.OpenPoseStack;
-import moe.plushie.armourers_workshop.core.math.Rectangle3i;
-import moe.plushie.armourers_workshop.core.math.Vector3f;
-import moe.plushie.armourers_workshop.core.math.Vector4f;
+import moe.plushie.armourers_workshop.core.math.OpenRectangle3i;
+import moe.plushie.armourers_workshop.core.math.OpenVector3f;
+import moe.plushie.armourers_workshop.core.math.OpenVector4f;
 import moe.plushie.armourers_workshop.core.skin.Skin;
 import moe.plushie.armourers_workshop.core.skin.geometry.SkinGeometryTypes;
 import moe.plushie.armourers_workshop.core.skin.geometry.cube.SkinCubeFace;
@@ -92,16 +92,16 @@ public class SkinExporterPolygon implements SkinExporter {
         var poseStack = new OpenPoseStack();
         poseStack.scale(scale, scale, scale);
         poseStack.scale(-1, -1, 1);
-        poseStack.rotate(Vector3f.YP.rotationDegrees(90));
+        poseStack.rotate(OpenVector3f.YP.rotationDegrees(90));
 
         for (var face : faces) {
             var shape = face.getBoundingBox();
-            var x = shape.getX();
-            var y = shape.getY();
-            var z = shape.getZ();
-            var w = shape.getWidth();
-            var h = shape.getHeight();
-            var d = shape.getDepth();
+            var x = shape.x();
+            var y = shape.y();
+            var z = shape.z();
+            var w = shape.width();
+            var h = shape.height();
+            var d = shape.depth();
             var vertexes = SkinCubeFace.getBaseVertices(face.getDirection());
             for (var i = 0; i < 4; ++i) {
                 writeVert(poseStack, os, x + vertexes[i][0] * w, y + vertexes[i][1] * h, z + vertexes[i][2] * d, face.getColor());
@@ -118,9 +118,9 @@ public class SkinExporterPolygon implements SkinExporter {
     }
 
     private void writeVert(OpenPoseStack poseStack, OutputStreamWriter os, float x, float y, float z, SkinPaintColor color) throws IOException {
-        var q = new Vector4f(x, y, z, 1);
+        var q = new OpenVector4f(x, y, z, 1);
         q.transform(poseStack.last().pose());
-        os.write(String.format("%s %s %s %d %d %d", f2s(q.getX()), f2s(q.getY()), f2s(q.getZ()), color.getRed(), color.getGreen(), color.getBlue()) + CRLF);
+        os.write(String.format("%s %s %s %d %d %d", f2s(q.x()), f2s(q.y()), f2s(q.z()), color.getRed(), color.getGreen(), color.getBlue()) + CRLF);
     }
 
     private String f2s(float value) {
@@ -134,7 +134,7 @@ public class SkinExporterPolygon implements SkinExporter {
 
         Task(Skin skin, SkinPart skinPart) {
             var geometries = skinPart.getGeometries();
-            var bounds = new Rectangle3i(geometries.getShape().bounds());
+            var bounds = new OpenRectangle3i(geometries.getShape().bounds());
             this.skin = skin;
             this.skinPart = skinPart;
             this.cubeFaces = Collections.collect(SkinCubeFaceCuller.cullFaces(geometries, bounds), SkinCubeFace.class);

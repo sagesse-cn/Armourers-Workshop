@@ -2,10 +2,10 @@ package moe.plushie.armourers_workshop.core.skin.part.wings;
 
 import moe.plushie.armourers_workshop.api.core.math.IPoseStack;
 import moe.plushie.armourers_workshop.api.core.math.ITransform;
-import moe.plushie.armourers_workshop.api.skin.part.ISkinPartType;
 import moe.plushie.armourers_workshop.api.skin.part.features.ICanRotation;
-import moe.plushie.armourers_workshop.core.math.Vector3f;
+import moe.plushie.armourers_workshop.core.math.OpenVector3f;
 import moe.plushie.armourers_workshop.core.skin.SkinMarker;
+import moe.plushie.armourers_workshop.core.skin.part.SkinPartType;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperties;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperty;
 import moe.plushie.armourers_workshop.core.utils.OpenDirection;
@@ -24,7 +24,7 @@ public class WingPartTransform implements ITransform {
     private final SkinMarker marker;
     private final SkinProperties properties;
 
-    public WingPartTransform(ISkinPartType partType, SkinProperties properties, SkinMarker marker) {
+    public WingPartTransform(SkinPartType partType, SkinProperties properties, SkinMarker marker) {
         this.marker = marker;
         this.properties = properties;
         this.isMirror = partType instanceof ICanRotation rotatableType && rotatableType.isMirror();
@@ -51,18 +51,19 @@ public class WingPartTransform implements ITransform {
         }
         var point = marker.getPosition();
         var angle = (float) getRotationDegrees();
-        var offset = new Vector3f(point.getX() + 0.5f, point.getY() + 0.5f, point.getZ() + 0.5f);
+        var offset = new OpenVector3f(point.x() + 0.5f, point.y() + 0.5f, point.z() + 0.5f);
         if (!isMirror) {
             angle = -angle;
         }
 
-        poseStack.translate(offset.getX(), offset.getY(), offset.getZ());
+        poseStack.translate(offset.x(), offset.y(), offset.z());
         poseStack.rotate(getRotationMatrix(dir).rotationDegrees(angle));
-        poseStack.translate(-offset.getX(), -offset.getY(), -offset.getZ());
+        poseStack.translate(-offset.x(), -offset.y(), -offset.z());
     }
 
     private double getRotationDegrees() {
-        if (properties == null) {
+        // not provided
+        if (properties == null || properties.isEmpty()) {
             return 0;
         }
 
@@ -94,14 +95,14 @@ public class WingPartTransform implements ITransform {
         return -minAngle - fullAngle * ((angle + 1D) / 2);
     }
 
-    private Vector3f getRotationMatrix(OpenDirection direction) {
+    private OpenVector3f getRotationMatrix(OpenDirection direction) {
         return switch (direction) {
-            case UP -> Vector3f.YP;
-            case DOWN -> Vector3f.YN;
-            case SOUTH -> Vector3f.ZN;
-            case NORTH -> Vector3f.ZP;
-            case EAST -> Vector3f.XP;
-            case WEST -> Vector3f.XN;
+            case UP -> OpenVector3f.YP;
+            case DOWN -> OpenVector3f.YN;
+            case SOUTH -> OpenVector3f.ZN;
+            case NORTH -> OpenVector3f.ZP;
+            case EAST -> OpenVector3f.XP;
+            case WEST -> OpenVector3f.XN;
         };
     }
 }

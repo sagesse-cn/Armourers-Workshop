@@ -1,60 +1,58 @@
 package moe.plushie.armourers_workshop.core.skin;
 
 import moe.plushie.armourers_workshop.api.core.IDataCodec;
-import moe.plushie.armourers_workshop.api.skin.ISkinEquipmentSlot;
-import moe.plushie.armourers_workshop.api.skin.ISkinType;
-import moe.plushie.armourers_workshop.api.skin.part.ISkinPartType;
 import moe.plushie.armourers_workshop.core.data.slot.ItemOverrideType;
+import moe.plushie.armourers_workshop.core.skin.part.SkinPartType;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPartTypes;
-import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.core.utils.OpenEquipmentSlot;
 import moe.plushie.armourers_workshop.core.utils.OpenResourceLocation;
 import moe.plushie.armourers_workshop.init.ModLog;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.function.BiFunction;
 
-@SuppressWarnings({"unused", "SameParameterValue"})
+@SuppressWarnings("unused")
 public final class SkinTypes {
 
-    private static final ArrayList<ISkinType> ALL_SORTED_TYPES = new ArrayList<>();
-    private static final LinkedHashMap<String, ISkinType> ALL_TYPES = new LinkedHashMap<>();
+    private static final ArrayList<SkinType> ALL_SORTED_TYPES = new ArrayList<>();
+    private static final LinkedHashMap<String, SkinType> ALL_TYPES = new LinkedHashMap<>();
 
-    public static final IDataCodec<ISkinType> CODEC = IDataCodec.STRING.xmap(SkinTypes::byName, ISkinType::getName);
+    public static final IDataCodec<SkinType> CODEC = IDataCodec.STRING.xmap(SkinTypes::byName, SkinType::getName);
 
-    public static final ISkinType UNKNOWN = register("unknown", 255, SkinPartTypes.UNKNOWN);
+    public static final SkinType UNKNOWN = normal(255).part(SkinPartTypes.UNKNOWN).build("unknown");
 
-    public static final ISkinType ARMOR_HEAD = registerArmor("head", 1, OpenEquipmentSlot.HEAD, SkinPartTypes.BIPPED_HEAD);
-    public static final ISkinType ARMOR_CHEST = registerArmor("chest", 2, OpenEquipmentSlot.CHEST, SkinPartTypes.BIPPED_CHEST, SkinPartTypes.BIPPED_LEFT_ARM, SkinPartTypes.BIPPED_RIGHT_ARM);
-    public static final ISkinType ARMOR_LEGS = registerArmor("legs", 3, OpenEquipmentSlot.LEGS, SkinPartTypes.BIPPED_LEFT_THIGH, SkinPartTypes.BIPPED_RIGHT_THIGH, SkinPartTypes.BIPPED_SKIRT);
-    public static final ISkinType ARMOR_FEET = registerArmor("feet", 4, OpenEquipmentSlot.FEET, SkinPartTypes.BIPPED_LEFT_FOOT, SkinPartTypes.BIPPED_RIGHT_FOOT);
-    public static final ISkinType ARMOR_WINGS = registerArmor("wings", 5, null, SkinPartTypes.BIPPED_LEFT_WING, SkinPartTypes.BIPPED_RIGHT_WING);
+    public static final SkinType ARMOR_HEAD = armour(1).part(SkinPartTypes.BIPPED_HEAD).equipmentSlot(OpenEquipmentSlot.HEAD).build("head");
+    public static final SkinType ARMOR_CHEST = armour(2).part(SkinPartTypes.BIPPED_CHEST).part(SkinPartTypes.BIPPED_LEFT_ARM).part(SkinPartTypes.BIPPED_RIGHT_ARM).equipmentSlot(OpenEquipmentSlot.CHEST).build("chest");
+    public static final SkinType ARMOR_LEGS = armour(3).part(SkinPartTypes.BIPPED_LEFT_THIGH).part(SkinPartTypes.BIPPED_RIGHT_THIGH).part(SkinPartTypes.BIPPED_SKIRT).equipmentSlot(OpenEquipmentSlot.LEGS).build("legs");
+    public static final SkinType ARMOR_FEET = armour(4).part(SkinPartTypes.BIPPED_LEFT_FOOT).part(SkinPartTypes.BIPPED_RIGHT_FOOT).equipmentSlot(OpenEquipmentSlot.FEET).build("feet");
+    public static final SkinType ARMOR_WINGS = armour(5).part(SkinPartTypes.BIPPED_LEFT_WING).part(SkinPartTypes.BIPPED_RIGHT_WING).build("wings");
 
-    public static final ISkinType OUTFIT = registerArmor("outfit", 6, null, SkinTypes.ARMOR_HEAD, SkinTypes.ARMOR_CHEST, SkinTypes.ARMOR_LEGS, SkinTypes.ARMOR_FEET, SkinTypes.ARMOR_WINGS);
+    public static final SkinType OUTFIT = armour(6).part(SkinTypes.ARMOR_HEAD).part(SkinTypes.ARMOR_CHEST).part(SkinTypes.ARMOR_LEGS).part(SkinTypes.ARMOR_FEET).part(SkinTypes.ARMOR_WINGS).build("outfit");
 
-    public static final ISkinType ITEM_SWORD = registerItem("sword", 7, ItemOverrideType.SWORD, SkinPartTypes.ITEM_SWORD);
-    public static final ISkinType ITEM_SHIELD = registerItem("shield", 8, ItemOverrideType.SHIELD, SkinPartTypes.ITEM_SHIELD);
-    public static final ISkinType ITEM_BOW = registerItem("bow", 9, ItemOverrideType.BOW, SkinPartTypes.ITEM_BOW0, SkinPartTypes.ITEM_BOW1, SkinPartTypes.ITEM_BOW2, SkinPartTypes.ITEM_BOW3, SkinPartTypes.ITEM_ARROW);
-    public static final ISkinType ITEM_TRIDENT = registerItem("trident", 17, ItemOverrideType.TRIDENT, SkinPartTypes.ITEM_TRIDENT);
+    public static final SkinType ITEM_SWORD = item(7).part(SkinPartTypes.ITEM_SWORD).override(ItemOverrideType.SWORD).build("sword");
+    public static final SkinType ITEM_SHIELD = item(8).part(SkinPartTypes.ITEM_SHIELD).override(ItemOverrideType.SHIELD).build("shield");
+    public static final SkinType ITEM_BOW = item(9).part(SkinPartTypes.ITEM_BOW0).part(SkinPartTypes.ITEM_BOW1).part(SkinPartTypes.ITEM_BOW2).part(SkinPartTypes.ITEM_BOW3).part(SkinPartTypes.ITEM_ARROW).override(ItemOverrideType.BOW).build("bow");
+    public static final SkinType ITEM_TRIDENT = item(17).part(SkinPartTypes.ITEM_TRIDENT).override(ItemOverrideType.TRIDENT).build("trident");
 
-    public static final ISkinType ITEM_PICKAXE = registerItem("pickaxe", 10, ItemOverrideType.PICKAXE, SkinPartTypes.ITEM_PICKAXE);
-    public static final ISkinType ITEM_AXE = registerItem("axe", 11, ItemOverrideType.AXE, SkinPartTypes.ITEM_AXE);
-    public static final ISkinType ITEM_SHOVEL = registerItem("shovel", 12, ItemOverrideType.SHOVEL, SkinPartTypes.ITEM_SHOVEL);
-    public static final ISkinType ITEM_HOE = registerItem("hoe", 13, ItemOverrideType.HOE, SkinPartTypes.ITEM_HOE);
+    public static final SkinType ITEM_PICKAXE = item(10).part(SkinPartTypes.ITEM_PICKAXE).override(ItemOverrideType.PICKAXE).build("pickaxe");
+    public static final SkinType ITEM_AXE = item(11).part(SkinPartTypes.ITEM_AXE).override(ItemOverrideType.AXE).build("axe");
+    public static final SkinType ITEM_SHOVEL = item(12).part(SkinPartTypes.ITEM_SHOVEL).override(ItemOverrideType.SHOVEL).build("shovel");
+    public static final SkinType ITEM_HOE = item(13).part(SkinPartTypes.ITEM_HOE).override(ItemOverrideType.HOE).build("hoe");
 
-    public static final ISkinType ITEM_FISHING = registerItem("fishing", 20, ItemOverrideType.FISHING_ROD, SkinPartTypes.ITEM_FISHING_ROD, SkinPartTypes.ITEM_FISHING_HOOK);
-    public static final ISkinType ITEM_BACKPACK = registerItem("backpack", 24, ItemOverrideType.BACKPACK, SkinPartTypes.ITEM_BACKPACK);
+    public static final SkinType ITEM_FISHING = item(20).part(SkinPartTypes.ITEM_FISHING_ROD).part(SkinPartTypes.ITEM_FISHING_HOOK).override(ItemOverrideType.FISHING_ROD).build("fishing");
+    public static final SkinType ITEM_BACKPACK = item(24).part(SkinPartTypes.ITEM_BACKPACK).override(ItemOverrideType.BACKPACK).build("backpack");
 
-    public static final ISkinType ITEM = register("item", 14, SkinPartTypes.ITEM);
-    public static final ISkinType BLOCK = register("block", 15, SkinPartTypes.BLOCK, SkinPartTypes.BLOCK_MULTI);
+    public static final SkinType ITEM = normal(14).part(SkinPartTypes.ITEM).build("item");
+    public static final SkinType BLOCK = normal(15).part(SkinPartTypes.BLOCK).part(SkinPartTypes.BLOCK_MULTI).build("block");
 
-    public static final ISkinType HORSE = registerArmor("horse", 18, null, SkinPartTypes.HORSE_HEAD, SkinPartTypes.HORSE_NECK, SkinPartTypes.HORSE_CHEST, SkinPartTypes.HORSE_RIGHT_FRONT_THIGH, SkinPartTypes.HORSE_LEFT_FRONT_THIGH, SkinPartTypes.HORSE_RIGHT_FRONT_LEG, SkinPartTypes.HORSE_LEFT_FRONT_LEG, SkinPartTypes.HORSE_RIGHT_HIND_THIGH, SkinPartTypes.HORSE_LEFT_HIND_THIGH, SkinPartTypes.HORSE_RIGHT_HIND_LEG, SkinPartTypes.HORSE_LEFT_HIND_LEG, SkinPartTypes.HORSE_TAIL);
-    public static final ISkinType BOAT = registerItem("boat", 19, ItemOverrideType.BOAT, SkinPartTypes.BOAT_BODY, SkinPartTypes.BOAT_LEFT_PADDLE, SkinPartTypes.BOAT_RIGHT_PADDLE);
-    public static final ISkinType MINECART = registerItem("minecart", 21, ItemOverrideType.MINECART, SkinPartTypes.MINECART_BODY);
+    public static final SkinType HORSE = armour(18).part(SkinPartTypes.HORSE_HEAD).part(SkinPartTypes.HORSE_NECK).part(SkinPartTypes.HORSE_CHEST).part(SkinPartTypes.HORSE_RIGHT_FRONT_THIGH).part(SkinPartTypes.HORSE_LEFT_FRONT_THIGH).part(SkinPartTypes.HORSE_RIGHT_FRONT_LEG).part(SkinPartTypes.HORSE_LEFT_FRONT_LEG).part(SkinPartTypes.HORSE_RIGHT_HIND_THIGH).part(SkinPartTypes.HORSE_LEFT_HIND_THIGH).part(SkinPartTypes.HORSE_RIGHT_HIND_LEG).part(SkinPartTypes.HORSE_LEFT_HIND_LEG).part(SkinPartTypes.HORSE_TAIL).build("horse");
+    public static final SkinType BOAT = item(19).part(SkinPartTypes.BOAT_BODY).part(SkinPartTypes.BOAT_LEFT_PADDLE).part(SkinPartTypes.BOAT_RIGHT_PADDLE).override(ItemOverrideType.BOAT).build("boat");
+    public static final SkinType MINECART = item(21).part(SkinPartTypes.MINECART_BODY).override(ItemOverrideType.MINECART).build("minecart");
 
-    public static final ISkinType ADVANCED = register("part", 16, SkinPartTypes.ADVANCED);
+    public static final SkinType ADVANCED = normal(16).part(SkinPartTypes.ADVANCED).build("part");
 
-    public static ISkinType byName(String registryName) {
+    public static SkinType byName(String registryName) {
         if (registryName == null) {
             return UNKNOWN;
         }
@@ -70,43 +68,70 @@ public final class SkinTypes {
         return ALL_TYPES.getOrDefault(registryName, UNKNOWN);
     }
 
-    public static ArrayList<ISkinType> values() {
+    public static ArrayList<SkinType> values() {
         return ALL_SORTED_TYPES;
     }
 
-    private static ISkinType register(String name, int id, ISkinPartType... parts) {
-        return register(name, new SkinType(name, id, Collections.newList(parts)));
+    private static Builder normal(int id) {
+        return new Builder((builder, name) -> new SkinType(name, id, builder.partTypes));
     }
 
-    private static ISkinType registerArmor(String name, int id, ISkinEquipmentSlot slotType, ISkinPartType... parts) {
-        return register(name, new SkinType.Armor(name, id, slotType, Collections.newList(parts)));
+    private static Builder item(int id) {
+        return new Builder((builder, name) -> new SkinType.Tool(name, id, builder.partTypes, builder.overrideType::isOverrideItem));
     }
 
-    private static ISkinType registerArmor(String name, int id, ISkinEquipmentSlot slotType, ISkinType... types) {
-        var partTypes = new ArrayList<ISkinPartType>();
-        for (var type : types) {
-            partTypes.addAll(type.getParts());
+    private static Builder armour(int id) {
+        return new Builder((builder, name) -> new SkinType.Armor(name, id, builder.equipmentSlot, builder.partTypes));
+    }
+
+    private static class Builder {
+
+        private ItemOverrideType overrideType;
+        private OpenEquipmentSlot equipmentSlot;
+
+        private final ArrayList<SkinPartType> partTypes = new ArrayList<>();
+
+        private final BiFunction<Builder, String, SkinType> factory;
+
+        public Builder(BiFunction<Builder, String, SkinType> factory) {
+            this.factory = factory;
         }
-        return register(name, new SkinType.Armor(name, id, slotType, partTypes));
-    }
 
-    private static ISkinType registerItem(String name, int id, ItemOverrideType overrideType, ISkinPartType... parts) {
-        return register(name, new SkinType.Tool(name, id, Collections.newList(parts), overrideType::isOverrideItem));
-    }
+        public Builder part(SkinPartType partType) {
+            this.partTypes.add(partType);
+            return this;
+        }
 
-    private static ISkinType register(String name, SkinType type) {
-        type.setRegistryName(OpenResourceLocation.create("armourers", name));
-        if (type.getParts().isEmpty()) {
-            ModLog.warn("A mod tried to register a skin type no skin type parts.");
+        public Builder part(SkinType skinType) {
+            this.partTypes.addAll(skinType.getParts());
+            return this;
+        }
+
+        public Builder override(ItemOverrideType overrideType) {
+            this.overrideType = overrideType;
+            return this;
+        }
+
+        public Builder equipmentSlot(OpenEquipmentSlot equipmentSlot) {
+            this.equipmentSlot = equipmentSlot;
+            return this;
+        }
+
+        public SkinType build(String name) {
+            var type = factory.apply(this, name);
+            type.setRegistryName(OpenResourceLocation.create("armourers", name));
+            if (type.getParts().isEmpty()) {
+                ModLog.warn("A mod tried to register a skin type no skin type parts.");
+                return type;
+            }
+            if (ALL_TYPES.containsKey(type.getRegistryName().toString())) {
+                ModLog.warn("A mod tried to register a skin type with a registry name that is in use.");
+                return type;
+            }
+            ALL_SORTED_TYPES.add(type);
+            ALL_TYPES.put(type.getRegistryName().toString(), type);
+            ModLog.debug("Registering Skin '{}'", type.getRegistryName());
             return type;
         }
-        if (ALL_TYPES.containsKey(type.getRegistryName().toString())) {
-            ModLog.warn("A mod tried to register a skin type with a registry name that is in use.");
-            return type;
-        }
-        ALL_SORTED_TYPES.add(type);
-        ALL_TYPES.put(type.getRegistryName().toString(), type);
-        ModLog.debug("Registering Skin '{}'", type.getRegistryName());
-        return type;
     }
 }

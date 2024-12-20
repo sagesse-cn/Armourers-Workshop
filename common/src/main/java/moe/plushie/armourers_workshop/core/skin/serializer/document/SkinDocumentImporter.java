@@ -1,11 +1,11 @@
 package moe.plushie.armourers_workshop.core.skin.serializer.document;
 
-import moe.plushie.armourers_workshop.api.skin.part.ISkinPartType;
 import moe.plushie.armourers_workshop.core.data.DataDomain;
 import moe.plushie.armourers_workshop.core.skin.Skin;
 import moe.plushie.armourers_workshop.core.skin.SkinDescriptor;
 import moe.plushie.armourers_workshop.core.skin.SkinTypes;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPart;
+import moe.plushie.armourers_workshop.core.skin.part.SkinPartType;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPartTypes;
 import moe.plushie.armourers_workshop.core.utils.OpenCipher;
 import org.jetbrains.annotations.Nullable;
@@ -85,7 +85,7 @@ public class SkinDocumentImporter {
     }
 
     @Nullable
-    private SkinDocumentNode findNodeByType(SkinDocumentNode root, ISkinPartType partType) {
+    private SkinDocumentNode findNodeByType(SkinDocumentNode root, SkinPartType partType) {
         // we shouldn't match advanced parts
         if (partType != SkinPartTypes.ADVANCED) {
             for (var node : root.children()) {

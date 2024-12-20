@@ -5,10 +5,10 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
-import moe.plushie.armourers_workshop.api.skin.texture.ISkinPaintType;
 import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintColor;
+import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintType;
 import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintTypes;
-import net.minecraft.Util;
+import moe.plushie.armourers_workshop.core.utils.Collections;
 import net.minecraft.network.chat.Component;
 
 import java.util.HashMap;
@@ -23,20 +23,17 @@ public class ColorSchemeParser {
 
     private static final Function<SuggestionsBuilder, CompletableFuture<Suggestions>> SUGGEST_NOTHING = SuggestionsBuilder::buildFuture;
 
-
-    private static final HashMap<String, ISkinPaintType> DYE_TYPES = Util.make(() -> {
-        HashMap<String, ISkinPaintType> map = new HashMap<>();
+    private static final Map<String, SkinPaintType> DYE_TYPES = Collections.immutableMap(builder -> {
         for (int i = 0; i < 8; ++i) {
-            ISkinPaintType paintType = SkinPaintTypes.byId(i + 1);
-            String name = paintType.getRegistryName().getPath();
-            map.put(name.replaceAll("_", ""), paintType);
+            var paintType = SkinPaintTypes.byId(i + 1);
+            var name = paintType.getRegistryName().getPath();
+            builder.put(name.replaceAll("_", ""), paintType);
         }
-        return map;
     });
 
     private final StringReader reader;
     private final ColorParser colorParser;
-    private final Map<ISkinPaintType, SkinPaintColor> properties = new HashMap<>();
+    private final Map<SkinPaintType, SkinPaintColor> properties = new HashMap<>();
 
     private Function<SuggestionsBuilder, CompletableFuture<Suggestions>> suggestions = SUGGEST_NOTHING;
 
@@ -53,9 +50,9 @@ public class ColorSchemeParser {
             reader.skipWhitespace();
             while (reader.canRead() && reader.peek() != '>') {
                 reader.skipWhitespace();
-                int i = reader.getCursor();
-                String string = reader.readString();
-                ISkinPaintType property = DYE_TYPES.get(string);
+                var i = reader.getCursor();
+                var string = reader.readString();
+                var property = DYE_TYPES.get(string);
                 if (property == null) {
                     reader.setCursor(i);
                     throw ERROR_INVALID_DYE_FORMAT.createWithContext(reader, string);
@@ -99,7 +96,7 @@ public class ColorSchemeParser {
         return suggestions.apply(builder.createOffset(reader.getCursor()));
     }
 
-    public Map<ISkinPaintType, SkinPaintColor> getProperties() {
+    public Map<SkinPaintType, SkinPaintColor> getProperties() {
         return properties;
     }
 
@@ -128,9 +125,9 @@ public class ColorSchemeParser {
     }
 
     private CompletableFuture<Suggestions> suggestPropertyName(SuggestionsBuilder builder) {
-        String string = builder.getRemaining().toLowerCase(Locale.ROOT);
+        var string = builder.getRemaining().toLowerCase(Locale.ROOT);
         for (var entry : DYE_TYPES.entrySet()) {
-            String name = entry.getKey();
+            var name = entry.getKey();
             if (properties.containsKey(entry.getValue()) || !name.startsWith(string)) {
                 continue;
             }

@@ -44,7 +44,7 @@ public class UIMenuController {
         listView.setTransform(transform());
         CGSize size1 = size.applying(transform());
         CGPoint center = fromView.convertPointToView(fromPoint, window).copy();
-        if (center.x + size1.width > window.bounds().getMaxX()) {
+        if (center.x + size1.width > window.bounds().maxX()) {
             center.x -= size1.width;
         }
         center.x += size1.width / 2;

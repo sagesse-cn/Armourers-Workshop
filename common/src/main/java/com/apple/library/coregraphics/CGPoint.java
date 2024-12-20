@@ -29,7 +29,7 @@ public class CGPoint implements InterpolableImpl<CGPoint> {
     }
 
     public CGPoint applying(CGAffineTransform t) {
-        CGPoint pos = copy();
+        var pos = copy();
         pos.apply(t);
         return pos;
     }
@@ -69,11 +69,11 @@ public class CGPoint implements InterpolableImpl<CGPoint> {
         return String.format("(%f %f)", x, y);
     }
 
-    public float getX() {
+    public float x() {
         return x;
     }
 
-    public float getY() {
+    public float y() {
         return y;
     }
 }

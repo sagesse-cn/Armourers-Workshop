@@ -18,7 +18,7 @@ public class DefaultBabyJointModifier extends JointModifier {
             var scale = babyPose.getHeadScale();
             var offset = babyPose.getHeadOffset();
             poseStack.scale(scale, scale, scale);
-            poseStack.translate(offset.getX() / 16f, offset.getY() / 16f, offset.getZ() / 16f);
+            poseStack.translate(offset.x() / 16f, offset.y() / 16f, offset.z() / 16f);
         };
     }
 }

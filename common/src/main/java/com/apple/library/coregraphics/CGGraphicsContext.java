@@ -34,21 +34,21 @@ public class CGGraphicsContext implements GraphicsContextImpl {
         if (image == null) {
             return;
         }
-        float u = 0, v = 0, w = rect.width, h = rect.height, mw = 256, mh = 256;
+        float u = 0, v = 0, w = rect.width(), h = rect.height(), mw = 256, mh = 256;
         var texturePos = image.uv();
         if (texturePos != null) {
-            u = texturePos.x;
-            v = texturePos.y;
+            u = texturePos.x();
+            v = texturePos.y();
         }
         var size = image.size();
         if (size != null) {
-            w = size.width;
-            h = size.height;
+            w = size.width();
+            h = size.height();
         }
         var limitSize = image.limit();
         if (limitSize != null) {
-            mw = limitSize.width;
-            mh = limitSize.height;
+            mw = limitSize.width();
+            mh = limitSize.height();
         }
         var animation = image.animationData();
         if (animation != null && animation.frames != 0) {
@@ -147,7 +147,7 @@ public class CGGraphicsContext implements GraphicsContextImpl {
     public void fillRect(CGGradient gradient, CGRect rect) {
         int color1 = gradient.startColor.getRGB();
         int color2 = gradient.endColor.getRGB();
-        drawColor(rect.getMinX(), rect.getMinY(), rect.getMaxX(), rect.getMaxY(), 0, color1, color2);
+        drawColor(rect.minX(), rect.minY(), rect.maxX(), rect.maxY(), 0, color1, color2);
     }
 
     public void strokeRect(CGRect rect, UIColor color) {
@@ -159,7 +159,7 @@ public class CGGraphicsContext implements GraphicsContextImpl {
     }
 
     public void strokeRect(CGRect rect, float lineHeight, int rgb) {
-        drawBorder(rect.getMinX(), rect.getMinY(), rect.getMaxX(), rect.getMaxY(), 0, lineHeight, rgb);
+        drawBorder(rect.minX(), rect.minY(), rect.maxX(), rect.maxY(), 0, lineHeight, rgb);
     }
 
     public void addClip(CGRect rect) {
@@ -226,7 +226,7 @@ public class CGGraphicsContext implements GraphicsContextImpl {
     public void strokeDebugRect(int tag, CGRect rect) {
         if (ModDebugger.viewHierarchy) {
             var color = ColorUtils.getPaletteColor(tag);
-            drawBorder(rect.getMinX(), rect.getMinY(), rect.getMaxX(), rect.getMaxY(), 0, color);
+            drawBorder(rect.minX(), rect.minY(), rect.maxX(), rect.maxY(), 0, color);
         }
     }
 

@@ -8,11 +8,11 @@ import moe.plushie.armourers_workshop.core.block.SkinnableBlock;
 import moe.plushie.armourers_workshop.core.client.bake.SkinBakery;
 import moe.plushie.armourers_workshop.core.data.ticket.Tickets;
 import moe.plushie.armourers_workshop.core.math.OpenMatrix4f;
-import moe.plushie.armourers_workshop.core.math.OpenQuaternion3f;
-import moe.plushie.armourers_workshop.core.math.Rectangle3f;
-import moe.plushie.armourers_workshop.core.math.Rectangle3i;
-import moe.plushie.armourers_workshop.core.math.Vector3d;
-import moe.plushie.armourers_workshop.core.math.Vector3f;
+import moe.plushie.armourers_workshop.core.math.OpenQuaternionf;
+import moe.plushie.armourers_workshop.core.math.OpenRectangle3f;
+import moe.plushie.armourers_workshop.core.math.OpenRectangle3i;
+import moe.plushie.armourers_workshop.core.math.OpenVector3d;
+import moe.plushie.armourers_workshop.core.math.OpenVector3f;
 import moe.plushie.armourers_workshop.core.skin.SkinDescriptor;
 import moe.plushie.armourers_workshop.core.skin.SkinMarker;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperties;
@@ -44,23 +44,23 @@ import java.util.function.Function;
 
 public class SkinnableBlockEntity extends RotableContainerBlockEntity implements IBlockEntityExtendedRenderer {
 
-    private static final Map<?, Vector3f> FACING_TO_ROT = Collections.immutableMap(builder -> {
-        builder.put(Pair.of(AttachFace.CEILING, Direction.EAST), new Vector3f(180, 270, 0));
-        builder.put(Pair.of(AttachFace.CEILING, Direction.NORTH), new Vector3f(180, 180, 0));
-        builder.put(Pair.of(AttachFace.CEILING, Direction.WEST), new Vector3f(180, 90, 0));
-        builder.put(Pair.of(AttachFace.CEILING, Direction.SOUTH), new Vector3f(180, 0, 0));
-        builder.put(Pair.of(AttachFace.WALL, Direction.EAST), new Vector3f(0, 270, 0));
-        builder.put(Pair.of(AttachFace.WALL, Direction.SOUTH), new Vector3f(0, 180, 0));
-        builder.put(Pair.of(AttachFace.WALL, Direction.WEST), new Vector3f(0, 90, 0));
-        builder.put(Pair.of(AttachFace.WALL, Direction.NORTH), new Vector3f(0, 0, 0));
-        builder.put(Pair.of(AttachFace.FLOOR, Direction.EAST), new Vector3f(0, 270, 0));
-        builder.put(Pair.of(AttachFace.FLOOR, Direction.SOUTH), new Vector3f(0, 180, 0));
-        builder.put(Pair.of(AttachFace.FLOOR, Direction.WEST), new Vector3f(0, 90, 0));
-        builder.put(Pair.of(AttachFace.FLOOR, Direction.NORTH), new Vector3f(0, 0, 0));
+    private static final Map<?, OpenVector3f> FACING_TO_ROT = Collections.immutableMap(builder -> {
+        builder.put(Pair.of(AttachFace.CEILING, Direction.EAST), new OpenVector3f(180, 270, 0));
+        builder.put(Pair.of(AttachFace.CEILING, Direction.NORTH), new OpenVector3f(180, 180, 0));
+        builder.put(Pair.of(AttachFace.CEILING, Direction.WEST), new OpenVector3f(180, 90, 0));
+        builder.put(Pair.of(AttachFace.CEILING, Direction.SOUTH), new OpenVector3f(180, 0, 0));
+        builder.put(Pair.of(AttachFace.WALL, Direction.EAST), new OpenVector3f(0, 270, 0));
+        builder.put(Pair.of(AttachFace.WALL, Direction.SOUTH), new OpenVector3f(0, 180, 0));
+        builder.put(Pair.of(AttachFace.WALL, Direction.WEST), new OpenVector3f(0, 90, 0));
+        builder.put(Pair.of(AttachFace.WALL, Direction.NORTH), new OpenVector3f(0, 0, 0));
+        builder.put(Pair.of(AttachFace.FLOOR, Direction.EAST), new OpenVector3f(0, 270, 0));
+        builder.put(Pair.of(AttachFace.FLOOR, Direction.SOUTH), new OpenVector3f(0, 180, 0));
+        builder.put(Pair.of(AttachFace.FLOOR, Direction.WEST), new OpenVector3f(0, 90, 0));
+        builder.put(Pair.of(AttachFace.FLOOR, Direction.NORTH), new OpenVector3f(0, 0, 0));
     });
 
     private BlockPos reference = BlockPos.ZERO;
-    private Rectangle3i collisionShape = Rectangle3i.ZERO;
+    private OpenRectangle3i collisionShape = OpenRectangle3i.ZERO;
 
     private NonNullItemList items;
     private List<BlockPos> refers;
@@ -71,7 +71,7 @@ public class SkinnableBlockEntity extends RotableContainerBlockEntity implements
     private SkinProperties properties;
     private SkinDescriptor descriptor = SkinDescriptor.EMPTY;
 
-    private OpenQuaternion3f renderRotations;
+    private OpenQuaternionf renderRotations;
     private AABB renderBoundingBox;
     private VoxelShape renderVoxelShape = null;
     private ItemStack droppedStack = null;
@@ -82,10 +82,10 @@ public class SkinnableBlockEntity extends RotableContainerBlockEntity implements
         super(blockEntityType, blockPos, blockState);
     }
 
-    public static Vector3f getRotations(BlockState state) {
+    public static OpenVector3f getRotations(BlockState state) {
         AttachFace face = state.getOptionalValue(SkinnableBlock.FACE).orElse(AttachFace.FLOOR);
         Direction facing = state.getOptionalValue(SkinnableBlock.FACING).orElse(Direction.NORTH);
-        return FACING_TO_ROT.getOrDefault(Pair.of(face, facing), Vector3f.ZERO);
+        return FACING_TO_ROT.getOrDefault(Pair.of(face, facing), OpenVector3f.ZERO);
     }
 
     @Override
@@ -149,21 +149,21 @@ public class SkinnableBlockEntity extends RotableContainerBlockEntity implements
         if (renderVoxelShape != null) {
             return renderVoxelShape;
         }
-        if (collisionShape.equals(Rectangle3i.ZERO)) {
+        if (collisionShape.equals(OpenRectangle3i.ZERO)) {
             renderVoxelShape = Shapes.block();
             return renderVoxelShape;
         }
-        float minX = collisionShape.getMinX() / 16f + 0.5f;
-        float minY = collisionShape.getMinY() / 16f + 0.5f;
-        float minZ = collisionShape.getMinZ() / 16f + 0.5f;
-        float maxX = collisionShape.getMaxX() / 16f + 0.5f;
-        float maxY = collisionShape.getMaxY() / 16f + 0.5f;
-        float maxZ = collisionShape.getMaxZ() / 16f + 0.5f;
+        float minX = collisionShape.minX() / 16f + 0.5f;
+        float minY = collisionShape.minY() / 16f + 0.5f;
+        float minZ = collisionShape.minZ() / 16f + 0.5f;
+        float maxX = collisionShape.maxX() / 16f + 0.5f;
+        float maxY = collisionShape.maxY() / 16f + 0.5f;
+        float maxZ = collisionShape.maxZ() / 16f + 0.5f;
         renderVoxelShape = Shapes.box(minX, minY, minZ, maxX, maxY, maxZ);
         return renderVoxelShape;
     }
 
-    public void setShape(Rectangle3i shape) {
+    public void setShape(OpenRectangle3i shape) {
         this.collisionShape = shape;
         this.renderVoxelShape = null;
     }
@@ -218,7 +218,7 @@ public class SkinnableBlockEntity extends RotableContainerBlockEntity implements
         return getBlockPos().subtract(reference);
     }
 
-    public Vector3d getSeatPos() {
+    public OpenVector3d getSeatPos() {
         float dx = 0, dy = 0, dz = 0;
         var parentPos = getParentPos();
         var markers = getMarkers();
@@ -228,7 +228,7 @@ public class SkinnableBlockEntity extends RotableContainerBlockEntity implements
             dy = marker.y / 16.0f;
             dz = marker.z / 16.0f;
         }
-        return new Vector3d(parentPos.getX() + dx, parentPos.getY() + dy, parentPos.getZ() + dz);
+        return new OpenVector3d(parentPos.getX() + dx, parentPos.getY() + dy, parentPos.getZ() + dz);
     }
 
     public BlockPos getBedPos() {
@@ -331,18 +331,18 @@ public class SkinnableBlockEntity extends RotableContainerBlockEntity implements
 
     @Override
     @Environment(EnvType.CLIENT)
-    public OpenQuaternion3f getRenderRotations(BlockState blockState) {
+    public OpenQuaternionf getRenderRotations(BlockState blockState) {
         if (renderRotations != null) {
             return renderRotations;
         }
         var r = getRotations(blockState);
-        renderRotations = new OpenQuaternion3f(r.getX(), r.getY(), r.getZ(), true);
+        renderRotations = new OpenQuaternionf(r.x(), r.y(), r.z(), true);
         return renderRotations;
     }
 
     @Environment(EnvType.CLIENT)
     @Override
-    public Rectangle3f getRenderShape(BlockState blockState) {
+    public OpenRectangle3f getRenderShape(BlockState blockState) {
         var bakedSkin = SkinBakery.getInstance().loadSkin(getDescriptor(), Tickets.TEST);
         if (bakedSkin == null) {
             return null;
@@ -381,7 +381,7 @@ public class SkinnableBlockEntity extends RotableContainerBlockEntity implements
     private static class CodingKeys {
 
         public static final IDataSerializerKey<BlockPos> REFERENCE = IDataSerializerKey.create("Refer", IDataCodec.BLOCK_POS, BlockPos.ZERO);
-        public static final IDataSerializerKey<Rectangle3i> SHAPE = IDataSerializerKey.create("Shape", Rectangle3i.CODEC, Rectangle3i.ZERO);
+        public static final IDataSerializerKey<OpenRectangle3i> SHAPE = IDataSerializerKey.create("Shape", OpenRectangle3i.CODEC, OpenRectangle3i.ZERO);
         public static final IDataSerializerKey<BlockPos> LINKED_POS = IDataSerializerKey.create("LinkedPos", IDataCodec.BLOCK_POS, null);
         public static final IDataSerializerKey<SkinDescriptor> SKIN = IDataSerializerKey.create("Skin", SkinDescriptor.CODEC, SkinDescriptor.EMPTY);
         public static final IDataSerializerKey<SkinProperties> SKIN_PROPERTIES = IDataSerializerKey.create("SkinProperties", SkinProperties.CODEC, SkinProperties.EMPTY, SkinProperties.EMPTY::copy);

@@ -6,12 +6,12 @@ import moe.plushie.armourers_workshop.api.core.IDataSerializer;
 import moe.plushie.armourers_workshop.api.core.IDataSerializerKey;
 import moe.plushie.armourers_workshop.core.blockentity.SkinnableBlockEntity;
 import moe.plushie.armourers_workshop.core.math.OpenMatrix4f;
-import moe.plushie.armourers_workshop.core.math.OpenQuaternion3f;
-import moe.plushie.armourers_workshop.core.math.Rectangle3f;
-import moe.plushie.armourers_workshop.core.math.Rectangle3i;
-import moe.plushie.armourers_workshop.core.math.Vector3f;
-import moe.plushie.armourers_workshop.core.math.Vector3i;
-import moe.plushie.armourers_workshop.core.math.Vector4f;
+import moe.plushie.armourers_workshop.core.math.OpenQuaternionf;
+import moe.plushie.armourers_workshop.core.math.OpenRectangle3f;
+import moe.plushie.armourers_workshop.core.math.OpenRectangle3i;
+import moe.plushie.armourers_workshop.core.math.OpenVector3f;
+import moe.plushie.armourers_workshop.core.math.OpenVector3i;
+import moe.plushie.armourers_workshop.core.math.OpenVector4f;
 import moe.plushie.armourers_workshop.core.skin.Skin;
 import moe.plushie.armourers_workshop.core.skin.SkinDescriptor;
 import moe.plushie.armourers_workshop.core.skin.SkinLoader;
@@ -35,7 +35,7 @@ import java.util.function.Function;
 
 public class SkinBlockPlaceContext extends BlockPlaceContext {
 
-    private Vector3f rotations = Vector3f.ZERO;
+    private OpenVector3f rotations = OpenVector3f.ZERO;
     private SkinDescriptor skin = SkinDescriptor.EMPTY;
     private ArrayList<Part> parts = new ArrayList<>();
 
@@ -58,7 +58,7 @@ public class SkinBlockPlaceContext extends BlockPlaceContext {
         return null;
     }
 
-    protected void transform(Vector3f r) {
+    protected void transform(OpenVector3f r) {
         for (var part : parts) {
             part.transform(r);
         }
@@ -78,13 +78,13 @@ public class SkinBlockPlaceContext extends BlockPlaceContext {
         var parentParts = new ArrayList<ParentPart>();
         var blockPosList = new ArrayList<BlockPos>();
         skin.getBlockBounds().forEach((pos, shape) -> {
-            var rect = new Rectangle3i(shape);
-            if (pos.equals(Vector3i.ZERO)) {
+            var rect = new OpenRectangle3i(shape);
+            if (pos.equals(OpenVector3i.ZERO)) {
                 var part = new ParentPart(BlockPos.ZERO, rect, descriptor, skin);
                 parts.add(part);
                 parentParts.add(part);
             } else {
-                var part = new Part(new BlockPos(pos.getX(), pos.getY(), pos.getZ()), rect);
+                var part = new Part(new BlockPos(pos.x(), pos.y(), pos.z()), rect);
                 parts.add(part);
             }
         });
@@ -144,7 +144,7 @@ public class SkinBlockPlaceContext extends BlockPlaceContext {
     private static class CodingKeys {
 
         public static final IDataSerializerKey<BlockPos> REFERENCE = IDataSerializerKey.create("Refer", IDataCodec.BLOCK_POS, BlockPos.ZERO);
-        public static final IDataSerializerKey<Rectangle3i> SHAPE = IDataSerializerKey.create("Shape", Rectangle3i.CODEC, Rectangle3i.ZERO);
+        public static final IDataSerializerKey<OpenRectangle3i> SHAPE = IDataSerializerKey.create("Shape", OpenRectangle3i.CODEC, OpenRectangle3i.ZERO);
         public static final IDataSerializerKey<BlockPos> LINKED_POS = IDataSerializerKey.create("LinkedPos", IDataCodec.BLOCK_POS, null);
         public static final IDataSerializerKey<SkinDescriptor> SKIN = IDataSerializerKey.create("Skin", SkinDescriptor.CODEC, SkinDescriptor.EMPTY);
         public static final IDataSerializerKey<SkinProperties> SKIN_PROPERTIES = IDataSerializerKey.create("SkinProperties", SkinProperties.CODEC, SkinProperties.EMPTY, SkinProperties.EMPTY::copy);
@@ -155,13 +155,13 @@ public class SkinBlockPlaceContext extends BlockPlaceContext {
     public static class Part implements IDataSerializable.Immutable {
 
         private BlockPos offset;
-        private Rectangle3i shape;
+        private OpenRectangle3i shape;
 
         public Part() {
-            this(BlockPos.ZERO, Rectangle3i.ZERO);
+            this(BlockPos.ZERO, OpenRectangle3i.ZERO);
         }
 
-        public Part(BlockPos offset, Rectangle3i shape) {
+        public Part(BlockPos offset, OpenRectangle3i shape) {
             this.offset = offset;
             this.shape = shape;
         }
@@ -172,29 +172,29 @@ public class SkinBlockPlaceContext extends BlockPlaceContext {
             serializer.write(CodingKeys.SHAPE, shape);
         }
 
-        public void transform(Vector3f r) {
-            OpenQuaternion3f q = new OpenQuaternion3f(r.getX(), r.getY(), r.getZ(), true);
+        public void transform(OpenVector3f r) {
+            OpenQuaternionf q = new OpenQuaternionf(r.x(), r.y(), r.z(), true);
 
-            Vector4f f = new Vector4f(offset.getX(), offset.getY(), offset.getZ(), 1.0f);
+            OpenVector4f f = new OpenVector4f(offset.getX(), offset.getY(), offset.getZ(), 1.0f);
             f.transform(q);
-            offset = new BlockPos(Math.round(f.getX()), Math.round(f.getY()), Math.round(f.getZ()));
+            offset = new BlockPos(Math.round(f.x()), Math.round(f.y()), Math.round(f.z()));
 
-            Rectangle3f of = new Rectangle3f(shape);
+            OpenRectangle3f of = new OpenRectangle3f(shape);
             of.mul(q);
-            shape = new Rectangle3i(0, 0, 0, 0, 0, 0);
-            shape.setX(Math.round(of.getX()));
-            shape.setY(Math.round(of.getY()));
-            shape.setZ(Math.round(of.getZ()));
-            shape.setWidth(Math.round(of.getWidth()));
-            shape.setHeight(Math.round(of.getHeight()));
-            shape.setDepth(Math.round(of.getDepth()));
+            shape = new OpenRectangle3i(0, 0, 0, 0, 0, 0);
+            shape.setX(Math.round(of.x()));
+            shape.setY(Math.round(of.y()));
+            shape.setZ(Math.round(of.z()));
+            shape.setWidth(Math.round(of.width()));
+            shape.setHeight(Math.round(of.height()));
+            shape.setDepth(Math.round(of.depth()));
         }
 
         public BlockPos getOffset() {
             return offset;
         }
 
-        public Rectangle3i getShape() {
+        public OpenRectangle3i getShape() {
             return shape;
         }
     }
@@ -207,7 +207,7 @@ public class SkinBlockPlaceContext extends BlockPlaceContext {
         private List<BlockPos> references = Collections.emptyList();
         private List<SkinMarker> markerList;
 
-        public ParentPart(BlockPos offset, Rectangle3i shape, SkinDescriptor descriptor, Skin skin) {
+        public ParentPart(BlockPos offset, OpenRectangle3i shape, SkinDescriptor descriptor, Skin skin) {
             super(offset, shape);
             this.descriptor = descriptor;
             this.properties = skin.getProperties();
@@ -224,18 +224,18 @@ public class SkinBlockPlaceContext extends BlockPlaceContext {
         }
 
         @Override
-        public void transform(Vector3f r) {
+        public void transform(OpenVector3f r) {
             super.transform(r);
 
-            var q = new OpenQuaternion3f(r.getX(), r.getY(), r.getZ(), true);
+            var q = new OpenQuaternionf(r.x(), r.y(), r.z(), true);
             var newMarkerList = new ArrayList<SkinMarker>();
             for (var marker : markerList) {
-                var f = new Vector4f(marker.x, marker.y, marker.z, 1.0f);
+                var f = new OpenVector4f(marker.x, marker.y, marker.z, 1.0f);
                 f.transform(OpenMatrix4f.createScaleMatrix(-1, -1, 1));
                 f.transform(q);
-                int x = Math.round(f.getX());
-                int y = Math.round(f.getY());
-                int z = Math.round(f.getZ());
+                int x = Math.round(f.x());
+                int y = Math.round(f.y());
+                int z = Math.round(f.z());
                 marker = new SkinMarker((byte) x, (byte) y, (byte) z, marker.meta);
                 newMarkerList.add(marker);
             }

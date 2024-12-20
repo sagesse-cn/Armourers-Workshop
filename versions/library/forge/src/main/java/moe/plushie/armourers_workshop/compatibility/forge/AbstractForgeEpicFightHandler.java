@@ -2,12 +2,12 @@ package moe.plushie.armourers_workshop.compatibility.forge;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import moe.plushie.armourers_workshop.api.annotation.Available;
-import moe.plushie.armourers_workshop.api.armature.IJointTransform;
 import moe.plushie.armourers_workshop.compatibility.client.AbstractPoseStack;
 import moe.plushie.armourers_workshop.core.client.model.CachedModel;
 import moe.plushie.armourers_workshop.core.client.other.thirdparty.EpicFlightModelPartBuilder;
 import moe.plushie.armourers_workshop.core.client.other.thirdparty.EpicFlightModelTransformer;
 import moe.plushie.armourers_workshop.core.client.skinrender.patch.EpicFightEntityRendererPatch;
+import moe.plushie.armourers_workshop.core.math.OpenPoseStack;
 import moe.plushie.armourers_workshop.core.utils.MatrixUtils;
 import moe.plushie.armourers_workshop.init.ModConfig;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -20,6 +20,7 @@ import yesman.epicfight.api.utils.math.OpenMatrix4f;
 import java.nio.FloatBuffer;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.function.Consumer;
 
 @Available("[1.16, )")
 public class AbstractForgeEpicFightHandler extends AbstractForgeEpicFightHandlerImpl {
@@ -36,28 +37,29 @@ public class AbstractForgeEpicFightHandler extends AbstractForgeEpicFightHandler
         EpicFightEntityRendererPatch.apply(entityIn, poseStackIn, bufferSourceIn, patch -> {
             var poses = cir.getReturnValue();
             var overridePoses = Arrays.copyOf(poses, poses.length);
-            var transforms = new HashMap<String, IJointTransform>();
+            var cachedPoses = new HashMap<String, OpenPoseStack.Pose>();
             patch.setOverridePose(AbstractPoseStack.create(poseStackIn));
-            patch.setTransformProvider(name -> transforms.computeIfAbsent(name, it -> {
+            patch.setTransformProvider(name -> cachedPoses.computeIfAbsent(name, it -> {
                 var joint = armature.searchJointByName(it);
                 if (joint == null) {
-                    return IJointTransform.NONE;
+                    return null;
                 }
+                var pose = new OpenPoseStack.Pose();
                 copyTo(joint, poses, AW_MAT_BUFFER4);
-                var poseMatrix = MatrixUtils.createPoseMatrix(AW_MAT_BUFFER4);
-                var normalMatrix = MatrixUtils.createNormalMatrix(AW_MAT_BUFFER4);
-                return poseStack1 -> {
-                    poseStack1.multiply(poseMatrix);
-                    poseStack1.multiply(normalMatrix);
-                };
+                pose.pose().load(AW_MAT_BUFFER4);
+                pose.normal().load(AW_MAT_BUFFER4);
+                return pose;
             }));
-            patch.setMesh(new EpicFlightModelPartBuilder(name -> {
-                var joint = armature.searchJointByName(name);
-                if (joint != null) {
-                    return visible -> overridePoses[joint.getId()] = OpenMatrix4f.createScale(0, 0, 0);
+            patch.setMesh(new EpicFlightModelPartBuilder() {
+                @Override
+                public Consumer<Boolean> build(String name) {
+                    var joint = armature.searchJointByName(name);
+                    if (joint != null) {
+                        return visible -> overridePoses[joint.getId()] = OpenMatrix4f.createScale(0, 0, 0);
+                    }
+                    return null;
                 }
-                return null;
-            }));
+            });
             cir.setReturnValue(overridePoses);
         });
     }

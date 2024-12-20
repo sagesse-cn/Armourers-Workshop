@@ -5,10 +5,10 @@ import com.apple.library.foundation.NSString;
 import com.apple.library.uikit.UICheckBox;
 import com.apple.library.uikit.UIComboBox;
 import com.apple.library.uikit.UIComboItem;
-import moe.plushie.armourers_workshop.api.skin.part.ISkinPartType;
 import moe.plushie.armourers_workshop.core.client.gui.widget.ConfirmDialog;
+import moe.plushie.armourers_workshop.core.skin.part.SkinPartType;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPartTypes;
-import moe.plushie.armourers_workshop.utils.TranslateUtils;
+import moe.plushie.armourers_workshop.core.utils.TranslateUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
@@ -17,13 +17,13 @@ import java.util.ArrayList;
 @Environment(EnvType.CLIENT)
 public class ArmourerClearDialog extends ConfirmDialog {
 
-    final ArrayList<ISkinPartType> partTypes;
+    final ArrayList<SkinPartType> partTypes;
     private final UIComboBox partComboBox = new UIComboBox(new CGRect(0, 0, 80, 14));
     private final UICheckBox blockCheckBox = new UICheckBox(CGRect.ZERO);
     private final UICheckBox paintCheckBox = new UICheckBox(CGRect.ZERO);
     private final UICheckBox markersCheckBox = new UICheckBox(CGRect.ZERO);
 
-    public ArmourerClearDialog(ArrayList<ISkinPartType> partTypes) {
+    public ArmourerClearDialog(ArrayList<SkinPartType> partTypes) {
         super();
         this.setFrame(new CGRect(0, 0, 240, 140));
         this.partTypes = partTypes;
@@ -33,8 +33,8 @@ public class ArmourerClearDialog extends ConfirmDialog {
     private void setup() {
         layoutIfNeeded();
         var width = bounds().width - 30;
-        var left = confirmButton.frame().getX() + 1;
-        var bottom = confirmButton.frame().getY() - 4;
+        var left = confirmButton.frame().x() + 1;
+        var bottom = confirmButton.frame().y() - 4;
 
         blockCheckBox.setFrame(new CGRect(left, bottom - 22, width, 9));
         blockCheckBox.setTitle(NSString.localizedString("armourer.dialog.clear.clearBlocks"));
@@ -69,14 +69,14 @@ public class ArmourerClearDialog extends ConfirmDialog {
         return markersCheckBox == null || markersCheckBox.isSelected();
     }
 
-    public ISkinPartType getSelectedPartType() {
+    public SkinPartType getSelectedPartType() {
         if (partTypes != null && partComboBox != null && partComboBox.selectedIndex() < partTypes.size()) {
             return partTypes.get(partComboBox.selectedIndex());
         }
         return SkinPartTypes.UNKNOWN;
     }
 
-    private ArrayList<UIComboItem> getItems(ArrayList<ISkinPartType> partTypes) {
+    private ArrayList<UIComboItem> getItems(ArrayList<SkinPartType> partTypes) {
         var items = new ArrayList<UIComboItem>();
         for (var partType : partTypes) {
             NSString title;

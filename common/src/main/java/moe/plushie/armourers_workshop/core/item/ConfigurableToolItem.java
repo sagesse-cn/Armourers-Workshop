@@ -4,7 +4,7 @@ import moe.plushie.armourers_workshop.api.common.IConfigurableTool;
 import moe.plushie.armourers_workshop.api.common.IConfigurableToolProperty;
 import moe.plushie.armourers_workshop.api.common.ITooltipContext;
 import moe.plushie.armourers_workshop.core.client.gui.ConfigurableToolWindow;
-import moe.plushie.armourers_workshop.utils.TranslateUtils;
+import moe.plushie.armourers_workshop.core.utils.TranslateUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;

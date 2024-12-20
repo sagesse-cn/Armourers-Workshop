@@ -80,11 +80,11 @@ public class NewSlider extends UIControl implements UITextFieldDelegate {
     public void layoutSubviews() {
         super.layoutSubviews();
         var rect = bounds();
-        float height = rect.getHeight();
-        float width = height * 3 / 4; // 3:4
+        var height = rect.height;
+        var width = height * 3 / 4; // 3:4
         leftView.setFrame(new CGRect(0, 0, width, height));
-        rightView.setFrame(new CGRect(rect.getWidth() - width, 0, width, height));
-        contentView.setFrame(new CGRect(width, 0, rect.getWidth() - width * 2, height));
+        rightView.setFrame(new CGRect(rect.width - width, 0, width, height));
+        contentView.setFrame(new CGRect(width, 0, rect.width - width * 2, height));
     }
 
     @Override

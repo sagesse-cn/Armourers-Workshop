@@ -2,7 +2,7 @@ package moe.plushie.armourers_workshop.compatibility.client.gui;
 
 import com.apple.library.coregraphics.CGGraphicsContext;
 import moe.plushie.armourers_workshop.api.annotation.Available;
-import moe.plushie.armourers_workshop.core.math.Size2i;
+import moe.plushie.armourers_workshop.core.math.OpenSize2i;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.GuiGraphics;
@@ -17,8 +17,8 @@ public abstract class AbstractMenuToast implements Toast {
 
     public abstract double getDuration();
 
-    public Size2i getScreenSize() {
-        return new Size2i(width(), height());
+    public OpenSize2i getScreenSize() {
+        return new OpenSize2i(width(), height());
     }
 
     @Override

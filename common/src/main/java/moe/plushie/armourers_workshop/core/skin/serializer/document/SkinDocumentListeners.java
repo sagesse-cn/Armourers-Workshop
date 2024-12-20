@@ -1,7 +1,6 @@
 package moe.plushie.armourers_workshop.core.skin.serializer.document;
 
 import moe.plushie.armourers_workshop.core.blockentity.UpdatableBlockEntity;
-import moe.plushie.armourers_workshop.utils.BlockUtils;
 import net.minecraft.nbt.CompoundTag;
 
 import java.util.ArrayList;
@@ -86,7 +85,8 @@ public class SkinDocumentListeners {
 
         @Override
         public void documentDidChangeType(SkinDocumentType type) {
-            BlockUtils.combine(blockEntity, blockEntity::sendBlockUpdates);
+            blockEntity.sendBlockUpdates();
+            blockEntity.setChanged();
         }
 
         @Override

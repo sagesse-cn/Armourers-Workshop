@@ -4,6 +4,7 @@ import moe.plushie.armourers_workshop.api.annotation.Available;
 import moe.plushie.armourers_workshop.api.common.ITooltipContext;
 import moe.plushie.armourers_workshop.compatibility.core.data.AbstractTooltipContext;
 import moe.plushie.armourers_workshop.core.utils.Objects;
+import moe.plushie.armourers_workshop.core.utils.OpenEquipmentSlot;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.network.chat.Component;
@@ -22,12 +23,12 @@ public abstract class AbstractItem extends Item {
         super(properties);
     }
 
-    public static EquipmentSlot getEquipmentSlotForItem(ItemStack itemStack) {
+    public static OpenEquipmentSlot getEquipmentSlotForItem(ItemStack itemStack) {
         var equipable = Equipable.get(itemStack);
         if (equipable != null) {
-            return equipable.getEquipmentSlot();
+            return AbstractEquipmentSlot.wrap(equipable.getEquipmentSlot());
         }
-        return EquipmentSlot.MAINHAND;
+        return OpenEquipmentSlot.MAINHAND;
     }
 
     @Environment(EnvType.CLIENT)

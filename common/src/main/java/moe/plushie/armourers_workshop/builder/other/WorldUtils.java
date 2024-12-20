@@ -2,23 +2,24 @@ package moe.plushie.armourers_workshop.builder.other;
 
 import moe.plushie.armourers_workshop.api.common.IPaintable;
 import moe.plushie.armourers_workshop.api.core.math.IVector3i;
-import moe.plushie.armourers_workshop.api.skin.ISkinType;
 import moe.plushie.armourers_workshop.api.skin.geometry.ISkinGeometryType;
-import moe.plushie.armourers_workshop.api.skin.part.ISkinPartType;
 import moe.plushie.armourers_workshop.api.skin.texture.ISkinPaintColor;
 import moe.plushie.armourers_workshop.builder.block.SkinCubeBlock;
+import moe.plushie.armourers_workshop.compatibility.core.AbstractDirection;
 import moe.plushie.armourers_workshop.core.data.OptionalDirection;
-import moe.plushie.armourers_workshop.core.math.Rectangle3f;
-import moe.plushie.armourers_workshop.core.math.Rectangle3i;
-import moe.plushie.armourers_workshop.core.math.Vector2i;
-import moe.plushie.armourers_workshop.core.math.Vector3i;
+import moe.plushie.armourers_workshop.core.math.OpenRectangle3f;
+import moe.plushie.armourers_workshop.core.math.OpenRectangle3i;
+import moe.plushie.armourers_workshop.core.math.OpenVector2i;
+import moe.plushie.armourers_workshop.core.math.OpenVector3i;
 import moe.plushie.armourers_workshop.core.skin.Skin;
 import moe.plushie.armourers_workshop.core.skin.SkinMarker;
+import moe.plushie.armourers_workshop.core.skin.SkinType;
 import moe.plushie.armourers_workshop.core.skin.SkinTypes;
 import moe.plushie.armourers_workshop.core.skin.geometry.SkinGeometryTypes;
 import moe.plushie.armourers_workshop.core.skin.geometry.collection.SkinGeometrySetV1;
 import moe.plushie.armourers_workshop.core.skin.geometry.cube.SkinCube;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPart;
+import moe.plushie.armourers_workshop.core.skin.part.SkinPartType;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPartTypes;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperties;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperty;
@@ -28,11 +29,10 @@ import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintColor;
 import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintData;
 import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.core.utils.OpenDirection;
+import moe.plushie.armourers_workshop.core.utils.TranslateUtils;
 import moe.plushie.armourers_workshop.init.ModBlocks;
-import moe.plushie.armourers_workshop.utils.TranslateUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 
@@ -59,7 +59,7 @@ public final class WorldUtils {
      * @param skinType  The type of skin to save.
      * @param paintData Paint data for this skin.
      */
-    public static Skin saveSkinFromWorld(Level level, CubeTransform transform, SkinProperties skinProps, ISkinType skinType, SkinPaintData paintData) throws SkinSaveException {
+    public static Skin saveSkinFromWorld(Level level, CubeTransform transform, SkinProperties skinProps, SkinType skinType, SkinPaintData paintData) throws SkinSaveException {
         var parts = new ArrayList<SkinPart>();
 
         if (skinType == SkinTypes.BLOCK) {
@@ -131,7 +131,7 @@ public final class WorldUtils {
         return skin;
     }
 
-    private static SkinPart saveArmourPart(Level level, CubeTransform transform, ISkinPartType partType, boolean markerCheck) throws SkinSaveException {
+    private static SkinPart saveArmourPart(Level level, CubeTransform transform, SkinPartType partType, boolean markerCheck) throws SkinSaveException {
         var cubeCount = getNumberOfCubesInPart(level, transform, partType);
         if (cubeCount < 1) {
             return null;
@@ -143,19 +143,19 @@ public final class WorldUtils {
         var offset = partType.getOffset();
 
         int i = 0;
-        for (int ix = 0; ix < buildSpace.getWidth(); ix++) {
-            for (int iy = 0; iy < buildSpace.getHeight(); iy++) {
-                for (int iz = 0; iz < buildSpace.getDepth(); iz++) {
+        for (int ix = 0; ix < buildSpace.width(); ix++) {
+            for (int iy = 0; iy < buildSpace.height(); iy++) {
+                for (int iz = 0; iz < buildSpace.depth(); iz++) {
                     var target = transform.mul(
-                            ix + -offset.getX() + buildSpace.getX(),
-                            iy + -offset.getY(),
-                            iz + offset.getZ() + buildSpace.getZ());
+                            ix + -offset.x() + buildSpace.x(),
+                            iy + -offset.y(),
+                            iz + offset.z() + buildSpace.z());
 
 //                    BlockPos origin = new BlockPos(-ix + -buildSpace.getX(), -iy + -buildSpace.getY(), -iz + -buildSpace.getZ());
 
-                    int xOrigin = -ix + -buildSpace.getX();
-                    int yOrigin = -iy + -buildSpace.getY();
-                    int zOrigin = -iz + -buildSpace.getZ();
+                    int xOrigin = -ix + -buildSpace.x();
+                    int yOrigin = -iy + -buildSpace.y();
+                    int zOrigin = -iz + -buildSpace.z();
 
                     var targetState = level.getBlockState(target);
                     if (targetState.getBlock() instanceof SkinCubeBlock) {
@@ -195,11 +195,11 @@ public final class WorldUtils {
         var marker = SkinCubeBlock.getMarker(blockState);
 
         cube.setType(SkinGeometryTypes.byBlock(blockState.getBlock()));
-        cube.setBoundingBox(new Rectangle3f(ix, iy, iz, 1, 1, 1));
+        cube.setBoundingBox(new OpenRectangle3f(ix, iy, iz, 1, 1, 1));
         for (var dir : Direction.values()) {
             var paintColor = target.getColor(dir);
             var resolvedDir = transform.invRotate(dir);
-            cube.setPaintColor(OpenDirection.of(resolvedDir), SkinPaintColor.of(paintColor));
+            cube.setPaintColor(AbstractDirection.wrap(resolvedDir), SkinPaintColor.of(paintColor));
         }
         if (marker != OptionalDirection.NONE) {
             var markFacing = transform.invRotate(marker.getDirection());
@@ -238,17 +238,17 @@ public final class WorldUtils {
                     break;
                 }
             }
-            var origin = new BlockPos(-offset.getX(), -offset.getY() + -buildSpace.getY(), offset.getZ());
+            var origin = new BlockPos(-offset.x(), -offset.y() + -buildSpace.y(), offset.z());
             loadSkinBlockIntoWorld(collector, transform, origin, geometryType, blockPos, markerFacing, cube, mirror);
         }
     }
 
     private static void loadSkinBlockIntoWorld(CubeChangesCollector collector, CubeTransform transform, BlockPos origin, ISkinGeometryType geometryType, IVector3i cubePos, OptionalDirection markerFacing, SkinCube cube, boolean mirror) {
-        var shiftX = -cubePos.getX() - 1;
-        var shiftY = cubePos.getY() + 1;
-        var shiftZ = cubePos.getZ();
+        var shiftX = -cubePos.x() - 1;
+        var shiftY = cubePos.y() + 1;
+        var shiftZ = cubePos.z();
         if (mirror) {
-            shiftX = cubePos.getX();
+            shiftX = cubePos.x();
         }
 
         var target = transform.mul(shiftX + origin.getX(), origin.getY() - shiftY, shiftZ + origin.getZ());
@@ -272,14 +272,14 @@ public final class WorldUtils {
     }
 
     public static void copyPaintData(SkinPaintData paintData, EntityTextureModel.Box srcBox, EntityTextureModel.Box destBox, boolean isMirrorX) {
-        var srcX = srcBox.getBounds().getX();
-        var srcY = srcBox.getBounds().getY();
-        var srcZ = srcBox.getBounds().getZ();
-        var destX = destBox.getBounds().getX();
-        var destY = destBox.getBounds().getY();
-        var destZ = destBox.getBounds().getZ();
-        var destWidth = destBox.getBounds().getWidth();
-        var colors = new HashMap<Vector2i, Integer>();
+        var srcX = srcBox.getBounds().x();
+        var srcY = srcBox.getBounds().y();
+        var srcZ = srcBox.getBounds().z();
+        var destX = destBox.getBounds().x();
+        var destY = destBox.getBounds().y();
+        var destZ = destBox.getBounds().z();
+        var destWidth = destBox.getBounds().width();
+        var colors = new HashMap<OpenVector2i, Integer>();
         srcBox.forEach((texture, x, y, z, dir) -> {
             var ix = x - srcX;
             var iy = y - srcY;
@@ -306,7 +306,7 @@ public final class WorldUtils {
         srcBox.forEach((texturePos, x, y, z, dir) -> paintData.setColor(texturePos, 0));
     }
 
-    public static void replaceCubes(CubeChangesCollector collector, CubeTransform transform, ISkinType skinType, SkinProperties skinProps, CubeReplacingEvent event) {
+    public static void replaceCubes(CubeChangesCollector collector, CubeTransform transform, SkinType skinType, SkinProperties skinProps, CubeReplacingEvent event) {
         for (var skinPart : skinType.getParts()) {
             for (var offset : getResolvedBuildingSpace2(skinPart)) {
                 replaceCube(collector, transform.mul(offset), event);
@@ -321,7 +321,7 @@ public final class WorldUtils {
         }
     }
 
-    public static void copyCubes(CubeChangesCollector collector, CubeTransform transform, ISkinType skinType, SkinProperties skinProps, ISkinPartType srcType, ISkinPartType destType, boolean mirror) throws SkinSaveException {
+    public static void copyCubes(CubeChangesCollector collector, CubeTransform transform, SkinType skinType, SkinProperties skinProps, SkinPartType srcType, SkinPartType destType, boolean mirror) throws SkinSaveException {
         var skinPart = saveArmourPart(collector.getLevel(), transform, srcType, false);
         if (skinPart != null) {
             var builder = new SkinPart.Builder(destType);
@@ -334,7 +334,7 @@ public final class WorldUtils {
         }
     }
 
-    public static int clearMarkers(CubeChangesCollector collector, CubeTransform transform, ISkinType skinType, SkinProperties skinProps, ISkinPartType partType) {
+    public static int clearMarkers(CubeChangesCollector collector, CubeTransform transform, SkinType skinType, SkinProperties skinProps, SkinPartType partType) {
         int blockCount = 0;
         for (var skinPart : skinType.getParts()) {
             if (partType != SkinPartTypes.UNKNOWN) {
@@ -357,7 +357,7 @@ public final class WorldUtils {
         return blockCount;
     }
 
-    private static int clearMarkersForSkinPart(CubeChangesCollector collector, CubeTransform transform, ISkinPartType skinPart) {
+    private static int clearMarkersForSkinPart(CubeChangesCollector collector, CubeTransform transform, SkinPartType skinPart) {
         int blockCount = 0;
         for (var offset : getResolvedBuildingSpace2(skinPart)) {
             var cube = collector.getCube(transform.mul(offset));
@@ -370,7 +370,7 @@ public final class WorldUtils {
         return blockCount;
     }
 
-    public static int clearCubes(CubeChangesCollector collector, CubeTransform transform, ISkinType skinType, SkinProperties skinProps, ISkinPartType partType) {
+    public static int clearCubes(CubeChangesCollector collector, CubeTransform transform, SkinType skinType, SkinProperties skinProps, SkinPartType partType) {
         int blockCount = 0;
         for (var skinPart : skinType.getParts()) {
             if (partType != SkinPartTypes.UNKNOWN) {
@@ -393,32 +393,32 @@ public final class WorldUtils {
         return blockCount;
     }
 
-    private static int clearEquipmentCubesForSkinPart(CubeChangesCollector collector, CubeTransform transform, ISkinPartType skinPart) {
+    private static int clearEquipmentCubesForSkinPart(CubeChangesCollector collector, CubeTransform transform, SkinPartType skinPart) {
         int blockCount = 0;
         for (var offset : getResolvedBuildingSpace2(skinPart)) {
             var cube = collector.getCube(transform.mul(offset));
             if (cube.is(SkinCubeBlock.class)) {
-                cube.setBlockStateAndTag(Blocks.AIR.defaultBlockState(), (CompoundTag) null);
+                cube.setBlockStateAndTag(Blocks.AIR.defaultBlockState(), null);
                 blockCount++;
             }
         }
         return blockCount;
     }
 
-    public static Rectangle3i getResolvedBuildingSpace(ISkinPartType skinPart) {
+    public static OpenRectangle3i getResolvedBuildingSpace(SkinPartType skinPart) {
         var origin = skinPart.getOffset();
         var buildSpace = skinPart.getBuildingSpace();
-        int dx = -origin.getX() + buildSpace.getX();
-        int dy = -origin.getY();
-        int dz = origin.getZ() + buildSpace.getZ();
-        return new Rectangle3i(dx, dy, dz, buildSpace.getWidth(), buildSpace.getHeight(), buildSpace.getDepth());
+        int dx = -origin.x() + buildSpace.x();
+        int dy = -origin.y();
+        int dz = origin.z() + buildSpace.z();
+        return new OpenRectangle3i(dx, dy, dz, buildSpace.width(), buildSpace.height(), buildSpace.depth());
     }
 
-    private static Iterable<Vector3i> getResolvedBuildingSpace2(ISkinPartType skinPart) {
+    private static Iterable<OpenVector3i> getResolvedBuildingSpace2(SkinPartType skinPart) {
         return getResolvedBuildingSpace(skinPart).enumerateZYX();
     }
 
-    private static int getNumberOfCubesInPart(Level level, CubeTransform transform, ISkinPartType skinPart) {
+    private static int getNumberOfCubesInPart(Level level, CubeTransform transform, SkinPartType skinPart) {
         int cubeCount = 0;
         for (var offset : getResolvedBuildingSpace2(skinPart)) {
             var blockState = level.getBlockState(transform.mul(offset));

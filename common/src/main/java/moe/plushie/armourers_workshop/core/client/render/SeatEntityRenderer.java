@@ -5,7 +5,7 @@ import moe.plushie.armourers_workshop.api.client.IBufferSource;
 import moe.plushie.armourers_workshop.api.core.math.IPoseStack;
 import moe.plushie.armourers_workshop.compatibility.client.renderer.AbstractEntityRenderer;
 import moe.plushie.armourers_workshop.core.entity.SeatEntity;
-import moe.plushie.armourers_workshop.core.math.Vector3f;
+import moe.plushie.armourers_workshop.core.math.OpenVector3f;
 import moe.plushie.armourers_workshop.init.ModDebugger;
 import moe.plushie.armourers_workshop.utils.ShapeTesselator;
 import net.fabricmc.api.EnvType;
@@ -23,7 +23,7 @@ public class SeatEntityRenderer<T extends SeatEntity> extends AbstractEntityRend
     public void render(T entity, float p_225623_2_, float partialTicks, IPoseStack poseStack, IBufferSource bufferSource, int packedLightIn) {
         if (ModDebugger.skinnable) {
             ShapeTesselator.stroke(-0.5f, -0.5f, -0.5f, 0.5f, 0.5f, 0.5f, UIColor.ORANGE, poseStack, bufferSource);
-            ShapeTesselator.vector(Vector3f.ZERO, poseStack, bufferSource);
+            ShapeTesselator.vector(OpenVector3f.ZERO, poseStack, bufferSource);
         }
     }
 

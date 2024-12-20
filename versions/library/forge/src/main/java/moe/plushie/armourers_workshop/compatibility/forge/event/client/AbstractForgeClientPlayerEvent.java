@@ -3,7 +3,7 @@ package moe.plushie.armourers_workshop.compatibility.forge.event.client;
 import moe.plushie.armourers_workshop.api.annotation.Available;
 import moe.plushie.armourers_workshop.api.registry.IEventHandler;
 import moe.plushie.armourers_workshop.compatibility.forge.AbstractForgeClientEventsImpl;
-import moe.plushie.armourers_workshop.init.platform.event.client.ClientPlayerEvent;
+import moe.plushie.armourers_workshop.init.event.client.ClientPlayerEvent;
 import net.minecraft.world.entity.player.Player;
 
 @Available("[1.16, )")

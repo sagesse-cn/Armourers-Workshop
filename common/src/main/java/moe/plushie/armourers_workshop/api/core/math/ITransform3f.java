@@ -9,13 +9,13 @@ public interface ITransform3f extends ITransform {
 
     boolean isIdentity();
 
-    IVector3f getTranslate();
+    IVector3f translate();
 
-    IVector3f getRotation();
+    IVector3f rotation();
 
-    IVector3f getScale();
+    IVector3f scale();
 
-    IVector3f getAfterTranslate();
+    IVector3f afterTranslate();
 
-    IVector3f getPivot();
+    IVector3f pivot();
 }

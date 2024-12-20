@@ -39,15 +39,15 @@ public class UIImage {
             return this;
         }
         if (size != null) {
-            CGPoint point = mapping.apply(index);
+            var point = mapping.apply(index);
             if (point == null) {
                 return this;
             }
-            float u = point.x * size.width;
-            float v = point.y * size.height;
+            var u = point.x() * size.width();
+            var v = point.y() * size.height();
             if (uv != null) {
-                u += uv.x;
-                v += uv.y;
+                u += uv.x();
+                v += uv.y();
             }
             return Builder.of(this).uv((int) u, (int) v).unzip(null).build();
         }
@@ -56,7 +56,7 @@ public class UIImage {
     }
 
     public UIImage snapshot() {
-        Builder builder = Builder.of(this);
+        var builder = Builder.of(this);
         builder.animationData = null;
         return builder.build();
     }

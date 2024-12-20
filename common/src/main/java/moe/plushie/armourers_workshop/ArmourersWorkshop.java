@@ -1,11 +1,11 @@
 package moe.plushie.armourers_workshop;
 
-import moe.plushie.armourers_workshop.api.core.IResourceLocation;
-import moe.plushie.armourers_workshop.api.skin.ISkinType;
 import moe.plushie.armourers_workshop.core.armature.Armatures;
 import moe.plushie.armourers_workshop.core.crafting.recipe.SkinningRecipes;
 import moe.plushie.armourers_workshop.core.data.EntityActions;
+import moe.plushie.armourers_workshop.core.skin.SkinType;
 import moe.plushie.armourers_workshop.core.skin.SkinTypes;
+import moe.plushie.armourers_workshop.core.utils.OpenResourceLocation;
 import moe.plushie.armourers_workshop.init.ModArgumentTypes;
 import moe.plushie.armourers_workshop.init.ModBlockEntityTypes;
 import moe.plushie.armourers_workshop.init.ModBlocks;
@@ -76,7 +76,7 @@ public class ArmourersWorkshop {
         });
     }
 
-    public static IResourceLocation getItemIcon(ISkinType skinType) {
+    public static OpenResourceLocation getItemIcon(SkinType skinType) {
         if (skinType == SkinTypes.UNKNOWN || skinType.getRegistryName() == null) {
             return null;
         }

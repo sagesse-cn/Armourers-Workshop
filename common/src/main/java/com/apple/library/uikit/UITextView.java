@@ -248,7 +248,7 @@ public class UITextView extends UIScrollView implements TextInputTraits {
             needSyncCursor = false;
             CGRect box = convertRectToView(rect, superview());
             CGRect frame = frame().insetBy(contentInsets);
-            if (box.getMinY() < frame.getMinY() || box.getMaxY() > frame.getMaxY()) {
+            if (box.minY() < frame.minY() || box.maxY() > frame.maxY()) {
                 setContentOffset(new CGPoint(0, rect.y));
             }
         }

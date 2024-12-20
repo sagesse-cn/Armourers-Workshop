@@ -3,7 +3,7 @@ package moe.plushie.armourers_workshop.compatibility.forge.event.common;
 import moe.plushie.armourers_workshop.api.annotation.Available;
 import moe.plushie.armourers_workshop.api.registry.IEventHandler;
 import moe.plushie.armourers_workshop.compatibility.forge.AbstractForgeCommonEventsImpl;
-import moe.plushie.armourers_workshop.init.platform.event.common.EntityEvent;
+import moe.plushie.armourers_workshop.init.event.common.EntityEvent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 

@@ -1,13 +1,13 @@
 package moe.plushie.armourers_workshop.init.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import moe.plushie.armourers_workshop.api.skin.ISkinToolType;
 import moe.plushie.armourers_workshop.compatibility.client.AbstractBufferSource;
 import moe.plushie.armourers_workshop.compatibility.client.AbstractPoseStack;
 import moe.plushie.armourers_workshop.core.armature.Armatures;
 import moe.plushie.armourers_workshop.core.client.bake.BakedArmature;
 import moe.plushie.armourers_workshop.core.client.bake.BakedFirstPersonArmature;
 import moe.plushie.armourers_workshop.core.client.bake.SkinBakery;
+import moe.plushie.armourers_workshop.core.client.other.EmbeddedSkinStack;
 import moe.plushie.armourers_workshop.core.client.other.EntityRenderData;
 import moe.plushie.armourers_workshop.core.client.other.EntitySlot;
 import moe.plushie.armourers_workshop.core.client.other.FindableSkinManager;
@@ -22,7 +22,7 @@ import moe.plushie.armourers_workshop.core.client.skinrender.patch.FallbackEntit
 import moe.plushie.armourers_workshop.core.client.skinrender.patch.LivingEntityRenderPatch;
 import moe.plushie.armourers_workshop.core.data.ticket.Tickets;
 import moe.plushie.armourers_workshop.core.entity.MannequinEntity;
-import moe.plushie.armourers_workshop.core.math.Vector3f;
+import moe.plushie.armourers_workshop.core.math.OpenVector3f;
 import moe.plushie.armourers_workshop.core.skin.SkinDescriptor;
 import moe.plushie.armourers_workshop.core.skin.SkinTypes;
 import moe.plushie.armourers_workshop.core.utils.OpenItemDisplayContext;
@@ -30,7 +30,6 @@ import moe.plushie.armourers_workshop.core.utils.TickUtils;
 import moe.plushie.armourers_workshop.init.ModConfig;
 import moe.plushie.armourers_workshop.init.ModDebugger;
 import moe.plushie.armourers_workshop.init.ModItems;
-import moe.plushie.armourers_workshop.utils.EmbeddedSkinStack;
 import moe.plushie.armourers_workshop.utils.RenderSystem;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -274,8 +273,8 @@ public class ClientWardrobeHandler {
         }
         var poseStack = AbstractPoseStack.wrap(poseStackIn);
         var buffers = AbstractBufferSource.wrap(buffersIn);
-        var rotation = Vector3f.ZERO;
-        var scale = Vector3f.ONE;
+        var rotation = OpenVector3f.ZERO;
+        var scale = OpenVector3f.ONE;
 
         poseStack.pushPose();
 
@@ -399,7 +398,7 @@ public class ClientWardrobeHandler {
             return true;
         }
         // for the tool type skin, don't render in the box.
-        if (skinType instanceof ISkinToolType) {
+        if (skinType.isTool()) {
             return false;
         }
         // for the item type skin, don't render in the box.

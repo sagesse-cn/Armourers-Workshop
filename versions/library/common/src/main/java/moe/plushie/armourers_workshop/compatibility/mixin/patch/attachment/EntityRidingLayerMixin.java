@@ -23,6 +23,6 @@ public class EntityRidingLayerMixin {
         if (offset == null) {
             return pos; // can't found custom riding position.
         }
-        return entity.position().add(offset.getX(), offset.getY(), offset.getZ());
+        return entity.position().add(offset.x(), offset.y(), offset.z());
     }
 }

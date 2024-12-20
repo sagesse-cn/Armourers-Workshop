@@ -2,12 +2,11 @@ package moe.plushie.armourers_workshop.core.armature.core;
 
 import moe.plushie.armourers_workshop.api.client.model.IModel;
 import moe.plushie.armourers_workshop.api.client.model.IModelPart;
-import moe.plushie.armourers_workshop.api.skin.ISkinType;
-import moe.plushie.armourers_workshop.api.skin.part.ISkinPartType;
-import moe.plushie.armourers_workshop.api.skin.property.ISkinProperty;
 import moe.plushie.armourers_workshop.core.armature.ArmaturePlugin;
 import moe.plushie.armourers_workshop.core.armature.ArmatureTransformerContext;
+import moe.plushie.armourers_workshop.core.skin.SkinType;
 import moe.plushie.armourers_workshop.core.skin.SkinTypes;
+import moe.plushie.armourers_workshop.core.skin.part.SkinPartType;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPartTypes;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperty;
 import moe.plushie.armourers_workshop.init.ModDebugger;
@@ -23,9 +22,9 @@ import java.util.Map;
 public class DefaultOverriddenArmaturePlugin extends ArmaturePlugin {
 
     private final ArrayList<IModelPart> applying = new ArrayList<>();
-    private final HashMap<ISkinProperty<Boolean>, Collection<? extends IModelPart>> overrides = new HashMap<>();
-    private final HashMap<ISkinType, Collection<? extends IModelPart>> skinTypeToOverrides = new HashMap<>();
-    private final HashMap<ISkinPartType, Collection<? extends IModelPart>> skinPartTypeToOverrides = new HashMap<>();
+    private final HashMap<SkinProperty<Boolean>, Collection<? extends IModelPart>> overrides = new HashMap<>();
+    private final HashMap<SkinType, Collection<? extends IModelPart>> skinTypeToOverrides = new HashMap<>();
+    private final HashMap<SkinPartType, Collection<? extends IModelPart>> skinPartTypeToOverrides = new HashMap<>();
 
     public DefaultOverriddenArmaturePlugin(Map<String, Collection<String>> keys, ArmatureTransformerContext context) {
         // when entity model change.

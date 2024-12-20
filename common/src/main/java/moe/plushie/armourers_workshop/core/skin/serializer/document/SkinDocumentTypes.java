@@ -1,7 +1,7 @@
 package moe.plushie.armourers_workshop.core.skin.serializer.document;
 
 import moe.plushie.armourers_workshop.api.core.IDataCodec;
-import moe.plushie.armourers_workshop.api.skin.ISkinType;
+import moe.plushie.armourers_workshop.core.skin.SkinType;
 import moe.plushie.armourers_workshop.core.skin.SkinTypes;
 
 import java.util.ArrayList;
@@ -74,7 +74,7 @@ public class SkinDocumentTypes {
     }
 
 
-    private static SkinDocumentType register(String category, ISkinType skinType) {
+    private static SkinDocumentType register(String category, SkinType skinType) {
         SkinDocumentType advancedSkinType = new SkinDocumentType(category, skinType);
         advancedSkinType.setRegistryName(skinType.getRegistryName());
         ALL_TYPES.put(advancedSkinType.getRegistryName().toString(), advancedSkinType);

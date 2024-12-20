@@ -4,7 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.tacz.guns.client.renderer.other.HumanoidOffhandRender;
 import com.tacz.guns.client.resource.pojo.display.gun.LayerGunShow;
 import moe.plushie.armourers_workshop.api.annotation.Available;
-import moe.plushie.armourers_workshop.core.math.Vector3f;
+import moe.plushie.armourers_workshop.core.math.OpenVector3f;
 import moe.plushie.armourers_workshop.init.client.ClientAttachmentHandler;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.world.entity.LivingEntity;
@@ -23,6 +23,6 @@ public class ForgeTacZeroItemRenderMixin {
     @Inject(method = "renderGunItem", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/vertex/PoseStack;translate(DDD)V", shift = At.Shift.AFTER))
     private static void aw2$translateToPose(LivingEntity entity, PoseStack poseStackIn, MultiBufferSource bufferSourceIn, int packedLight, ItemStack itemStack, LayerGunShow offhandShow, CallbackInfo ci) {
         var pos = offhandShow.getPos();
-        ClientAttachmentHandler.onRenderGun(entity, itemStack, new Vector3f(pos.x(), pos.y(), pos.z()), poseStackIn, bufferSourceIn);
+        ClientAttachmentHandler.onRenderGun(entity, itemStack, new OpenVector3f(pos.x(), pos.y(), pos.z()), poseStackIn, bufferSourceIn);
     }
 }

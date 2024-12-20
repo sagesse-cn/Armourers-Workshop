@@ -3,8 +3,8 @@ package moe.plushie.armourers_workshop.library.data;
 import com.mojang.authlib.GameProfile;
 import io.netty.buffer.Unpooled;
 import moe.plushie.armourers_workshop.api.core.IResultHandler;
-import moe.plushie.armourers_workshop.api.skin.ISkinType;
 import moe.plushie.armourers_workshop.core.skin.Skin;
+import moe.plushie.armourers_workshop.core.skin.SkinType;
 import moe.plushie.armourers_workshop.core.skin.SkinTypes;
 import moe.plushie.armourers_workshop.core.skin.serializer.SkinSerializer;
 import moe.plushie.armourers_workshop.core.utils.FileUtils;
@@ -117,7 +117,7 @@ public class GlobalSkinLibrary extends ServerSession {
         });
     }
 
-    public void searchSkin(String keyword, int pageIndex, int pageSize, SearchColumnType searchOrderColumn, SearchOrderType searchOrder, ISkinType searchType, IResultHandler<SearchResult> handler) {
+    public void searchSkin(String keyword, int pageIndex, int pageSize, SearchColumnType searchOrderColumn, SearchOrderType searchOrder, SkinType searchType, IResultHandler<SearchResult> handler) {
         var parameters = new HashMap<String, Object>();
         parameters.put("search", keyword);
         parameters.put("pageIndex", pageIndex);
@@ -132,7 +132,7 @@ public class GlobalSkinLibrary extends ServerSession {
         request("/skin/search", parameters, SearchResult::fromJSON, handler);
     }
 
-    public void getUserSkinList(String userId, int pageIndex, int pageSize, ISkinType searchType, IResultHandler<SearchResult> handler) {
+    public void getUserSkinList(String userId, int pageIndex, int pageSize, SkinType searchType, IResultHandler<SearchResult> handler) {
         var parameters = new HashMap<String, Object>();
         parameters.put("userId", userId);
         parameters.put("pageIndex", pageIndex);
@@ -320,7 +320,7 @@ public class GlobalSkinLibrary extends ServerSession {
         return new String[]{"6", "0"};
     }
 
-    private String buildSearchTypes(ISkinType skinType) {
+    private String buildSearchTypes(SkinType skinType) {
         if (skinType != null && skinType != SkinTypes.UNKNOWN) {
             return skinType.getRegistryName().toString();
         }

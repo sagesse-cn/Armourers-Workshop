@@ -13,7 +13,7 @@ import moe.plushie.armourers_workshop.core.utils.FileUtils;
 import moe.plushie.armourers_workshop.core.utils.OpenRandomSource;
 import moe.plushie.armourers_workshop.core.utils.ReferenceCounted;
 import moe.plushie.armourers_workshop.init.ModConstants;
-import moe.plushie.armourers_workshop.utils.DataContainer;
+import moe.plushie.armourers_workshop.core.data.DataContainer;
 import moe.plushie.armourers_workshop.utils.RenderSystem;
 import net.minecraft.client.renderer.RenderType;
 import org.jetbrains.annotations.Nullable;

@@ -2,9 +2,9 @@ package moe.plushie.armourers_workshop.library.data;
 
 import moe.plushie.armourers_workshop.api.library.ISkinLibrary;
 import moe.plushie.armourers_workshop.api.library.ISkinLibraryListener;
-import moe.plushie.armourers_workshop.api.skin.ISkinType;
 import moe.plushie.armourers_workshop.core.data.DataDomain;
 import moe.plushie.armourers_workshop.core.skin.Skin;
+import moe.plushie.armourers_workshop.core.skin.SkinType;
 import moe.plushie.armourers_workshop.core.skin.serializer.SkinFileOptions;
 import moe.plushie.armourers_workshop.core.skin.serializer.SkinSerializer;
 import moe.plushie.armourers_workshop.core.utils.Executors;
@@ -179,7 +179,7 @@ public class SkinLibrary implements ISkinLibrary {
         listeners.forEach(listener -> listener.libraryDidChanges(this, difference));
     }
 
-    public ArrayList<SkinLibraryFile> search(String keyword, ISkinType skinType, String rootPath) {
+    public ArrayList<SkinLibraryFile> search(String keyword, SkinType skinType, String rootPath) {
         var fixedRootPath = rootPath;
         var files = new ArrayList<SkinLibraryFile>();
         if (keyword != null) {

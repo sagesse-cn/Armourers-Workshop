@@ -10,8 +10,8 @@ import com.apple.library.uikit.UIComboItem;
 import com.apple.library.uikit.UIControl;
 import com.apple.library.uikit.UITextField;
 import com.apple.library.uikit.UITextFieldDelegate;
-import moe.plushie.armourers_workshop.api.skin.ISkinType;
 import moe.plushie.armourers_workshop.core.client.gui.widget.SkinComboBox;
+import moe.plushie.armourers_workshop.core.skin.SkinType;
 import moe.plushie.armourers_workshop.core.skin.SkinTypes;
 import moe.plushie.armourers_workshop.init.ModTextures;
 import moe.plushie.armourers_workshop.library.client.gui.GlobalSkinLibraryWindow;
@@ -34,7 +34,7 @@ public class SearchBoxLibraryPanel extends AbstractLibraryPanel implements UITex
     private final UIButton searchButton = new UIButton(CGRect.ZERO);
 
     private String keyword = "";
-    private ISkinType skinType = SkinTypes.UNKNOWN;
+    private SkinType skinType = SkinTypes.UNKNOWN;
     private SearchOrderType orderType = SearchOrderType.DESC;
     private SearchColumnType columnType = SearchColumnType.DATE_CREATED;
 
@@ -119,7 +119,7 @@ public class SearchBoxLibraryPanel extends AbstractLibraryPanel implements UITex
         return true;
     }
 
-    public void reloadData(String keyword, ISkinType skinType, SearchColumnType columnType, SearchOrderType orderType) {
+    public void reloadData(String keyword, SkinType skinType, SearchColumnType columnType, SearchOrderType orderType) {
         this.keyword = keyword;
         this.skinType = skinType;
         this.orderType = orderType;

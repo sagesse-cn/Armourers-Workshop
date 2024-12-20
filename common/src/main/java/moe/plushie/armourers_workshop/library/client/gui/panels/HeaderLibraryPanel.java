@@ -60,7 +60,7 @@ public class HeaderLibraryPanel extends AbstractLibraryPanel {
             }
             CGRect frame = button.frame();
             button.setFrame(new CGRect(x2 - frame.width, (bounds.height - frame.height) / 2, frame.width, frame.height));
-            x2 = button.frame().getMinX() - 2;
+            x2 = button.frame().minX() - 2;
         }
     }
 

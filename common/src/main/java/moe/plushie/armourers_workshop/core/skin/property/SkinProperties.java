@@ -6,7 +6,6 @@ import moe.plushie.armourers_workshop.api.skin.property.ISkinProperty;
 import moe.plushie.armourers_workshop.core.utils.Objects;
 import moe.plushie.armourers_workshop.core.utils.OpenProperties;
 import net.minecraft.nbt.CompoundTag;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -97,62 +96,32 @@ public class SkinProperties extends OpenProperties implements ISkinProperties {
 
         @Override
         public <T> void put(ISkinProperty<T> property, T value) {
-            String indexedKey = getResolvedKey(property);
-            if (indexedKey != null) {
-                properties.put(indexedKey, value);
-            } else {
-                properties.put(property.getKey(), value);
-            }
+            put(resolveKey(property), value);
         }
 
         @Override
         public <T> void remove(ISkinProperty<T> property) {
-            String indexedKey = getResolvedKey(property);
-            if (indexedKey != null) {
-                properties.remove(indexedKey);
-            } else {
-                properties.remove(property.getKey());
-            }
+            remove(resolveKey(property));
         }
 
         @Override
         public <T> T get(ISkinProperty<T> property) {
-            var indexedKey = getResolvedKey(property);
-            Object value;
-            if (indexedKey != null && properties.containsKey(indexedKey)) {
-                value = properties.getOrDefault(indexedKey, property.getDefaultValue());
-            } else {
-                value = properties.getOrDefault(property.getKey(), property.getDefaultValue());
-            }
+            var value = getOrDefault(resolveKey(property), property.getDefaultValue());
             return Objects.unsafeCast(value);
         }
 
         @Override
         public <T> boolean containsKey(ISkinProperty<T> property) {
-            String indexedKey = getResolvedKey(property);
-            if (indexedKey != null && properties.containsKey(indexedKey)) {
-                return true;
-            }
-            return properties.containsKey(property.getKey());
+            return containsKey(resolveKey(property));
         }
 
         @Override
         public <T> boolean containsValue(ISkinProperty<T> property) {
-            var indexedKey = getResolvedKey(property);
-            if (indexedKey != null && properties.containsValue(indexedKey)) {
-                return true;
-            }
-            return properties.containsValue(property.getKey());
+            return containsValue(resolveKey(property));
         }
 
-        @Nullable
-        private <T> String getResolvedKey(ISkinProperty<T> property) {
-            if (property instanceof SkinProperty<?> property1) {
-                if (property1.isMultipleKey()) {
-                    return property.getKey() + index;
-                }
-            }
-            return null;
+        private <T> String resolveKey(ISkinProperty<T> property) {
+            return property.getKey() + index;
         }
     }
 

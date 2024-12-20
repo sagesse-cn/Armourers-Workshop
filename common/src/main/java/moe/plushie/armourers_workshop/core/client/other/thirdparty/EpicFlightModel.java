@@ -1,10 +1,10 @@
 package moe.plushie.armourers_workshop.core.client.other.thirdparty;
 
 import moe.plushie.armourers_workshop.api.client.model.IModel;
+import moe.plushie.armourers_workshop.compatibility.client.model.AbstractModelHolder;
 import moe.plushie.armourers_workshop.core.client.bake.BakedArmatureTransformer;
 import moe.plushie.armourers_workshop.core.client.model.LinkedModel;
-import moe.plushie.armourers_workshop.utils.DataContainerKey;
-import moe.plushie.armourers_workshop.utils.ModelHolder;
+import moe.plushie.armourers_workshop.core.data.DataContainerKey;
 import net.minecraft.client.model.Model;
 
 public class EpicFlightModel extends LinkedModel {
@@ -21,7 +21,7 @@ public class EpicFlightModel extends LinkedModel {
     }
 
     public static <V extends Model> EpicFlightModel ofNullable(V model) {
-        var model1 = ModelHolder.ofNullable(model);
+        var model1 = AbstractModelHolder.ofNullable(model);
         if (model1 == null) {
             return null;
         }

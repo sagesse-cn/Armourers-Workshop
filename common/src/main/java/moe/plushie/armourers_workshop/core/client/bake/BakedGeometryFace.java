@@ -4,8 +4,6 @@ import moe.plushie.armourers_workshop.api.client.IVertexConsumer;
 import moe.plushie.armourers_workshop.api.core.math.IPoseStack;
 import moe.plushie.armourers_workshop.api.core.math.ITransform3f;
 import moe.plushie.armourers_workshop.api.skin.geometry.ISkinGeometryType;
-import moe.plushie.armourers_workshop.api.skin.part.ISkinPartType;
-import moe.plushie.armourers_workshop.api.skin.texture.ISkinPaintType;
 import moe.plushie.armourers_workshop.core.client.other.SkinRenderType;
 import moe.plushie.armourers_workshop.core.client.texture.PlayerTextureLoader;
 import moe.plushie.armourers_workshop.core.client.texture.SmartTextureManager;
@@ -16,8 +14,10 @@ import moe.plushie.armourers_workshop.core.skin.geometry.SkinGeometryFace;
 import moe.plushie.armourers_workshop.core.skin.geometry.SkinGeometryTypes;
 import moe.plushie.armourers_workshop.core.skin.geometry.SkinGeometryVertex;
 import moe.plushie.armourers_workshop.core.skin.geometry.cube.SkinCubeVertex;
+import moe.plushie.armourers_workshop.core.skin.part.SkinPartType;
 import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintColor;
 import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintScheme;
+import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintType;
 import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintTypes;
 import moe.plushie.armourers_workshop.core.skin.texture.SkinTexturePos;
 import moe.plushie.armourers_workshop.core.utils.Collections;
@@ -93,12 +93,12 @@ public class BakedGeometryFace {
             var position = vertex.getPosition();
             var normal = vertex.getNormal();
             var textureCoords = vertex.getTextureCoords();
-            builder.vertex(entry, position.getX(), position.getY(), position.getZ())
+            builder.vertex(entry, position.x(), position.y(), position.z())
                     .color(r, g, b, a)
-                    .uv((u + textureCoords.getX()) / n, (v + textureCoords.getY()) / m)
+                    .uv((u + textureCoords.x()) / n, (v + textureCoords.y()) / m)
                     .overlayCoords(overlay)
                     .uv2(lightmap)
-                    .normal(entry, normal.getX(), normal.getY(), normal.getZ())
+                    .normal(entry, normal.x(), normal.y(), normal.z())
                     .endVertex();
         }
 
@@ -119,24 +119,25 @@ public class BakedGeometryFace {
         int r = OpenMath.clamp(destination.getRed() + src - avg, 0, 255);
         int g = OpenMath.clamp(destination.getGreen() + src - avg, 0, 255);
         int b = OpenMath.clamp(destination.getBlue() + src - avg, 0, 255);
-        return SkinPaintColor.of(r, g, b, destination.getPaintType());
+
+        return destination.withColor(r, g, b);
     }
 
 
-    private SkinPaintColor resolveTextureColor(OpenResourceLocation texture, ISkinPartType partType) {
+    private SkinPaintColor resolveTextureColor(OpenResourceLocation texture, SkinPartType partType) {
         var bakedTexture = PlayerTextureLoader.getInstance().getTextureModel(texture);
         if (bakedTexture != null && defaultVertex instanceof SkinCubeVertex cubeVertex) {
             var shape = cubeVertex.getBoundingBox();
             var direction = cubeVertex.getDirection();
-            int x = (int) shape.getX();
-            int y = (int) shape.getY();
-            int z = (int) shape.getZ();
+            int x = (int) shape.x();
+            int y = (int) shape.y();
+            int z = (int) shape.z();
             return bakedTexture.getColor(x, y, z, direction, partType);
         }
         return null;
     }
 
-    private float resolveTextureOffset(ISkinPaintType from, ISkinPaintType to) {
+    private float resolveTextureOffset(SkinPaintType from, SkinPaintType to) {
         var fromTexturePos = from.getTexturePos();
         var toTexturePos = to.getTexturePos();
         if (fromTexturePos != toTexturePos) {
@@ -145,7 +146,7 @@ public class BakedGeometryFace {
         return 0;
     }
 
-    private SkinPaintColor resolveColor(SkinPaintColor paintColor, SkinPaintScheme scheme, ColorDescriptor descriptor, ISkinPartType partType, int deep) {
+    private SkinPaintColor resolveColor(SkinPaintColor paintColor, SkinPaintScheme scheme, ColorDescriptor descriptor, SkinPartType partType, int deep) {
         var paintType = paintColor.getPaintType();
         if (paintType == SkinPaintTypes.NONE) {
             return SkinPaintColor.CLEAR;

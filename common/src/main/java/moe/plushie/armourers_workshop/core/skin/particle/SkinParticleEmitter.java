@@ -1,6 +1,6 @@
 package moe.plushie.armourers_workshop.core.skin.particle;
 
-import moe.plushie.armourers_workshop.core.math.Vector3f;
+import moe.plushie.armourers_workshop.core.math.OpenVector3f;
 
 public interface SkinParticleEmitter {
 
@@ -29,9 +29,9 @@ public interface SkinParticleEmitter {
     double getDuration();
 
 
-    void setPosition(Vector3f position);
+    void setPosition(OpenVector3f position);
 
-    Vector3f getPosition();
+    OpenVector3f getPosition();
 
 
     // default is true

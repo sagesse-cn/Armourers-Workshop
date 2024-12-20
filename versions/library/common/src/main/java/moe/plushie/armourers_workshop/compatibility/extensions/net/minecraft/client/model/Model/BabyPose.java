@@ -2,7 +2,7 @@ package moe.plushie.armourers_workshop.compatibility.extensions.net.minecraft.cl
 
 import moe.plushie.armourers_workshop.api.annotation.Available;
 import moe.plushie.armourers_workshop.api.client.model.IModelBabyPose;
-import moe.plushie.armourers_workshop.core.math.Vector3f;
+import moe.plushie.armourers_workshop.core.math.OpenVector3f;
 import net.minecraft.client.model.AgeableListModel;
 import net.minecraft.client.model.Model;
 
@@ -21,6 +21,6 @@ public class BabyPose {
         if (model1.scaleHead) {
             scale = 1.5f;
         }
-        return IModelBabyPose.of(scale, new Vector3f(0, model1.babyYHeadOffset, model1.babyZHeadOffset));
+        return IModelBabyPose.of(scale, new OpenVector3f(0, model1.babyYHeadOffset, model1.babyZHeadOffset));
     }
 }

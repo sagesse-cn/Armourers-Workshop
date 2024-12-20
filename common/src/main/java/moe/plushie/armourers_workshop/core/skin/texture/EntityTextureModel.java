@@ -1,10 +1,10 @@
 package moe.plushie.armourers_workshop.core.skin.texture;
 
-import moe.plushie.armourers_workshop.api.skin.part.ISkinPartType;
-import moe.plushie.armourers_workshop.core.math.Rectangle2f;
-import moe.plushie.armourers_workshop.core.math.Rectangle3i;
-import moe.plushie.armourers_workshop.core.math.Vector2i;
-import moe.plushie.armourers_workshop.core.math.Vector3i;
+import moe.plushie.armourers_workshop.core.math.OpenRectangle2f;
+import moe.plushie.armourers_workshop.core.math.OpenRectangle3i;
+import moe.plushie.armourers_workshop.core.math.OpenVector2i;
+import moe.plushie.armourers_workshop.core.math.OpenVector3i;
+import moe.plushie.armourers_workshop.core.skin.part.SkinPartType;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPartTypes;
 import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.core.utils.OpenDirection;
@@ -63,9 +63,9 @@ public class EntityTextureModel {
         builder.put(SkinPartTypes.BIPPED_RIGHT_ARM, new Box(-2, -2, -2, 3, 12, 4, 40, 16));
         builder.put(SkinPartTypes.BIPPED_LEFT_ARM, new Box(-1, -2, -2, 3, 12, 4, 32, 48));
     }));
-    protected final Map<ISkinPartType, Box> skyBoxes;
+    protected final Map<SkinPartType, Box> skyBoxes;
 
-    public EntityTextureModel(Map<ISkinPartType, Box> skyBoxes) {
+    public EntityTextureModel(Map<SkinPartType, Box> skyBoxes) {
         this.skyBoxes = skyBoxes;
     }
 
@@ -83,7 +83,7 @@ public class EntityTextureModel {
         }
     }
 
-    public Box get(ISkinPartType partType) {
+    public Box get(SkinPartType partType) {
         if (partType == SkinPartTypes.BIPPED_LEFT_FOOT) {
             return get(SkinPartTypes.BIPPED_LEFT_THIGH);
         }
@@ -93,7 +93,7 @@ public class EntityTextureModel {
         return skyBoxes.get(partType);
     }
 
-    public Vector2i get(ISkinPartType partType, int x, int y, int z, OpenDirection dir) {
+    public OpenVector2i get(SkinPartType partType, int x, int y, int z, OpenDirection dir) {
         var box = get(partType);
         if (box != null) {
             return box.get(x, y, z, dir);
@@ -101,20 +101,20 @@ public class EntityTextureModel {
         return null;
     }
 
-    public void forEach(BiConsumer<ISkinPartType, Box> consumer) {
+    public void forEach(BiConsumer<SkinPartType, Box> consumer) {
         skyBoxes.forEach(consumer);
     }
 
-    public Set<Map.Entry<ISkinPartType, Box>> entrySet() {
+    public Set<Map.Entry<SkinPartType, Box>> entrySet() {
         return skyBoxes.entrySet();
     }
 
     public static class Box {
 
-        protected final EnumMap<OpenDirection, ToIntFunction<Vector3i>> validator = new EnumMap<>(OpenDirection.class);
-        protected final EnumMap<OpenDirection, Function<Vector3i, Vector2i>> evaluator = new EnumMap<>(OpenDirection.class);
-        protected final Rectangle3i rect;
-        protected final Rectangle2f textureRect;
+        protected final EnumMap<OpenDirection, ToIntFunction<OpenVector3i>> validator = new EnumMap<>(OpenDirection.class);
+        protected final EnumMap<OpenDirection, Function<OpenVector3i, OpenVector2i>> evaluator = new EnumMap<>(OpenDirection.class);
+        protected final OpenRectangle3i rect;
+        protected final OpenRectangle2f textureRect;
         protected final boolean mirror;
 
         public Box(int x, int y, int z, int width, int height, int depth, int u, int v) {
@@ -123,8 +123,8 @@ public class EntityTextureModel {
 
         public Box(int x, int y, int z, int width, int height, int depth, int u, int v, boolean mirror) {
             this.mirror = mirror;
-            this.rect = new Rectangle3i(x, y, z, width, height, depth);
-            this.textureRect = new Rectangle2f(u, v, depth + width + depth + width, depth + height);
+            this.rect = new OpenRectangle3i(x, y, z, width, height, depth);
+            this.textureRect = new OpenRectangle2f(u, v, depth + width + depth + width, depth + height);
             // we are assuming front side always facing north.
             this.put(OpenDirection.UP, positiveX(u + depth), negativeZ(v + depth - 1));
             this.put(OpenDirection.DOWN, positiveX(u + depth + width), negativeZ(v + depth - 1));
@@ -141,19 +141,19 @@ public class EntityTextureModel {
             this.valid(OpenDirection.EAST, negativeX(0));
         }
 
-        protected void valid(OpenDirection dir, ToIntFunction<Vector3i> diff) {
+        protected void valid(OpenDirection dir, ToIntFunction<OpenVector3i> diff) {
             validator.put(getMirroredDirection(dir), diff);
         }
 
-        protected void put(OpenDirection dir, ToIntFunction<Vector3i> uf, ToIntFunction<Vector3i> vf) {
-            evaluator.put(getMirroredDirection(dir), pos -> new Vector2i(uf.applyAsInt(pos), vf.applyAsInt(pos)));
+        protected void put(OpenDirection dir, ToIntFunction<OpenVector3i> uf, ToIntFunction<OpenVector3i> vf) {
+            evaluator.put(getMirroredDirection(dir), pos -> new OpenVector2i(uf.applyAsInt(pos), vf.applyAsInt(pos)));
         }
 
         public void forEach(IPixelConsumer consumer) {
             for (var dir : OpenDirection.values()) {
-                for (int ix = rect.getMinX(); ix < rect.getMaxX(); ++ix) {
-                    for (int iy = rect.getMinY(); iy < rect.getMaxY(); ++iy) {
-                        for (int iz = rect.getMinZ(); iz < rect.getMaxZ(); ++iz) {
+                for (int ix = rect.minX(); ix < rect.maxX(); ++ix) {
+                    for (int iy = rect.minY(); iy < rect.maxY(); ++iy) {
+                        for (int iz = rect.minZ(); iz < rect.maxZ(); ++iz) {
                             var texture = get(ix, iy, iz, dir);
                             if (texture != null) {
                                 consumer.accept(texture, ix, iy, iz, dir);
@@ -177,14 +177,14 @@ public class EntityTextureModel {
         }
 
         @Nullable
-        public Vector2i get(int x, int y, int z, OpenDirection dir) {
-            x -= rect.getX();
-            y -= rect.getY();
-            z -= rect.getZ();
+        public OpenVector2i get(int x, int y, int z, OpenDirection dir) {
+            x -= rect.x();
+            y -= rect.y();
+            z -= rect.z();
             if (isInside(x, y, z)) {
                 var predicate = validator.get(dir);
                 var eval = evaluator.get(dir);
-                var pos = new Vector3i(x, y, z);
+                var pos = new OpenVector3i(x, y, z);
                 if (eval != null && predicate.applyAsInt(pos) == 0) {
                     return eval.apply(pos);
                 }
@@ -192,12 +192,12 @@ public class EntityTextureModel {
             return null;
         }
 
-        public Rectangle3i getBounds() {
+        public OpenRectangle3i getBounds() {
             return rect;
         }
 
         private boolean isInside(int x, int y, int z) {
-            return (x >= 0 && x < rect.getWidth()) && (y >= 0 && y < rect.getHeight()) && (z >= 0 && z < rect.getDepth());
+            return (x >= 0 && x < rect.width()) && (y >= 0 && y < rect.height()) && (z >= 0 && z < rect.depth());
         }
 
         private OpenDirection getMirroredDirection(OpenDirection direction) {
@@ -208,38 +208,38 @@ public class EntityTextureModel {
             return direction;
         }
 
-        private ToIntFunction<Vector3i> positiveX(int t) {
+        private ToIntFunction<OpenVector3i> positiveX(int t) {
             if (mirror) {
-                return pos -> t + (rect.getWidth() - pos.getX() - 1);
+                return pos -> t + (rect.width() - pos.x() - 1);
             }
-            return pos -> t + pos.getX();
+            return pos -> t + pos.x();
         }
 
-        private ToIntFunction<Vector3i> positiveY(int t) {
-            return pos -> t + pos.getY();
+        private ToIntFunction<OpenVector3i> positiveY(int t) {
+            return pos -> t + pos.y();
         }
 
-        private ToIntFunction<Vector3i> positiveZ(int t) {
-            return pos -> t + pos.getZ();
+        private ToIntFunction<OpenVector3i> positiveZ(int t) {
+            return pos -> t + pos.z();
         }
 
-        private ToIntFunction<Vector3i> negativeX(int t) {
+        private ToIntFunction<OpenVector3i> negativeX(int t) {
             if (mirror) {
-                return pos -> t - (rect.getWidth() - pos.getX() - 1);
+                return pos -> t - (rect.width() - pos.x() - 1);
             }
-            return pos -> t - pos.getX();
+            return pos -> t - pos.x();
         }
 
-        private ToIntFunction<Vector3i> negativeY(int t) {
-            return pos -> t - pos.getY();
+        private ToIntFunction<OpenVector3i> negativeY(int t) {
+            return pos -> t - pos.y();
         }
 
-        private ToIntFunction<Vector3i> negativeZ(int t) {
-            return pos -> t - pos.getZ();
+        private ToIntFunction<OpenVector3i> negativeZ(int t) {
+            return pos -> t - pos.z();
         }
 
         public interface IPixelConsumer {
-            void accept(Vector2i texture, int x, int y, int z, OpenDirection dir);
+            void accept(OpenVector2i texture, int x, int y, int z, OpenDirection dir);
         }
     }
 }

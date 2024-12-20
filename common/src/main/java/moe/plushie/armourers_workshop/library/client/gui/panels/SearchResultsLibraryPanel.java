@@ -8,8 +8,8 @@ import com.apple.library.uikit.UIColor;
 import com.apple.library.uikit.UIControl;
 import com.apple.library.uikit.UILabel;
 import moe.plushie.armourers_workshop.api.core.IResultHandler;
-import moe.plushie.armourers_workshop.api.skin.ISkinType;
 import moe.plushie.armourers_workshop.core.math.OpenMath;
+import moe.plushie.armourers_workshop.core.skin.SkinType;
 import moe.plushie.armourers_workshop.core.skin.SkinTypes;
 import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.init.ModLog;
@@ -50,7 +50,7 @@ public class SearchResultsLibraryPanel extends AbstractLibraryPanel implements G
     protected int totalResults = 0;
 
     private String keyword = "";
-    private ISkinType skinType = SkinTypes.UNKNOWN;
+    private SkinType skinType = SkinTypes.UNKNOWN;
     private SearchColumnType columnType = SearchColumnType.DATE_CREATED;
     private SearchOrderType orderType = SearchOrderType.DESC;
 
@@ -100,7 +100,7 @@ public class SearchResultsLibraryPanel extends AbstractLibraryPanel implements G
         }
     }
 
-    public void reloadData(String keyword, ISkinType skinType, SearchColumnType columnType, SearchOrderType orderType) {
+    public void reloadData(String keyword, SkinType skinType, SearchColumnType columnType, SearchOrderType orderType) {
         this.clearResults();
         this.keyword = keyword;
         this.skinType = skinType;
@@ -226,7 +226,7 @@ public class SearchResultsLibraryPanel extends AbstractLibraryPanel implements G
         });
     }
 
-    protected void doSearch(int pageIndex, int pageSize, ISkinType searchType, IResultHandler<SearchResult> handler) {
+    protected void doSearch(int pageIndex, int pageSize, SkinType searchType, IResultHandler<SearchResult> handler) {
         GlobalSkinLibrary.getInstance().searchSkin(keyword, pageIndex, pageSize, columnType, orderType, searchType, handler);
     }
 

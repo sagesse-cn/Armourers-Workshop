@@ -4,7 +4,6 @@ import moe.plushie.armourers_workshop.api.core.IDataCodec;
 import moe.plushie.armourers_workshop.api.core.IDataSerializable;
 import moe.plushie.armourers_workshop.api.core.IDataSerializer;
 import moe.plushie.armourers_workshop.api.core.IDataSerializerKey;
-import moe.plushie.armourers_workshop.api.skin.texture.ISkinPaintType;
 import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.core.utils.Objects;
 import moe.plushie.armourers_workshop.core.utils.OpenResourceLocation;
@@ -24,8 +23,8 @@ public class SkinPaintScheme implements IDataSerializable.Immutable {
 
     public static final IDataCodec<SkinPaintScheme> CODEC = IDataCodec.COMPOUND_TAG.serializer(SkinPaintScheme::new);
 
-    private final HashMap<ISkinPaintType, SkinPaintColor> colors = new HashMap<>();
-    private HashMap<ISkinPaintType, SkinPaintColor> resolvedColors;
+    private final HashMap<SkinPaintType, SkinPaintColor> colors = new HashMap<>();
+    private HashMap<SkinPaintType, SkinPaintColor> resolvedColors;
 
     private SkinPaintScheme reference;
     private OpenResourceLocation texture;
@@ -76,7 +75,7 @@ public class SkinPaintScheme implements IDataSerializable.Immutable {
     }
 
     @Nullable
-    public SkinPaintColor getColor(ISkinPaintType paintType) {
+    public SkinPaintColor getColor(SkinPaintType paintType) {
         var color = colors.get(paintType);
         if (color != null) {
             return color;
@@ -87,13 +86,13 @@ public class SkinPaintScheme implements IDataSerializable.Immutable {
         return null;
     }
 
-    public void setColor(ISkinPaintType paintType, SkinPaintColor color) {
+    public void setColor(SkinPaintType paintType, SkinPaintColor color) {
         colors.put(paintType, color);
         resolvedColors = null;
         hashCode = 0;
     }
 
-    public SkinPaintColor getResolvedColor(ISkinPaintType paintType) {
+    public SkinPaintColor getResolvedColor(SkinPaintType paintType) {
         if (resolvedColors == null) {
             resolvedColors = getResolvedColors();
         }
@@ -127,9 +126,9 @@ public class SkinPaintScheme implements IDataSerializable.Immutable {
         }
     }
 
-    private HashMap<ISkinPaintType, SkinPaintColor> getResolvedColors() {
-        var resolvedColors = new HashMap<ISkinPaintType, SkinPaintColor>();
-        var dependencies = new HashMap<ISkinPaintType, ArrayList<ISkinPaintType>>();
+    private HashMap<SkinPaintType, SkinPaintColor> getResolvedColors() {
+        var resolvedColors = new HashMap<SkinPaintType, SkinPaintColor>();
+        var dependencies = new HashMap<SkinPaintType, ArrayList<SkinPaintType>>();
         // build all reference dependencies
         if (reference != null) {
             resolvedColors.putAll(reference.getResolvedColors());

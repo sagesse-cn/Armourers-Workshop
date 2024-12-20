@@ -46,7 +46,7 @@ public class UITableView extends UIScrollView {
     @Override
     public void layoutSubviews() {
         super.layoutSubviews();
-        float width = bounds().getWidth();
+        float width = bounds().width();
         if (width != cachedWidth) {
             cachedWidth = width;
             reloadData();

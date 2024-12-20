@@ -6,7 +6,7 @@ import moe.plushie.armourers_workshop.compatibility.client.AbstractBufferSource;
 import moe.plushie.armourers_workshop.compatibility.client.AbstractPoseStack;
 import moe.plushie.armourers_workshop.core.client.animation.AnimationManager;
 import moe.plushie.armourers_workshop.core.client.bake.BakedSkin;
-import moe.plushie.armourers_workshop.core.math.Vector3f;
+import moe.plushie.armourers_workshop.core.math.OpenVector3f;
 import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintScheme;
 import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.core.utils.OpenItemDisplayContext;
@@ -38,7 +38,7 @@ public class SkinRenderContext implements ConcurrentRenderingContext {
 
     protected SkinItemSource itemSource;
     protected boolean useItemTransforms = false;
-    protected Vector3f displayBox;
+    protected OpenVector3f displayBox;
 
 
     protected SkinPaintScheme colorScheme = SkinPaintScheme.EMPTY;
@@ -154,11 +154,11 @@ public class SkinRenderContext implements ConcurrentRenderingContext {
         return displayContext;
     }
 
-    public void setDisplayBox(Vector3f displayBox) {
+    public void setDisplayBox(OpenVector3f displayBox) {
         this.displayBox = displayBox;
     }
 
-    public Vector3f getDisplayBox() {
+    public OpenVector3f getDisplayBox() {
         return displayBox;
     }
 

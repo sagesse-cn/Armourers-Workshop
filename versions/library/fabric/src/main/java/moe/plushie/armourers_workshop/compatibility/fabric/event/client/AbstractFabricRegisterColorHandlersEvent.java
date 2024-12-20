@@ -2,7 +2,7 @@ package moe.plushie.armourers_workshop.compatibility.fabric.event.client;
 
 import moe.plushie.armourers_workshop.api.annotation.Available;
 import moe.plushie.armourers_workshop.api.registry.IEventHandler;
-import moe.plushie.armourers_workshop.init.platform.event.client.RegisterColorHandlersEvent;
+import moe.plushie.armourers_workshop.init.event.client.RegisterColorHandlersEvent;
 import moe.plushie.armourers_workshop.init.platform.fabric.EventManagerImpl;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 

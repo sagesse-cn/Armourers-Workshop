@@ -1,7 +1,7 @@
 package moe.plushie.armourers_workshop.core.skin.property;
 
+import moe.plushie.armourers_workshop.core.math.OpenRectangle3f;
 import moe.plushie.armourers_workshop.core.math.OpenTransform3f;
-import moe.plushie.armourers_workshop.core.math.Rectangle3f;
 import moe.plushie.armourers_workshop.core.skin.serializer.SkinFileOptions;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IInputStream;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IOutputStream;
@@ -20,7 +20,7 @@ public class SkinSettings {
     private boolean isPreviewMode = false;
 
     private int flags = 0;
-    private List<Rectangle3f> collisionBox;
+    private List<OpenRectangle3f> collisionBox;
     private OpenItemTransforms itemTransforms;
 
     private String securityData;
@@ -121,11 +121,11 @@ public class SkinSettings {
         return itemTransforms;
     }
 
-    public void setCollisionBox(List<Rectangle3f> collisionBox) {
+    public void setCollisionBox(List<OpenRectangle3f> collisionBox) {
         this.collisionBox = collisionBox;
     }
 
-    public List<Rectangle3f> getCollisionBox() {
+    public List<OpenRectangle3f> getCollisionBox() {
         return collisionBox;
     }
 
@@ -212,17 +212,17 @@ public class SkinSettings {
                 for (var entry : itemTransforms.entrySet()) {
                     var transform = entry.getValue();
                     outputStream.writeString(entry.getKey());
-                    outputStream.writeVector3f(transform.getTranslate());
-                    outputStream.writeVector3f(transform.getRotation());
-                    outputStream.writeVector3f(transform.getScale());
+                    outputStream.writeVector3f(transform.translate());
+                    outputStream.writeVector3f(transform.rotation());
+                    outputStream.writeVector3f(transform.scale());
                 }
             }
         };
 
-        static final DataItem<List<Rectangle3f>> COLLISION_BOX = new DataItem<List<Rectangle3f>>(3, null) {
+        static final DataItem<List<OpenRectangle3f>> COLLISION_BOX = new DataItem<List<OpenRectangle3f>>(3, null) {
             @Override
-            List<Rectangle3f> read(IInputStream inputStream) throws IOException {
-                var collisionBox = new ArrayList<Rectangle3f>();
+            List<OpenRectangle3f> read(IInputStream inputStream) throws IOException {
+                var collisionBox = new ArrayList<OpenRectangle3f>();
                 var size = inputStream.readVarInt();
                 for (int i = 1; i < size; ++i) {
                     collisionBox.add(inputStream.readRectangle3f());
@@ -231,7 +231,7 @@ public class SkinSettings {
             }
 
             @Override
-            void write(List<Rectangle3f> collisionBox, IOutputStream outputStream) throws IOException {
+            void write(List<OpenRectangle3f> collisionBox, IOutputStream outputStream) throws IOException {
                 outputStream.writeVarInt(collisionBox.size() + 1);
                 for (var box : collisionBox) {
                     outputStream.writeRectangle3f(box);
