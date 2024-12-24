@@ -36,7 +36,8 @@
     "VehicleEntityPlaceMixin$BoatPatch",
     "VehicleEntityPlaceMixin$MinecartPatch",
     "VehicleEntityPlaceMixin$MinecartDispensePatch",
-    "VehicleEntityBreakMixin"
+    "VehicleEntityBreakMixin",
+    "TickableBlockEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1

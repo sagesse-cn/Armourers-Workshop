@@ -1,0 +1,28 @@
+package moe.plushie.armourers_workshop.compatibility.forge.mixin;
+
+import moe.plushie.armourers_workshop.api.annotation.Available;
+import moe.plushie.armourers_workshop.api.common.IBlockEntity;
+import moe.plushie.armourers_workshop.compatibility.core.AbstractBlockEntity;
+import moe.plushie.armourers_workshop.compatibility.forge.AbstractForgeBlockEntity;
+import moe.plushie.armourers_workshop.compatibility.forge.AbstractForgeCapabilityManager;
+import net.minecraft.core.Direction;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
+import org.jetbrains.annotations.Nullable;
+import org.spongepowered.asm.mixin.Mixin;
+
+@Available("[1.16, 1.21)")
+@Mixin(AbstractBlockEntity.class)
+public abstract class ForgeBlockEntityCapabilityMixin implements AbstractForgeBlockEntity {
+
+    @Override
+    public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction arg) {
+        var blockEntity1 = (IBlockEntity) this;
+        var capability1 = AbstractForgeCapabilityManager.getBlockEntity(capability);
+        var result = blockEntity1.getCapability(capability1, arg);
+        if (result != null) {
+            return LazyOptional.of(() -> result);
+        }
+        return LazyOptional.empty();
+    }
+}

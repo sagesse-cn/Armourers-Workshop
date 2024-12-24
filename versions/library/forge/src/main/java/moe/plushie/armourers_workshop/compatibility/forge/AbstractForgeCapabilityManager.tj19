@@ -10,33 +10,25 @@ import moe.plushie.armourers_workshop.core.capability.SkinWardrobe;
 import moe.plushie.armourers_workshop.core.utils.Objects;
 import moe.plushie.armourers_workshop.core.utils.TypedRegistry;
 import moe.plushie.armourers_workshop.init.ModConstants;
-import net.minecraft.core.Direction;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.Entity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
-import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.common.capabilities.CapabilityToken;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.items.CapabilityItemHandler;
 
 import java.util.IdentityHashMap;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-@Available("[1.16, 1.18)")
-public abstract class AbstractForgeCapabilityManager {
+@Available("[1.19, 1.21)")
+public class AbstractForgeCapabilityManager {
 
     private static final IdentityHashMap<Capability<?>, IBlockEntityCapability<?>> REGISTERED_BLOCK_ENTITY_CAPABILITIES = new IdentityHashMap<>();
-
-    @CapabilityInject(SkinWardrobe.class)
-    public static Capability<SkinWardrobe> WARDROBE_KEY;
-
 
     public static <T> IRegistryHolder<IEntityCapability<T>> registerEntity(IResourceLocation registryName, Class<T> type, Function<Entity, Optional<T>> factory) {
         if (type == SkinWardrobe.class) {
@@ -47,13 +39,13 @@ public abstract class AbstractForgeCapabilityManager {
 
     public static <T> IRegistryHolder<IBlockEntityCapability<T>> registerBlockEntity(IResourceLocation registryName, Class<T> type, Function<Entity, Optional<T>> factory) {
         if (registryName.equals(ModConstants.key("item"))) {
-            return Objects.unsafeCast(createSidedCapability(registryName, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY));
+            return Objects.unsafeCast(createSidedCapability(registryName, ForgeCapabilities.ITEM_HANDLER));
         }
         if (registryName.equals(ModConstants.key("fluid"))) {
-            return Objects.unsafeCast(createSidedCapability(registryName, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY));
+            return Objects.unsafeCast(createSidedCapability(registryName, ForgeCapabilities.FLUID_HANDLER));
         }
         if (registryName.equals(ModConstants.key("energy"))) {
-            return Objects.unsafeCast(createSidedCapability(registryName, CapabilityEnergy.ENERGY));
+            return Objects.unsafeCast(createSidedCapability(registryName, ForgeCapabilities.ENERGY));
         }
         throw new AssertionError();
     }
@@ -74,8 +66,11 @@ public abstract class AbstractForgeCapabilityManager {
     }
 
     private static IRegistryHolder<IEntityCapability<SkinWardrobe>> createWardrobeCapability(IResourceLocation registryName, Function<Entity, Optional<SkinWardrobe>> provider) {
-        var capabilityType = (IEntityCapability<SkinWardrobe>) entity -> entity.getCapability(WARDROBE_KEY).resolve();
-        return new HolderProxy<>(registryName, SkinWardrobe.class, provider, capabilityType, () -> WARDROBE_KEY);
+        var capability = CapabilityManager.get(new CapabilityToken<SkinWardrobe>() {
+            // ignore
+        });
+        var capabilityType = (IEntityCapability<SkinWardrobe>) entity -> entity.getCapability(capability).resolve();
+        return new HolderProxy<>(registryName, SkinWardrobe.class, provider, capabilityType, () -> capability);
     }
 
     private static <T> IRegistryHolder<IBlockEntityCapability<T>> createSidedCapability(IResourceLocation registryName, Capability<T> capability) {
@@ -91,17 +86,8 @@ public abstract class AbstractForgeCapabilityManager {
             FMLJavaModLoadingContext.get().getModEventBus().addListener(this::registerCapability);
         }
 
-        public void registerCapability(FMLLoadCompleteEvent event) {
-            CapabilityManager.INSTANCE.register(type, new Capability.IStorage<>() {
-                @Override
-                public Tag writeNBT(Capability<T> capability, T object, Direction arg) {
-                    return null;
-                }
-
-                @Override
-                public void readNBT(Capability<T> capability, T object, Direction arg, Tag arg2) {
-                }
-            }, () -> null);
+        public void registerCapability(RegisterCapabilitiesEvent event) {
+            event.register(type);
         }
 
         public void attachEntityCapability(AttachCapabilitiesEvent<Entity> event) {

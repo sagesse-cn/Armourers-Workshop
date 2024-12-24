@@ -46,8 +46,8 @@ public class AbstractMenuTabDelegate implements GuiEventListener, NarratableEntr
     @Nullable
     @Override
     public ComponentPath nextFocusPath(FocusNavigationEvent focusNavigationEvent) {
-        if (focusNavigationEvent instanceof FocusNavigationEvent.TabNavigation) {
-            boolean value = ((FocusNavigationEvent.TabNavigation) focusNavigationEvent).forward();
+        if (focusNavigationEvent instanceof FocusNavigationEvent.TabNavigation navigation) {
+            var value = navigation.forward();
             if (impl.changeFocus(value)) {
                 return ComponentPath.leaf(this);
             }

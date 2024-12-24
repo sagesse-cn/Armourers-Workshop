@@ -23,4 +23,12 @@ public abstract class AbstractBlockEntityRenderer<T extends BlockEntity> extends
     }
 
     public abstract void render(T entity, float f, IPoseStack poseStack, IBufferSource bufferSource, int i, int j);
+
+    public boolean shouldRender(T entity) {
+        return true;
+    }
+
+    public boolean shouldRenderOffScreen(T blockEntity) {
+        return false;
+    }
 }

@@ -1,6 +1,6 @@
 package moe.plushie.armourers_workshop.core.data;
 
-import moe.plushie.armourers_workshop.api.common.ICapabilityType;
+import moe.plushie.armourers_workshop.api.common.IEntityCapability;
 import moe.plushie.armourers_workshop.api.core.IDataSerializable;
 import moe.plushie.armourers_workshop.api.core.IResourceLocation;
 import moe.plushie.armourers_workshop.compatibility.core.data.AbstractCapabilityStorage;
@@ -21,13 +21,13 @@ public class CapabilityStorage {
     private static final ArrayList<Entry<?>> ENTRIES = new ArrayList<>();
     private static final CapabilityStorage NONE = new CapabilityStorage(new IdentityHashMap<>());
 
-    private final IdentityHashMap<ICapabilityType<?>, Pair<Entry<?>, Optional<?>>> capabilities;
+    private final IdentityHashMap<IEntityCapability<?>, Pair<Entry<?>, Optional<?>>> capabilities;
 
-    CapabilityStorage(IdentityHashMap<ICapabilityType<?>, Pair<Entry<?>, Optional<?>>> capabilities) {
+    CapabilityStorage(IdentityHashMap<IEntityCapability<?>, Pair<Entry<?>, Optional<?>>> capabilities) {
         this.capabilities = capabilities;
     }
 
-    public static <T> void registerCapability(IResourceLocation registryName, ICapabilityType<T> capabilityType, Function<Entity, Optional<T>> provider) {
+    public static <T> void registerCapability(IResourceLocation registryName, IEntityCapability<T> capabilityType, Function<Entity, Optional<T>> provider) {
         ENTRIES.add(new Entry<>(registryName, capabilityType, provider));
     }
 
@@ -35,7 +35,7 @@ public class CapabilityStorage {
         if (ENTRIES.isEmpty()) {
             return NONE;
         }
-        var capabilities = new IdentityHashMap<ICapabilityType<?>, Pair<Entry<?>, Optional<?>>>();
+        var capabilities = new IdentityHashMap<IEntityCapability<?>, Pair<Entry<?>, Optional<?>>>();
         for (var entry : ENTRIES) {
             var cap = entry.provider.apply(entity);
             if (cap.isPresent()) {
@@ -48,7 +48,7 @@ public class CapabilityStorage {
         return new CapabilityStorage(capabilities);
     }
 
-    public static <T> Optional<T> getCapability(Entity entity, ICapabilityType<T> capabilityType) {
+    public static <T> Optional<T> getCapability(Entity entity, IEntityCapability<T> capabilityType) {
         var storage = ((Provider) entity).getCapabilityStorage();
         var value = storage.capabilities.get(capabilityType);
         if (value != null) {
@@ -113,10 +113,10 @@ public class CapabilityStorage {
 
     private static class Entry<T> {
         IResourceLocation registryName;
-        ICapabilityType<T> capabilityType;
+        IEntityCapability<T> capabilityType;
         Function<Entity, Optional<T>> provider;
 
-        Entry(IResourceLocation registryName, ICapabilityType<T> capabilityType, Function<Entity, Optional<T>> provider) {
+        Entry(IResourceLocation registryName, IEntityCapability<T> capabilityType, Function<Entity, Optional<T>> provider) {
             this.registryName = registryName;
             this.capabilityType = capabilityType;
             this.provider = provider;

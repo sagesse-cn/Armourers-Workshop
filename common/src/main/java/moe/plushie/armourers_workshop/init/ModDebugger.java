@@ -64,7 +64,7 @@ public class ModDebugger {
 
     public static boolean viewHierarchy = false;
 
-    public static boolean armature = true;
+    public static boolean armature = false;
     public static boolean defaultArmature = false;
 
     // Debug tool

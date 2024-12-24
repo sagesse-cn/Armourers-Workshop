@@ -144,7 +144,7 @@ public class SkinnableBlock extends AbstractAttachedHorizontalBlock implements A
         }
         if (blockEntity.isLinked()) {
             var linkedPos = blockEntity.getLinkedBlockPos();
-            var linkedState = level.getBlockState(linkedPos);
+            var linkedState = blockEntity.getLinkedBlockState();
             return super.useWithoutItem(linkedState, level, linkedPos, player, blockHitResult);
         }
         if (blockEntity.isBed() && !player.isSecondaryUseActive()) {
@@ -192,7 +192,7 @@ public class SkinnableBlock extends AbstractAttachedHorizontalBlock implements A
     public ItemStack getCloneItemStack(LevelReader blockGetter, BlockPos blockPos, BlockState blockState) {
         var blockEntity = getParentBlockEntity(blockGetter, blockPos);
         if (blockEntity != null) {
-            return blockEntity.getDescriptor().asItemStack();
+            return blockEntity.getSkin().asItemStack();
         }
         return ItemStack.EMPTY;
     }
@@ -218,6 +218,43 @@ public class SkinnableBlock extends AbstractAttachedHorizontalBlock implements A
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(FACING, FACE, LIT, PART, OCCUPIED);
+    }
+
+    @Override
+    public boolean hasAnalogOutputSignal(BlockState blockState) {
+        return true;
+    }
+
+    @Override
+    public int getAnalogOutputSignal(BlockState blockState, Level level, BlockPos blockPos) {
+        var blockEntity = getParentBlockEntity(level, blockPos);
+        if (blockEntity != null) {
+            return blockEntity.getAnalogOutputSignal();
+        }
+        return 0;
+    }
+
+    @Override
+    public boolean isSignalSource(BlockState state) {
+        return true;
+    }
+
+    @Override
+    public int getSignal(BlockState state, BlockGetter level, BlockPos blockPos, Direction direction) {
+        var blockEntity = getParentBlockEntity(level, blockPos);
+        if (blockEntity != null) {
+            return blockEntity.getSignal(direction);
+        }
+        return 0;
+    }
+
+    @Override
+    public int getDirectSignal(BlockState state, BlockGetter level, BlockPos blockPos, Direction direction) {
+        var blockEntity = getParentBlockEntity(level, blockPos);
+        if (blockEntity != null) {
+            return blockEntity.getDirectSignal(direction);
+        }
+        return 0;
     }
 
     @Override
@@ -274,7 +311,7 @@ public class SkinnableBlock extends AbstractAttachedHorizontalBlock implements A
             return false;
         }
         // anyway, we only drop all items once.
-        var droppedStack = parentBlockEntity.getDescriptor().asItemStack();
+        var droppedStack = parentBlockEntity.getSkin().asItemStack();
         blockEntity.setDropped(droppedStack); // mark the attacked block
         parentBlockEntity.setDropped(droppedStack);
         if (parentBlockEntity.isInventory()) {

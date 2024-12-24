@@ -14,8 +14,8 @@ public abstract class ForgeBlockEntityRendererMixin<T extends BlockEntity> imple
 
     @Override
     public AABB getRenderBoundingBox(T blockEntity) {
-        if (blockEntity instanceof AbstractForgeBlockEntity) {
-            AABB result = ((AbstractForgeBlockEntity) blockEntity).getRenderBoundingBox();
+        if (blockEntity instanceof AbstractForgeBlockEntity blockEntity1) {
+            var result = blockEntity1.getRenderBoundingBox();
             if (result != null) {
                 return result;
             }

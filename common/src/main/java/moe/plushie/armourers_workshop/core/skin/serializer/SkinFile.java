@@ -17,15 +17,10 @@ public class SkinFile implements Comparable<SkinFile> {
         this.domain = domain;
         this.name = name;
         this.path = path;
-        this.header = null;
+        this.header = header;
         this.isDirectory = isDirectory;
         this.isPrivateDirectory = isPrivateDirectory;
     }
-
-    public boolean isSameFile(SkinFile other) {
-        return name.equals(other.name) && path.equals(other.path) && domain.equals(other.domain);
-    }
-
 
     public String getName() {
         return name;

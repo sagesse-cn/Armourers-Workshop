@@ -1,6 +1,7 @@
 package moe.plushie.armourers_workshop.core.blockentity;
 
-import moe.plushie.armourers_workshop.api.client.IBlockEntityExtendedRenderer;
+import moe.plushie.armourers_workshop.api.common.IBlockEntityCapability;
+import moe.plushie.armourers_workshop.api.common.ITickable;
 import moe.plushie.armourers_workshop.api.core.IDataCodec;
 import moe.plushie.armourers_workshop.api.core.IDataSerializer;
 import moe.plushie.armourers_workshop.api.core.IDataSerializerKey;
@@ -21,13 +22,16 @@ import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.core.utils.Constants;
 import moe.plushie.armourers_workshop.core.utils.NonNullItemList;
 import moe.plushie.armourers_workshop.core.utils.Objects;
+import moe.plushie.armourers_workshop.init.ModLog;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.AttachFace;
@@ -37,12 +41,13 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-public class SkinnableBlockEntity extends RotableContainerBlockEntity implements IBlockEntityExtendedRenderer {
+public class SkinnableBlockEntity extends RotableContainerBlockEntity implements ITickable {
 
     private static final Map<?, OpenVector3f> FACING_TO_ROT = Collections.immutableMap(builder -> {
         builder.put(Pair.of(AttachFace.CEILING, Direction.EAST), new OpenVector3f(180, 270, 0));
@@ -69,12 +74,14 @@ public class SkinnableBlockEntity extends RotableContainerBlockEntity implements
     private BlockPos linkedBlockPos = null;
 
     private SkinProperties properties;
-    private SkinDescriptor descriptor = SkinDescriptor.EMPTY;
+    private SkinDescriptor skin = SkinDescriptor.EMPTY;
 
     private OpenQuaternionf renderRotations;
     private AABB renderBoundingBox;
     private VoxelShape renderVoxelShape = null;
     private ItemStack droppedStack = null;
+
+    private LinkedSnapshot lastSnapshot;
 
     private boolean isParent = false;
 
@@ -100,7 +107,7 @@ public class SkinnableBlockEntity extends RotableContainerBlockEntity implements
         var oldProperties = properties;
         refers = serializer.read(CodingKeys.REFERENCES);
         markers = serializer.read(CodingKeys.MARKERS);
-        descriptor = serializer.read(CodingKeys.SKIN);
+        skin = serializer.read(CodingKeys.SKIN);
         properties = serializer.read(CodingKeys.SKIN_PROPERTIES);
         linkedBlockPos = serializer.read(CodingKeys.LINKED_POS);
         if (oldProperties != null) {
@@ -120,10 +127,55 @@ public class SkinnableBlockEntity extends RotableContainerBlockEntity implements
         }
         serializer.write(CodingKeys.REFERENCES, refers);
         serializer.write(CodingKeys.MARKERS, markers);
-        serializer.write(CodingKeys.SKIN, descriptor);
+        serializer.write(CodingKeys.SKIN, skin);
         serializer.write(CodingKeys.SKIN_PROPERTIES, properties);
         serializer.write(CodingKeys.LINKED_POS, linkedBlockPos);
         getOrCreateItems().serialize(serializer);
+    }
+
+    @Override
+    public void tick() {
+        if (isParent()) {
+            parentTick();
+        } else {
+            childTick();
+        }
+    }
+
+    protected void parentTick() {
+        // only work in link mode.
+        var pos = getLinkedBlockPos();
+        if (pos == null) {
+            return;
+        }
+        var level = getLevel();
+        if (level == null || level.isClientSide()) {
+            return;
+        }
+        // check redstone stuff
+        var snapshot = new LinkedSnapshot();
+        var state = level.getBlockState(pos);
+        if (state.hasAnalogOutputSignal()) {
+            snapshot.analogOutputSignal = state.getAnalogOutputSignal(level, pos);
+        }
+        for (var dir : Direction.values()) {
+            snapshot.redstoneSignal[dir.get3DDataValue()] = state.getSignal(level, pos, dir);
+            snapshot.directRedstoneSignal[dir.get3DDataValue()] = state.getDirectSignal(level, pos, dir);
+        }
+        // notify neighbors blocks when snapshot changed.
+        if (lastSnapshot == null || !lastSnapshot.equals(snapshot)) {
+            updateStateAndNeighbors();
+            lastSnapshot = snapshot;
+        }
+    }
+
+    protected void childTick() {
+        // when the parent block is broken for some reason, the child will be automatically destroyed.
+        var parent = getParent();
+        if (parent == null) {
+            ModLog.warn("found a zombie block at {}, destroy it.", getBlockPos());
+            kill();
+        }
     }
 
     public void updateBlockStates() {
@@ -134,15 +186,28 @@ public class SkinnableBlockEntity extends RotableContainerBlockEntity implements
         }
     }
 
-    public SkinDescriptor getDescriptor() {
+    public void updateStateAndNeighbors() {
+        var level = getLevel();
+        if (level != null && !level.isClientSide()) {
+            level.updateNeighbourForOutputSignal(getBlockPos(), getBlockState().getBlock());
+            level.updateNeighborsAt(getBlockPos(), getBlockState().getBlock());
+        }
+    }
+
+    public void setSkin(SkinDescriptor skin) {
+        this.skin = skin;
+    }
+
+    public SkinDescriptor getSkin() {
         if (isParent()) {
-            return descriptor;
+            return skin;
         }
         return SkinDescriptor.EMPTY;
     }
 
-    public void setDescriptor(SkinDescriptor descriptor) {
-        this.descriptor = descriptor;
+    public void setShape(OpenRectangle3i shape) {
+        this.collisionShape = shape;
+        this.renderVoxelShape = null;
     }
 
     public VoxelShape getShape() {
@@ -163,15 +228,6 @@ public class SkinnableBlockEntity extends RotableContainerBlockEntity implements
         return renderVoxelShape;
     }
 
-    public void setShape(OpenRectangle3i shape) {
-        this.collisionShape = shape;
-        this.renderVoxelShape = null;
-    }
-
-    public BlockPos getLinkedBlockPos() {
-        return getValueFromParent(te -> te.linkedBlockPos);
-    }
-
     public void setLinkedBlockPos(BlockPos linkedBlockPos) {
         var blockEntity = getParent();
         if (blockEntity != null) {
@@ -180,7 +236,33 @@ public class SkinnableBlockEntity extends RotableContainerBlockEntity implements
         }
     }
 
+    public BlockPos getLinkedBlockPos() {
+        return getValueFromParent(te -> te.linkedBlockPos);
+    }
+
+    public BlockState getLinkedBlockState() {
+        var pos = getLinkedBlockPos();
+        var level = getLevel();
+        if (level != null && pos != null) {
+            return level.getBlockState(pos);
+        }
+        return null;
+    }
+
+    public BlockEntity getLinkedBlockEntity() {
+        var pos = getLinkedBlockPos();
+        var level = getLevel();
+        if (level != null && pos != null) {
+            return level.getBlockEntity(pos);
+        }
+        return null;
+    }
+
     public void kill() {
+        var level = getLevel();
+        if (level != null && !level.isClientSide()) {
+            level.setBlockAndUpdate(getBlockPos(), Blocks.AIR.defaultBlockState());
+        }
     }
 
     @Override
@@ -202,6 +284,36 @@ public class SkinnableBlockEntity extends RotableContainerBlockEntity implements
     @Override
     public Container getInventory() {
         return getParent();
+    }
+
+    public int getAnalogOutputSignal() {
+        var pos = getLinkedBlockPos();
+        var level = getLevel();
+        if (level == null || pos == null) {
+            return 0;
+        }
+        var state = level.getBlockState(pos);
+        return state.getAnalogOutputSignal(level, pos);
+    }
+
+    public int getSignal(Direction direction) {
+        var pos = getLinkedBlockPos();
+        var level = getLevel();
+        if (level == null || pos == null) {
+            return 0;
+        }
+        var state = level.getBlockState(pos);
+        return state.getSignal(level, pos, direction);
+    }
+
+    public int getDirectSignal(Direction direction) {
+        var pos = getLinkedBlockPos();
+        var level = getLevel();
+        if (level == null || pos == null) {
+            return 0;
+        }
+        var state = level.getBlockState(pos);
+        return state.getDirectSignal(level, pos, direction);
     }
 
     public Collection<BlockPos> getRefers() {
@@ -324,9 +436,17 @@ public class SkinnableBlockEntity extends RotableContainerBlockEntity implements
         return getProperty(SkinProperty.BLOCK_INVENTORY_HEIGHT);
     }
 
+    @Nullable
     @Override
-    public boolean shouldUseExtendedRenderer() {
-        return isParent;
+    public <T> T getCapability(IBlockEntityCapability<T> capability, @Nullable Direction dir) {
+        // this.boundBlockEntity == null ? this.boundBlockState == null || this.boundBlockState.hasTileEntity() : this.boundBlockEntity.isRemoved()
+        var linkedPos = getLinkedBlockPos();
+        var linkedState = getLinkedBlockState();
+        var linkedEntity = getLinkedBlockEntity();
+        if (linkedPos != null) {
+            return capability.get(getLevel(), linkedPos, linkedState, linkedEntity, dir);
+        }
+        return null;
     }
 
     @Override
@@ -343,7 +463,7 @@ public class SkinnableBlockEntity extends RotableContainerBlockEntity implements
     @Environment(EnvType.CLIENT)
     @Override
     public OpenRectangle3f getRenderShape(BlockState blockState) {
-        var bakedSkin = SkinBakery.getInstance().loadSkin(getDescriptor(), Tickets.TEST);
+        var bakedSkin = SkinBakery.getInstance().loadSkin(getSkin(), Tickets.TEST);
         if (bakedSkin == null) {
             return null;
         }
@@ -376,6 +496,28 @@ public class SkinnableBlockEntity extends RotableContainerBlockEntity implements
             return properties.get(property);
         }
         return property.getDefaultValue();
+    }
+
+    private static class LinkedSnapshot {
+
+        private int analogOutputSignal = 0;
+        private final int[] redstoneSignal = new int[]{0, 0, 0, 0, 0, 0};
+        private final int[] directRedstoneSignal = new int[]{0, 0, 0, 0, 0, 0};
+
+        @Override
+        public final boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof LinkedSnapshot snapshot)) return false;
+            return analogOutputSignal == snapshot.analogOutputSignal && Arrays.equals(redstoneSignal, snapshot.redstoneSignal) && Arrays.equals(directRedstoneSignal, snapshot.directRedstoneSignal);
+        }
+
+        @Override
+        public int hashCode() {
+            int result = analogOutputSignal;
+            result = 31 * result + Arrays.hashCode(redstoneSignal);
+            result = 31 * result + Arrays.hashCode(directRedstoneSignal);
+            return result;
+        }
     }
 
     private static class CodingKeys {

@@ -100,4 +100,10 @@ public class SkinnableBlockRenderer<T extends SkinnableBlockEntity> extends Abst
     public int getViewDistance() {
         return ModConfig.Client.renderDistanceBlockSkin;
     }
+
+    @Override
+    public boolean shouldRender(T entity) {
+        // only use custom render in the parent block entity.
+        return entity.isParent();
+    }
 }

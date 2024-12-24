@@ -4,7 +4,7 @@ import net.minecraft.world.entity.Entity;
 
 import java.util.Optional;
 
-public interface ICapabilityType<T> {
+public interface IEntityCapability<T> {
 
     Optional<T> get(Entity entity);
 }

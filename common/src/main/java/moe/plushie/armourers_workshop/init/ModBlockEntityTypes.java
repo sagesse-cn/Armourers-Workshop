@@ -44,7 +44,7 @@ public final class ModBlockEntityTypes {
     public static final IRegistryHolder<IBlockEntityType<SkinCubeBlockEntity>> SKIN_CUBE = create(SkinCubeBlockEntity::new).of(ModBlocks.SKIN_CUBE).of(ModBlocks.SKIN_CUBE_GLASS).of(ModBlocks.SKIN_CUBE_GLASS_GLOWING).of(ModBlocks.SKIN_CUBE_GLOWING).bind(() -> SkinCubeBlockRenderer::new).build(ModConstants.BLOCK_SKIN_CUBE);
 
     // legacy
-    private static final IRegistryHolder<IBlockEntityType<SkinnableBlockEntity>> SKINNABLE_CUBE_SR = createLegacy(SKINNABLE).of(ModBlocks.SKINNABLE).build("skinnable-sr");
+    private static final IRegistryHolder<IBlockEntityType<SkinnableBlockEntity>> SKINNABLE_SR = createLegacy(SKINNABLE).of(ModBlocks.SKINNABLE).build("skinnable-sr");
     private static final IRegistryHolder<IBlockEntityType<BoundingBoxBlockEntity>> BOUNDING_BOX_SR = createLegacy(BOUNDING_BOX).of(ModBlocks.BOUNDING_BOX).build("bounding-box-sr");
     private static final IRegistryHolder<IBlockEntityType<SkinCubeBlockEntity>> SKIN_CUBE_SR = createLegacy(SKIN_CUBE).of(ModBlocks.SKIN_CUBE).of(ModBlocks.SKIN_CUBE_GLASS).of(ModBlocks.SKIN_CUBE_GLASS_GLOWING).of(ModBlocks.SKIN_CUBE_GLOWING).build("skin-cube-sr");
 

@@ -15,9 +15,10 @@ import moe.plushie.armourers_workshop.api.core.IDataCodec;
 import moe.plushie.armourers_workshop.api.permission.IPermissionNode;
 import moe.plushie.armourers_workshop.api.registry.IArgumentTypeBuilder;
 import moe.plushie.armourers_workshop.api.registry.IBlockBuilder;
+import moe.plushie.armourers_workshop.api.registry.IBlockEntityCapabilityBuilder;
 import moe.plushie.armourers_workshop.api.registry.IBlockEntityTypeBuilder;
-import moe.plushie.armourers_workshop.api.registry.ICapabilityTypeBuilder;
 import moe.plushie.armourers_workshop.api.registry.IDataComponentTypeBuilder;
+import moe.plushie.armourers_workshop.api.registry.IEntityCapabilityBuilder;
 import moe.plushie.armourers_workshop.api.registry.IEntitySerializerBuilder;
 import moe.plushie.armourers_workshop.api.registry.IEntityTypeBuilder;
 import moe.plushie.armourers_workshop.api.registry.IItemBuilder;
@@ -33,9 +34,10 @@ import moe.plushie.armourers_workshop.compatibility.api.AbstractBlockMaterialCol
 import moe.plushie.armourers_workshop.init.platform.BuilderManager;
 import moe.plushie.armourers_workshop.init.platform.forge.builder.ArgumentTypeBuilderImpl;
 import moe.plushie.armourers_workshop.init.platform.forge.builder.BlockBuilderImpl;
+import moe.plushie.armourers_workshop.init.platform.forge.builder.BlockEntityCapabilityBuilderImpl;
 import moe.plushie.armourers_workshop.init.platform.forge.builder.BlockEntityTypeBuilderImpl;
-import moe.plushie.armourers_workshop.init.platform.forge.builder.CapabilityTypeBuilderImpl;
 import moe.plushie.armourers_workshop.init.platform.forge.builder.DataComponentTypeBuilderImpl;
+import moe.plushie.armourers_workshop.init.platform.forge.builder.EntityCapabilityBuilderImpl;
 import moe.plushie.armourers_workshop.init.platform.forge.builder.EntitySerializerBuilderImpl;
 import moe.plushie.armourers_workshop.init.platform.forge.builder.EntityTypeBuilderImpl;
 import moe.plushie.armourers_workshop.init.platform.forge.builder.ItemBuilderImpl;
@@ -113,8 +115,13 @@ public class BuilderManagerImpl implements BuilderManager.Impl {
     }
 
     @Override
-    public <T> ICapabilityTypeBuilder<T> createCapabilityTypeBuilder(Class<T> type, Function<Entity, Optional<T>> factory) {
-        return new CapabilityTypeBuilderImpl<>(type, factory);
+    public <T> IEntityCapabilityBuilder<T> createEntityCapabilityBuilder(Class<T> type, Function<Entity, Optional<T>> factory) {
+        return new EntityCapabilityBuilderImpl<>(type, factory);
+    }
+
+    @Override
+    public <T> IBlockEntityCapabilityBuilder<T> createBlockEntityCapabilityBuilder(Class<T> type, Function<Entity, Optional<T>> factory) {
+        return new BlockEntityCapabilityBuilderImpl<>(type, factory);
     }
 
     @Override

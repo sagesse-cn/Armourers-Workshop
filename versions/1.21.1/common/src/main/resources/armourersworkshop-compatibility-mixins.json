@@ -43,7 +43,8 @@
     "VehicleEntityPlaceMixin",
     "VehicleEntityBreakMixin",
     "ComponentizationFixMixin$ItemFixer",
-    "ComponentizationFixMixin$EntityFixer"
+    "ComponentizationFixMixin$EntityFixer",
+    "TickableBlockEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -1,6 +1,6 @@
 package moe.plushie.armourers_workshop.init.mixin;
 
-import moe.plushie.armourers_workshop.api.client.IBlockEntityExtendedRenderer;
+import moe.plushie.armourers_workshop.compatibility.client.renderer.AbstractBlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -13,9 +13,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(BlockEntityRenderDispatcher.class)
 public class BlockEntityRenderDispatcherMixin {
 
-    @Inject(method = "getRenderer", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "getRenderer", at = @At("RETURN"), cancellable = true)
     public void aw2$getRenderer(BlockEntity blockEntity, CallbackInfoReturnable<@Nullable BlockEntityRenderer<BlockEntity>> cir) {
-        if (blockEntity instanceof IBlockEntityExtendedRenderer renderer && !renderer.shouldUseExtendedRenderer()) {
+        if (cir.getReturnValue() instanceof AbstractBlockEntityRenderer<BlockEntity> renderer && !renderer.shouldRender(blockEntity)) {
             cir.setReturnValue(null);
         }
     }

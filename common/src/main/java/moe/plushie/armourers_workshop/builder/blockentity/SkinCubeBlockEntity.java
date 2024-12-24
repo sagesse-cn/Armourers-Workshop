@@ -1,16 +1,15 @@
 package moe.plushie.armourers_workshop.builder.blockentity;
 
-import moe.plushie.armourers_workshop.api.client.IBlockEntityExtendedRenderer;
 import moe.plushie.armourers_workshop.api.common.IPaintable;
 import moe.plushie.armourers_workshop.api.core.IDataSerializer;
 import moe.plushie.armourers_workshop.api.core.IDataSerializerKey;
 import moe.plushie.armourers_workshop.api.skin.texture.ISkinPaintColor;
 import moe.plushie.armourers_workshop.builder.block.ArmourerBlock;
+import moe.plushie.armourers_workshop.builder.other.BlockUtils;
 import moe.plushie.armourers_workshop.core.blockentity.UpdatableBlockEntity;
 import moe.plushie.armourers_workshop.core.data.color.BlockPaintColor;
 import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintColor;
 import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintTypes;
-import moe.plushie.armourers_workshop.builder.other.BlockUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Rotation;
@@ -19,7 +18,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.Map;
 
-public class SkinCubeBlockEntity extends UpdatableBlockEntity implements IPaintable, IBlockEntityExtendedRenderer {
+public class SkinCubeBlockEntity extends UpdatableBlockEntity implements IPaintable {
 
     protected BlockPaintColor colors = new BlockPaintColor();
     protected boolean customRenderer = false;
@@ -84,8 +83,8 @@ public class SkinCubeBlockEntity extends UpdatableBlockEntity implements IPainta
         return getBlockState().getOptionalValue(ArmourerBlock.FACING).orElse(Direction.NORTH);
     }
 
-    @Override
-    public boolean shouldUseExtendedRenderer() {
+
+    public boolean isCustomRenderer() {
         return customRenderer;
     }
 

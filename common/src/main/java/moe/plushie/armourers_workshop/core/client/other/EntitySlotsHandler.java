@@ -542,7 +542,7 @@ public class EntitySlotsHandler<T> implements IAssociatedContainerProvider, Skin
         @Override
         protected void collect(BlockEntity blockEntity, List<ItemStack> collector) {
             if (blockEntity instanceof SkinnableBlockEntity blockEntity1) {
-                collector.add(blockEntity1.getDescriptor().sharedItemStack());
+                collector.add(blockEntity1.getSkin().sharedItemStack());
             }
             if (blockEntity instanceof HologramProjectorBlockEntity blockEntity1) {
                 collector.add(blockEntity1.getItem(0));

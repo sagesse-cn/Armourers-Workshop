@@ -35,7 +35,7 @@ public class EntityDataStorage {
         protected final LazyOptional<EntityVariableStorageImpl> variableStorage;
 
         public EntityImpl(Entity entity) {
-            this.wardrobe = LazyOptional.of(() -> ModCapabilities.WARDROBE.get().get(entity));
+            this.wardrobe = LazyOptional.of(() -> ModCapabilities.ENTITY_WARDROBE.get().get(entity));
             this.wardrobeJS = LazyOptional.of(() -> wardrobe.resolve().map(SkinWardrobeJS::new));
             this.renderData = LazyOptional.of(() -> EnvironmentExecutor.callOn(EnvironmentType.CLIENT, () -> () -> new EntityRenderData(entity)));
             this.actionSet = LazyOptional.ofNullable(EntityActionSet::new);

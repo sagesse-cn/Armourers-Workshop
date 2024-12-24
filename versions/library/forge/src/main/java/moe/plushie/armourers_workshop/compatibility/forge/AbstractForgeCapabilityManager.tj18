@@ -1,69 +1,89 @@
 package moe.plushie.armourers_workshop.compatibility.forge;
 
 import moe.plushie.armourers_workshop.api.annotation.Available;
-import moe.plushie.armourers_workshop.api.common.ICapabilityType;
+import moe.plushie.armourers_workshop.api.common.IBlockEntityCapability;
+import moe.plushie.armourers_workshop.api.common.IEntityCapability;
 import moe.plushie.armourers_workshop.api.core.IDataSerializable;
 import moe.plushie.armourers_workshop.api.core.IRegistryHolder;
 import moe.plushie.armourers_workshop.api.core.IResourceLocation;
 import moe.plushie.armourers_workshop.core.capability.SkinWardrobe;
-import moe.plushie.armourers_workshop.core.capability.SkinWardrobeStorage;
 import moe.plushie.armourers_workshop.core.utils.Objects;
-import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
+import moe.plushie.armourers_workshop.core.utils.TypedRegistry;
+import moe.plushie.armourers_workshop.init.ModConstants;
 import net.minecraft.world.entity.Entity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.CapabilityToken;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
-import net.minecraftforge.common.util.INBTSerializable;
-import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import org.jetbrains.annotations.Nullable;
+import net.minecraftforge.items.CapabilityItemHandler;
 
-import java.lang.ref.WeakReference;
+import java.util.IdentityHashMap;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-@Available("[1.18, 1.21)")
+@Available("[1.18, 1.19)")
 public class AbstractForgeCapabilityManager {
 
-    public static <T> IRegistryHolder<ICapabilityType<T>> register(IResourceLocation registryName, Class<T> type, Function<Entity, Optional<T>> factory) {
+    private static final IdentityHashMap<Capability<?>, IBlockEntityCapability<?>> REGISTERED_BLOCK_ENTITY_CAPABILITIES = new IdentityHashMap<>();
+
+    public static <T> IRegistryHolder<IEntityCapability<T>> registerEntity(IResourceLocation registryName, Class<T> type, Function<Entity, Optional<T>> factory) {
         if (type == SkinWardrobe.class) {
-            return Objects.unsafeCast(createWardrobeCapabilityType(registryName, Objects.unsafeCast(factory)));
+            return Objects.unsafeCast(createWardrobeCapability(registryName, Objects.unsafeCast(factory)));
         }
         throw new AssertionError();
     }
 
-    private static IRegistryHolder<ICapabilityType<SkinWardrobe>> createWardrobeCapabilityType(IResourceLocation registryName, Function<Entity, Optional<SkinWardrobe>> provider) {
-        Capability<SkinWardrobe> capability = CapabilityManager.get(new CapabilityToken<SkinWardrobe>() {
-        });
-        ICapabilityType<SkinWardrobe> capabilityType = entity -> entity.getCapability(capability).resolve();
-        return new RegistryObjectProxy<>(registryName, SkinWardrobe.class, provider, capabilityType, () -> capability);
+    public static <T> IRegistryHolder<IBlockEntityCapability<T>> registerBlockEntity(IResourceLocation registryName, Class<T> type, Function<Entity, Optional<T>> factory) {
+        if (registryName.equals(ModConstants.key("item"))) {
+            return Objects.unsafeCast(createSidedCapability(registryName, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY));
+        }
+        if (registryName.equals(ModConstants.key("fluid"))) {
+            return Objects.unsafeCast(createSidedCapability(registryName, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY));
+        }
+        if (registryName.equals(ModConstants.key("energy"))) {
+            return Objects.unsafeCast(createSidedCapability(registryName, CapabilityEnergy.ENERGY));
+        }
+        throw new AssertionError();
     }
 
-    public static class RegistryObjectProxy<T extends IDataSerializable.Mutable> implements IRegistryHolder<ICapabilityType<T>> {
+    public static <T> IBlockEntityCapability<T> getBlockEntity(Capability<T> capability) {
+        // register into skinnable block
+        var result = REGISTERED_BLOCK_ENTITY_CAPABILITIES.computeIfAbsent(capability, it -> (level, blockPos, blockState, blockEntity, context) -> {
+            if (blockEntity != null) {
+                return blockEntity.getCapability(capability, context).resolve().orElse(null);
+            }
+            blockEntity = level.getBlockEntity(blockPos);
+            if (blockEntity != null) {
+                return blockEntity.getCapability(capability, context).resolve().orElse(null);
+            }
+            return null;
+        });
+        return Objects.unsafeCast(result);
+    }
 
-        final IResourceLocation registryName;
-        final Supplier<Capability<T>> capability;
+    private static IRegistryHolder<IEntityCapability<SkinWardrobe>> createWardrobeCapability(IResourceLocation registryName, Function<Entity, Optional<SkinWardrobe>> provider) {
+        var capability = CapabilityManager.get(new CapabilityToken<SkinWardrobe>() {
+            // ignore
+        });
+        var capabilityType = (IEntityCapability<SkinWardrobe>) entity -> entity.getCapability(capability).resolve();
+        return new HolderProxy<>(registryName, SkinWardrobe.class, provider, capabilityType, () -> capability);
+    }
 
-        final Class<T> type;
-        final ICapabilityType<T> capabilityType;
-        final Function<Entity, Optional<T>> factory;
+    private static <T> IRegistryHolder<IBlockEntityCapability<T>> createSidedCapability(IResourceLocation registryName, Capability<T> capability) {
+        return TypedRegistry.Entry.castValue(registryName, getBlockEntity(capability));
+    }
 
-        protected RegistryObjectProxy(IResourceLocation registryName, Class<T> type, Function<Entity, Optional<T>> factory, ICapabilityType<T> capabilityType, Supplier<Capability<T>> capability) {
-            this.type = type;
-            this.factory = factory;
-            this.capability = capability;
-            this.capabilityType = capabilityType;
-            this.registryName = registryName;
-            this.setupBus();
-        }
+    private static class HolderProxy<T extends IDataSerializable.Mutable> extends AbstractForgeCapabilityManagerImpl.HolderProxy<T> {
 
-        public void setupBus() {
+        protected HolderProxy(IResourceLocation registryName, Class<T> type, Function<Entity, Optional<T>> factory, IEntityCapability<T> capabilityType, Supplier<Capability<T>> capability) {
+            super(registryName, type, factory, capabilityType, capability);
+            // setup event bus.
             MinecraftForge.EVENT_BUS.addGenericListener(Entity.class, this::attachEntityCapability);
             FMLJavaModLoadingContext.get().getModEventBus().addListener(this::registerCapability);
         }
@@ -73,56 +93,10 @@ public class AbstractForgeCapabilityManager {
         }
 
         public void attachEntityCapability(AttachCapabilitiesEvent<Entity> event) {
-            var value = factory.apply(event.getObject());
-            if (!value.isPresent()) {
-                return;
+            var value = attach(event.getObject());
+            if (value != null) {
+                event.addCapability(registryName.toLocation(), value);
             }
-            event.addCapability(registryName.toLocation(), new CapabilityProviderProxy<T>(event.getObject(), value.get()) {
-                @Override
-                public Capability<T> getCapability() {
-                    return capability.get();
-                }
-            });
         }
-
-        @Override
-        public ICapabilityType<T> get() {
-            return capabilityType;
-        }
-
-        @Override
-        public IResourceLocation getRegistryName() {
-            return registryName;
-        }
-    }
-
-    public static abstract class CapabilityProviderProxy<T extends IDataSerializable.Mutable> implements ICapabilityProvider, INBTSerializable<CompoundTag> {
-
-        protected final T value;
-        protected final WeakReference<Entity> entity;
-
-        protected CapabilityProviderProxy(Entity entity, T value) {
-            this.value = value;
-            this.entity = new WeakReference<>(entity);
-        }
-
-        @Override
-        public CompoundTag serializeNBT() {
-            var tag = new CompoundTag();
-            value.serialize(SkinWardrobeStorage.encoder(entity.get(), tag));
-            return tag;
-        }
-
-        @Override
-        public void deserializeNBT(CompoundTag tag) {
-            value.deserialize(SkinWardrobeStorage.decoder(entity.get(), tag));
-        }
-
-        @Override
-        public <I> LazyOptional<I> getCapability(Capability<I> cap, @Nullable Direction arg) {
-            return getCapability().orEmpty(cap, LazyOptional.of(() -> value));
-        }
-
-        public abstract Capability<T> getCapability();
     }
 }

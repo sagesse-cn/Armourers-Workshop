@@ -4,6 +4,8 @@ import moe.plushie.armourers_workshop.api.client.IBufferSource;
 import moe.plushie.armourers_workshop.api.common.IBlockPaintViewer;
 import moe.plushie.armourers_workshop.api.common.IPaintable;
 import moe.plushie.armourers_workshop.api.core.math.IPoseStack;
+import moe.plushie.armourers_workshop.builder.blockentity.BoundingBoxBlockEntity;
+import moe.plushie.armourers_workshop.builder.blockentity.SkinCubeBlockEntity;
 import moe.plushie.armourers_workshop.compatibility.client.renderer.AbstractBlockEntityRenderer;
 import moe.plushie.armourers_workshop.core.client.other.SkinRenderType;
 import moe.plushie.armourers_workshop.core.client.render.ExtendedFaceRenderer;
@@ -73,5 +75,18 @@ public class SkinCubeBlockRenderer<T extends BlockEntity & IPaintable> extends A
             var paintColor = entity.getColor(direction);
             ExtendedFaceRenderer.renderMarker(0, 0, 0, direction, paintColor, alpha, light, overlay, poseStack, builder);
         }
+    }
+
+    @Override
+    public boolean shouldRender(T entity) {
+        // only use custom render when paint color is non-normal type.
+        if (entity instanceof SkinCubeBlockEntity entity1) {
+            return entity1.isCustomRenderer();
+        }
+        // only use custom render when paint color is non-normal type.
+        if (entity instanceof BoundingBoxBlockEntity entity1) {
+            return entity1.isCustomRenderer();
+        }
+        return false;
     }
 }

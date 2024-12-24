@@ -16,9 +16,10 @@ import moe.plushie.armourers_workshop.api.core.IDataCodec;
 import moe.plushie.armourers_workshop.api.permission.IPermissionNode;
 import moe.plushie.armourers_workshop.api.registry.IArgumentTypeBuilder;
 import moe.plushie.armourers_workshop.api.registry.IBlockBuilder;
+import moe.plushie.armourers_workshop.api.registry.IBlockEntityCapabilityBuilder;
 import moe.plushie.armourers_workshop.api.registry.IBlockEntityTypeBuilder;
-import moe.plushie.armourers_workshop.api.registry.ICapabilityTypeBuilder;
 import moe.plushie.armourers_workshop.api.registry.IDataComponentTypeBuilder;
+import moe.plushie.armourers_workshop.api.registry.IEntityCapabilityBuilder;
 import moe.plushie.armourers_workshop.api.registry.IEntitySerializerBuilder;
 import moe.plushie.armourers_workshop.api.registry.IEntityTypeBuilder;
 import moe.plushie.armourers_workshop.api.registry.IItemBuilder;
@@ -70,7 +71,9 @@ public class BuilderManager {
 
         <T extends ArgumentType<?>> IArgumentTypeBuilder<T> createArgumentTypeBuilder(Class<T> argumentType);
 
-        <T> ICapabilityTypeBuilder<T> createCapabilityTypeBuilder(Class<T> type, Function<Entity, Optional<T>> factory);
+        <T> IEntityCapabilityBuilder<T> createEntityCapabilityBuilder(Class<T> type, Function<Entity, Optional<T>> factory);
+
+        <T> IBlockEntityCapabilityBuilder<T> createBlockEntityCapabilityBuilder(Class<T> type, Function<Entity, Optional<T>> factory);
 
         <T extends IKeyBinding> IKeyBindingBuilder<T> createKeyBindingBuilder(String key);
 

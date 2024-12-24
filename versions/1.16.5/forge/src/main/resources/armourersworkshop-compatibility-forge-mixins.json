@@ -11,6 +11,7 @@
     "backpack/ForgeSophisticatedBackpackRendererMixin"
   ],
   "mixins": [
+    "ForgeBlockEntityCapabilityMixin",
     "ForgeBlockEntityHandlerMixin"
   ],
   "injectors": {

@@ -11,6 +11,7 @@
     "backpack/FabricTravelersBackpackRendererMixin"
   ],
   "mixins": [
+    "FabricHopperBlockEntityMixin",
     "FabricEntitySizeMixin"
   ],
   "injectors": {

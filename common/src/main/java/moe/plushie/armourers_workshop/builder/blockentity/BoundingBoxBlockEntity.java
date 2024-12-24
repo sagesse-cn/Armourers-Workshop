@@ -1,6 +1,5 @@
 package moe.plushie.armourers_workshop.builder.blockentity;
 
-import moe.plushie.armourers_workshop.api.client.IBlockEntityExtendedRenderer;
 import moe.plushie.armourers_workshop.api.common.IPaintable;
 import moe.plushie.armourers_workshop.api.core.IDataCodec;
 import moe.plushie.armourers_workshop.api.core.IDataSerializer;
@@ -27,7 +26,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import java.util.Arrays;
 import java.util.Map;
 
-public class BoundingBoxBlockEntity extends UpdatableBlockEntity implements IPaintable, IBlockEntityExtendedRenderer {
+public class BoundingBoxBlockEntity extends UpdatableBlockEntity implements IPaintable {
 
     protected OpenVector3i guide = OpenVector3i.ZERO;
     protected BlockPos parent = null;
@@ -217,8 +216,7 @@ public class BoundingBoxBlockEntity extends UpdatableBlockEntity implements IPai
         return null;
     }
 
-    @Override
-    public boolean shouldUseExtendedRenderer() {
+    public boolean isCustomRenderer() {
         // if the parent entity is missing, do not render it.
         if (customRenderer) {
             return isValid();

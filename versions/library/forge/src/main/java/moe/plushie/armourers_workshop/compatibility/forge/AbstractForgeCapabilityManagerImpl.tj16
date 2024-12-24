@@ -1,0 +1,93 @@
+package moe.plushie.armourers_workshop.compatibility.forge;
+
+import moe.plushie.armourers_workshop.api.annotation.Available;
+import moe.plushie.armourers_workshop.api.common.IEntityCapability;
+import moe.plushie.armourers_workshop.api.core.IDataSerializable;
+import moe.plushie.armourers_workshop.api.core.IRegistryHolder;
+import moe.plushie.armourers_workshop.api.core.IResourceLocation;
+import moe.plushie.armourers_workshop.core.capability.SkinWardrobeStorage;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.Entity;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.util.INBTSerializable;
+import net.minecraftforge.common.util.LazyOptional;
+import org.jetbrains.annotations.Nullable;
+
+import java.lang.ref.WeakReference;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.function.Supplier;
+
+@Available("[1.16, 1.21)")
+public class AbstractForgeCapabilityManagerImpl {
+
+    protected static class HolderProxy<T extends IDataSerializable.Mutable> implements IRegistryHolder<IEntityCapability<T>> {
+
+        protected final IResourceLocation registryName;
+        protected final Supplier<Capability<T>> capability;
+
+        protected final Class<T> type;
+        protected final IEntityCapability<T> capabilityType;
+        protected final Function<Entity, Optional<T>> factory;
+
+        protected HolderProxy(IResourceLocation registryName, Class<T> type, Function<Entity, Optional<T>> factory, IEntityCapability<T> capabilityType, Supplier<Capability<T>> capability) {
+            this.type = type;
+            this.factory = factory;
+            this.capability = capability;
+            this.capabilityType = capabilityType;
+            this.registryName = registryName;
+        }
+
+        public CapabilityProxy<T> attach(Entity entity) {
+            return factory.apply(entity).map(t -> new CapabilityProxy<T>(entity, t) {
+                @Override
+                public Capability<T> getCapability() {
+                    return capability.get();
+                }
+            }).orElse(null);
+        }
+
+
+        @Override
+        public IEntityCapability<T> get() {
+            return capabilityType;
+        }
+
+        @Override
+        public IResourceLocation getRegistryName() {
+            return registryName;
+        }
+    }
+
+    protected static abstract class CapabilityProxy<T extends IDataSerializable.Mutable> implements ICapabilityProvider, INBTSerializable<CompoundTag> {
+
+        protected final T value;
+        protected final WeakReference<Entity> entity;
+
+        protected CapabilityProxy(Entity entity, T value) {
+            this.value = value;
+            this.entity = new WeakReference<>(entity);
+        }
+
+        @Override
+        public CompoundTag serializeNBT() {
+            var tag = new CompoundTag();
+            value.serialize(SkinWardrobeStorage.encoder(entity.get(), tag));
+            return tag;
+        }
+
+        @Override
+        public void deserializeNBT(CompoundTag tag) {
+            value.deserialize(SkinWardrobeStorage.decoder(entity.get(), tag));
+        }
+
+        @Override
+        public <I> LazyOptional<I> getCapability(Capability<I> cap, @Nullable Direction arg) {
+            return getCapability().orEmpty(cap, LazyOptional.of(() -> value));
+        }
+
+        public abstract Capability<T> getCapability();
+    }
+}
