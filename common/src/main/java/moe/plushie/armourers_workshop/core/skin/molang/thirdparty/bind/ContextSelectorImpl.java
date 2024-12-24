@@ -8,15 +8,15 @@ public class ContextSelectorImpl implements ContextSelector {
 
     private int id = 0;
 
-    private double lifeTime = 0;
+    private double beginTime = 0;
     private double animTime = 0;
 
     private double animationTicks = 0;
     private float partialTicks = 0;
 
-    public void upload(int id, double lifeTime, double animTime, double animationTicks, float partialTicks) {
+    public void upload(int id, double beginTime, double animTime, double animationTicks, float partialTicks) {
         this.id = id;
-        this.lifeTime = lifeTime;
+        this.beginTime = beginTime;
         this.animTime = animTime;
         this.animationTicks = animationTicks;
         this.partialTicks = partialTicks;
@@ -43,7 +43,7 @@ public class ContextSelectorImpl implements ContextSelector {
 
     @Override
     public double getLifeTime() {
-        return lifeTime;
+        return animationTicks - beginTime;
     }
 
     @Override
