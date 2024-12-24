@@ -27,11 +27,12 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Rotation;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.AttachFace;
@@ -45,6 +46,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 public class SkinnableBlockEntity extends RotableContainerBlockEntity implements ITickable {
@@ -71,7 +74,7 @@ public class SkinnableBlockEntity extends RotableContainerBlockEntity implements
     private List<BlockPos> refers;
     private List<SkinMarker> markers;
 
-    private BlockPos linkedBlockPos = null;
+    private GlobalPos linkedPos = null;
 
     private SkinProperties properties;
     private SkinDescriptor skin = SkinDescriptor.EMPTY;
@@ -109,7 +112,7 @@ public class SkinnableBlockEntity extends RotableContainerBlockEntity implements
         markers = serializer.read(CodingKeys.MARKERS);
         skin = serializer.read(CodingKeys.SKIN);
         properties = serializer.read(CodingKeys.SKIN_PROPERTIES);
-        linkedBlockPos = serializer.read(CodingKeys.LINKED_POS);
+        linkedPos = serializer.read(CodingKeys.LINKED_POS);
         if (oldProperties != null) {
             oldProperties.clear();
             oldProperties.putAll(properties);
@@ -129,7 +132,7 @@ public class SkinnableBlockEntity extends RotableContainerBlockEntity implements
         serializer.write(CodingKeys.MARKERS, markers);
         serializer.write(CodingKeys.SKIN, skin);
         serializer.write(CodingKeys.SKIN_PROPERTIES, properties);
-        serializer.write(CodingKeys.LINKED_POS, linkedBlockPos);
+        serializer.write(CodingKeys.LINKED_POS, linkedPos);
         getOrCreateItems().serialize(serializer);
     }
 
@@ -143,27 +146,9 @@ public class SkinnableBlockEntity extends RotableContainerBlockEntity implements
     }
 
     protected void parentTick() {
-        // only work in link mode.
-        var pos = getLinkedBlockPos();
-        if (pos == null) {
-            return;
-        }
-        var level = getLevel();
-        if (level == null || level.isClientSide()) {
-            return;
-        }
-        // check redstone stuff
-        var snapshot = new LinkedSnapshot();
-        var state = level.getBlockState(pos);
-        if (state.hasAnalogOutputSignal()) {
-            snapshot.analogOutputSignal = state.getAnalogOutputSignal(level, pos);
-        }
-        for (var dir : Direction.values()) {
-            snapshot.redstoneSignal[dir.get3DDataValue()] = state.getSignal(level, pos, dir);
-            snapshot.directRedstoneSignal[dir.get3DDataValue()] = state.getDirectSignal(level, pos, dir);
-        }
         // notify neighbors blocks when snapshot changed.
-        if (lastSnapshot == null || !lastSnapshot.equals(snapshot)) {
+        var snapshot = makeLinkedSnapshot();
+        if (!Objects.equals(lastSnapshot, snapshot)) {
             updateStateAndNeighbors();
             lastSnapshot = snapshot;
         }
@@ -228,34 +213,17 @@ public class SkinnableBlockEntity extends RotableContainerBlockEntity implements
         return renderVoxelShape;
     }
 
-    public void setLinkedBlockPos(BlockPos linkedBlockPos) {
+    public void setLinkedPos(GlobalPos pos) {
         var blockEntity = getParent();
         if (blockEntity != null) {
-            blockEntity.linkedBlockPos = linkedBlockPos;
+            blockEntity.linkedPos = pos;
             blockEntity.updateBlockStates();
+            blockEntity.updateStateAndNeighbors();
         }
     }
 
-    public BlockPos getLinkedBlockPos() {
-        return getValueFromParent(te -> te.linkedBlockPos);
-    }
-
-    public BlockState getLinkedBlockState() {
-        var pos = getLinkedBlockPos();
-        var level = getLevel();
-        if (level != null && pos != null) {
-            return level.getBlockState(pos);
-        }
-        return null;
-    }
-
-    public BlockEntity getLinkedBlockEntity() {
-        var pos = getLinkedBlockPos();
-        var level = getLevel();
-        if (level != null && pos != null) {
-            return level.getBlockEntity(pos);
-        }
-        return null;
+    public GlobalPos getLinkedPos() {
+        return getValueFromParent(te -> te.linkedPos).orElse(null);
     }
 
     public void kill() {
@@ -287,38 +255,20 @@ public class SkinnableBlockEntity extends RotableContainerBlockEntity implements
     }
 
     public int getAnalogOutputSignal() {
-        var pos = getLinkedBlockPos();
-        var level = getLevel();
-        if (level == null || pos == null) {
-            return 0;
-        }
-        var state = level.getBlockState(pos);
-        return state.getAnalogOutputSignal(level, pos);
+        return getLinkedValueFromParent((level, pos) -> level.getBlockState(pos).getAnalogOutputSignal(level, pos)).orElse(0);
     }
 
-    public int getSignal(Direction direction) {
-        var pos = getLinkedBlockPos();
-        var level = getLevel();
-        if (level == null || pos == null) {
-            return 0;
-        }
-        var state = level.getBlockState(pos);
-        return state.getSignal(level, pos, direction);
+    public int getSignal(Direction dir) {
+        return getLinkedValueFromParent((level, pos) -> level.getBlockState(pos).getSignal(level, pos, dir)).orElse(0);
     }
 
-    public int getDirectSignal(Direction direction) {
-        var pos = getLinkedBlockPos();
-        var level = getLevel();
-        if (level == null || pos == null) {
-            return 0;
-        }
-        var state = level.getBlockState(pos);
-        return state.getDirectSignal(level, pos, direction);
+    public int getDirectSignal(Direction dir) {
+        return getLinkedValueFromParent((level, pos) -> level.getBlockState(pos).getDirectSignal(level, pos, dir)).orElse(0);
     }
 
     public Collection<BlockPos> getRefers() {
         if (refers == null) {
-            refers = getValueFromParent(te -> te.refers);
+            refers = getValueFromParent(te -> te.refers).orElse(null);
         }
         if (refers == null) {
             return Collections.emptyList();
@@ -356,7 +306,7 @@ public class SkinnableBlockEntity extends RotableContainerBlockEntity implements
 
     public Collection<SkinMarker> getMarkers() {
         if (markers == null) {
-            markers = getValueFromParent(te -> te.markers);
+            markers = getValueFromParent(te -> te.markers).orElse(null);
         }
         return markers;
     }
@@ -364,7 +314,7 @@ public class SkinnableBlockEntity extends RotableContainerBlockEntity implements
     @Nullable
     public SkinProperties getProperties() {
         if (properties == null) {
-            properties = getValueFromParent(te -> te.properties);
+            properties = getValueFromParent(te -> te.properties).orElse(null);
         }
         return properties;
     }
@@ -409,7 +359,7 @@ public class SkinnableBlockEntity extends RotableContainerBlockEntity implements
     }
 
     public boolean isLinked() {
-        return getLinkedBlockPos() != null;
+        return getLinkedPos() != null;
     }
 
     public boolean isInventory() {
@@ -439,14 +389,11 @@ public class SkinnableBlockEntity extends RotableContainerBlockEntity implements
     @Nullable
     @Override
     public <T> T getCapability(IBlockEntityCapability<T> capability, @Nullable Direction dir) {
-        // this.boundBlockEntity == null ? this.boundBlockState == null || this.boundBlockState.hasTileEntity() : this.boundBlockEntity.isRemoved()
-        var linkedPos = getLinkedBlockPos();
-        var linkedState = getLinkedBlockState();
-        var linkedEntity = getLinkedBlockEntity();
-        if (linkedPos != null) {
-            return capability.get(getLevel(), linkedPos, linkedState, linkedEntity, dir);
-        }
-        return null;
+        return getLinkedValueFromParent((level, pos) -> {
+            var state = level.getBlockState(pos);
+            var entity = level.getBlockEntity(pos);
+            return capability.get(level, pos, state, entity, dir);
+        }).orElse(null);
     }
 
     @Override
@@ -481,13 +428,37 @@ public class SkinnableBlockEntity extends RotableContainerBlockEntity implements
         return items;
     }
 
-    @Nullable
-    private <V> V getValueFromParent(Function<SkinnableBlockEntity, V> getter) {
+    public <V> Optional<V> getValueFromParent(Function<SkinnableBlockEntity, V> getter) {
         var blockEntity = getParent();
         if (blockEntity != null) {
-            return getter.apply(blockEntity);
+            return Optional.ofNullable(getter.apply(blockEntity));
         }
-        return null;
+        return Optional.empty();
+    }
+
+    public <V> Optional<V> getLinkedValueFromParent(BiFunction<Level, BlockPos, V> getter) {
+        var globalPos = getLinkedPos();
+        if (globalPos == null) {
+            return Optional.empty();
+        }
+        // the current in level?
+        var level = getLevel();
+        if (level == null) {
+            return Optional.empty();
+        }
+        // the target in different dimension?
+        if (!Objects.equals(level.dimension(), globalPos.dimension())) {
+            var server = level.getServer();
+            if (server == null) {
+                return Optional.empty(); // can't find dimension.
+            }
+            level = server.getLevel(globalPos.dimension());
+        }
+        // we never load the target chunk.
+        if (level != null && level.isLoaded(globalPos.pos())) {
+            return Optional.ofNullable(getter.apply(level, globalPos.pos()));
+        }
+        return Optional.empty();
     }
 
     private <V> V getProperty(SkinProperty<V> property) {
@@ -496,6 +467,22 @@ public class SkinnableBlockEntity extends RotableContainerBlockEntity implements
             return properties.get(property);
         }
         return property.getDefaultValue();
+    }
+
+    private LinkedSnapshot makeLinkedSnapshot() {
+        var result = getLinkedValueFromParent((level, pos) -> {
+            var snapshot = new LinkedSnapshot();
+            var state = level.getBlockState(pos);
+            if (state.hasAnalogOutputSignal()) {
+                snapshot.analogOutputSignal = state.getAnalogOutputSignal(level, pos);
+            }
+            for (var dir : Direction.values()) {
+                snapshot.redstoneSignal[dir.get3DDataValue()] = state.getSignal(level, pos, dir);
+                snapshot.directRedstoneSignal[dir.get3DDataValue()] = state.getDirectSignal(level, pos, dir);
+            }
+            return snapshot;
+        });
+        return result.orElse(null);
     }
 
     private static class LinkedSnapshot {
@@ -524,7 +511,7 @@ public class SkinnableBlockEntity extends RotableContainerBlockEntity implements
 
         public static final IDataSerializerKey<BlockPos> REFERENCE = IDataSerializerKey.create("Refer", IDataCodec.BLOCK_POS, BlockPos.ZERO);
         public static final IDataSerializerKey<OpenRectangle3i> SHAPE = IDataSerializerKey.create("Shape", OpenRectangle3i.CODEC, OpenRectangle3i.ZERO);
-        public static final IDataSerializerKey<BlockPos> LINKED_POS = IDataSerializerKey.create("LinkedPos", IDataCodec.BLOCK_POS, null);
+        public static final IDataSerializerKey<GlobalPos> LINKED_POS = IDataSerializerKey.create("LinkedPos", IDataCodec.GLOBAL_POS, null);
         public static final IDataSerializerKey<SkinDescriptor> SKIN = IDataSerializerKey.create("Skin", SkinDescriptor.CODEC, SkinDescriptor.EMPTY);
         public static final IDataSerializerKey<SkinProperties> SKIN_PROPERTIES = IDataSerializerKey.create("SkinProperties", SkinProperties.CODEC, SkinProperties.EMPTY, SkinProperties.EMPTY::copy);
         public static final IDataSerializerKey<List<BlockPos>> REFERENCES = IDataSerializerKey.create("Refers", IDataCodec.BLOCK_POS.listOf(), Collections.emptyList());

@@ -143,9 +143,11 @@ public class SkinnableBlock extends AbstractAttachedHorizontalBlock implements A
             return InteractionResult.FAIL;
         }
         if (blockEntity.isLinked()) {
-            var linkedPos = blockEntity.getLinkedBlockPos();
-            var linkedState = blockEntity.getLinkedBlockState();
-            return super.useWithoutItem(linkedState, level, linkedPos, player, blockHitResult);
+            var result = blockEntity.getLinkedValueFromParent((level1, pos) -> {
+                var state = level1.getBlockState(pos);
+                return super.useWithoutItem(state, level1, pos, player, blockHitResult);
+            });
+            return result.orElse(InteractionResult.FAIL);
         }
         if (blockEntity.isBed() && !player.isSecondaryUseActive()) {
             if (ModPermissions.SKINNABLE_SLEEP.accept(blockEntity, player)) {

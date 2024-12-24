@@ -216,6 +216,8 @@
   "inventory.armourers_workshop.linking-tool.finish": "链接成功",
   "inventory.armourers_workshop.linking-tool.linkedToSkinnable": "不能链接两个时装方块",
   "inventory.armourers_workshop.linking-tool.start": "开始链接",
+  "inventory.armourers_workshop.linking-tool.targetTooFar": "目标方块太远了！",
+  "inventory.armourers_workshop.linking-tool.targetWrongDimensions": "目标方块必须在同一维度！",
   "inventory.armourers_workshop.mannequin": "模特",
   "inventory.armourers_workshop.mannequin.button.update": "升级",
   "inventory.armourers_workshop.mannequin.label.update": "这个模特正在使用旧格式, 需要升级. 请点击下方按钮将模特升级到新格式！",

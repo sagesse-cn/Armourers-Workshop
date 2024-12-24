@@ -6,6 +6,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import moe.plushie.armourers_workshop.compatibility.core.data.AbstractDataSerializer;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 
@@ -109,6 +110,8 @@ public interface IDataCodec<A> {
 
 
     IDataCodec<BlockPos> BLOCK_POS = wrap(BlockPos.CODEC).alternative(LONG, BlockPos::of);
+
+    IDataCodec<GlobalPos> GLOBAL_POS = wrap(GlobalPos.CODEC);
 
     IDataCodec<CompoundTag> COMPOUND_TAG = wrap(CompoundTag.CODEC);
 

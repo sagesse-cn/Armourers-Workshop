@@ -5,9 +5,12 @@ import moe.plushie.armourers_workshop.api.common.IItemModelProperty;
 import moe.plushie.armourers_workshop.api.common.IItemPropertiesProvider;
 import moe.plushie.armourers_workshop.api.core.IResourceLocation;
 import moe.plushie.armourers_workshop.core.blockentity.SkinnableBlockEntity;
+import moe.plushie.armourers_workshop.core.utils.Objects;
+import moe.plushie.armourers_workshop.init.ModConfig;
 import moe.plushie.armourers_workshop.init.ModConstants;
 import moe.plushie.armourers_workshop.init.ModDataComponents;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.ItemStack;
@@ -39,17 +42,32 @@ public class LinkingToolItem extends FlavouredItem implements IItemHandler, IIte
         if (level.isClientSide() || player == null) {
             return InteractionResult.SUCCESS;
         }
-        var linkedBlockPos = itemStack.get(ModDataComponents.LINKED_POS.get());
+        var linkedPos = itemStack.get(ModDataComponents.LINKED_POS.get());
         var blockEntity = getTitleEntity(level, context.getClickedPos());
         if (blockEntity != null && player.isSecondaryUseActive()) {
-            blockEntity.setLinkedBlockPos(null);
+            blockEntity.setLinkedPos(null);
             player.sendSystemMessage(Component.translatable("inventory.armourers_workshop.linking-tool.clear"));
             return InteractionResult.SUCCESS;
         }
-        if (linkedBlockPos != null) {
+        if (linkedPos != null) {
+            // check the target block dimension and distance.
+            if (Objects.equals(level.dimension(), linkedPos.dimension())) {
+                // the user allow link max distance is beyond?
+                var maxDistance = ModConfig.Common.maxLinkDistance;
+                if (maxDistance > 0 && !context.getClickedPos().closerThan(linkedPos.pos(), maxDistance + 0.5)) {
+                    player.sendSystemMessage(Component.translatable("inventory.armourers_workshop.linking-tool.targetTooFar"));
+                    return InteractionResult.FAIL;
+                }
+            } else {
+                // the user allow link a different dimensions block?
+                if (!ModConfig.Common.enableLinkDimensional) {
+                    player.sendSystemMessage(Component.translatable("inventory.armourers_workshop.linking-tool.targetWrongDimensions"));
+                    return InteractionResult.FAIL;
+                }
+            }
             itemStack.remove(ModDataComponents.LINKED_POS.get());
             if (blockEntity != null) {
-                blockEntity.setLinkedBlockPos(linkedBlockPos);
+                blockEntity.setLinkedPos(linkedPos);
                 player.sendSystemMessage(Component.translatable("inventory.armourers_workshop.linking-tool.finish"));
                 return InteractionResult.SUCCESS;
             }
@@ -60,7 +78,7 @@ public class LinkingToolItem extends FlavouredItem implements IItemHandler, IIte
             player.sendSystemMessage(Component.translatable("inventory.armourers_workshop.linking-tool.linkedToSkinnable"));
             return InteractionResult.FAIL;
         }
-        itemStack.set(ModDataComponents.LINKED_POS.get(), context.getClickedPos());
+        itemStack.set(ModDataComponents.LINKED_POS.get(), GlobalPos.of(level.dimension(), context.getClickedPos()));
         player.sendSystemMessage(Component.translatable("inventory.armourers_workshop.linking-tool.start"));
         return InteractionResult.SUCCESS;
     }

@@ -19,7 +19,7 @@ public class FabricHopperBlockEntityMixin {
     @Inject(method = "getContainerAt(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;DDD)Lnet/minecraft/world/Container;", at = @At("RETURN"), cancellable = true)
     private static void aw2$getContainerAt(Level level, BlockPos blockPos, BlockState blockState, double d, double e, double f, CallbackInfoReturnable<Container> cir) {
         var container = cir.getReturnValue();
-        if (container instanceof SkinnableBlockEntity blockEntity && blockEntity.getLinkedBlockEntity() != null) {
+        if (container instanceof SkinnableBlockEntity blockEntity && blockEntity.isLinked()) {
             // when a linked block entity, can't load self container.
             cir.setReturnValue(null);
         }

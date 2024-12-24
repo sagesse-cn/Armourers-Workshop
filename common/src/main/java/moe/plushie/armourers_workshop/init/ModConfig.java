@@ -105,6 +105,8 @@ public class ModConfig {
         public static int enableFirstPersonSkinRenderer = 0;
         public static boolean enableMatchingByItemId = true;
         public static boolean enableServerSkinsInResourcePack = false;
+        public static boolean enableLinkDimensional = true;
+        public static int maxLinkDistance = 0;
 
         // Tooltip
         public static boolean tooltipHasSkin = true;

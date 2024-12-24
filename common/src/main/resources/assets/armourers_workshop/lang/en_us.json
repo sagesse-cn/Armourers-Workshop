@@ -260,6 +260,8 @@
   "inventory.armourers_workshop.linking-tool.finish": "Link created.",
   "inventory.armourers_workshop.linking-tool.linkedToSkinnable": "Can not link two skin blocks together.",
   "inventory.armourers_workshop.linking-tool.start": "Started linking.",
+  "inventory.armourers_workshop.linking-tool.targetTooFar": "The target block is too far!",
+  "inventory.armourers_workshop.linking-tool.targetWrongDimensions": "The target block must be in the same dimension!",
   "inventory.armourers_workshop.mannequin": "Mannequin",
   "inventory.armourers_workshop.mannequin.button.update": "Update",
   "inventory.armourers_workshop.mannequin.label.update": "This mannequin is using an old format and needs to be updated. Press the button below to update the mannequin to the new format.",

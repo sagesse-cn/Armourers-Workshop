@@ -8,7 +8,7 @@ import moe.plushie.armourers_workshop.core.holiday.Holiday;
 import moe.plushie.armourers_workshop.core.skin.SkinDescriptor;
 import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintColor;
 import moe.plushie.armourers_workshop.init.platform.BuilderManager;
-import net.minecraft.core.BlockPos;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 
@@ -19,7 +19,7 @@ public class ModDataComponents {
 
     public static final IRegistryHolder<IDataComponentType<Holiday>> HOLIDAY = create(Holiday.CODEC).tag("Holiday").build("holiday");
 
-    public static final IRegistryHolder<IDataComponentType<BlockPos>> LINKED_POS = create(IDataCodec.BLOCK_POS).tag("LinkedPos").build("linked_pos");
+    public static final IRegistryHolder<IDataComponentType<GlobalPos>> LINKED_POS = create(IDataCodec.GLOBAL_POS).tag("LinkedPos").build("linked_pos");
 
     public static final IRegistryHolder<IDataComponentType<CompoundTag>> ENTITY_DATA = create(IDataCodec.COMPOUND_TAG).tag("EntityTag").build("entity_data");
     public static final IRegistryHolder<IDataComponentType<CompoundTag>> BLOCK_ENTITY_DATA = create(IDataCodec.COMPOUND_TAG).tag("BlockEntityTag").build("block_entity_data");
