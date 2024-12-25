@@ -1,14 +1,20 @@
 package moe.plushie.armourers_workshop.compatibility.forge;
 
 import moe.plushie.armourers_workshop.api.annotation.Available;
+import moe.plushie.armourers_workshop.api.common.IBlockEntityCapability;
 import moe.plushie.armourers_workshop.api.common.IEntityCapability;
 import moe.plushie.armourers_workshop.api.core.IDataSerializable;
 import moe.plushie.armourers_workshop.api.core.IRegistryHolder;
 import moe.plushie.armourers_workshop.api.core.IResourceLocation;
 import moe.plushie.armourers_workshop.core.capability.SkinWardrobeStorage;
+import moe.plushie.armourers_workshop.core.utils.Objects;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.INBTSerializable;
@@ -16,12 +22,27 @@ import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.ref.WeakReference;
+import java.util.IdentityHashMap;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 @Available("[1.16, 1.21)")
 public class AbstractForgeCapabilityManagerImpl {
+
+    private static final IdentityHashMap<Capability<?>, IBlockEntityCapability<?>> REGISTERED_CAPABILITIES = new IdentityHashMap<>();
+
+    public static <T> IBlockEntityCapability<T> wrap(Capability<T> capability) {
+        var result = REGISTERED_CAPABILITIES.computeIfAbsent(capability, CapabilityWrapper::new);
+        return Objects.unsafeCast(result);
+    }
+
+    public static <T> Capability<T> unwrap(IBlockEntityCapability<T> capability) {
+        if (capability instanceof CapabilityWrapper<T> impl) {
+            return impl.capability;
+        }
+        return null;
+    }
 
     protected static class HolderProxy<T extends IDataSerializable.Mutable> implements IRegistryHolder<IEntityCapability<T>> {
 
@@ -89,5 +110,26 @@ public class AbstractForgeCapabilityManagerImpl {
         }
 
         public abstract Capability<T> getCapability();
+    }
+
+    protected static class CapabilityWrapper<T> implements IBlockEntityCapability<T> {
+
+        private final Capability<T> capability;
+
+        protected CapabilityWrapper(Capability<T> capability) {
+            this.capability = capability;
+        }
+
+        @Override
+        public T get(Level level, BlockPos blockPos, @Nullable BlockState blockState, @Nullable BlockEntity blockEntity, Direction dir) {
+            if (blockEntity != null) {
+                return blockEntity.getCapability(capability, dir).resolve().orElse(null);
+            }
+            blockEntity = level.getBlockEntity(blockPos);
+            if (blockEntity != null) {
+                return blockEntity.getCapability(capability, dir).resolve().orElse(null);
+            }
+            return null;
+        }
     }
 }

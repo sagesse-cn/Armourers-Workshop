@@ -1,6 +1,5 @@
 package moe.plushie.armourers_workshop.builder.blockentity;
 
-import moe.plushie.armourers_workshop.api.common.IBlockEntityHandler;
 import moe.plushie.armourers_workshop.api.common.IWorldUpdateTask;
 import moe.plushie.armourers_workshop.api.core.IDataCodec;
 import moe.plushie.armourers_workshop.api.core.IDataSerializer;
@@ -32,8 +31,6 @@ import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintData;
 import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.init.ModBlocks;
 import moe.plushie.armourers_workshop.utils.DataSerializers;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.LivingEntity;
@@ -51,7 +48,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
 
-public class ArmourerBlockEntity extends UpdatableBlockEntity implements IBlockEntityHandler, IPaintToolSelector.Provider {
+public class ArmourerBlockEntity extends UpdatableBlockEntity implements IPaintToolSelector.Provider {
 
     private static final Map<SkinPartType, SkinProperty<Boolean>> PART_TO_MODEL = Collections.immutableMap(builder -> {
         builder.put(SkinPartTypes.BIPPED_HEAD, SkinProperty.OVERRIDE_MODEL_HEAD);
@@ -343,8 +340,7 @@ public class ArmourerBlockEntity extends UpdatableBlockEntity implements IBlockE
     }
 
     @Override
-    @Environment(EnvType.CLIENT)
-    public AABB getRenderBoundingBox(BlockState blockState) {
+    public AABB getVisibleBox(BlockState blockState) {
         if (renderBoundingBox == null) {
             renderBoundingBox = new AABB(-32, -32, -44, 64, 64, 64);
             renderBoundingBox = renderBoundingBox.move(getBlockPos());

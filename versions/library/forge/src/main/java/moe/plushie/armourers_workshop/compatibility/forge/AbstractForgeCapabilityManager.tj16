@@ -24,7 +24,6 @@ import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.items.CapabilityItemHandler;
 
-import java.util.IdentityHashMap;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -32,11 +31,8 @@ import java.util.function.Supplier;
 @Available("[1.16, 1.18)")
 public abstract class AbstractForgeCapabilityManager {
 
-    private static final IdentityHashMap<Capability<?>, IBlockEntityCapability<?>> REGISTERED_BLOCK_ENTITY_CAPABILITIES = new IdentityHashMap<>();
-
     @CapabilityInject(SkinWardrobe.class)
     public static Capability<SkinWardrobe> WARDROBE_KEY;
-
 
     public static <T> IRegistryHolder<IEntityCapability<T>> registerEntity(IResourceLocation registryName, Class<T> type, Function<Entity, Optional<T>> factory) {
         if (type == SkinWardrobe.class) {
@@ -58,28 +54,13 @@ public abstract class AbstractForgeCapabilityManager {
         throw new AssertionError();
     }
 
-    public static <T> IBlockEntityCapability<T> getBlockEntity(Capability<T> capability) {
-        // register into skinnable block
-        var result = REGISTERED_BLOCK_ENTITY_CAPABILITIES.computeIfAbsent(capability, it -> (level, blockPos, blockState, blockEntity, context) -> {
-            if (blockEntity != null) {
-                return blockEntity.getCapability(capability, context).resolve().orElse(null);
-            }
-            blockEntity = level.getBlockEntity(blockPos);
-            if (blockEntity != null) {
-                return blockEntity.getCapability(capability, context).resolve().orElse(null);
-            }
-            return null;
-        });
-        return Objects.unsafeCast(result);
-    }
-
     private static IRegistryHolder<IEntityCapability<SkinWardrobe>> createWardrobeCapability(IResourceLocation registryName, Function<Entity, Optional<SkinWardrobe>> provider) {
         var capabilityType = (IEntityCapability<SkinWardrobe>) entity -> entity.getCapability(WARDROBE_KEY).resolve();
         return new HolderProxy<>(registryName, SkinWardrobe.class, provider, capabilityType, () -> WARDROBE_KEY);
     }
 
     private static <T> IRegistryHolder<IBlockEntityCapability<T>> createSidedCapability(IResourceLocation registryName, Capability<T> capability) {
-        return TypedRegistry.Entry.castValue(registryName, getBlockEntity(capability));
+        return TypedRegistry.Entry.castValue(registryName, AbstractForgeCapabilityManagerImpl.wrap(capability));
     }
 
     private static class HolderProxy<T extends IDataSerializable.Mutable> extends AbstractForgeCapabilityManagerImpl.HolderProxy<T> {

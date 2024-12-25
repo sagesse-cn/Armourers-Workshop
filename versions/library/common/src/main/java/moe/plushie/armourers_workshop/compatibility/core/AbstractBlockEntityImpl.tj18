@@ -4,8 +4,6 @@ import moe.plushie.armourers_workshop.api.annotation.Available;
 import moe.plushie.armourers_workshop.api.common.IBlockEntityHandler;
 import moe.plushie.armourers_workshop.api.core.IDataSerializer;
 import moe.plushie.armourers_workshop.compatibility.core.data.AbstractDataSerializer;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -13,15 +11,11 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
-import java.util.function.DoubleSupplier;
+@Available("[1.18, 1.21)")
+public abstract class AbstractBlockEntityImpl extends BlockEntity {
 
-@Available("[1.16, 1.18)")
-public abstract class AbstractBlockEntity extends BlockEntity implements IBlockEntityHandler {
-
-    private DoubleSupplier viewDistanceProvider;
-
-    public AbstractBlockEntity(BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState) {
-        super(blockEntityType);
+    public AbstractBlockEntityImpl(BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState) {
+        super(blockEntityType, blockPos, blockState);
     }
 
     public abstract void readAdditionalData(IDataSerializer serializer);
@@ -31,42 +25,31 @@ public abstract class AbstractBlockEntity extends BlockEntity implements IBlockE
     public abstract void sendBlockUpdates();
 
     @Override
-    public void load(BlockState state, CompoundTag tag) {
-        super.load(state, tag);
+    public final void load(CompoundTag tag) {
+        super.load(tag);
         this.readAdditionalData(AbstractDataSerializer.wrap(tag, null));
     }
 
     @Override
-    public CompoundTag save(CompoundTag tag) {
-        super.save(tag);
+    protected final void saveAdditional(CompoundTag tag) {
+        super.saveAdditional(tag);
         this.writeAdditionalData(AbstractDataSerializer.wrap(tag, null));
-        return tag;
     }
 
     @Override
-    public ClientboundBlockEntityDataPacket getUpdatePacket() {
+    public final ClientboundBlockEntityDataPacket getUpdatePacket() {
+        // when block not support updates, don't create an update packet.
+        if (!(this instanceof IBlockEntityHandler)) {
+            return null;
+        }
         var tag = new CompoundTag();
         this.writeAdditionalData(AbstractDataSerializer.wrap(tag, null));
-        return new ClientboundBlockEntityDataPacket(this.worldPosition, 0, tag);
+        return ClientboundBlockEntityDataPacket.create(this, be -> tag);
     }
 
     @Override
-    public void handleUpdatePacket(BlockState state, IDataSerializer serializer) {
-        this.readAdditionalData(serializer);
-        this.sendBlockUpdates();
-    }
-
-    @Override
-    public CompoundTag getUpdateTag() {
+    public final CompoundTag getUpdateTag() {
         return this.saveFullData(null);
     }
-
-    @Override
-    @Environment(EnvType.CLIENT)
-    public double getViewDistance() {
-        if (viewDistanceProvider == null) {
-            viewDistanceProvider = createViewDistanceProvider();
-        }
-        return viewDistanceProvider.getAsDouble();
-    }
 }
+

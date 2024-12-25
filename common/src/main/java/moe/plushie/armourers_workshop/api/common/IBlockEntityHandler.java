@@ -16,14 +16,4 @@ public interface IBlockEntityHandler {
      */
     default void handleUpdatePacket(BlockState state, IDataSerializer serializer) {
     }
-
-    /**
-     * Return an {@link AABB} that controls the visible scope of a {@link BlockEntityRenderer} associated with this {@link BlockEntity}
-     * at this location.
-     *
-     * @return an appropriately size {@link AABB} for the {@link BlockEntity}
-     */
-    default AABB getRenderBoundingBox(BlockState blockState) {
-        return null;
-    }
 }

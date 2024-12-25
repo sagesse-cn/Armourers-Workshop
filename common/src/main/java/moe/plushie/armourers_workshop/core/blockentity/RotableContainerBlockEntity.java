@@ -1,6 +1,5 @@
 package moe.plushie.armourers_workshop.core.blockentity;
 
-import moe.plushie.armourers_workshop.api.common.IBlockEntityHandler;
 import moe.plushie.armourers_workshop.core.math.OpenQuaternionf;
 import moe.plushie.armourers_workshop.core.math.OpenRectangle3f;
 import net.fabricmc.api.EnvType;
@@ -10,7 +9,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 
-public abstract class RotableContainerBlockEntity extends UpdatableContainerBlockEntity implements IBlockEntityHandler {
+public abstract class RotableContainerBlockEntity extends UpdatableContainerBlockEntity {
 
     public static final AABB ZERO_BOX = new AABB(0, 0, 0, 0, 0, 0);
 
@@ -35,7 +34,7 @@ public abstract class RotableContainerBlockEntity extends UpdatableContainerBloc
     }
 
     @Override
-    public AABB getRenderBoundingBox(BlockState blockState) {
+    public AABB getVisibleBox(BlockState blockState) {
         if (renderBoundingBox != null) {
             return renderBoundingBox;
         }

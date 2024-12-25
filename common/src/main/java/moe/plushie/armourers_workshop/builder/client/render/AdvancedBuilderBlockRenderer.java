@@ -169,7 +169,7 @@ public class AdvancedBuilderBlockRenderer<T extends AdvancedBuilderBlockEntity> 
             var pos = entity.getBlockPos();
             poseStack.pushPose();
             poseStack.translate(-pos.getX(), -pos.getY(), -pos.getZ());
-            ShapeTesselator.stroke(entity.getRenderBoundingBox(blockState), UIColor.RED, poseStack, bufferSource);
+            ShapeTesselator.stroke(entity.getVisibleBox(blockState), UIColor.RED, poseStack, bufferSource);
             var origin = entity.getRenderOrigin();
             poseStack.translate(origin.x(), origin.y(), origin.z());
             ShapeTesselator.vector(OpenVector3f.ZERO, 1, poseStack, bufferSource);

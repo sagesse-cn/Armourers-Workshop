@@ -1,8 +1,8 @@
 package moe.plushie.armourers_workshop.builder.blockentity;
 
 import com.mojang.authlib.GameProfile;
-import moe.plushie.armourers_workshop.api.common.IBlockEntityHandler;
 import moe.plushie.armourers_workshop.api.core.IDataSerializer;
+import moe.plushie.armourers_workshop.builder.other.BlockUtils;
 import moe.plushie.armourers_workshop.core.blockentity.UpdatableBlockEntity;
 import moe.plushie.armourers_workshop.core.data.UserNotifications;
 import moe.plushie.armourers_workshop.core.math.OpenRectangle3f;
@@ -19,18 +19,15 @@ import moe.plushie.armourers_workshop.core.skin.serializer.document.SkinDocument
 import moe.plushie.armourers_workshop.core.skin.serializer.document.SkinDocumentSynchronizer;
 import moe.plushie.armourers_workshop.core.skin.serializer.exception.TranslatableException;
 import moe.plushie.armourers_workshop.core.utils.OpenItemTransforms;
-import moe.plushie.armourers_workshop.init.environment.EnvironmentExecutor;
-import moe.plushie.armourers_workshop.builder.other.BlockUtils;
 import moe.plushie.armourers_workshop.core.utils.SkinUtils;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
+import moe.plushie.armourers_workshop.init.environment.EnvironmentExecutor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 
-public class AdvancedBuilderBlockEntity extends UpdatableBlockEntity implements IBlockEntityHandler, SkinDocumentProvider {
+public class AdvancedBuilderBlockEntity extends UpdatableBlockEntity implements SkinDocumentProvider {
 
     private AABB renderBoundingBox;
 
@@ -128,8 +125,7 @@ public class AdvancedBuilderBlockEntity extends UpdatableBlockEntity implements 
     }
 
     @Override
-    @Environment(EnvType.CLIENT)
-    public AABB getRenderBoundingBox(BlockState blockState) {
+    public AABB getVisibleBox(BlockState blockState) {
         if (renderBoundingBox != null) {
             return renderBoundingBox;
         }
