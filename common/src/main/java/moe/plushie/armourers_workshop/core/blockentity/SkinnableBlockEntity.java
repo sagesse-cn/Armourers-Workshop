@@ -86,6 +86,7 @@ public class SkinnableBlockEntity extends RotableContainerBlockEntity implements
 
     private LinkedSnapshot lastSnapshot;
 
+    private int callDepth = 0;
     private boolean isParent = false;
 
     public SkinnableBlockEntity(BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState) {
@@ -455,10 +456,13 @@ public class SkinnableBlockEntity extends RotableContainerBlockEntity implements
             level = server.getLevel(globalPos.dimension());
         }
         // we never load the target chunk.
-        if (level != null && level.isLoaded(globalPos.pos())) {
-            return Optional.ofNullable(getter.apply(level, globalPos.pos()));
+        if (level == null || !level.isLoaded(globalPos.pos()) || callDepth > 10) {
+            return Optional.empty();
         }
-        return Optional.empty();
+        callDepth += 1;
+        var result = getter.apply(level, globalPos.pos());
+        callDepth -= 1;
+        return Optional.ofNullable(result);
     }
 
     private <V> V getProperty(SkinProperty<V> property) {
