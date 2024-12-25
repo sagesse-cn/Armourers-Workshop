@@ -40,15 +40,15 @@ public final class SkinTypes {
     public static final SkinType ITEM_SHOVEL = item(12).part(SkinPartTypes.ITEM_SHOVEL).override(ItemOverrideType.SHOVEL).build("shovel");
     public static final SkinType ITEM_HOE = item(13).part(SkinPartTypes.ITEM_HOE).override(ItemOverrideType.HOE).build("hoe");
 
-    public static final SkinType ITEM_FISHING = item(20).part(SkinPartTypes.ITEM_FISHING_ROD).part(SkinPartTypes.ITEM_FISHING_HOOK).override(ItemOverrideType.FISHING_ROD).build("fishing");
-    public static final SkinType ITEM_BACKPACK = item(24).part(SkinPartTypes.ITEM_BACKPACK).override(ItemOverrideType.BACKPACK).build("backpack");
-
     public static final SkinType ITEM = normal(14).part(SkinPartTypes.ITEM).build("item");
     public static final SkinType BLOCK = normal(15).part(SkinPartTypes.BLOCK).part(SkinPartTypes.BLOCK_MULTI).build("block");
 
     public static final SkinType HORSE = armour(18).part(SkinPartTypes.HORSE_HEAD).part(SkinPartTypes.HORSE_NECK).part(SkinPartTypes.HORSE_CHEST).part(SkinPartTypes.HORSE_RIGHT_FRONT_THIGH).part(SkinPartTypes.HORSE_LEFT_FRONT_THIGH).part(SkinPartTypes.HORSE_RIGHT_FRONT_LEG).part(SkinPartTypes.HORSE_LEFT_FRONT_LEG).part(SkinPartTypes.HORSE_RIGHT_HIND_THIGH).part(SkinPartTypes.HORSE_LEFT_HIND_THIGH).part(SkinPartTypes.HORSE_RIGHT_HIND_LEG).part(SkinPartTypes.HORSE_LEFT_HIND_LEG).part(SkinPartTypes.HORSE_TAIL).build("horse");
     public static final SkinType BOAT = item(19).part(SkinPartTypes.BOAT_BODY).part(SkinPartTypes.BOAT_LEFT_PADDLE).part(SkinPartTypes.BOAT_RIGHT_PADDLE).override(ItemOverrideType.BOAT).build("boat");
     public static final SkinType MINECART = item(21).part(SkinPartTypes.MINECART_BODY).override(ItemOverrideType.MINECART).build("minecart");
+
+    public static final SkinType ITEM_FISHING = item(20).part(SkinPartTypes.ITEM_FISHING_ROD).part(SkinPartTypes.ITEM_FISHING_HOOK).override(ItemOverrideType.FISHING_ROD).build("fishing");
+    public static final SkinType ITEM_BACKPACK = item(24).part(SkinPartTypes.ITEM_BACKPACK).override(ItemOverrideType.BACKPACK).build("backpack");
 
     public static final SkinType ADVANCED = normal(16).part(SkinPartTypes.ADVANCED).build("part");
 
