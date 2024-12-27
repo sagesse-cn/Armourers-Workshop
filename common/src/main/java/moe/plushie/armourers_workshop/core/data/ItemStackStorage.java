@@ -19,6 +19,6 @@ public class ItemStackStorage {
     }
 
     public static ItemStackStorage of(@NotNull ItemStack itemStack) {
-        return DataContainer.lazy(itemStack, ItemStackStorage::new);
+        return DataContainer.of(itemStack, ItemStackStorage::new);
     }
 }

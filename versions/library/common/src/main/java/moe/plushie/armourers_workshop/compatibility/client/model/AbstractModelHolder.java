@@ -33,7 +33,7 @@ public class AbstractModelHolder {
     }
 
     public static <M extends IModel> M of(Model model) {
-        M holder = DataContainer.get(model, null);
+        M holder = DataContainer.getOrDefault(model, null);
         if (holder != null) {
             return holder;
         }

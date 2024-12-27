@@ -3,7 +3,7 @@ package moe.plushie.armourers_workshop.compatibility.mixin;
 import com.mojang.blaze3d.vertex.PoseStack;
 import moe.plushie.armourers_workshop.api.annotation.Available;
 import moe.plushie.armourers_workshop.compatibility.client.AbstractItemDisplayContext;
-import moe.plushie.armourers_workshop.core.client.model.BakedModelStorage;
+import moe.plushie.armourers_workshop.core.client.model.EmbeddedItemModels;
 import moe.plushie.armourers_workshop.init.client.ClientWardrobeHandler;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.ItemRenderer;
@@ -22,26 +22,20 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(ItemRenderer.class)
 public class ItemRendererMixin {
 
-    @Inject(method = "getModel", at = @At("RETURN"), cancellable = true)
+    @Inject(method = "getModel", at = @At("RETURN"))
     private void aw2$getModel(ItemStack itemStack, Level level, LivingEntity entity, int i, CallbackInfoReturnable<BakedModel> cir) {
-        var bakedModel = cir.getReturnValue();
-        var embeddedStack = ClientWardrobeHandler.getEmbeddedSkinStack(entity, level, itemStack, null, bakedModel);
-        if (embeddedStack != null) {
-            cir.setReturnValue(BakedModelStorage.wrap(bakedModel, itemStack, embeddedStack, null, entity, level));
-        }
+        var model = cir.getReturnValue();
+        var itemModel = ClientWardrobeHandler.getEmbeddedItemModel(itemStack, entity, level, model);
+        var itemModels = EmbeddedItemModels.of(itemStack);
+        itemModels.put(model, itemModel);
     }
 
     @Inject(method = "render", at = @At("HEAD"), cancellable = true)
     private void aw2$render(ItemStack itemStack, ItemDisplayContext transformType, boolean leftHandHackery, PoseStack poseStack, MultiBufferSource buffers, int packedLight, int overlay, BakedModel bakedModel, CallbackInfo ci) {
-        var storage = BakedModelStorage.unwrap(bakedModel);
-        if (storage == null) {
-            return;
+        var itemModels = EmbeddedItemModels.of(itemStack);
+        var itemModel = itemModels.get(bakedModel);
+        if (itemModel != null) {
+            ClientWardrobeHandler.renderEmbeddedItemModel(itemStack, AbstractItemDisplayContext.wrap(transformType), bakedModel, itemModel, packedLight, overlay, leftHandHackery, poseStack, buffers, ci);
         }
-        var resolvedModel = storage.getOriginModel();
-        var entity = storage.getEntity();
-        var level = storage.getLevel();
-        var embeddedStack = storage.getEmbeddedStack();
-        var embeddedProperties = storage.getEmbeddedProperties();
-        ClientWardrobeHandler.renderEmbeddedSkin(entity, level, itemStack, embeddedStack, embeddedProperties, AbstractItemDisplayContext.wrap(transformType), leftHandHackery, poseStack, buffers, resolvedModel, packedLight, overlay, ci);
     }
 }

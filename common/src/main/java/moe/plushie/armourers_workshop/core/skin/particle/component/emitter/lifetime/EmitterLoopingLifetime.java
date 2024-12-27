@@ -38,10 +38,10 @@ public class EmitterLoopingLifetime extends SkinParticleComponent {
             var sleep = sleepTime.compute(context);
             var time = emitter.getTime();
             emitter.setDuration(active);
-            if (time >= active && emitter.isPlaying()) {
+            if (time >= active && emitter.isRunning()) {
                 emitter.stop();
             }
-            if (time >= sleep && !emitter.isPlaying()) {
+            if (time >= sleep && !emitter.isRunning()) {
                 emitter.start();
             }
         });

@@ -39,6 +39,5 @@ public interface SkinParticleEmitter {
 
     boolean isEmissive();
 
-
-    boolean isPlaying();
+    boolean isRunning();
 }

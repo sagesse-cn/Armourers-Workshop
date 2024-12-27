@@ -21,7 +21,7 @@ public class CustomRiddingProvider {
 
     @Nullable
     public static OpenVector3f getCustomRidding(@This Entity entity, int index) {
-        var container = DataContainer.getValue(entity, KEY);
+        var container = DataContainer.get(entity, KEY);
         if (container == null) {
             return null; // not provided.
         }
@@ -40,10 +40,10 @@ public class CustomRiddingProvider {
     }
 
     public static void setCustomRidding(@This Entity entity, int index, @Nullable OpenVector3f position) {
-        var container = DataContainer.getValue(entity, KEY);
+        var container = DataContainer.get(entity, KEY);
         if (container == null) {
             container = new IndexMap();
-            DataContainer.setValue(entity, KEY, container);
+            DataContainer.set(entity, KEY, container);
         }
         container.put(index, position);
     }

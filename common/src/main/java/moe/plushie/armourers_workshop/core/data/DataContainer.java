@@ -13,43 +13,54 @@ public class DataContainer implements IAssociatedContainerProvider {
     public DataContainer() {
     }
 
-    public static <T, V> V lazy(T object, Function<T, V> supplier) {
-        var provider = (IAssociatedContainerProvider) object;
-        var value = provider.getAssociatedObject(Builtin.DEFAULT);
-        if (value != null) {
-            // noinspection unchecked
-            return (V) value;
-        }
-        var newValue = supplier.apply(object);
-        provider.setAssociatedObject(Builtin.DEFAULT, newValue);
-        return newValue;
-    }
-
-    public static <T, V> V get(T object, V defaultValue) {
-        var provider = (IAssociatedContainerProvider) object;
-        var value = provider.getAssociatedObject(Builtin.DEFAULT);
-        if (value != null) {
-            // noinspection unchecked
-            return (V) value;
-        }
-        return defaultValue;
-    }
-
     public static <T, V> void set(T object, V value) {
-        var provider = (IAssociatedContainerProvider) object;
-        provider.setAssociatedObject(Builtin.DEFAULT, value);
+        // noinspection unchecked
+        set(object, (IAssociatedContainerKey<V>) Builtin.DEFAULT, value);
     }
 
-    public static <T, V> V getValue(T object, IAssociatedContainerKey<V> key) {
-        var provider = (IAssociatedContainerProvider) object;
-        return provider.getAssociatedObject(key);
+    public static <T, V> V get(T object) {
+        // noinspection unchecked
+        return get(object, (IAssociatedContainerKey<V>) Builtin.DEFAULT);
     }
 
-    public static <T, V> void setValue(T object, IAssociatedContainerKey<V> key, V value) {
+    public static <T, V> V getOrDefault(T object, V defaultValue) {
+        // noinspection unchecked
+        return getOrDefault(object, (IAssociatedContainerKey<V>) Builtin.DEFAULT, defaultValue);
+    }
+
+    public static <T, V> V of(T object, Function<T, V> supplier) {
+        // noinspection unchecked
+        return of(object, (IAssociatedContainerKey<V>) Builtin.DEFAULT, supplier);
+    }
+
+    public static <T, V> void set(T object, IAssociatedContainerKey<V> key, V value) {
         var provider = (IAssociatedContainerProvider) object;
         provider.setAssociatedObject(key, value);
     }
 
+    public static <T, V> V get(T object, IAssociatedContainerKey<V> key) {
+        var provider = (IAssociatedContainerProvider) object;
+        return provider.getAssociatedObject(key);
+    }
+
+    public static <T, V> V getOrDefault(T object, IAssociatedContainerKey<V> key, V defaultValue) {
+        var value = get(object, key);
+        if (value != null) {
+            return value;
+        }
+        return defaultValue;
+    }
+
+    public static <T, V> V of(T object, IAssociatedContainerKey<V> key, Function<T, V> supplier) {
+        var provider = (IAssociatedContainerProvider) object;
+        var value = provider.getAssociatedObject(key);
+        if (value != null) {
+            return value;
+        }
+        var newValue = supplier.apply(object);
+        provider.setAssociatedObject(key, newValue);
+        return newValue;
+    }
 
     @Override
     public <T> T getAssociatedObject(IAssociatedContainerKey<T> key) {

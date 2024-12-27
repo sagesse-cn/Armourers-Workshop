@@ -260,14 +260,13 @@ public class AbstractRenderType extends RenderType {
 
         @Override
         public <T> IRenderTypeBuilder property(IAssociatedContainerKey<T> key, T value) {
-            this.updater.add(it -> DataContainer.setValue(it, key, value));
+            this.updater.add(it -> DataContainer.set(it, key, value));
             return this;
         }
 
         @Override
         public RenderType build(String name) {
-            // NOTE: don't use var !!!!
-            RenderType renderType = RenderType.create(name, format, mode, 256, affectsCrumbling, sortOnUpload, stateBuilder.createCompositeState(isOutline));
+            var renderType = (RenderType) RenderType.create(name, format, mode, 256, affectsCrumbling, sortOnUpload, stateBuilder.createCompositeState(isOutline));
             updater.forEach(it -> it.accept(renderType));
             return renderType;
         }

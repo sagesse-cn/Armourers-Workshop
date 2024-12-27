@@ -33,7 +33,7 @@ public class EmitterInstantRate extends SkinParticleComponent {
         var particles = builder.compile(this.particles, 10.0);
         builder.updateEmitter((emitter, context) -> {
             var time = emitter.getTime();
-            if (!emitter.isPlaying() || time != 0.0) {
+            if (!emitter.isRunning() || time != 0.0) {
                 return;
             }
             int count = particles.evaluate(context).getAsInt();

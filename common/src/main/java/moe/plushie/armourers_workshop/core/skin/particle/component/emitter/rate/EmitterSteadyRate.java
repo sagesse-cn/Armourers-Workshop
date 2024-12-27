@@ -37,7 +37,7 @@ public class EmitterSteadyRate extends SkinParticleComponent {
         var spawnRate = builder.compile(this.spawnRate, 1.0);
         var maxParticles = builder.compile(this.maxParticles, 50.0);
         builder.renderEmitterPost((emitter, partialTicks, context) -> {
-            if (!emitter.isPlaying()) {
+            if (!emitter.isRunning()) {
                 return;
             }
             var rate = spawnRate.compute(context);

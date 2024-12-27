@@ -1,5 +1,6 @@
 package moe.plushie.armourers_workshop.init.client;
 
+import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.vertex.PoseStack;
 import moe.plushie.armourers_workshop.compatibility.client.AbstractBufferSource;
 import moe.plushie.armourers_workshop.compatibility.client.AbstractPoseStack;
@@ -7,14 +8,14 @@ import moe.plushie.armourers_workshop.core.armature.Armatures;
 import moe.plushie.armourers_workshop.core.client.bake.BakedArmature;
 import moe.plushie.armourers_workshop.core.client.bake.BakedFirstPersonArmature;
 import moe.plushie.armourers_workshop.core.client.bake.SkinBakery;
-import moe.plushie.armourers_workshop.core.client.other.EmbeddedSkinStack;
+import moe.plushie.armourers_workshop.core.client.model.EmbeddedItemModel;
 import moe.plushie.armourers_workshop.core.client.other.EntityRenderData;
 import moe.plushie.armourers_workshop.core.client.other.EntitySlot;
 import moe.plushie.armourers_workshop.core.client.other.FindableSkinManager;
-import moe.plushie.armourers_workshop.core.client.other.SkinItemProperties;
 import moe.plushie.armourers_workshop.core.client.other.SkinItemSource;
 import moe.plushie.armourers_workshop.core.client.other.SkinRenderContext;
 import moe.plushie.armourers_workshop.core.client.other.SkinRenderHelper;
+import moe.plushie.armourers_workshop.core.client.other.SkinRenderMode;
 import moe.plushie.armourers_workshop.core.client.other.SkinRenderTesselator;
 import moe.plushie.armourers_workshop.core.client.render.ExtendedItemRenderer;
 import moe.plushie.armourers_workshop.core.client.skinrender.SkinRenderer;
@@ -141,15 +142,15 @@ public class ClientWardrobeHandler {
         LivingEntityRenderPatch.deactivate(entity, null);
     }
 
-    @Nullable
-    public static EmbeddedSkinStack getEmbeddedSkinStack(@Nullable LivingEntity entity, @Nullable Level level, ItemStack itemStack, OpenItemDisplayContext itemDisplayContext, BakedModel bakedModel) {
+    public static EmbeddedItemModel getEmbeddedItemModel(ItemStack itemStack, @Nullable LivingEntity entity, @Nullable Level level, BakedModel bakedModel) {
         // when the wardrobe has override skin of the item,
         // we easily got a conclusion of the needs embedded skin.
+        // SkinRenderMode.inGUI()
         if (RENDERING_GUI_ITEM != itemStack) {
             var renderData = EntityRenderData.of(entity);
             if (renderData != null) {
                 for (var entry : renderData.getItemSkins(itemStack, entity instanceof MannequinEntity)) {
-                    return new EmbeddedSkinStack(0, entry);
+                    return EmbeddedItemModel.fromWardrobe(entity, level, entry);
                 }
             }
         }
@@ -159,36 +160,42 @@ public class ClientWardrobeHandler {
             // Try to get skin descriptor from item model config.
             descriptor = FindableSkinManager.getInstance().getSkin(bakedModel);
             if (!descriptor.isEmpty()) {
-                return new EmbeddedSkinStack(1, descriptor, itemStack);
+                return EmbeddedItemModel.fromComponent(entity, level, descriptor, itemStack);
             }
             return null;
         }
         // when the item is a skin item itself,
         // we easily got a conclusion of the needs embedded skin.
         if (itemStack.is(ModItems.SKIN.get())) {
-            return new EmbeddedSkinStack(2, descriptor, itemStack);
+            return EmbeddedItemModel.fromSelf(entity, level, descriptor, itemStack);
         }
         // we allow server manually control the item whether to use the embedded renderer.
         if (descriptor.getOptions().getEmbeddedItemRenderer() != 0) {
             if (descriptor.getOptions().getEmbeddedItemRenderer() == 2) {
-                return new EmbeddedSkinStack(1, descriptor, itemStack);
+                return EmbeddedItemModel.fromComponent(entity, level, descriptor, itemStack);
             }
             return null;
         }
         // when the skin item, we no required enable of embed skin option in the config.
         if (ModConfig.enableEmbeddedSkinRenderer() || descriptor.getType() == SkinTypes.ITEM) {
-            return new EmbeddedSkinStack(1, descriptor, itemStack);
+            return EmbeddedItemModel.fromComponent(entity, level, descriptor, itemStack);
         }
         return null;
     }
 
-    public static void renderEmbeddedSkin(@Nullable LivingEntity entity, @Nullable Level level, ItemStack itemStack, EmbeddedSkinStack embeddedStack, @Nullable SkinItemProperties embeddedProperties, OpenItemDisplayContext itemDisplayContext, boolean leftHandHackery, PoseStack poseStackIn, MultiBufferSource buffersIn, BakedModel bakedModel, int packedLight, int overlay, CallbackInfo callback) {
+    public static void renderEmbeddedItemModel(ItemStack itemStack, OpenItemDisplayContext displayContext, BakedModel bakedModel, EmbeddedItemModel itemModel, int packedLight, int overlay, boolean leftHandHackery, PoseStack poseStackIn, MultiBufferSource buffersIn, CallbackInfo callback) {
+        // when the original not uses block light in the gui rendering case,
+        // the vanilla will be set to lighting to flat items,
+        // but we require lighting is 3d items.
+        if (SkinRenderMode.inGUI() && !bakedModel.usesBlockLight()) {
+            Lighting.setupFor3DItems();
+        }
         int counter = 0;
-        switch (itemDisplayContext) {
+        switch (displayContext) {
             case GUI:
             case GROUND:
             case FIXED: {
-                counter = _renderEmbeddedSkinInBox(embeddedStack, embeddedProperties, itemDisplayContext, leftHandHackery, poseStackIn, buffersIn, packedLight, overlay, 0);
+                counter = _renderEmbeddedSkinInBox(itemStack, displayContext, bakedModel, itemModel, packedLight, overlay, 0, poseStackIn, buffersIn);
                 break;
             }
             case THIRD_PERSON_LEFT_HAND:
@@ -197,20 +204,21 @@ public class ClientWardrobeHandler {
             case FIRST_PERSON_RIGHT_HAND: {
                 // first person can't support render outline.
                 var outlineColor = 0;
-                if (entity != null && itemDisplayContext.isThirdPerson()) {
+                var entity = itemModel.getEntity();
+                if (entity != null && displayContext.isThirdPerson()) {
                     outlineColor = entity.getOutlineColor();
                 }
 
                 // in special case, entity hold item type skin.
                 // so we need replace it to custom renderer.
-                var embeddedSlot = embeddedStack.getEntry();
-                if (embeddedSlot == null) {
-                    if (shouldRenderInBox(embeddedStack)) {
-                        counter = _renderEmbeddedSkinInBox(embeddedStack, embeddedProperties, itemDisplayContext, leftHandHackery, poseStackIn, buffersIn, packedLight, overlay, outlineColor);
+                var sourceSlot = itemModel.getSourceSlot();
+                if (sourceSlot == null) {
+                    if (itemModel.shouldRenderInBox()) {
+                        counter = _renderEmbeddedSkinInBox(itemStack, displayContext, bakedModel, itemModel, packedLight, overlay, outlineColor, poseStackIn, buffersIn);
                     } else {
                         // use this case:
                         //  YDM's Weapon Master
-                        counter = _renderEmbeddedSkin(embeddedStack, embeddedProperties, itemDisplayContext, leftHandHackery, poseStackIn, buffersIn, packedLight, overlay, outlineColor);
+                        counter = _renderEmbeddedSkin(itemStack, displayContext, bakedModel, itemModel, packedLight, overlay, outlineColor, poseStackIn, buffersIn);
                     }
                     break;
                 }
@@ -218,7 +226,7 @@ public class ClientWardrobeHandler {
                 // it only rendering in the entity back by third-party mods:
                 //   Sophisticated Backpacks
                 //   Traveler's Backpack
-                if (embeddedSlot.getSkinType() == SkinTypes.ITEM_BACKPACK && embeddedSlot.getSlotType() == EntitySlot.Type.IN_WARDROBE) {
+                if (sourceSlot.getSkinType() == SkinTypes.ITEM_BACKPACK && sourceSlot.getSlotType() == EntitySlot.Type.IN_WARDROBE) {
                     return;
                 }
                 var renderData = EntityRenderData.of(entity);
@@ -232,7 +240,7 @@ public class ClientWardrobeHandler {
                     poseStack.pushPose();
                     poseStack.scale(-SCALE, -SCALE, SCALE);
 
-                    var context = SkinRenderContext.alloc(renderData, packedLight, 0, itemDisplayContext);
+                    var context = SkinRenderContext.alloc(renderData, packedLight, 0, displayContext);
 
                     context.setOverlay(OverlayTexture.NO_OVERLAY);
                     context.setLightmap(packedLight);
@@ -245,9 +253,9 @@ public class ClientWardrobeHandler {
 
                     context.setOutlineColor(outlineColor);
 
-                    context.setItemSource(SkinItemSource.create(800, itemStack, itemDisplayContext, embeddedProperties));
+                    context.setItemSource(SkinItemSource.create(800, itemStack, displayContext, itemModel.getProperties()));
                     context.setUseItemTransforms(true);
-                    counter = render(entity, armature, context, Collections.singleton(embeddedSlot));
+                    counter = render(entity, armature, context, Collections.singleton(sourceSlot));
                     context.release();
 
                     poseStack.popPose();
@@ -259,14 +267,18 @@ public class ClientWardrobeHandler {
                 break;
             }
         }
+        // restore the lighting if we changed.
+        if (SkinRenderMode.inGUI() && !bakedModel.usesBlockLight()) {
+            Lighting.setupForFlatItems();
+        }
         if (counter != 0 && !ModDebugger.itemOverride) {
             callback.cancel();
         }
     }
 
-    private static int _renderEmbeddedSkinInBox(EmbeddedSkinStack embeddedStack, @Nullable SkinItemProperties embeddedProperties, OpenItemDisplayContext itemDisplayContext, boolean leftHandHackery, PoseStack poseStackIn, MultiBufferSource buffersIn, int packedLight, int overlay, int outlineColor) {
+    private static int _renderEmbeddedSkinInBox(ItemStack itemStack, OpenItemDisplayContext displayContext, BakedModel bakedModel, EmbeddedItemModel itemModel, int packedLight, int overlay, int outlineColor, PoseStack poseStackIn, MultiBufferSource buffersIn) {
         int count = 0;
-        var descriptor = embeddedStack.getDescriptor();
+        var descriptor = itemModel.getSourceSkin();
         var bakedSkin = SkinBakery.getInstance().loadSkin(descriptor, Tickets.INVENTORY);
         if (bakedSkin == null) {
             return count;
@@ -281,7 +293,7 @@ public class ClientWardrobeHandler {
         var itemSource = SkinItemSource.create(descriptor.sharedItemStack());
         itemSource.setScale(scale);
         itemSource.setRotation(rotation);
-        itemSource.setDisplayContext(itemDisplayContext);
+        itemSource.setDisplayContext(displayContext);
 
         var scheme = descriptor.getPaintScheme();
         count = ExtendedItemRenderer.renderSkinInBox(bakedSkin, scheme, 0, packedLight, outlineColor, itemSource, poseStack, buffers);
@@ -291,9 +303,9 @@ public class ClientWardrobeHandler {
         return count;
     }
 
-    private static int _renderEmbeddedSkin(EmbeddedSkinStack embeddedStack, @Nullable SkinItemProperties embeddedProperties, OpenItemDisplayContext itemDisplayContext, boolean leftHandHackery, PoseStack poseStackIn, MultiBufferSource buffersIn, int packedLight, int overlay, int outlineColor) {
+    private static int _renderEmbeddedSkin(ItemStack itemStack, OpenItemDisplayContext displayContext, BakedModel bakedModel, EmbeddedItemModel itemModel, int packedLight, int overlay, int outlineColor, PoseStack poseStackIn, MultiBufferSource buffersIn) {
         int count = 0;
-        var descriptor = embeddedStack.getDescriptor();
+        var descriptor = itemModel.getSourceSkin();
         var tesselator = SkinRenderTesselator.create(descriptor, Tickets.INVENTORY);
         if (tesselator == null) {
             return count;
@@ -314,10 +326,10 @@ public class ClientWardrobeHandler {
         tesselator.setModelViewStack(AbstractPoseStack.create(RenderSystem.getExtendedModelViewStack()));
 
         tesselator.setColorScheme(descriptor.getPaintScheme());
-        tesselator.setItemSource(SkinItemSource.create(800, embeddedStack.getItemStack(), itemDisplayContext, embeddedProperties));
+        tesselator.setItemSource(SkinItemSource.create(800, itemModel.getSourceStack(), displayContext, itemModel.getProperties()));
         tesselator.setUseItemTransforms(true);
         tesselator.setDisplayBox(null);
-        tesselator.setDisplayContext(itemDisplayContext);
+        tesselator.setDisplayContext(displayContext);
         tesselator.setOutlineColor(outlineColor);
 
         count = tesselator.draw();
@@ -388,23 +400,4 @@ public class ClientWardrobeHandler {
         return r;
     }
 
-    private static boolean shouldRenderInBox(EmbeddedSkinStack embeddedStack) {
-        // for the item required render to box.
-        if (embeddedStack.getMode() == 2) {
-            return true;
-        }
-        var skinType = embeddedStack.getDescriptor().getType();
-        if (skinType == SkinTypes.BOAT || skinType == SkinTypes.ITEM_FISHING || skinType == SkinTypes.HORSE) {
-            return true;
-        }
-        // for the tool type skin, don't render in the box.
-        if (skinType.isTool()) {
-            return false;
-        }
-        // for the item type skin, don't render in the box.
-        if (skinType == SkinTypes.ITEM) {
-            return false;
-        }
-        return true;
-    }
 }

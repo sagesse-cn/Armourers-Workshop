@@ -32,7 +32,7 @@ public class AbstractPoseStack extends AbstractPoseStackImpl implements IPoseSta
 
     public static OpenPoseStack create(PoseStack poseStack) {
         var poseStack1 = REUSABLE_QUEUE.get();
-        poseStack1.last().set(DataContainer.lazy(poseStack.last(), Pose::new));
+        poseStack1.last().set(DataContainer.of(poseStack.last(), Pose::new));
         return poseStack1;
     }
 
@@ -42,7 +42,7 @@ public class AbstractPoseStack extends AbstractPoseStackImpl implements IPoseSta
     }
 
     public static IPoseStack wrap(PoseStack poseStack) {
-        return DataContainer.lazy(poseStack, AbstractPoseStack::new);
+        return DataContainer.of(poseStack, AbstractPoseStack::new);
     }
 
     public static PoseStack unwrap(IPoseStack poseStack) {
@@ -111,7 +111,7 @@ public class AbstractPoseStack extends AbstractPoseStackImpl implements IPoseSta
 
     @Override
     public Pose last() {
-        return DataContainer.lazy(stack.last(), Pose::new);
+        return DataContainer.of(stack.last(), Pose::new);
     }
 
     public static class Pose implements IPoseStack.Pose {

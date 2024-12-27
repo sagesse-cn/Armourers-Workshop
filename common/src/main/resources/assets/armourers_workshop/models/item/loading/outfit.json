@@ -1,5 +1,5 @@
 {
-  "parent": "item/generated",
+  "parent": "armourers_workshop:item/loading/unknown",
   "textures": {
     "layer0": "armourers_workshop:item/template/outfit"
   }

@@ -7,7 +7,6 @@ import moe.plushie.armourers_workshop.api.annotation.Available;
 import moe.plushie.armourers_workshop.api.client.IRenderTypeBuilder;
 import moe.plushie.armourers_workshop.api.core.IResourceLocation;
 import moe.plushie.armourers_workshop.api.data.IAssociatedContainerKey;
-import moe.plushie.armourers_workshop.compatibility.client.AbstractPoseStack;
 import moe.plushie.armourers_workshop.core.client.other.SkinRenderFormat;
 import moe.plushie.armourers_workshop.core.data.DataContainer;
 import moe.plushie.armourers_workshop.utils.RenderSystem;
@@ -300,14 +299,13 @@ public class AbstractRenderType extends RenderType {
 
         @Override
         public <T> IRenderTypeBuilder property(IAssociatedContainerKey<T> key, T value) {
-            this.updater.add(it -> DataContainer.setValue(it, key, value));
+            this.updater.add(it -> DataContainer.set(it, key, value));
             return this;
         }
 
         @Override
         public RenderType build(String name) {
-            // NOTE: don't use var !!!!
-            RenderType renderType = RenderType.create(name, format, mode, 256, affectsCrumbling, sortOnUpload, stateBuilder.createCompositeState(isOutline));
+            var renderType = (RenderType) RenderType.create(name, format, mode, 256, affectsCrumbling, sortOnUpload, stateBuilder.createCompositeState(isOutline));
             updater.forEach(it -> it.accept(renderType));
             return renderType;
         }

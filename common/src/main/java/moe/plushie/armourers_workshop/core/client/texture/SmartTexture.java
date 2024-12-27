@@ -42,7 +42,7 @@ public class SmartTexture extends ReferenceCounted {
 
     @Nullable
     public static SmartTexture of(RenderType renderType) {
-        return DataContainer.get(renderType, null);
+        return DataContainer.getOrDefault(renderType, null);
     }
 
     @Override

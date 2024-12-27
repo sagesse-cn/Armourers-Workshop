@@ -33,7 +33,7 @@ public class SmartSound extends ReferenceCounted {
     }
 
     public static SmartSound of(SoundEvent soundEvent) {
-        return DataContainer.get(soundEvent, null);
+        return DataContainer.getOrDefault(soundEvent, null);
     }
 
     @Override

@@ -38,7 +38,7 @@ public class EntityRendererContext {
     }
 
     public static EntityRendererContext of(EntityRenderer<?> entityRenderer) {
-        return DataContainer.lazy(entityRenderer, EntityRendererContext::new);
+        return DataContainer.of(entityRenderer, EntityRendererContext::new);
     }
 
     @Nullable

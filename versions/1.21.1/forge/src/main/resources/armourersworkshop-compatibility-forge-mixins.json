@@ -4,9 +4,6 @@
   "compatibilityLevel": "JAVA_16",
   "client": [
     "ForgeBlockEntityRendererMixin",
-    "ForgeEpicFightRendererMixin",
-    "ForgeEpicFightFirstPersonRendererMixin",
-    "ForgeEpicFightShieldRendererMixin",
     "ForgeCuriosAddonMixin",
     "ForgeKeyMappingMixin",
     "backpack/ForgeMrcrayfishBackpackRendererMixin",

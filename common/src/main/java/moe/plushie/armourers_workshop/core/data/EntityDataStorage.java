@@ -19,11 +19,11 @@ import java.util.Optional;
 public class EntityDataStorage {
 
     public static EntityImpl of(Entity entity) {
-        return DataContainer.lazy(entity, EntityImpl::new);
+        return DataContainer.of(entity, EntityImpl::new);
     }
 
     public static BlockEntityImpl of(BlockEntity entity) {
-        return DataContainer.lazy(entity, BlockEntityImpl::new);
+        return DataContainer.of(entity, BlockEntityImpl::new);
     }
 
     public static class EntityImpl {

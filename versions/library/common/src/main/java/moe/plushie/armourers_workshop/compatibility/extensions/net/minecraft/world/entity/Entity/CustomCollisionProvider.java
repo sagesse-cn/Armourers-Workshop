@@ -16,11 +16,11 @@ public class CustomCollisionProvider {
     private static final DataContainerKey<EntityCollisionShape> KEY = DataContainerKey.of("Collisions", EntityCollisionShape.class);
 
     public static EntityCollisionShape getCustomCollision(@This Entity entity) {
-        return DataContainer.getValue(entity, KEY);
+        return DataContainer.get(entity, KEY);
     }
 
     public static void setCustomCollision(@This Entity entity, EntityCollisionShape collisionShape) {
-        DataContainer.setValue(entity, KEY, collisionShape);
+        DataContainer.set(entity, KEY, collisionShape);
         entity.refreshDimensions();
     }
 }

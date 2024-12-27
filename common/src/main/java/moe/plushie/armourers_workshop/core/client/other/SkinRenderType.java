@@ -155,7 +155,7 @@ public abstract class SkinRenderType implements IRenderTypeBuilder {
     }
 
     public static boolean isUsingIndex(RenderType renderType) {
-        return DataContainer.getValue(renderType, USING_INDEX);
+        return DataContainer.get(renderType, USING_INDEX);
     }
 
     private static IRenderTypeBuilder _entity(SkinRenderFormat format, IResourceLocation texture) {
