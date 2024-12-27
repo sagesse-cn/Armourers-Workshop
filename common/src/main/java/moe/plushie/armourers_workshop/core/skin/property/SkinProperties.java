@@ -82,14 +82,14 @@ public class SkinProperties extends OpenProperties implements ISkinProperties {
         return new SkinProperties(new LinkedHashMap<>(properties));
     }
 
-    public SkinProperties slice(int index) {
+    public SkinProperties slice(String index) {
         return new SkinProperties.Stub(this, index);
     }
 
     public static class Stub extends SkinProperties {
-        private final int index;
+        private final String index;
 
-        public Stub(SkinProperties parent, int index) {
+        public Stub(SkinProperties parent, String index) {
             super(parent.properties);
             this.index = index;
         }

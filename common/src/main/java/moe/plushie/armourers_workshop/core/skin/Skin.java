@@ -318,13 +318,17 @@ public class Skin implements ISkin {
                 properties.put(SkinProperty.USE_OVERLAY_COLOR, true);
                 properties.remove(SkinProperty.OVERRIDE_OVERLAY_COLOR);
             }
-            // bind properties to part.
+            // bind part properties for the wings skin.
+            if (type == SkinTypes.ARMOR_WINGS) {
+                skinParts.forEach(it -> it.setProperties(properties.slice("")));
+            }
+            // bind part properties for the outfit skin.
             var skinIndexes = properties.get(SkinProperty.OUTFIT_PART_INDEXS);
             if (skinIndexes != null && !skinIndexes.isEmpty()) {
                 var split = skinIndexes.split(":");
                 var partIndex = 0;
                 for (var skinIndex = 0; skinIndex < split.length; ++skinIndex) {
-                    var stub = properties.slice(skinIndex);
+                    var stub = properties.slice(String.valueOf(skinIndex));
                     var count = Integer.parseInt(split[skinIndex]);
                     while (partIndex < count) {
                         if (partIndex < skinParts.size()) {
