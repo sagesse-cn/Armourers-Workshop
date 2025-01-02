@@ -113,7 +113,25 @@ public class AdvancedSettingPanel extends AdvancedPanel {
                 SkinProperty.OVERRIDE_MODEL_RIGHT_HIND_LEG,
                 SkinProperty.OVERRIDE_MODEL_TAIL,
                 SkinProperty.OVERRIDE_EQUIPMENT_CHESTPLATE,
-                SkinProperty.USE_OVERLAY_COLOR
+                SkinProperty.USE_OVERLAY_COLOR,
+                SkinProperty.OVERRIDE_ENTITY_SIZE,
+                SkinProperty.OVERRIDE_ENTITY_SIZE_WIDTH,
+                SkinProperty.OVERRIDE_ENTITY_SIZE_HEIGHT,
+                SkinProperty.OVERRIDE_ENTITY_SIZE_EYE_HEIGHT
+        ));
+        builder.put(SkinTypes.MINECART, Collections.newList(
+                SkinProperty.USE_OVERLAY_COLOR,
+                SkinProperty.OVERRIDE_ENTITY_SIZE,
+                SkinProperty.OVERRIDE_ENTITY_SIZE_WIDTH,
+                SkinProperty.OVERRIDE_ENTITY_SIZE_HEIGHT,
+                SkinProperty.OVERRIDE_ENTITY_SIZE_EYE_HEIGHT
+        ));
+        builder.put(SkinTypes.BOAT, Collections.newList(
+                SkinProperty.USE_OVERLAY_COLOR,
+                SkinProperty.OVERRIDE_ENTITY_SIZE,
+                SkinProperty.OVERRIDE_ENTITY_SIZE_WIDTH,
+                SkinProperty.OVERRIDE_ENTITY_SIZE_HEIGHT,
+                SkinProperty.OVERRIDE_ENTITY_SIZE_EYE_HEIGHT
         ));
     });
 
