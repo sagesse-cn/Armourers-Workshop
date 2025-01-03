@@ -74,3 +74,10 @@ publishing {
         // Add repositories to publish to here.
     }
 }
+
+tasks.register('fixAW2ATIssue') {
+    delete project.layout.buildDirectory.file("libs/${project.archivesBaseName}-${project.version}.jar")
+}
+
+build.dependsOn fixAW2ATIssue
+

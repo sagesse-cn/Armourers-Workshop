@@ -33,7 +33,7 @@ public abstract class ForgeBlockEntityCapabilityMixin extends BlockEntity {
     }
 
     // replace the implementation with calling super.getCapability
-    @Inject(method = "getCapability(Lmoe/plushie/armourers_workshop/api/common/IBlockEntityCapability;Lnet/minecraft/core/Direction;)Ljava/lang/Object;", at = @At("HEAD"), cancellable = true, remap = false)
+    @Inject(method = "getCapability(Lmoe/plushie/armourers_workshop/api/common/IBlockEntityCapability;Lnet/minecraft/core/Direction;)Ljava/lang/Object;", at = @At("HEAD"), cancellable = true, remap = true)
     private <T> void aw2$super$getCapability(IBlockEntityCapability<T> capability, Direction dir, CallbackInfoReturnable<T> cir) {
         var capability1 = AbstractForgeCapabilityManagerImpl.unwrap(capability);
         var result = super.getCapability(capability1, dir);

@@ -23,7 +23,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(BackpackLayer.class)
 public class ForgeTravelersBackpackRendererMixin {
 
-    @Inject(method = "renderBackpackLayer", at = @At("HEAD"), remap = false, cancellable = true)
+    @Inject(method = "renderBackpackLayer", at = @At("HEAD"), cancellable = true, remap = false)
     private static void aw2$renderBackpack(BackpackLayerModel<?> model, HumanoidModel<?> humanoidModel, PoseStack poseStack, MultiBufferSource bufferIn, int packedLightIn, LivingEntity entity, ItemStack stack, CallbackInfo ci) {
         var renderData = EntityRenderData.of(entity);
         if (renderData != null && renderData.getOverriddenManager().contains(SkinProperty.OVERRIDE_MODEL_BACKPACK)) {
