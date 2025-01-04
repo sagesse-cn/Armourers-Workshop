@@ -18,7 +18,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 public class ItemRendererREIMixin {
 
     // https://github.com/shedaniel/RoughlyEnoughItems/blob/7.x-1.18/runtime/src/main/java/me/shedaniel/rei/plugin/client/entry/ItemEntryDefinition.java#L233
-    @Redirect(method = "getExtraData", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/entity/ItemRenderer;getModel(Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/level/Level;Lnet/minecraft/world/entity/LivingEntity;I)Lnet/minecraft/client/resources/model/BakedModel;", remap = true), remap = false)
+    @Redirect(method = "getExtraData", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/entity/ItemRenderer;getModel(Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/level/Level;Lnet/minecraft/world/entity/LivingEntity;I)Lnet/minecraft/client/resources/model/BakedModel;"), remap = false)
     private BakedModel aw2$getModel(ItemRenderer itemRenderer, ItemStack itemStack, Level level, LivingEntity livingEntity, int id) {
         ClientWardrobeHandler.startRenderGuiItem(itemStack);
         var bakedModel = itemRenderer.getModel(itemStack, level, livingEntity, id);

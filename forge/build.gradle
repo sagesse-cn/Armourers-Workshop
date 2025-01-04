@@ -22,7 +22,7 @@ dependencies {
     //modLocalRuntime "com.sk89q.worldedit:worldedit-mod:7.2.5-dist"
     //modApi "noppes.npcs:CustomNPCs:1.16.5.20220622snapshot"
     //modLocalRuntime "org.samo_lego:taterzens:1.9.6-forge"
-    //modLocalRuntime "net.optifine:OptiFine:1.18.2_HD_U_H9_pre1"
+    //modLocalRuntime "net.optifine:OptiFine:1.18.2_HD_U_H9_pre3_MOD:deobf"
 
     //modCompileOnly "maven.modrinth:cristel-lib:1.1.5-forge"
     //modLocalRuntime "maven.modrinth:cristel-lib:1.1.5-forge"
@@ -76,8 +76,10 @@ publishing {
 }
 
 tasks.register('fixAW2ATIssue') {
-    delete project.layout.buildDirectory.file("libs/${project.archivesBaseName}-${project.version}.jar")
+    doLast {
+        delete project.layout.buildDirectory.file("libs/${project.archivesBaseName}-${project.version}.jar")
+    }
 }
 
-build.dependsOn fixAW2ATIssue
+compileJava.dependsOn fixAW2ATIssue
 
