@@ -25,12 +25,9 @@ public abstract class Shader {
     private final SkinRenderState renderState = new SkinRenderState();
 
     public void begin() {
-        RenderSystem.backupExtendedFog();
         RenderSystem.backupExtendedMatrix();
+        RenderSystem.setExtendedMatrixFlags(0x80000000);
         RenderSystem.setShaderColor(1, 1, 1, 1);
-        RenderSystem.setShaderFogStart(Float.MAX_VALUE);
-        RenderSystem.setShaderFogEnd(Float.MAX_VALUE);
-        RenderSystem.setExtendedMatrixFlags(0x80);
         ShaderUniforms.begin();
 
         if (ModDebugger.wireframeRender) {
@@ -43,10 +40,9 @@ public abstract class Shader {
             RenderSystem.polygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
         }
 
-        RenderSystem.setExtendedMatrixFlags(0x00);
         ShaderUniforms.end();
+        RenderSystem.setExtendedMatrixFlags(0x00);
         RenderSystem.restoreExtendedMatrix();
-        RenderSystem.restoreExtendedFog();
     }
 
     protected void prepare(ShaderVertexGroup group) {
@@ -76,6 +72,7 @@ public abstract class Shader {
         RenderSystem.setExtendedOverlayTextureMatrix(getOverlayTextureMatrix(object));
         RenderSystem.setExtendedLightmapTextureMatrix(getLightmapTextureMatrix(object));
         RenderSystem.setExtendedColorModulator(getColorColorModulator(object));
+        RenderSystem.setExtendedMatrixFlags(entry.properties() | 0x80000000);
         RenderSystem.setExtendedNormalMatrix(entry.normal());
         RenderSystem.setExtendedModelViewMatrix(entry.pose());
 

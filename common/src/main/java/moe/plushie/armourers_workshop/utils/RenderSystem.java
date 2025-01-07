@@ -30,10 +30,6 @@ public final class RenderSystem extends AbstractRenderSystem {
     private static final Storage<OpenMatrix4f> extendedLightmapTextureMatrix = new Storage<>(OpenMatrix4f.createScaleMatrix(1, 1, 1));
     private static final Storage<OpenMatrix4f> extendedModelViewMatrix = new Storage<>(OpenMatrix4f.createScaleMatrix(1, 1, 1));
     private static final Storage<OpenVector4f> extendedColorModulator = new Storage<>(OpenVector4f.ONE);
-    private static final Storage<SkinPaintColor> extendedTintColor = new Storage<>(SkinPaintColor.WHITE);
-
-    private static final Storage<Float> extendedFogStart = new Storage<>(0.0f);
-    private static final Storage<Float> extendedFogEnd = new Storage<>(0.0f);
 
     private static final FloatBuffer BUFFER = MatrixUtils.createFloatBuffer(3);
 
@@ -144,20 +140,11 @@ public final class RenderSystem extends AbstractRenderSystem {
         return extendedScissorFlags.get();
     }
 
-    public static void setExtendedTintColor(SkinPaintColor tintColor) {
-        extendedTintColor.set(tintColor);
-    }
-
-    public static SkinPaintColor getExtendedTintColor() {
-        return extendedTintColor.get();
-    }
-
     public static void backupExtendedMatrix() {
         extendedTextureMatrix.save();
         extendedNormalMatrix.save();
         extendedLightmapTextureMatrix.save();
         extendedModelViewMatrix.save();
-        extendedTintColor.save();
     }
 
     public static void restoreExtendedMatrix() {
@@ -165,17 +152,6 @@ public final class RenderSystem extends AbstractRenderSystem {
         extendedNormalMatrix.load();
         extendedLightmapTextureMatrix.load();
         extendedModelViewMatrix.load();
-        extendedTintColor.load();
-    }
-
-    public static void backupExtendedFog() {
-        extendedFogStart.value = getShaderFogStart();
-        extendedFogEnd.value = getShaderFogEnd();
-    }
-
-    public static void restoreExtendedFog() {
-        setShaderFogStart(extendedFogStart.value);
-        setShaderFogEnd(extendedFogEnd.value);
     }
 
     private static class Storage<T> {

@@ -38,40 +38,42 @@ public class ShaderPreprocessor {
     }
 
     private String processIrisShader(Builder builder) {
-        builder.attribute("vec2", "iris_UV0", "mat4", "aw_TextureMatrix", "vec2($2 * vec4($1, 1, 1))");
-        builder.attribute("ivec2", "iris_UV1", "mat4", "aw_OverlayTextureMatrix", "ivec2($2 * vec4($1, 1, 1))");
-        builder.attribute("ivec2", "iris_UV2", "mat4", "aw_LightmapTextureMatrix", "ivec2($2 * vec4($1, 1, 1))");
-        builder.attribute("vec4", "iris_Color", "vec4", "aw_ColorModulator", "($1 * $2)");
-        builder.attribute("vec3", "iris_Normal", "mat3", "aw_NormalMatrix", "($1 * $2)");
-        builder.uniform("mat4", "iris_ModelViewMat", "mat4", "aw_ModelViewMat", "($1 * $2)");
+        builder.attribute("aw_UV0", "vec2", "iris_UV0", "mat4", "aw_TextureMatrix", "vec2($2 * vec4($1, 1, 1))");
+        builder.attribute("aw_UV1", "ivec2", "iris_UV1", "mat4", "aw_OverlayTextureMatrix", "ivec2($2 * vec4($1, 1, 1))");
+        builder.attribute("aw_UV2", "ivec2", "iris_UV2", "mat4", "aw_LightmapTextureMatrix", "ivec2($2 * vec4($1, 1, 1))");
+        builder.attribute("aw_Color", "vec4", "iris_Color", "vec4", "aw_ColorModulator", "($2 * $1)");
+        builder.attribute("aw_Normal", "vec3", "iris_Normal", "mat3", "aw_NormalMatrix", "($2 * $1)");
+        builder.attribute("aw_Position", "vec3", "iris_Position", "mat4", "aw_ModelViewMat", "vec3($2 * vec4($1, 1))");
         return build("iris", builder);
     }
 
     private String processOptifineShader(Builder builder) {
-        builder.attribute("vec2", "vaUV0", "mat4", "aw_TextureMatrix", "vec2($2 * vec4($1, 1, 1))");
-        builder.attribute("ivec2", "vaUV1", "mat4", "aw_OverlayTextureMatrix", "ivec2($2 * vec4($1, 1, 1))");
-        builder.attribute("ivec2", "vaUV2", "mat4", "aw_LightmapTextureMatrix", "ivec2($2 * vec4($1, 1, 1))");
-        builder.attribute("vec4", "vaColor", "vec4", "aw_ColorModulator", "($1 * $2)");
-        builder.attribute("vec3", "vaNormal", "mat3", "aw_NormalMatrix", "($1 * $2)");
-        builder.uniform("mat4", "modelViewMatrix", "mat4", "aw_ModelViewMat", "($1 * $2)");
+        builder.attribute("aw_UV0", "vec2", "vaUV0", "mat4", "aw_TextureMatrix", "vec2($2 * vec4($1, 1, 1))");
+        builder.attribute("aw_UV1", "ivec2", "vaUV1", "mat4", "aw_OverlayTextureMatrix", "ivec2($2 * vec4($1, 1, 1))");
+        builder.attribute("aw_UV2", "ivec2", "vaUV2", "mat4", "aw_LightmapTextureMatrix", "ivec2($2 * vec4($1, 1, 1))");
+        builder.attribute("aw_Color", "vec4", "vaColor", "vec4", "aw_ColorModulator", "($2 * $1)");
+        builder.attribute("aw_Normal", "vec3", "vaNormal", "mat3", "aw_NormalMatrix", "($2 * $1)");
+        builder.attribute("aw_Position", "vec3", "vaPosition", "mat4", "aw_ModelViewMat", "vec3($2 * vec4($1, 1))");
         return build("optifine", builder);
     }
 
     private String processCanvasShader(Builder builder) {
-//        builder.uniform("mat4", "in_vertex", "mat4", "aw_TextureMatrix", "($1 * $2)");
-//        builder.uniform("mat4", "iris_LightmapTextureMatrix", "mat4", "aw_LightmapTextureMatrix", "($1 * $2)");
-//        builder.uniform("mat3", "iris_NormalMat", "mat3", "aw_NormalMatrix", "($1 * $2)");
-//        builder.uniform("mat4", "iris_ModelViewMat", "mat4", "aw_ModelViewMat", "($1 * $2)");
+//        builder.attribute("aw_UV0", "vec2", "iris_UV0", "mat4", "aw_TextureMatrix", "vec2($2 * vec4($1, 1, 1))");
+//        builder.attribute("aw_UV1", "ivec2", "iris_UV1", "mat4", "aw_OverlayTextureMatrix", "ivec2($2 * vec4($1, 1, 1))");
+//        builder.attribute("aw_UV2", "ivec2", "iris_UV2", "mat4", "aw_LightmapTextureMatrix", "ivec2($2 * vec4($1, 1, 1))");
+//        builder.attribute("aw_Color", "vec4", "iris_Color", "vec4", "aw_ColorModulator", "($2 * $1)");
+//        builder.attribute("aw_Normal", "vec3", "iris_Normal", "mat3", "aw_NormalMatrix", "($2 * $1)");
+//        builder.attribute("aw_Position", "vec3", "iris_Position", "mat4", "aw_ModelViewMat", "vec3($2 * vec4($1, 1))");
         return build("canvas", builder);
     }
 
     private String processVanillaShader(Builder builder) {
-        builder.attribute("vec2", "UV0", "mat4", "aw_TextureMatrix", "vec2($2 * vec4($1, 1, 1))");
-        builder.attribute("ivec2", "UV1", "mat4", "aw_OverlayTextureMatrix", "ivec2($2 * vec4($1, 1, 1))");
-        builder.attribute("ivec2", "UV2", "mat4", "aw_LightmapTextureMatrix", "ivec2($2 * vec4($1, 1, 1))");
-        builder.attribute("vec4", "Color", "vec4", "aw_ColorModulator", "($1 * $2)");
-        builder.attribute("vec3", "Normal", "mat3", "aw_NormalMatrix", "($1 * $2)");
-        builder.uniform("mat4", "ModelViewMat", "mat4", "aw_ModelViewMat", "($1 * $2)");
+        builder.attribute("aw_UV0", "vec2", "UV0", "mat4", "aw_TextureMatrix", "vec2($2 * vec4($1, 1, 1))");
+        builder.attribute("aw_UV1", "ivec2", "UV1", "mat4", "aw_OverlayTextureMatrix", "ivec2($2 * vec4($1, 1, 1))");
+        builder.attribute("aw_UV2", "ivec2", "UV2", "mat4", "aw_LightmapTextureMatrix", "ivec2($2 * vec4($1, 1, 1))");
+        builder.attribute("aw_Color", "vec4", "Color", "vec4", "aw_ColorModulator", "($2 * $1)");
+        builder.attribute("aw_Normal", "vec3", "Normal", "mat3", "aw_NormalMatrix", "($2 * $1)");
+        builder.attribute("aw_Position", "vec3", "Position", "mat4", "aw_ModelViewMat", "vec3($2 * vec4($1, 1))");
         return build("vanilla", builder);
     }
 
@@ -93,27 +95,28 @@ public class ShaderPreprocessor {
             this.source = source;
         }
 
-        public Builder uniform(String varType, String var, String matrixType, String matrixVar, String expr) {
-            source = register("uniform", source, varType, var, matrixType, matrixVar, expr);
+        public Builder uniform(String name, String varType, String var, String matrixType, String matrixVar, String expr) {
+            source = register("uniform", name, source, varType, var, matrixType, matrixVar, expr);
             return this;
         }
 
-        public Builder attribute(String varType, String var, String matrixType, String matrixVar, String expr) {
-            source = register("in", source, varType, var, matrixType, matrixVar, expr);
+        public Builder attribute(String name, String varType, String var, String matrixType, String matrixVar, String expr) {
+            source = register("in", name, source, varType, var, matrixType, matrixVar, expr);
             return this;
         }
 
-        private String register(String category, String source, String varType, String var, String matrixType, String matrix, String expr) {
+        private String register(String category, String name, String source, String varType, String var, String matrixType, String matrix, String expr) {
             // compile regular expressions.
             String[] texts = {
-                    "(${category}\\s+${varType}\\s+)(\\b${var}\\b)(.*?;)", "$1__awrt_${var}_awrt__$3",
-                    "\\b${var}\\b", "awrt_${var}",
-                    "(${category}\\s+${varType}\\s+)(\\b__awrt_${var}_awrt__)\\b(.*?;)", "uniform ${matrixType} ${matrix};\n${varType} awrt_${var};\n$1${var}$3",
+                    "(${category}\\s+${varType}\\s+)(\\b${var}\\b)(.*?;)", "$1__aw_${var}_aw__$3",
+                    "\\b${var}\\b", "${name}",
+                    "(${category}\\s+${varType}\\s+)(\\b__aw_${var}_aw__)\\b(.*?;)", "uniform ${matrixType} ${matrix};\n${varType} ${name};\n$1${var}$3",
             };
             String[] regexes = new String[texts.length];
             for (int i = 0; i < texts.length; ++i) {
                 String tmp = texts[i];
                 tmp = tmp.replace("${category}", category);
+                tmp = tmp.replace("${name}", name);
                 tmp = tmp.replace("${varType}", varType);
                 tmp = tmp.replace("${var}", var);
                 tmp = tmp.replace("${matrixType}", matrixType);
@@ -130,8 +133,8 @@ public class ShaderPreprocessor {
                 source = newValue;
             }
             // the initializer must be relocation.
-            initializer1.add("awrt_" + var + " = " + var);
-            initializer2.add("awrt_" + var + " = " + expr.replace("$1", var).replace("$2", matrix));
+            initializer1.add(name + " = " + var);
+            initializer2.add(name + " = " + expr.replace("$1", var).replace("$2", matrix));
             return source;
         }
 
@@ -141,20 +144,20 @@ public class ShaderPreprocessor {
                 return source;
             }
             // NOTE: we can't support "type x = y;" in the global;
-            SourceBuilder builder = new SourceBuilder();
+            var builder = new SourceBuilder();
             builder.append("#ifdef GL_ES\n");
             builder.append("uniform int aw_MatrixFlags;\n");
             builder.append("#else\n");
             builder.append("uniform int aw_MatrixFlags = 0;\n");
             builder.append("#endif\n");
-            builder.append("void awrt_main_pre() {\n");
-            builder.append("  if ((aw_MatrixFlags & 0x80) != 0) {\n");
+            builder.append("void aw_main_pre() {\n");
+            builder.append("  if ((aw_MatrixFlags & 0x80000000) != 0) {\n");
             builder.append("    ", initializer2, ";\n");
             builder.append("  } else {\n");
             builder.append("    ", initializer1, ";\n");
             builder.append("  }\n");
             builder.append("}\n");
-            return source.replaceAll("(void\\s+main\\s*\\(\\)\\s*\\{)", builder.build() + "\n$1\n  awrt_main_pre();\n");
+            return source.replaceAll("(void\\s+main\\s*\\(\\)\\s*\\{)(\\s*)", builder.build() + "\n$1$2aw_main_pre();$2$2");
         }
 
         @Override
@@ -172,7 +175,7 @@ public class ShaderPreprocessor {
         }
 
         public void append(String prefix, Collection<String> children, String suffix) {
-            for (String content : children) {
+            for (var content : children) {
                 buffer.append(prefix);
                 buffer.append(content);
                 buffer.append(suffix);
