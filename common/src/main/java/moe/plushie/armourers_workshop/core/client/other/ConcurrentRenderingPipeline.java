@@ -18,16 +18,16 @@ public class ConcurrentRenderingPipeline {
         var pass = Group.POOL.get();
         var poseStack = context.getPoseStack();
         var modelViewStack = context.getModelViewStack();
-        var finalPoseStack = pass.poseStack;
-        var lastPose = finalPoseStack.last().pose();
-        var lastNormal = finalPoseStack.last().normal();
-        // https://web.archive.org/web/20240125142900/http://www.songho.ca/opengl/gl_normaltransform.html
-        //finalPoseStack.last().setProperties(poseStack.last().properties());
+        var last = pass.poseStack.last();
+        var lastPose = last.pose();
+        var lastNormal = last.normal();
         lastPose.set(modelViewStack.last().pose());
         lastPose.multiply(poseStack.last().pose());
         //lastNormal.set(modelViewStack.last().normal());
         lastNormal.set(poseStack.last().normal());
         lastNormal.invert();
+        // https://web.archive.org/web/20240125142900/http://www.songho.ca/opengl/gl_normaltransform.html
+        last.setProperties(poseStack.last().properties());
         passGroups.add(pass.fill(group, context));
     }
 

@@ -77,7 +77,17 @@ public class ShaderPreprocessor {
         return build("vanilla", builder);
     }
 
+    private void processCommonShader(Builder builder) {
+        // if normal exists, we need normalize it when flags is 0x2(non-uniform scaled) enabled.
+        if (builder.variables.contains("aw_Normal")) {
+            builder.scripts.add("if ((aw_MatrixFlags & 0x2) != 0) {");
+            builder.scripts.add("  aw_Normal = normalize(aw_Normal);");
+            builder.scripts.add("}");
+        }
+    }
+
     private String build(String type, Builder builder) {
+        processCommonShader(builder);
         var source = builder.build();
         if (ModConfig.Client.enableShaderDebug) {
             ModLog.info("process {} shader: \n{}", type, source);
@@ -88,6 +98,10 @@ public class ShaderPreprocessor {
     public static class Builder {
 
         private String source;
+
+        private final ArrayList<String> variables = new ArrayList<>();
+        private final ArrayList<String> scripts = new ArrayList<>();
+
         private final ArrayList<String> initializer1 = new ArrayList<>();
         private final ArrayList<String> initializer2 = new ArrayList<>();
 
@@ -133,6 +147,8 @@ public class ShaderPreprocessor {
                 source = newValue;
             }
             // the initializer must be relocation.
+            variables.add(name);
+            variables.add(matrix);
             initializer1.add(name + " = " + var);
             initializer2.add(name + " = " + expr.replace("$1", var).replace("$2", matrix));
             return source;
@@ -153,6 +169,7 @@ public class ShaderPreprocessor {
             builder.append("void aw_main_pre() {\n");
             builder.append("  if ((aw_MatrixFlags & 0x80000000) != 0) {\n");
             builder.append("    ", initializer2, ";\n");
+            builder.append("    ", scripts, "\n");
             builder.append("  } else {\n");
             builder.append("    ", initializer1, ";\n");
             builder.append("  }\n");

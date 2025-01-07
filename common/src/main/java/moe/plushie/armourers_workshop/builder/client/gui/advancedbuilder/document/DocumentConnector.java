@@ -30,7 +30,7 @@ public class DocumentConnector {
 
     public final Vector3fProperty location = registerNode(Vector3fProperty::new, SkinDocumentNode::getLocation, SkinDocumentNode::setLocation);
     public final Vector3fProperty rotation = registerNode(Vector3fProperty::new, SkinDocumentNode::getRotation, SkinDocumentNode::setRotation);
-    public final DataProperty<Float> scale = registerNode(DataProperty::new, SkinDocumentNode::getScale, SkinDocumentNode::setScale);
+    public final Vector3fProperty scale = registerNode(Vector3fProperty::new, SkinDocumentNode::getScale, SkinDocumentNode::setScale);
     public final Vector3fProperty pivot = registerNode(Vector3fProperty::new, SkinDocumentNode::getPivot, SkinDocumentNode::setPivot);
 
     public final DataProperty<Boolean> enabled = registerNode(DataProperty::new, SkinDocumentNode::isEnabled, SkinDocumentNode::setEnabled);

@@ -107,6 +107,7 @@ public class AbstractPoseStack extends AbstractPoseStackImpl implements IPoseSta
     @Override
     public void setIdentity() {
         stack.setIdentity();
+        last().setProperties(0);
     }
 
     @Override
@@ -125,13 +126,6 @@ public class AbstractPoseStack extends AbstractPoseStackImpl implements IPoseSta
             this.normal = new AbstractMatrix3f(pose.normal());
             this.properties = 0;
         }
-
-        //void computeNormal() {
-        //    normal.set(pose);
-        //    normal.invert();
-        //    normal.transpose();
-        //    properties |= 0x02;
-        //}
 
         @Override
         public void transformPose(float[] values) {
@@ -152,6 +146,18 @@ public class AbstractPoseStack extends AbstractPoseStackImpl implements IPoseSta
             normal.set(entry.normal());
             properties = entry.properties();
         }
+
+//        @Override
+//        public void normalized() {
+//            // when pose have non-uniform scale, we need to recalculate the normals.
+//            if ((properties & 0x02) == 0) {
+//                return;
+//            }
+//            normal.set(pose);
+//            normal.invert();
+//            normal.transpose();
+//            properties &= ~0x02;
+//        }
 
         @Override
         public IMatrix4f pose() {

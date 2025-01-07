@@ -257,18 +257,18 @@ public class SkinDocumentNode implements IDataSerializable.Immutable {
         return rotation;
     }
 
-    public void setScale(float value) {
-        scale = new OpenVector3f(value, value, value);
+    public void setScale(OpenVector3f value) {
+        scale = value;
         transform = null;
         if (listener != null) {
             var builder = new TagSerializer();
-            builder.write(CodingKeys.INC_SCALE, scale);
+            builder.write(CodingKeys.INC_SCALE, value);
             listener.documentDidUpdateNode(this, builder.getTag());
         }
     }
 
-    public float getScale() {
-        return scale.x();
+    public OpenVector3f getScale() {
+        return scale;
     }
 
     public void setPivot(OpenVector3f value) {

@@ -119,13 +119,6 @@ public class OpenPoseStack implements IPoseStack {
             this.properties = entry.properties();
         }
 
-        //void computeNormal() {
-        //    normal.set(pose);
-        //    normal.invert();
-        //    normal.transpose();
-        //    properties |= 0x02;
-        //}
-
         @Override
         public void transformPose(float[] values) {
             pose.multiply(values);
@@ -145,6 +138,18 @@ public class OpenPoseStack implements IPoseStack {
             normal.set(entry.normal());
             properties = entry.properties();
         }
+
+//        @Override
+//        public void normalized() {
+//            // when pose have non-uniform scale, we need to recalculate the normals.
+//            if ((properties & 0x02) == 0) {
+//                return;
+//            }
+//            normal.set(pose);
+//            normal.invert();
+//            normal.transpose();
+//            properties &= ~0x02;
+//        }
 
         @Override
         public OpenMatrix4f pose() {
