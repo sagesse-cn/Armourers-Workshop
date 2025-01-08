@@ -41,6 +41,7 @@
     "EntityJSMixin",
     "EntityActionTrackerMixin",
     "EntitySelectorOptionsMixin",
+    "VehicleEntityPlaceMixin$ServerLevelPatch",
     "VehicleEntityPlaceMixin$BoatPatch",
     "VehicleEntityPlaceMixin$MinecartPatch",
     "VehicleEntityPlaceMixin$MinecartDispensePatch",
