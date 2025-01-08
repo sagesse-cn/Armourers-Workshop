@@ -19,7 +19,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 
 @Environment(EnvType.CLIENT)
-public abstract class AdvancedEntityGuideRenderer extends AbstractAdvancedGuideRenderer {
+public abstract class AdvancedEntityGuideRenderer extends AdvancedAbstractGuideRenderer {
 
     protected final BakedArmature armature;
     protected final SkinTextureData texture;

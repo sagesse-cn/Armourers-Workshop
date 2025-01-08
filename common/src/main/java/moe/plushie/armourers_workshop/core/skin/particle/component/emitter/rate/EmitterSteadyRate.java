@@ -13,7 +13,9 @@ import java.io.IOException;
  */
 public class EmitterSteadyRate extends SkinParticleComponent {
 
+    /// How often a particle is emitted, in particles/second.
     private final OpenPrimitive spawnRate;
+    /// Maximum amount of particles that can be active before the emitter stops spawning new ones.
     private final OpenPrimitive maxParticles;
 
     public EmitterSteadyRate(OpenPrimitive spawnRate, OpenPrimitive maxParticles) {
@@ -41,20 +43,13 @@ public class EmitterSteadyRate extends SkinParticleComponent {
                 return;
             }
             var rate = spawnRate.compute(context);
-            // TODO: NO IMPL @SAGESSE
-//            var particles = emitter.getAge(partialTicks) * rate;
-//            double diff = particles - emitter.spawnedParticles;
-//            double spawn = Math.ceil(diff);
-//            if (spawn <= 0) {
-//              return;
-//            }
-//                for (int i = 0; i < spawn; i++) {
-//                    if (emitter.particles.size() < this.particles.get()) {
-//                        emitter.spawnParticle();
-//                    }
-//                }
-//
-//                emitter.spawnedParticles += spawn;
+            var maxSize = maxParticles.compute(context);
+            var targetSize = Math.ceil(rate * emitter.getTime());
+            // create up to a specified size of particles.
+            var size = emitter.getParticles().size();
+            for (int i = size; i < targetSize && i < maxSize; i++) {
+                emitter.spawnParticle();
+            }
         });
     }
 }

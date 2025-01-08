@@ -59,7 +59,7 @@ public class ShaderUniforms {
         }
     }
 
-    public static class State {
+    private static class State {
 
         private final List<ShaderUniform> uniforms;
         private List<ShaderUniform> changes;

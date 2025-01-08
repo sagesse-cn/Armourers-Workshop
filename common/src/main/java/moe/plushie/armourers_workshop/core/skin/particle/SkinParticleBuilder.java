@@ -10,10 +10,7 @@ public interface SkinParticleBuilder {
     Expression compile(OpenPrimitive value, double defaultValue) throws Exception;
 
 
-    Block getBlock(String blockId);
-
-
-    void applyEmitter(EmitterApplyEvent event);
+    void applyEmitter(EmitterUpdateEvent event);
 
     void updateEmitter(EmitterUpdateEvent event);
 
@@ -22,7 +19,7 @@ public interface SkinParticleBuilder {
     void renderEmitterPost(EmitterRenderEvent event);
 
 
-    void applyParticle(ParticleApplyEvent event);
+    void applyParticle(ParticleUpdateEvent event);
 
     void updateParticle(ParticleUpdateEvent event);
 
@@ -30,10 +27,7 @@ public interface SkinParticleBuilder {
 
     void renderParticlePost(ParticleRenderEvent event);
 
-
-    interface EmitterApplyEvent {
-        void accept(SkinParticleEmitter emitter, ExecutionContext context);
-    }
+    Block getBlock(String blockId);
 
     interface EmitterUpdateEvent {
         void accept(SkinParticleEmitter emitter, ExecutionContext context);
@@ -41,10 +35,6 @@ public interface SkinParticleBuilder {
 
     interface EmitterRenderEvent {
         void accept(SkinParticleEmitter emitter, float partialTicks, ExecutionContext context);
-    }
-
-    interface ParticleApplyEvent {
-        void accept(SkinParticleEmitter emitter, SkinParticle particle, ExecutionContext context);
     }
 
     interface ParticleUpdateEvent {

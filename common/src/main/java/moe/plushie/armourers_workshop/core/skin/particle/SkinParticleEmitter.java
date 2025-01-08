@@ -2,6 +2,8 @@ package moe.plushie.armourers_workshop.core.skin.particle;
 
 import moe.plushie.armourers_workshop.core.math.OpenVector3f;
 
+import java.util.List;
+
 public interface SkinParticleEmitter {
 
 //		"variable.emitter_age"
@@ -11,12 +13,12 @@ public interface SkinParticleEmitter {
 //		"variable.emitter_random_3"
 //		"variable.emitter_random_4"
 
-
-    void spawnParticle();
-
     void start();
 
     void stop();
+
+
+    void spawnParticle();
 
 
     void setTime(double time);
@@ -33,6 +35,7 @@ public interface SkinParticleEmitter {
 
     OpenVector3f getPosition();
 
+    List<? extends SkinParticle> getParticles();
 
     // default is true
     void setEmissive(boolean isEmissive);

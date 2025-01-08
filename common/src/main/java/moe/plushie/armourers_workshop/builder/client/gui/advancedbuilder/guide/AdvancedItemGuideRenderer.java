@@ -14,7 +14,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
 @Environment(EnvType.CLIENT)
-public class AdvancedItemGuideRenderer extends AbstractAdvancedGuideRenderer {
+public class AdvancedItemGuideRenderer extends AdvancedAbstractGuideRenderer {
 
     private final OpenModelPart armSolid;
     private final OpenModelPart armTransparent;

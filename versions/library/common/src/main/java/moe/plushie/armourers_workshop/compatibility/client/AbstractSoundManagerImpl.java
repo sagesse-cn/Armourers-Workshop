@@ -4,7 +4,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public interface AbstractSoundManagerImpl {
 
-    void register(ResourceLocation relocation, AbstractSimpleSound sound);
+    void aw2$register(ResourceLocation relocation, AbstractSimpleSound sound);
 
-    void unregister(ResourceLocation relocation);
+    void aw2$unregister(ResourceLocation relocation);
 }

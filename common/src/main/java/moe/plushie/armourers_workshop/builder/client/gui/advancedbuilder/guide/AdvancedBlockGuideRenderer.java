@@ -14,7 +14,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 
 @Environment(EnvType.CLIENT)
-public class AdvancedBlockGuideRenderer extends AbstractAdvancedGuideRenderer {
+public class AdvancedBlockGuideRenderer extends AdvancedAbstractGuideRenderer {
 
     private final BlockState blockState;
     private final BlockRenderDispatcher blockRenderer;

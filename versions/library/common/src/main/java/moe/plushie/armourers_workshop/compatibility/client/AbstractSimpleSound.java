@@ -19,6 +19,10 @@ public class AbstractSimpleSound {
         this.name = name;
     }
 
+    public static AbstractSimpleSound create(ResourceLocation id, String name) {
+        return new AbstractSimpleSound(id, name);
+    }
+
     public ResourceLocation getId() {
         return id;
     }

@@ -7,7 +7,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
 @Environment(EnvType.CLIENT)
-public abstract class AbstractAdvancedGuideRenderer {
+public abstract class AdvancedAbstractGuideRenderer {
 
     public abstract void render(SkinDocument document, IPoseStack poseStack, int light, int overlay, IBufferSource bufferSource);
 }

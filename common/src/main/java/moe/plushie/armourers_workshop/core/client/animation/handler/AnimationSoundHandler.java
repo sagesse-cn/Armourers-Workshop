@@ -34,35 +34,27 @@ public class AnimationSoundHandler implements OptimizedExpression<Object> {
 
     @Override
     public Runnable evaluate(ExecutionContext context) {
+        SmartSoundManager.getInstance().open(soundEvent);
         var sound = createSound(context);
-        open();
-        playSound(sound);
+        startPlay(sound);
         return () -> {
-            stopSound(sound);
-            RenderSystem.recordRenderCall(this::close);
+            stopPlay(sound);
+            RenderSystem.recordRenderCall(() -> SmartSoundManager.getInstance().close(soundEvent));
         };
     }
 
-    private void playSound(SoundInstance sound) {
+    private void startPlay(SoundInstance sound) {
         getSoundManager().play(sound);
         if (ModConfig.Client.enableAnimationDebug) {
             ModLog.debug("start play {}", this);
         }
     }
 
-    private void stopSound(SoundInstance sound) {
+    private void stopPlay(SoundInstance sound) {
         getSoundManager().stop(sound);
         if (ModConfig.Client.enableAnimationDebug) {
             ModLog.debug("stop play {}", this);
         }
-    }
-
-    private void open() {
-        SmartSoundManager.getInstance().open(soundEvent);
-    }
-
-    private void close() {
-        SmartSoundManager.getInstance().close(soundEvent);
     }
 
     private SoundInstance createSound(ExecutionContext context) {

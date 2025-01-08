@@ -27,9 +27,6 @@ public class AdvancedCameraPanel extends UIView {
     private final OpenVector3f oldRotation = new OpenVector3f();
     private final OpenVector3f oldTranslate = new OpenVector3f();
 
-    //    private final ClamppedVector3f lastScale = new ClamppedVector3f(1, 1, 1, 0.5f, 0.5f, 0.5f, 5.0f, 5.0f, 5.0f);
-//    private final ClamppedVector3f lastRotation = new ClamppedVector3f(0, 0, 0, -90, Float.NEGATIVE_INFINITY, 0, 90, Float.POSITIVE_INFINITY, 0);
-//    private final ClamppedVector3f lastTranslate = new ClamppedVector3f(0, 0, 0, -8, -8, -8, 8, 8, 8);
     private final OpenVector3f lastZoom = new ClamppedVector3f(1, 1, 1, 0.1f, 0.1f, 0.1f, 2.0f, 2.0f, 2.0f);
     private final OpenVector3f lastRotation = new ClamppedVector3f(0, 0, 0, -90, Float.NEGATIVE_INFINITY, 0, 90, Float.POSITIVE_INFINITY, 0);
     private final OpenVector3f lastTranslate = new OpenVector3f(0, 0, 0);

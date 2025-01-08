@@ -62,7 +62,7 @@ public class SmartTextureManager {
 
     protected void uploadTexture(SmartTexture texture) {
         var location = texture.getLocation();
-        getTextureManager().register(location.toLocation(), new AbstractSimpleTexture(location));
+        getTextureManager().register(location.toLocation(), AbstractSimpleTexture.create(location));
         if (ModConfig.Client.enableResourceDebug) {
             ModLog.debug("Registering Texture '{}'", location);
         }

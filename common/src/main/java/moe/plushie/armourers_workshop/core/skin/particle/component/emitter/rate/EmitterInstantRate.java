@@ -13,6 +13,7 @@ import java.io.IOException;
  */
 public class EmitterInstantRate extends SkinParticleComponent {
 
+    /// How many particles are spawned at once.
     private final OpenPrimitive particles;
 
     public EmitterInstantRate(OpenPrimitive particles) {
