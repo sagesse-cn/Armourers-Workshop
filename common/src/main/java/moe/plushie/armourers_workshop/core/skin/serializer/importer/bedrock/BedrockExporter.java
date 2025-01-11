@@ -38,8 +38,8 @@ import moe.plushie.armourers_workshop.core.skin.particle.component.particle.moti
 import moe.plushie.armourers_workshop.core.skin.particle.component.particle.motion.ParticleDynamicMotion;
 import moe.plushie.armourers_workshop.core.skin.particle.component.particle.motion.ParticleParametricMotion;
 import moe.plushie.armourers_workshop.core.skin.texture.SkinTextureData;
-import moe.plushie.armourers_workshop.core.utils.OpenExpression;
 import moe.plushie.armourers_workshop.core.utils.Objects;
+import moe.plushie.armourers_workshop.core.utils.OpenExpression;
 import moe.plushie.armourers_workshop.core.utils.OpenPrimitive;
 import moe.plushie.armourers_workshop.init.ModConstants;
 

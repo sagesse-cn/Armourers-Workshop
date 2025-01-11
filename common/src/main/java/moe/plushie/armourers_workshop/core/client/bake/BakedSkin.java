@@ -179,7 +179,7 @@ public class BakedSkin {
         }
         bounds = shape.bounds().copy();
         if (!rotation.equals(OpenVector3f.ZERO)) {
-            var center = new OpenVector4f(bounds.getCenter());
+            var center = new OpenVector4f(bounds.center());
             matrix.invert();
             center.transform(matrix);
             bounds.setX(center.x() - bounds.width() / 2);

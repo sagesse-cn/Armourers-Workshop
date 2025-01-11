@@ -147,7 +147,7 @@ public class OpenRectangle3i implements IRectangle3i {
         return this.z + this.depth;
     }
 
-    public OpenVector3i getOrigin() {
+    public OpenVector3i origin() {
         return new OpenVector3i(x, y, z);
     }
 

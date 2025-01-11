@@ -963,7 +963,7 @@ public class BlockBenchExporter {
             var size = resolveTextureSize(texture, imageFrame);
             var animation = resolveTextureAnimation(texture, imageFrame);
             var properties = resolveTextureProperties(texture);
-            textureData = new SkinTextureData(texture.getName(), size.getWidth(), size.getHeight(), animation, properties);
+            textureData = new SkinTextureData(texture.getName(), size.width(), size.height(), animation, properties);
             textureData.load(Unpooled.wrappedBuffer(imageBytes));
             loadedTextures.put(texture.getUUID(), textureData);
             return textureData;
@@ -993,12 +993,12 @@ public class BlockBenchExporter {
         }
 
         private OpenSize2f resolveTextureSize(BlockBenchTexture texture, int frameCount) {
-            var width = resolution.getWidth();
-            var height = resolution.getHeight();
+            var width = resolution.width();
+            var height = resolution.height();
             // in new version block bench provides texture size.
             if (texture.getTextureSize() != null) {
-                width = texture.getTextureSize().getWidth();
-                height = texture.getTextureSize().getHeight();
+                width = texture.getTextureSize().width();
+                height = texture.getTextureSize().height();
             }
             if (frameCount > 1) {
                 height *= frameCount;

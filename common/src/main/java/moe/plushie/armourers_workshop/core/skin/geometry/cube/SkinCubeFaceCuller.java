@@ -123,7 +123,7 @@ public class SkinCubeFaceCuller {
         var searchArea = new OpenRectangle3i(rect.x() - 1, rect.y() - 1, rect.z() - 1, rect.width() + 2, rect.height() + 2, rect.depth() + 2);
         var closedSet = new HashSet<OpenVector3i>();
         var openList = new ArrayDeque<OpenVector3i>();
-        var start = searchArea.getOrigin();
+        var start = searchArea.origin();
         openList.add(start);
         closedSet.add(start);
         map.limit(rect);

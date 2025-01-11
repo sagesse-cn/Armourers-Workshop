@@ -58,7 +58,7 @@ public class BakedGeometryQuads {
             var newTransform = OpenTransform3f.createTranslateTransform(new OpenVector3f(result.getOrigin()));
             var newShape = shape;
             if (result.getPartType() != part.getType()) {
-                var fixedBounds = result.getBounds().offset(bounds.getOrigin());
+                var fixedBounds = result.getBounds().offset(bounds.origin());
                 newShape = OpenVoxelShape.box(fixedBounds);
             }
             var newQuads = new BakedGeometryQuads(newShape, new ColorDescriptor());

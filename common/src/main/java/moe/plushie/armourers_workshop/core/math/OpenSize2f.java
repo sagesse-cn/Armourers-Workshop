@@ -23,11 +23,11 @@ public class OpenSize2f {
         this.height = height;
     }
 
-    public float getWidth() {
+    public float width() {
         return width;
     }
 
-    public float getHeight() {
+    public float height() {
         return height;
     }
 

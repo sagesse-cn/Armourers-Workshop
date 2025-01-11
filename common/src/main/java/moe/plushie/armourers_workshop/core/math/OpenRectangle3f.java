@@ -164,15 +164,15 @@ public class OpenRectangle3f implements IRectangle3f {
         return this.z + this.depth;
     }
 
-    public OpenVector3f getCenter() {
+    public OpenVector3f center() {
         return new OpenVector3f(midX(), midY(), midZ());
     }
 
-    public OpenVector3f getOrigin() {
+    public OpenVector3f origin() {
         return new OpenVector3f(x, y, z);
     }
 
-    public OpenRectangle3f getBounds() {
+    public OpenRectangle3f bounds() {
         return new OpenRectangle3f(-width / 2, -height / 2, -depth / 2, width, height, depth);
     }
 

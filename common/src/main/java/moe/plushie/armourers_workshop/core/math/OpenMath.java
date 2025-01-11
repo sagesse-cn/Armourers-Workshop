@@ -81,11 +81,11 @@ public class OpenMath {
     }
 
     public static float asin(float r) {
-        return (float) java.lang.Math.asin(r);
+        return (float) Math.asin(r);
     }
 
     public static double asin(double r) {
-        return java.lang.Math.asin(r);
+        return Math.asin(r);
     }
 
     public static float safeAsin(float r) {

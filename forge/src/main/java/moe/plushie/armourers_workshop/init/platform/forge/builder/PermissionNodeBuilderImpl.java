@@ -21,7 +21,7 @@ public class PermissionNodeBuilderImpl<T extends IPermissionNode> implements IPe
 
     @Override
     public T build(String name) {
-        IResourceLocation registryName = ModConstants.key(name);
+        var registryName = ModConstants.key(name);
         ModLog.debug("Registering Permission '{}'", registryName);
         return Objects.unsafeCast(AbstractForgePermissionManager.makeNode(registryName, level));
     }
@@ -55,5 +55,4 @@ public class PermissionNodeBuilderImpl<T extends IPermissionNode> implements IPe
             return registryName;
         }
     }
-
 }

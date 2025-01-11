@@ -1,7 +1,6 @@
 package moe.plushie.armourers_workshop.core.skin.serializer.importer.bedrock;
 
 import moe.plushie.armourers_workshop.core.utils.OpenExpression;
-import moe.plushie.armourers_workshop.core.utils.OpenExpression;
 
 import java.util.List;
 
