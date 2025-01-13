@@ -59,8 +59,8 @@ allprojects {
     }
 
     dependencies {
-        compileOnly "systems.manifold:manifold-ext:2024.1.15"
-        annotationProcessor "systems.manifold:manifold-ext:2024.1.15"
+        compileOnly "systems.manifold:manifold-ext:${rootProject.manifold_version}"
+        annotationProcessor "systems.manifold:manifold-ext:${rootProject.manifold_version}"
 //        compileOnly "systems.manifold:manifold-typealias:${rootProject.manifold_version}"
 //        annotationProcessor "systems.manifold:manifold-typealias:${rootProject.manifold_version}"
     }

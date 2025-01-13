@@ -70,11 +70,27 @@ import java.util.stream.Stream;
 public class ClientProxy {
 
     public static void init() {
-        MinecraftAuth.init(() -> Minecraft.getInstance().getUser().getUuid(), () -> Minecraft.getInstance().getUser().getAccessToken());
         ClientWardrobeHandler.init();
         SkinRendererManager.init();
         ModKeyBindings.init();
         ModDebugger.init();
+
+        MinecraftAuth.init(new MinecraftAuth.UserProvider() {
+            @Override
+            public String getId() {
+                return Minecraft.getInstance().getUser().getUuid();
+            }
+
+            @Override
+            public String getName() {
+                return Minecraft.getInstance().getUser().getName();
+            }
+
+            @Override
+            public String getAccessToken() {
+                return Minecraft.getInstance().getUser().getAccessToken();
+            }
+        });
 
         EnvironmentExecutor.willSetup(EnvironmentType.CLIENT, () -> () -> {
             var resourceManager = Minecraft.getInstance().getResourceManager();

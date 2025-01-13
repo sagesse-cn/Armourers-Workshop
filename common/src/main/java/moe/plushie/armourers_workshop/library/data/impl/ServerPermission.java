@@ -175,7 +175,7 @@ public enum ServerPermission {
     }
 
     public static ServerPermission byId(String id) {
-        for (ServerPermission permission : ServerPermission.values()) {
+        for (var permission : ServerPermission.values()) {
             if (permission.id != null && permission.id.equals(id)) {
                 return permission;
             }

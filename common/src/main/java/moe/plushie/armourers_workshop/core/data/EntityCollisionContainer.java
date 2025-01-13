@@ -72,8 +72,8 @@ public class EntityCollisionContainer {
     private void reload(List<Skin> skins) {
         // when the result is changed, notify all client.
         var newResult = resolve(skins);
-        ModLog.debug("{} reload collision shape: {}", entity.get(), newResult);
         if (!Objects.equals(newResult, result)) {
+            ModLog.debug("{} reload collision shape: {}", entity.get(), newResult);
             setResult(newResult);
             sendChanges();
         }

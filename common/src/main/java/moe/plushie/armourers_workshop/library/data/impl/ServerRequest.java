@@ -2,6 +2,7 @@ package moe.plushie.armourers_workshop.library.data.impl;
 
 import io.netty.buffer.ByteBuf;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IODataObject;
+import moe.plushie.armourers_workshop.core.utils.Objects;
 import moe.plushie.armourers_workshop.core.utils.StreamUtils;
 import moe.plushie.armourers_workshop.init.ModLog;
 
@@ -25,7 +26,7 @@ public class ServerRequest {
     private final ArrayList<String> body = new ArrayList<>();
 
     public static ServerRequest fromJSON(IODataObject object) {
-        ServerRequest request = new ServerRequest();
+        var request = new ServerRequest();
         object.get("path").ifPresent(it -> request.path = it.stringValue());
         object.get("query").allValues().forEach(it -> request.query.add(it.stringValue()));
         object.get("body").allValues().forEach(it -> request.body.add(it.stringValue()));
@@ -35,13 +36,17 @@ public class ServerRequest {
         return request;
     }
 
+    public static Object createFile(String name, Callable<ByteBuf> bytes) {
+        return new ServerRequest.MultipartFormFile(name, bytes);
+    }
+
     public Callable<InputStream> build(String baseURL, Map<String, ?> parameters) throws Exception {
-        StringBuilder builder = new StringBuilder();
+        var builder = new StringBuilder();
         builder.append(baseURL);
         builder.append(path);
         // concat all query parameters.
-        String delimiter = "?";
-        for (String it : query) {
+        var delimiter = "?";
+        for (var it : query) {
             builder.append(delimiter);
             builder.append(getKey(it));
             builder.append("=");
@@ -50,11 +55,11 @@ public class ServerRequest {
         }
         // when body is not required, we will create a simple request.
         if (body.isEmpty()) {
-            SinglePart part = new SinglePart(new URL(builder.toString()));
+            var part = new SinglePart(new URL(builder.toString()));
             return part::upload;
         }
-        MultipartForm multipartForm = new MultipartForm(builder.toString());
-        for (String it : body) {
+        var multipartForm = new MultipartForm(builder.toString());
+        for (var it : body) {
             multipartForm.add(getBodyValue(it, parameters));
         }
         return multipartForm::upload;
@@ -91,7 +96,7 @@ public class ServerRequest {
         if (key.contains("=")) {
             return getValue(key.split("="), 1);
         }
-        Object value = parameters.get(key);
+        var value = parameters.get(key);
         if (value == null) {
             ModLog.debug("missing value of '{}' at '{}', with: {}", key, path, parameters);
             throw new RuntimeException("missing value of '" + key + "' at '" + path + "'");
@@ -104,13 +109,13 @@ public class ServerRequest {
             String[] part = key.split("=");
             return new MultipartForm.Text(getValue(part, 0), getValue(part, 1));
         }
-        Object value = parameters.get(key);
+        var value = parameters.get(key);
         if (value == null) {
             ModLog.debug("missing value of '{}' at '{}', with: {}", key, path, parameters);
             throw new RuntimeException("missing value of '" + key + "' at '" + path + "'");
         }
-        if (value instanceof MultipartFormFile) {
-            return ((MultipartFormFile) value).build(key);
+        if (value instanceof MultipartFormFile file) {
+            return file.build(key);
         }
         return new MultipartForm.Text(key, value.toString());
     }
@@ -132,14 +137,14 @@ public class ServerRequest {
         }
 
         public InputStream upload() throws IOException {
-            URLConnection connection = url.openConnection();
+            var connection = url.openConnection();
             connection.setConnectTimeout(15000);
             connection.setReadTimeout(15000);
             return connection.getInputStream();
         }
     }
 
-    public static class MultipartForm {
+    private static class MultipartForm {
 
         private static final String CRLF = "\r\n";
 
@@ -158,10 +163,10 @@ public class ServerRequest {
         public InputStream upload() throws IOException {
             //ModLogger.log("Accessing: " + uploadUrl);
 
-            String boundary = Long.toHexString(System.currentTimeMillis());
+            var boundary = Long.toHexString(System.currentTimeMillis());
 
-            URL uploadUrl = new URL(this.uploadUrl);
-            URLConnection connection = uploadUrl.openConnection();
+            var uploadUrl = new URL(this.uploadUrl);
+            var connection = uploadUrl.openConnection();
 
             connection.setConnectTimeout(15000);
             connection.setReadTimeout(15000);
@@ -243,7 +248,7 @@ public class ServerRequest {
         }
     }
 
-    public static class MultipartFormFile {
+    private static class MultipartFormFile {
 
         private final String name;
         private final Callable<ByteBuf> bytes;

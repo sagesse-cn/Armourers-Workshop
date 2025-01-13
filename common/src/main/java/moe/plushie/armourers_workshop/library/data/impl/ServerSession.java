@@ -1,5 +1,6 @@
 package moe.plushie.armourers_workshop.library.data.impl;
 
+import com.google.gson.JsonParseException;
 import moe.plushie.armourers_workshop.api.core.IResultHandler;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IODataObject;
 import moe.plushie.armourers_workshop.core.utils.Executors;
@@ -10,6 +11,7 @@ import org.jetbrains.annotations.Nullable;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -44,7 +46,7 @@ public abstract class ServerSession {
         try {
             var task = buildTask(path, parameters);
             var bytes = StreamUtils.readStreamToByteArray(task.call());
-            var responseData = JsonSerializer.readFromStream(new ByteArrayInputStream(bytes));
+            var responseData = parse(bytes);
             var response = new ServerResponse(responseData);
             if (!response.isValid()) {
                 throw new RuntimeException("a invalid response of the " + path);
@@ -60,7 +62,7 @@ public abstract class ServerSession {
     }
 
     protected Callable<InputStream> buildTask(String path, @Nullable Map<String, ?> parameters) throws Exception {
-        ServerRequest request = loadAPI(path);
+        var request = loadAPI(path);
         checkRequest(request, parameters);
         return request.build(buildRequestURL(request), m2m(parameters));
     }
@@ -69,7 +71,7 @@ public abstract class ServerSession {
         // when the request required authorization,
         // we will try to switch to the https channel.
         if (request.isSSLRequired()) {
-            for (String baseURL : getBaseURLs()) {
+            for (var baseURL : getBaseURLs()) {
                 if (baseURL.startsWith("https://")) {
                     return baseURL;
                 }
@@ -82,7 +84,7 @@ public abstract class ServerSession {
     }
 
     protected String defaultBaseURL() {
-        ArrayList<String> baseURLs = getBaseURLs();
+        var baseURLs = getBaseURLs();
         if (!baseURLs.isEmpty()) {
             return baseURLs.get(0);
         }
@@ -114,7 +116,7 @@ public abstract class ServerSession {
     }
 
     private ServerRequest loadAPI(String path) throws Exception {
-        ServerRequest request = loadAPIs().get(path);
+        var request = loadAPIs().get(path);
         if (request != null) {
             return request;
         }
@@ -142,8 +144,16 @@ public abstract class ServerSession {
         return REQUESTS;
     }
 
+    private IODataObject parse(byte[] bytes) throws IOException {
+        try {
+            return JsonSerializer.readFromStream(new ByteArrayInputStream(bytes));
+        } catch (JsonParseException exception) {
+            throw new IOException(new String(bytes, StandardCharsets.UTF_8));
+        }
+    }
+
     private Map<String, Object> m2m(Map<String, ?> m) {
-        HashMap<String, Object> map = defaultParameters();
+        var map = defaultParameters();
         if (m != null) {
             map.putAll(m);
         }

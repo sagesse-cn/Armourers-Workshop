@@ -24,11 +24,11 @@ public class CustomPacket {
     }
 
     public void accept(final IServerPacketHandler packetHandler, final ServerPlayer player) {
-        throw new UnsupportedOperationException("This packet ( " + this.getPacketID() + ") does not implement a server side handler.");
+        throw new UnsupportedOperationException("This packet (" + this.getPacketID() + ") does not implement a server side handler.");
     }
 
     public void accept(final IClientPacketHandler packetHandler, final Player player) {
-        throw new UnsupportedOperationException("This packet ( " + this.getPacketID() + ") does not implement a client side handler.");
+        throw new UnsupportedOperationException("This packet (" + this.getPacketID() + ") does not implement a client side handler.");
     }
 
     public void encode(final IFriendlyByteBuf buffer) {

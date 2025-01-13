@@ -11,7 +11,7 @@ public class ReportResult {
     private final ArrayList<Report> reports = new ArrayList<>();
 
     public static ReportResult fromJSON(IODataObject json) {
-        ReportResult result = new ReportResult();
+        var result = new ReportResult();
         json.get("results").allValues().forEach(it -> result.reports.add(new Report(it)));
         result.totalPages = json.get("totalPages").intValue();
         result.totalResults = json.get("totalResults").intValue();

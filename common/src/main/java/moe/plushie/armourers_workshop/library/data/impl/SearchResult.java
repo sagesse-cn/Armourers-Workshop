@@ -11,7 +11,7 @@ public class SearchResult {
     private final ArrayList<ServerSkin> skins = new ArrayList<>();
 
     public static SearchResult fromJSON(IODataObject json) {
-        SearchResult result = new SearchResult();
+        var result = new SearchResult();
         json.get("results").allValues().forEach(it -> result.skins.add(new ServerSkin(it)));
         result.totalPages = json.get("totalPages").intValue();
         result.totalResults = json.get("totalResults").intValue();

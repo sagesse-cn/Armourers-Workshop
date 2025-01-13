@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.function.Supplier;
 
 /**
  * https://minecraft.wiki/w/Mojang_API
@@ -24,12 +23,10 @@ public class MinecraftAuth {
     private static long lastAuthTime;
     private static Exception lastAuthError;
 
-    private static Supplier<String> USER_ID_PROVIDER;
-    private static Supplier<String> USER_ACCESS_TOKEN_PROVIDER;
+    private static UserProvider USER_PROVIDER;
 
-    public static void init(Supplier<String> idProvider, Supplier<String> accessTokenProvider) {
-        USER_ID_PROVIDER = idProvider;
-        USER_ACCESS_TOKEN_PROVIDER = accessTokenProvider;
+    public static void init(UserProvider userProvider) {
+        USER_PROVIDER = userProvider;
     }
 
     public static boolean checkAndRefeshAuth(String serverId) {
@@ -38,13 +35,13 @@ public class MinecraftAuth {
                 ModLog.debug("skipping mc auth");
                 return true;
             }
-            if (USER_ID_PROVIDER == null || USER_ACCESS_TOKEN_PROVIDER == null) {
+            if (USER_PROVIDER == null) {
                 ModLog.debug("pls call init before!!!");
                 lastAuthError = new RuntimeException("pls call init before!!!");
                 return false;
             }
             ModLog.info("MC Auth Start");
-            var data = "{\"accessToken\":\"" + USER_ACCESS_TOKEN_PROVIDER.get() + "\", \"serverId\":\"" + serverId + "\", \"selectedProfile\":\"" + USER_ID_PROVIDER.get() + "\"}";
+            var data = "{\"accessToken\":\"" + USER_PROVIDER.getAccessToken() + "\", \"serverId\":\"" + serverId + "\", \"selectedProfile\":\"" + USER_PROVIDER.getId() + "\"}";
 
             try {
                 // returns non 204 if error occurred
@@ -99,5 +96,14 @@ public class MinecraftAuth {
         connection.setReadTimeout(15000);
         connection.setUseCaches(false);
         return connection;
+    }
+
+    public interface UserProvider {
+
+        String getId();
+
+        String getName();
+
+        String getAccessToken();
     }
 }

@@ -52,7 +52,7 @@ public class ServerSkin {
     }
 
     public void update(String name, String desc, IResultHandler<ServerSkin> handler) {
-        HashMap<String, Object> parameters = new HashMap<>();
+        var parameters = new HashMap<String, Object>();
         parameters.put("name", name);
         parameters.put("description", desc);
         parameters.put("skinId", id);
@@ -69,14 +69,14 @@ public class ServerSkin {
     }
 
     public void getRate(IResultHandler<Integer> handler) {
-        HashMap<String, Object> parameters = new HashMap<>();
+        var parameters = new HashMap<String, Object>();
         parameters.put("skinId", id);
         getLibrary().request("/skin/rating", parameters, o -> o.get("rating").intValue(), handler);
     }
 
 
     public void updateRate(int rate, IResultHandler<Integer> handler) {
-        HashMap<String, Object> parameters = new HashMap<>();
+        var parameters = new HashMap<String, Object>();
         parameters.put("skinId", id);
         parameters.put("rating", rate);
         getLibrary().request("/skin/rate", parameters, o -> o.get("rating").intValue(), (rating, exception) -> {
@@ -89,14 +89,14 @@ public class ServerSkin {
 
 
     public void remove(IResultHandler<Void> handler) {
-        HashMap<String, Object> parameters = new HashMap<>();
+        var parameters = new HashMap<String, Object>();
         parameters.put("skinId", id);
         parameters.put("skinOwner", userId);
         getLibrary().request("/skin/delete", parameters, null, handler);
     }
 
     public void report(String message, ReportType reportType, IResultHandler<Void> handler) {
-        HashMap<String, Object> parameters = new HashMap<>();
+        var parameters = new HashMap<String, Object>();
         parameters.put("reportSkinId", id);
         parameters.put("reportType", reportType.toString());
         parameters.put("reportMessage", message);

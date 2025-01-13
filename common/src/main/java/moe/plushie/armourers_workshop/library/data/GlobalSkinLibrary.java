@@ -72,6 +72,9 @@ public class GlobalSkinLibrary extends ServerSession {
             state.connecting = false;
             state.connected = true;
             updateUser(result);
+            if (result != null) {
+                result.setName(profile.getName());
+            }
         });
     }
 
@@ -162,7 +165,7 @@ public class GlobalSkinLibrary extends ServerSession {
         var parameters = new HashMap<String, Object>();
         parameters.put("name", name);
         parameters.put("description", desc);
-        parameters.put("fileToUpload", new ServerRequest.MultipartFormFile(name, () -> {
+        parameters.put("fileToUpload", ServerRequest.createFile(name, () -> {
             try (var outputStream = new ByteArrayOutputStream()) {
                 SkinSerializer.writeToStream(skin, null, outputStream);
                 return Unpooled.wrappedBuffer(outputStream.toByteArray());

@@ -102,6 +102,6 @@ public class PacketSplitter {
         if (decoder != null) {
             return decoder.apply(IFriendlyByteBuf.wrap(buffer));
         }
-        throw new UnsupportedOperationException("This packet ( " + packetId + ") does not support in this version.");
+        throw new UnsupportedOperationException("This packet (" + packetId + ") does not support in this version.");
     }
 }

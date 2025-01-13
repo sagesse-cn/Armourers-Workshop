@@ -41,7 +41,7 @@ public class ServerPermissions {
 
 
     static {
-        EnumSet<ServerPermission> actions = EnumSet.noneOf(ServerPermission.class);
+        var actions = EnumSet.noneOf(ServerPermission.class);
 
         actions.add(ServerPermission.SKIN_DOWNLOAD);
         actions.add(ServerPermission.GET_RECENTLY_UPLOADED);

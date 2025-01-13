@@ -9,10 +9,10 @@ public class ServerUser {
 
     private final String id;
     private final UUID uuid;
-    private final String name;
 
     private final ServerPermissions permissions;
 
+    private String name;
     private ServerToken accessToken;
 
     public ServerUser(UUID uuid, String name) {
@@ -27,10 +27,10 @@ public class ServerUser {
     }
 
     public static ServerUser fromJSON(IODataObject object) {
-        String id = object.get("id").stringValue();
-        UUID uuid = UUID.fromString(object.get("uuid").stringValue());
-        String name = object.get("username").stringValue();
-        ServerPermissions permissions = ServerPermissions.byId(object.get("permission_group_id").intValue());
+        var id = object.get("id").stringValue();
+        var uuid = UUID.fromString(object.get("uuid").stringValue());
+        var name = object.get("username").stringValue();
+        var permissions = ServerPermissions.byId(object.get("permission_group_id").intValue());
         return new ServerUser(id, uuid, name, permissions);
     }
 
@@ -66,12 +66,12 @@ public class ServerUser {
         return uuid;
     }
 
-    public String getName() {
-        return name;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public ServerPermissions getPermissions() {
-        return permissions;
+    public String getName() {
+        return name;
     }
 
     public void setAccessToken(ServerToken accessToken) {
