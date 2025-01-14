@@ -235,7 +235,7 @@ public class GlobalSkinLibrary extends ServerSession {
     @Override
     protected HashMap<String, Object> defaultParameters() {
         var parameters = super.defaultParameters();
-        parameters.put("maxFileVersion", SkinSerializer.Versions.V13);
+        parameters.put("maxFileVersion", SkinSerializer.Versions.LATEST);
         var user = getUser();
         if (user.getId() != null) {
             parameters.put("userId", user.getId());

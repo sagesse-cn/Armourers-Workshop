@@ -179,7 +179,7 @@ public class ServerRequest {
                 output = connection.getOutputStream();
                 writer = new PrintWriter(new OutputStreamWriter(output, charset), true);
 
-                for (Value value : values) {
+                for (var value : values) {
                     value.write(output, writer, boundary);
                 }
 
@@ -239,7 +239,6 @@ public class ServerRequest {
                 writer.append("--" + boundary).append(CRLF);
                 writer.append("Content-Disposition: form-data; name=\"" + name + "\"; filename=\"" + filename + "\"").append(CRLF);
                 writer.append("Content-Type: application/octet-stream").append(CRLF);
-                writer.append("Content-Transfer-.Encoding: binary").append(CRLF);
                 writer.append(CRLF).flush();
                 output.write(fileBytes.array());
                 output.flush(); // Important must flush before continuing with writer!

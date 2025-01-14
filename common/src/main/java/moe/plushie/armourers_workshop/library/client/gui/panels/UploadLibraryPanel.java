@@ -114,7 +114,7 @@ public class UploadLibraryPanel extends AbstractLibraryPanel {
     }
 
     private UITextField addTextField(float x, float y, float width, float height, String key) {
-        UITextField textField = new UITextField(new CGRect(x, y, width, height));
+        var textField = new UITextField(new CGRect(x, y, width, height));
         textField.setPlaceholder(getDisplayText(key));
         textField.setMaxLength(255);
         textField.setAutoresizingMask(AutoresizingMask.flexibleWidth);
@@ -123,7 +123,7 @@ public class UploadLibraryPanel extends AbstractLibraryPanel {
     }
 
     private UITextView addTextView(float x, float y, float width, float height, String key) {
-        UITextView textField = new UITextView(new CGRect(x, y, width, height));
+        var textField = new UITextView(new CGRect(x, y, width, height));
         textField.setPlaceholder(getDisplayText(key));
         textField.setAutoresizingMask(AutoresizingMask.flexibleWidth | AutoresizingMask.flexibleHeight);
         textField.setMaxLength(255);
@@ -132,7 +132,7 @@ public class UploadLibraryPanel extends AbstractLibraryPanel {
     }
 
     private UILabel addLabel(float x, float y, float width, float height, NSString message) {
-        UILabel label = new UILabel(new CGRect(x, y, width, height));
+        var label = new UILabel(new CGRect(x, y, width, height));
         label.setText(message);
         label.setTextColor(UIColor.WHITE);
         label.setAutoresizingMask(AutoresizingMask.flexibleWidth);
@@ -141,7 +141,7 @@ public class UploadLibraryPanel extends AbstractLibraryPanel {
     }
 
     private UIButton addTextButton(float x, float y, float width, float height, String key, BiConsumer<UploadLibraryPanel, UIControl> handler) {
-        UIButton button = new UIButton(new CGRect(x, y, width, height));
+        var button = new UIButton(new CGRect(x, y, width, height));
         button.setTitle(getDisplayText(key), UIControl.State.NORMAL);
         button.setTitleColor(UIColor.WHITE, UIControl.State.NORMAL);
         button.setBackgroundImage(ModTextures.defaultButtonImage(), UIControl.State.ALL);
@@ -151,8 +151,8 @@ public class UploadLibraryPanel extends AbstractLibraryPanel {
     }
 
     private void upload(UIControl sender) {
-        SkinDescriptor descriptor = SkinDescriptor.of(getInputStack());
-        BakedSkin bakedSkin = SkinBakery.getInstance().loadSkin(descriptor, Tickets.RENDERER);
+        var descriptor = SkinDescriptor.of(getInputStack());
+        var bakedSkin = SkinBakery.getInstance().loadSkin(descriptor, Tickets.RENDERER);
         if (bakedSkin == null) {
             onUploadFailed("Skin missing.");
             return;
@@ -204,7 +204,7 @@ public class UploadLibraryPanel extends AbstractLibraryPanel {
     }
 
     private NSString getWarningMessage() {
-        NSMutableString message = new NSMutableString("");
+        var message = new NSMutableString("");
         message.append(getDisplayText("label.upload_warning"));
         message.append("\n\n");
 
