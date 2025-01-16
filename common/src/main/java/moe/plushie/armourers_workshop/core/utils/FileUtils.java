@@ -4,6 +4,8 @@ import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -152,5 +154,14 @@ public class FileUtils {
 
     public static long getLastModifiedTime(File path) {
         return path.lastModified();
+    }
+
+    public static long getCreationTime(File path) {
+        try {
+            var attrs = Files.readAttributes(path.toPath(), BasicFileAttributes.class);
+            return attrs.creationTime().toMillis();
+        } catch (IOException e) {
+            return 0;
+        }
     }
 }

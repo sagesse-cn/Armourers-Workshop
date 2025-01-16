@@ -2,8 +2,9 @@ package moe.plushie.armourers_workshop.core.data;
 
 import moe.plushie.armourers_workshop.core.skin.Skin;
 import moe.plushie.armourers_workshop.core.skin.serializer.SkinSerializer;
-import moe.plushie.armourers_workshop.core.skin.serializer.source.FileDataSource;
+import moe.plushie.armourers_workshop.core.data.source.FileDataSource;
 import moe.plushie.armourers_workshop.init.ModConfig;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -55,10 +56,10 @@ public class DataManager {
         }
     }
 
-    public String saveSkin(Skin skin) throws Exception {
+    public String saveSkin(@Nullable String id, Skin skin) throws Exception {
         try (var outputStream = new ByteArrayOutputStream(5 * 1024)) {
             SkinSerializer.writeToStream(skin, null, outputStream);
-            return saveSkinData(new ByteArrayInputStream(outputStream.toByteArray()));
+            return saveSkinData(id, new ByteArrayInputStream(outputStream.toByteArray()));
         }
     }
 
@@ -68,9 +69,17 @@ public class DataManager {
         }
     }
 
-    public String saveSkinData(InputStream inputStream) throws Exception {
+    public void removeSkin(String id) throws Exception {
         if (fileDataSource != null) {
-            return fileDataSource.save(inputStream);
+            fileDataSource.remove(id);
+            return;
+        }
+        throw new Exception("Missing data source connect!");
+    }
+
+    public String saveSkinData(@Nullable String id, InputStream inputStream) throws Exception {
+        if (fileDataSource != null) {
+            return fileDataSource.save(id, inputStream);
         }
         throw new Exception("Missing data source connect!");
     }

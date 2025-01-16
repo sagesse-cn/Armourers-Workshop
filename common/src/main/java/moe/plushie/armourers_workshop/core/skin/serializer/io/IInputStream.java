@@ -257,6 +257,6 @@ public interface IInputStream {
     }
 
     default CompoundTag readCompoundTag() throws IOException {
-        return TagSerializer.readFromStream(getInputStream());
+        return TagSerializer.parse(getInputStream());
     }
 }

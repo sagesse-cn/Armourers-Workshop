@@ -1,4 +1,4 @@
-package moe.plushie.armourers_workshop.core.skin.serializer.source;
+package moe.plushie.armourers_workshop.core.data.source;
 
 import java.sql.Connection;
 import java.sql.SQLException;

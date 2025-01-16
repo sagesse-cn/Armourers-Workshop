@@ -197,7 +197,7 @@ public class SkinLoader {
             if (DataDomain.isDatabase(identifier)) {
                 return identifier;
             }
-            var newIdentifier = DataManager.getInstance().saveSkin(skin);
+            var newIdentifier = DataManager.getInstance().saveSkin(null, skin);
             identifier = DataDomain.DATABASE.normalize(newIdentifier);
             addSkin(identifier, skin);
             return identifier;

@@ -86,7 +86,7 @@ public class ModMenuOptions {
 
     private void load() {
         try (var inputStream = new FileInputStream(contentPath)) {
-            var tag = TagSerializer.readFromStream(inputStream);
+            var tag = TagSerializer.parse(inputStream);
             values.merge(tag);
         } catch (Exception e) {
             e.printStackTrace();

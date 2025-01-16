@@ -8,6 +8,7 @@ import net.minecraft.nbt.DoubleTag;
 import net.minecraft.nbt.FloatTag;
 import net.minecraft.nbt.IntTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.LongTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import org.jetbrains.annotations.Nullable;
@@ -120,7 +121,7 @@ public abstract class OpenProperties {
 
 
     private enum DataTypes {
-        STRING, INT, DOUBLE, BOOLEAN, LIST, COMPOUND, FLOAT;
+        STRING, INT, DOUBLE, BOOLEAN, LIST, COMPOUND, FLOAT, LONG;
 
         @Nullable
         public static DataTypes byId(int id) {
@@ -157,6 +158,9 @@ public abstract class OpenProperties {
             if (value instanceof String stringValue) {
                 writeTypeToStream(DataTypes.STRING, stream);
                 stream.writeString(stringValue);
+            } else if (value instanceof Long longValue) {
+                writeTypeToStream(DataTypes.LONG, stream);
+                stream.writeLong(longValue);
             } else if (value instanceof Integer intValue) {
                 writeTypeToStream(DataTypes.INT, stream);
                 stream.writeInt(intValue);
@@ -206,6 +210,7 @@ public abstract class OpenProperties {
             return switch (type) {
                 case STRING -> stream.readString();
                 case INT -> stream.readInt();
+                case LONG -> stream.readLong();
                 case FLOAT -> stream.readFloat();
                 case DOUBLE -> stream.readDouble();
                 case BOOLEAN -> stream.readBoolean();
@@ -238,6 +243,9 @@ public abstract class OpenProperties {
         protected Tag writeValueToNbt(Object value) {
             if (value instanceof String stringValue) {
                 return StringTag.valueOf(stringValue);
+            }
+            if (value instanceof Long longValue) {
+                return LongTag.valueOf(longValue);
             }
             if (value instanceof Integer intValue) {
                 return IntTag.valueOf(intValue);
@@ -275,6 +283,9 @@ public abstract class OpenProperties {
         protected Object readValueFromNBT(OpenProperties instance, Object value) {
             if (value instanceof StringTag stringTag) {
                 return stringTag.getAsString();
+            }
+            if (value instanceof LongTag longTag) {
+                return longTag.getAsLong();
             }
             if (value instanceof IntTag intTag) {
                 return intTag.getAsInt();

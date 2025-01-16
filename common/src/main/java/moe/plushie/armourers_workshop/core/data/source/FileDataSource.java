@@ -1,5 +1,9 @@
-package moe.plushie.armourers_workshop.core.skin.serializer.source;
+package moe.plushie.armourers_workshop.core.data.source;
 
+import moe.plushie.armourers_workshop.api.core.IDataCodec;
+import moe.plushie.armourers_workshop.api.core.IDataSerializable;
+import moe.plushie.armourers_workshop.api.core.IDataSerializer;
+import moe.plushie.armourers_workshop.api.core.IDataSerializerKey;
 import moe.plushie.armourers_workshop.core.skin.Skin;
 import moe.plushie.armourers_workshop.core.skin.serializer.SkinSerializer;
 import moe.plushie.armourers_workshop.core.utils.Executors;
@@ -10,7 +14,7 @@ import moe.plushie.armourers_workshop.core.utils.StreamUtils;
 import moe.plushie.armourers_workshop.core.utils.TagSerializer;
 import moe.plushie.armourers_workshop.init.ModConfig;
 import moe.plushie.armourers_workshop.init.ModLog;
-import net.minecraft.nbt.CompoundTag;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -23,7 +27,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
@@ -32,7 +38,8 @@ import java.util.concurrent.TimeUnit;
 
 public abstract class FileDataSource {
 
-    private String lastGenUUID = "";
+    protected String name = "";
+    protected String lastGenUUID = "";
 
     public abstract void connect() throws Exception;
 
@@ -41,36 +48,45 @@ public abstract class FileDataSource {
     public void setReconnectHandler(Runnable reconnectHandler) {
     }
 
-    public InputStream load(String id) throws Exception {
-        var bytes = query(id);
-        return new ByteArrayInputStream(bytes);
-    }
-
-    public String save(InputStream stream) throws Exception {
+    public String save(@Nullable String id, InputStream stream) throws Exception {
         var bytes = StreamUtils.readStreamToByteArray(stream);
         var fileHash = Arrays.hashCode(bytes);
-        var identifier = search(fileHash, bytes);
+        var identifier = searchNode(fileHash, bytes);
         if (identifier != null) {
             return identifier;
         }
         var skin = SkinSerializer.readFromStream(null, new ByteArrayInputStream(bytes));
-        identifier = getFreeId();
-        update(identifier, skin, fileHash, bytes);
+        identifier = getFreeId(id);
+        insertNode(identifier, skin, fileHash, bytes);
         return identifier;
     }
 
-    protected abstract void update(String id, Skin skin, int hash, byte[] bytes) throws Exception;
+    public InputStream load(String id) throws Exception {
+        var bytes = queryNode(id);
+        return new ByteArrayInputStream(bytes);
+    }
 
-    protected abstract byte[] query(String id) throws Exception;
+    public abstract void remove(String id) throws Exception;
 
-    protected abstract void remove(String id) throws Exception;
+    public abstract boolean contains(String id) throws Exception;
 
-    protected abstract String search(int hash, byte[] bytes) throws Exception;
+    public abstract long getCreationTime(String id) throws Exception;
 
-    protected abstract boolean contains(String id) throws Exception;
+    public abstract long getLastModifiedTime(String id) throws Exception;
 
-    private String getFreeId() throws Exception {
-        String uuid = lastGenUUID;
+    protected abstract void insertNode(String id, Skin skin, int hash, byte[] bytes) throws Exception;
+
+    protected abstract byte[] queryNode(String id) throws Exception;
+
+    protected abstract String searchNode(int hash, byte[] bytes) throws Exception;
+
+    protected abstract List<String> queryNodes() throws Exception;
+
+    private String getFreeId(@Nullable String id) throws Exception {
+        if (id != null) {
+            return id;
+        }
+        var uuid = lastGenUUID;
         while (uuid.isEmpty() || contains(uuid)) {
             uuid = OpenUUID.randomUUIDString();
         }
@@ -80,7 +96,6 @@ public abstract class FileDataSource {
 
     public static class SQL extends FileDataSource {
 
-        private final String name;
         private final Connection connection;
 
         private Runnable reconnectHandler;
@@ -89,7 +104,9 @@ public abstract class FileDataSource {
         private PreparedStatement insertStatement;
         private PreparedStatement existsStatement;
         private PreparedStatement searchStatement;
+        private PreparedStatement timeStatement;
         private PreparedStatement queryStatement;
+        private PreparedStatement queryAllStatement;
         private PreparedStatement removeStatement;
 
         public SQL(String name, Connection connection) {
@@ -111,6 +128,7 @@ public abstract class FileDataSource {
             builder.add("id", "VARCHAR(48) NOT NULL PRIMARY KEY");
             builder.add("type", "VARCHAR(48)");
             builder.add("created_at", "TIMESTAMP");
+            builder.add("modified_at", "TIMESTAMP");
             builder.add("name", "VARCHAR(512)");
             builder.add("flavour", "VARCHAR(1024)");
             builder.add("author", "VARCHAR(48)");
@@ -119,10 +137,12 @@ public abstract class FileDataSource {
             builder.execute(connection);
 
             // create precompiled statement when create after;
+            queryAllStatement = connection.prepareStatement("SELECT `id` FROM `Skin`");
             queryStatement = connection.prepareStatement("SELECT `file` FROM `Skin` where `id` = (?)");
             searchStatement = connection.prepareStatement("SELECT `id`, `file` FROM `Skin` where `hash` = (?)");
             existsStatement = connection.prepareStatement("SELECT `id` FROM `Skin` where `id` = (?)");
-            insertStatement = connection.prepareStatement("INSERT INTO `Skin` (`id`, `type`, `author`, `name`, `flavour`, `created_at`, `hash`, `file`) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+            timeStatement = connection.prepareStatement("SELECT `created_at`, `modified_at` FROM `Skin` where `id` = (?)");
+            insertStatement = connection.prepareStatement("INSERT INTO `Skin` (`id`, `type`, `author`, `name`, `flavour`, `created_at`, `modified_at`, `hash`, `file`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
             removeStatement = connection.prepareStatement("DELETE FROM `Skin` where `id` = (?)");
 
             // we need to check the validity of the connection.
@@ -142,15 +162,17 @@ public abstract class FileDataSource {
 
             safeClose(removeStatement);
             safeClose(insertStatement);
+            safeClose(timeStatement);
             safeClose(existsStatement);
             safeClose(searchStatement);
             safeClose(queryStatement);
+            safeClose(queryAllStatement);
 
             connection.close();
         }
 
         @Override
-        protected void update(String id, Skin skin, int hash, byte[] bytes) throws SQLException {
+        protected void insertNode(String id, Skin skin, int hash, byte[] bytes) throws SQLException {
             ModLog.debug("Save file '{}' into '{}'", id, name);
             insertStatement.setString(1, id);
             insertStatement.setString(2, skin.getType().getRegistryName().toString());
@@ -158,17 +180,18 @@ public abstract class FileDataSource {
             insertStatement.setString(4, skin.getCustomName());
             insertStatement.setString(5, skin.getFlavourText());
             insertStatement.setTimestamp(6, new Timestamp(System.currentTimeMillis()));
-            insertStatement.setInt(7, hash);
-            insertStatement.setBytes(8, bytes);
+            insertStatement.setTimestamp(7, new Timestamp(System.currentTimeMillis()));
+            insertStatement.setInt(8, hash);
+            insertStatement.setBytes(9, bytes);
             insertStatement.executeUpdate();
         }
 
         @Override
-        protected byte[] query(String id) throws Exception {
+        protected byte[] queryNode(String id) throws Exception {
             queryStatement.setString(1, id);
             try (var result = queryStatement.executeQuery()) {
                 if (result.next()) {
-                    ModLog.debug("Load skin '{}' from '{}'", id, name);
+                    ModLog.debug("Load file '{}' from '{}'", id, name);
                     return result.getBytes(1);
                 }
             }
@@ -176,13 +199,18 @@ public abstract class FileDataSource {
         }
 
         @Override
-        protected void remove(String id) throws Exception {
-            removeStatement.setString(1, id);
-            removeStatement.executeUpdate();
+        protected List<String> queryNodes() throws Exception {
+            try (var result = queryAllStatement.executeQuery()) {
+                var results = new ArrayList<String>();
+                while (result.next()) {
+                    results.add(result.getString(1));
+                }
+                return results;
+            }
         }
 
         @Override
-        protected String search(int hash, byte[] bytes) throws SQLException {
+        protected String searchNode(int hash, byte[] bytes) throws SQLException {
             searchStatement.setInt(1, hash);
             try (var result = searchStatement.executeQuery()) {
                 while (result.next()) {
@@ -196,10 +224,39 @@ public abstract class FileDataSource {
         }
 
         @Override
-        protected boolean contains(String id) throws SQLException {
+        public void remove(String id) throws Exception {
+            ModLog.debug("Remove file '{}' from '{}'", id, name);
+            removeStatement.setString(1, id);
+            removeStatement.executeUpdate();
+        }
+
+        @Override
+        public boolean contains(String id) throws SQLException {
             existsStatement.setString(1, id);
             try (var result = existsStatement.executeQuery()) {
                 return result.next();
+            }
+        }
+
+        @Override
+        public long getCreationTime(String id) throws SQLException {
+            timeStatement.setString(1, id);
+            try (var result = timeStatement.executeQuery()) {
+                if (result.next()) {
+                    return result.getTimestamp(1).getTime();
+                }
+                return 0;
+            }
+        }
+
+        @Override
+        public long getLastModifiedTime(String id) throws SQLException {
+            timeStatement.setString(1, id);
+            try (var result = timeStatement.executeQuery()) {
+                if (result.next()) {
+                    return result.getTimestamp(2).getTime();
+                }
+                return 0;
             }
         }
 
@@ -236,7 +293,6 @@ public abstract class FileDataSource {
 
         private static final int NODE_DATA_VERSION = 2;
 
-        private final String name;
         private final File nodeRootPath;
 
         private final ExecutorService thread = Executors.newFixedThreadPool(1, "AW-SKIN-IO");
@@ -260,7 +316,7 @@ public abstract class FileDataSource {
         }
 
         @Override
-        protected void update(String id, Skin skin, int hash, byte[] bytes) {
+        protected void insertNode(String id, Skin skin, int hash, byte[] bytes) {
             ModLog.debug("Save file '{}' into '{}'", id, name);
             var newNode = new Node(id, hash, bytes);
             newNode.save(new ByteArrayInputStream(bytes));
@@ -268,7 +324,7 @@ public abstract class FileDataSource {
         }
 
         @Override
-        protected byte[] query(String id) throws Exception {
+        protected byte[] queryNode(String id) throws Exception {
             var node = nodes.get(id);
             if (node == null) {
                 // when the identifier not found in the nodes,
@@ -280,22 +336,19 @@ public abstract class FileDataSource {
             }
             if (node != null && node.isValid()) {
                 // we can safely access the node now.
-                ModLog.debug("Load skin '{}' from '{}'", id, name);
+                ModLog.debug("Load file '{}' from '{}'", id, name);
                 return StreamUtils.readFileToByteArray(node.getFile());
             }
             throw new FileNotFoundException("the node '" + id + "' not found in " + name + "!");
         }
 
         @Override
-        protected void remove(String id) throws Exception {
-            var node = nodes.remove(id);
-            if (node != null) {
-                node.remove();
-            }
+        protected List<String> queryNodes() throws Exception {
+            return new ArrayList<>(nodes.keySet());
         }
 
         @Override
-        protected String search(int hash, byte[] bytes) throws Exception {
+        protected String searchNode(int hash, byte[] bytes) throws Exception {
             for (var node : nodes.values()) {
                 if (node.isValid() && node.fileHash == hash && node.equalContents(bytes)) {
                     return node.id;
@@ -305,30 +358,57 @@ public abstract class FileDataSource {
         }
 
         @Override
-        protected boolean contains(String id) throws Exception {
+        public void remove(String id) throws Exception {
+            ModLog.debug("Remove file '{}' from '{}'", id, name);
+            var node = nodes.remove(id);
+            if (node != null) {
+                node.remove();
+            }
+        }
+
+        @Override
+        public boolean contains(String id) throws Exception {
             return nodes.containsKey(id);
+        }
+
+        @Override
+        public long getCreationTime(String id) throws Exception {
+            var node = nodes.get(id);
+            if (node != null) {
+                return FileUtils.getCreationTime(node.getFile());
+            }
+            throw new FileNotFoundException("the node '" + id + "' not found in " + name + "!");
+        }
+
+        @Override
+        public long getLastModifiedTime(String id) throws Exception {
+            var node = nodes.get(id);
+            if (node != null) {
+                return FileUtils.getLastModifiedTime(node.getFile());
+            }
+            throw new FileNotFoundException("the node '" + id + "' not found in " + name + "!");
         }
 
         private void loadNodes() {
             // objects/<skin-id>/0|1
-            for (var file : FileUtils.listFiles(nodeRootPath)) {
-                loadNode(file);
+            for (var file : FileUtils.listFilesRecursive(nodeRootPath)) {
+                if (file.isDirectory()) {
+                    loadNode(file);
+                }
             }
         }
 
         private Node loadNode(File parent) {
             try {
-                if (!parent.isDirectory()) {
-                    return null; // only work the directory.
-                }
                 var indexFile = new File(parent, "0");
-                var tag = TagSerializer.readFromStream(new FileInputStream(indexFile));
-                if (tag != null) {
-                    var node = new Node(tag);
+                if (indexFile.exists()) {
+                    var serializer = new TagSerializer(new FileInputStream(indexFile));
+                    var node = new Node(serializer);
                     nodes.put(node.id, node);
                     return node;
                 }
-                var node = generateNode(parent.getName(), new File(parent, "1"));
+                var name = FileUtils.getRelativePath(parent, nodeRootPath);
+                var node = generateNode(name.substring(1), new File(parent, "1"));
                 if (node != null) {
                     nodes.put(node.id, node);
                     return node;
@@ -354,7 +434,7 @@ public abstract class FileDataSource {
             return node;
         }
 
-        public class Node {
+        private class Node implements IDataSerializable.Immutable {
 
             final String id;
             final int version;
@@ -370,22 +450,20 @@ public abstract class FileDataSource {
                 this.fileHash = hash;
             }
 
-            Node(CompoundTag tag) {
-                this.id = tag.getString("UUID");
-                this.version = tag.getInt("Version");
+            Node(IDataSerializer serializer) {
+                this.id = serializer.read(CodingKeys.UID);
+                this.version = serializer.read(CodingKeys.VERSION);
                 // file
-                this.fileSize = tag.getInt("FileSize");
-                this.fileHash = tag.getInt("FileHash");
+                this.fileSize = serializer.read(CodingKeys.FILE_SIZE);
+                this.fileHash = serializer.read(CodingKeys.FILE_HASH);
             }
 
-            public CompoundTag serializeNBT() {
-                var tag = new CompoundTag();
-                tag.putString("UUID", id);
-                tag.putInt("Version", version);
-                // file
-                tag.putInt("FileSize", fileSize);
-                tag.putInt("FileHash", fileHash);
-                return tag;
+            @Override
+            public void serialize(IDataSerializer serializer) {
+                serializer.write(CodingKeys.UID, id);
+                serializer.write(CodingKeys.VERSION, version);
+                serializer.write(CodingKeys.FILE_SIZE, fileSize);
+                serializer.write(CodingKeys.FILE_HASH, fileHash);
             }
 
             public void save(InputStream inputStream) {
@@ -396,7 +474,7 @@ public abstract class FileDataSource {
                         FileUtils.forceMkdirParent(skinFile);
                         var outputStream = new FileOutputStream(skinFile);
                         StreamUtils.transferTo(inputStream, outputStream);
-                        TagSerializer.writeToStream(serializeNBT(), new FileOutputStream(indexFile));
+                        TagSerializer.writeToStream(this, new FileOutputStream(indexFile));
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -464,6 +542,14 @@ public abstract class FileDataSource {
                 return getFile().exists();
             }
         }
+
+        private static class CodingKeys {
+
+            public static final IDataSerializerKey<String> UID = IDataSerializerKey.create("UUID", IDataCodec.STRING, "");
+            public static final IDataSerializerKey<Integer> VERSION = IDataSerializerKey.create("Version", IDataCodec.INT, 0);
+            public static final IDataSerializerKey<Integer> FILE_SIZE = IDataSerializerKey.create("FileSize", IDataCodec.INT, 0);
+            public static final IDataSerializerKey<Integer> FILE_HASH = IDataSerializerKey.create("FileHash", IDataCodec.INT, 0);
+        }
     }
 
 
@@ -490,6 +576,10 @@ public abstract class FileDataSource {
         public void connect() throws Exception {
             fallbackSource.connect();
             source.connect();
+            // move all file into database if needed.
+            if (isMoveFiles) {
+                migrateAllSkins();
+            }
         }
 
         @Override
@@ -499,45 +589,70 @@ public abstract class FileDataSource {
         }
 
         @Override
-        protected void update(String id, Skin skin, int hash, byte[] bytes) throws Exception {
-            source.update(id, skin, hash, bytes);
+        protected void insertNode(String id, Skin skin, int hash, byte[] bytes) throws Exception {
+            source.insertNode(id, skin, hash, bytes);
         }
 
         @Override
-        protected byte[] query(String id) throws Exception {
+        protected byte[] queryNode(String id) throws Exception {
             try {
-                return source.query(id);
+                return source.queryNode(id);
             } catch (FileNotFoundException exception) {
                 // when the file exists in fallback, we will try using fallback version.
-                if (!fallbackSource.contains(id)) {
-                    throw exception;
+                if (fallbackSource.contains(id)) {
+                    return fallbackSource.queryNode(id);
                 }
-                // when load from fallback source, we will try to move the file.
-                var bytes = fallbackSource.query(id);
-                if (!isMoveFiles) {
-                    return bytes;
-                }
-                var skin = SkinSerializer.readFromStream(null, new ByteArrayInputStream(bytes));
-                var fileHash = Arrays.hashCode(bytes);
-                source.update(id, skin, fileHash, bytes);
-                fallbackSource.remove(id);
-                return bytes;
+                throw exception;
             }
         }
 
+        protected List<String> queryNodes() throws Exception {
+            return source.queryNodes();
+        }
+
         @Override
-        protected void remove(String id) throws Exception {
+        protected String searchNode(int hash, byte[] bytes) throws Exception {
+            return source.searchNode(hash, bytes);
+        }
+
+        @Override
+        public void remove(String id) throws Exception {
             source.remove(id);
         }
 
         @Override
-        protected String search(int hash, byte[] bytes) throws Exception {
-            return source.search(hash, bytes);
+        public boolean contains(String id) throws Exception {
+            return source.contains(id);
         }
 
         @Override
-        protected boolean contains(String id) throws Exception {
-            return source.contains(id);
+        public long getCreationTime(String id) throws Exception {
+            return source.getCreationTime(id);
+        }
+
+        @Override
+        public long getLastModifiedTime(String id) throws Exception {
+            return source.getLastModifiedTime(id);
+        }
+
+        private void migrateAllSkins() throws Exception {
+            // find all fallback nodes.
+            for (var id : fallbackSource.queryNodes()) {
+                try {
+                    ModLog.debug("Migrate skin '{}' from '{}' into '{}'", id, fallbackSource.name, source.name);
+                    var bytes = fallbackSource.queryNode(id);
+                    var skin = SkinSerializer.readFromStream(null, new ByteArrayInputStream(bytes));
+                    var fileHash = Arrays.hashCode(bytes);
+                    // when the target already exists, remove it.
+                    if (contains(id)) {
+                        source.remove(id);
+                    }
+                    source.insertNode(id, skin, fileHash, bytes);
+                    fallbackSource.remove(id);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 }

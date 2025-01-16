@@ -1,5 +1,6 @@
 package moe.plushie.armourers_workshop.core.utils;
 
+import moe.plushie.armourers_workshop.api.core.IDataSerializable;
 import moe.plushie.armourers_workshop.api.core.IDataSerializer;
 import moe.plushie.armourers_workshop.api.core.IDataSerializerKey;
 import moe.plushie.armourers_workshop.compatibility.core.data.AbstractDataSerializer;
@@ -27,13 +28,23 @@ public class TagSerializer implements IDataSerializer {
         this.impl = AbstractDataSerializer.wrap(tag);
     }
 
+    public TagSerializer(InputStream inputStream) throws IOException {
+        this(parse(inputStream));
+    }
+
+    public static void writeToStream(IDataSerializable.Immutable value, OutputStream outputStream) throws IOException {
+        var serializer = new TagSerializer();
+        value.serialize(serializer);
+        writeToStream(serializer.getTag(), outputStream);
+    }
+
     public static void writeToStream(CompoundTag compoundTag, OutputStream outputStream) throws IOException {
         try (var dataOutputStream = new DataOutputStream(outputStream)) {
             NbtIo.write(compoundTag, dataOutputStream);
         }
     }
 
-    public static CompoundTag readFromStream(InputStream inputStream) throws IOException {
+    public static CompoundTag parse(InputStream inputStream) throws IOException {
         try (var datainputstream = new DataInputStream(inputStream)) {
             return NbtIo.read(datainputstream);
         }
