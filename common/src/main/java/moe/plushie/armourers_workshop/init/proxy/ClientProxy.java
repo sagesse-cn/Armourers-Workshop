@@ -191,9 +191,6 @@ public class ClientProxy {
             Scheduler.CLIENT.end();
         });
 
-        EventBus.register(RenderScreenEvent.Pre.class, event -> SkinRenderMode.push(SkinRenderMode.GUI));
-        EventBus.register(RenderScreenEvent.Post.class, event -> SkinRenderMode.pop());
-
         // listen the block highlight events.
         EventBus.register(RenderHighlightEvent.Block.class, event -> {
             var player = EnvironmentManager.getPlayer();

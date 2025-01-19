@@ -6,6 +6,7 @@
     "ForgeEpicFightRendererMixin",
     "ForgeEpicFightFirstPersonRendererMixin",
     "ForgeCuriosAddonMixin",
+    "ForgeClientScreenRenderMixin",
     "backpack/ForgeMrcrayfishBackpackRendererMixin",
     "backpack/ForgeTravelersBackpackRendererMixin",
     "backpack/ForgeSophisticatedBackpackRendererMixin"

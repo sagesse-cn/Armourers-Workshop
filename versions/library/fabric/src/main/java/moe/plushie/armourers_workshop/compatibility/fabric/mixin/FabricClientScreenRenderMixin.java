@@ -1,6 +1,7 @@
 package moe.plushie.armourers_workshop.compatibility.fabric.mixin;
 
 import moe.plushie.armourers_workshop.api.annotation.Available;
+import moe.plushie.armourers_workshop.core.client.other.SkinRenderMode;
 import moe.plushie.armourers_workshop.init.platform.fabric.event.ClientScreenRenderEvents;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
@@ -16,11 +17,13 @@ public class FabricClientScreenRenderMixin {
 
     @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;renderWithTooltip(Lnet/minecraft/client/gui/GuiGraphics;IIF)V", shift = At.Shift.BEFORE))
     private void aw2$renderPre(DeltaTracker deltaTracker, boolean bl, CallbackInfo ci) {
+        SkinRenderMode.push(SkinRenderMode.GUI);
         ClientScreenRenderEvents.START.invoker().onStart(Minecraft.getInstance());
     }
 
     @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;renderWithTooltip(Lnet/minecraft/client/gui/GuiGraphics;IIF)V", shift = At.Shift.AFTER))
     private void aw2$renderPost(DeltaTracker deltaTracker, boolean bl, CallbackInfo ci) {
         ClientScreenRenderEvents.END.invoker().onEnd(Minecraft.getInstance());
+        SkinRenderMode.pop();
     }
 }
