@@ -75,6 +75,8 @@ public class SkinLibraryWindow extends MenuWindow<SkinLibraryMenu> implements UI
     private final SkinFileList<SkinLibraryFile> fileList = new SkinFileList<>(new CGRect(0, 0, 100, 100));
     private final HashMap<String, CGPoint> contentOffsets = new HashMap<>();
 
+    protected boolean didRemoved = false;
+
     protected SkinType skinType = SkinTypes.UNKNOWN;
     protected SkinLibraryFile selectedFile = null;
     protected String selectedPath;
@@ -250,12 +252,16 @@ public class SkinLibraryWindow extends MenuWindow<SkinLibraryMenu> implements UI
     @Override
     public void deinit() {
         super.deinit();
+        this.didRemoved = true;
         this.libraryManager.removeListener(this);
     }
 
     @Override
     public void libraryDidReload(ISkinLibrary library) {
         RenderSystem.recordRenderCall(() -> {
+            if (didRemoved) {
+                return; // removed, ignore.
+            }
             if (selectedLibrary == library) {
                 reloadData(this);
             }

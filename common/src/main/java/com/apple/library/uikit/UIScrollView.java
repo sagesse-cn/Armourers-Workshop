@@ -16,7 +16,8 @@ public class UIScrollView extends UIView {
 
     protected UIEdgeInsets scrollIndicatorInsets = new UIEdgeInsets(2, 2, 2, 2);
 
-    protected final DelegateImpl<UIScrollViewDelegate> delegate = DelegateImpl.of(new UIScrollViewDelegate() {});
+    protected final DelegateImpl<UIScrollViewDelegate> delegate = DelegateImpl.of(new UIScrollViewDelegate() {
+    });
 
     private final boolean isInit;
     private final Indicator verticalIndicator = new Indicator((a, b) -> b);
@@ -141,12 +142,12 @@ public class UIScrollView extends UIView {
 
     @Override
     public void addSubview(UIView view) {
-        super.insertViewAtIndex(view, subviews().size() - 2);
+        super.insertViewAtIndex(view, Math.max(subviews().size() - 2, 0));
     }
 
     @Override
     public void insertViewAtIndex(UIView view, int index) {
-        super.insertViewAtIndex(view, Math.min(index, subviews().size() - 2));
+        super.insertViewAtIndex(view, Math.min(index, Math.max(subviews().size() - 2, 0)));
     }
 
     private boolean isVerticalScrollable() {
