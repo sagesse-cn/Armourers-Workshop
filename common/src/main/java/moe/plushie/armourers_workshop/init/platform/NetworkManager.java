@@ -95,13 +95,12 @@ public class NetworkManager {
         protected final IResourceLocation channelName;
         protected final PacketSplitter splitter;
 
-        protected final int maxPartSize = 32000; // 32k
-
         public Dispatcher(IResourceLocation channelName, String channelVersion) {
             this.channelName = channelName;
             this.channelVersion = channelVersion;
             this.splitter = new PacketSplitter();
         }
+
 
         public abstract void register();
 
@@ -123,12 +122,17 @@ public class NetworkManager {
         }
 
         public void split(final CustomPacket message, IPacketDistributor distributor) {
-            int partSize = maxPartSize;
-            // download from the server side, the forge is resolved, the maximum packet size is than 10m.
-            if (distributor.isClientbound()) {
-                partSize = Integer.MAX_VALUE;
-            }
+            // we need to reserve enough capacity add header/footer data.
+            var partSize = getMaximumPayloadSize(distributor) - 256;
             splitter.split(message, buf -> distributor.add(channelName, buf), partSize, IPacketDistributor::execute);
+        }
+
+        public int getMaximumPayloadSize(IPacketDistributor distributor) {
+            if (distributor.isClientbound()) {
+                return 1048576; // ClientboundCustomPayloadPacket.MAX_PAYLOAD_SIZE
+            } else {
+                return 32768; // ServerboundCustomPayloadPacket.MAX_PAYLOAD_SIZE
+            }
         }
     }
 

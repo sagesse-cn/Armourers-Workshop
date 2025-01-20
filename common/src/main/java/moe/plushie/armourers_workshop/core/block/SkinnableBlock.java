@@ -271,10 +271,10 @@ public class SkinnableBlock extends AbstractAttachedHorizontalBlock implements A
     @Override
     public VoxelShape getCollisionShape(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, CollisionContext collisionContext) {
         var blockEntity = getBlockEntity(blockGetter, blockPos);
-        if (blockEntity != null && blockEntity.noCollision()) {
-            return Shapes.empty();
+        if (blockEntity != null) {
+            return blockEntity.getCollisionShape();
         }
-        return super.getCollisionShape(blockState, blockGetter, blockPos, collisionContext);
+        return Shapes.empty();
     }
 
     public void forEach(Level level, BlockPos pos, Consumer<BlockPos> consumer) {

@@ -9,4 +9,8 @@ public interface IPacketDistributor {
     void execute();
 
     boolean isClientbound();
+
+    default boolean isServerbound() {
+        return !isClientbound();
+    }
 }

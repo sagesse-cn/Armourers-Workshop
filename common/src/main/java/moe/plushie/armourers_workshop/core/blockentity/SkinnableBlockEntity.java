@@ -81,7 +81,10 @@ public class SkinnableBlockEntity extends RotableContainerBlockEntity implements
 
     private OpenQuaternionf renderRotations;
     private AABB renderBoundingBox;
-    private VoxelShape renderVoxelShape = null;
+
+    private VoxelShape cachedRenderShape = null;
+    private VoxelShape cachedCollisionShape = null;
+
     private ItemStack droppedStack = null;
 
     private LinkedSnapshot lastSnapshot;
@@ -103,7 +106,8 @@ public class SkinnableBlockEntity extends RotableContainerBlockEntity implements
     public void readAdditionalData(IDataSerializer serializer) {
         reference = serializer.read(CodingKeys.REFERENCE);
         collisionShape = serializer.read(CodingKeys.SHAPE);
-        renderVoxelShape = null;
+        cachedRenderShape = null;
+        cachedCollisionShape = null;
         isParent = BlockPos.ZERO.equals(reference);
         if (!isParent()) {
             return;
@@ -191,27 +195,23 @@ public class SkinnableBlockEntity extends RotableContainerBlockEntity implements
         return SkinDescriptor.EMPTY;
     }
 
-    public void setShape(OpenRectangle3i shape) {
-        this.collisionShape = shape;
-        this.renderVoxelShape = null;
+    public VoxelShape getShape() {
+        if (cachedRenderShape != null) {
+            return cachedRenderShape;
+        }
+        cachedRenderShape = calcCollisionShape();
+        return cachedRenderShape;
     }
 
-    public VoxelShape getShape() {
-        if (renderVoxelShape != null) {
-            return renderVoxelShape;
+    public VoxelShape getCollisionShape() {
+        if (noCollision()) {
+            return Shapes.empty();
         }
-        if (collisionShape.equals(OpenRectangle3i.ZERO)) {
-            renderVoxelShape = Shapes.block();
-            return renderVoxelShape;
+        if (cachedCollisionShape != null) {
+            return cachedCollisionShape;
         }
-        float minX = collisionShape.minX() / 16f + 0.5f;
-        float minY = collisionShape.minY() / 16f + 0.5f;
-        float minZ = collisionShape.minZ() / 16f + 0.5f;
-        float maxX = collisionShape.maxX() / 16f + 0.5f;
-        float maxY = collisionShape.maxY() / 16f + 0.5f;
-        float maxZ = collisionShape.maxZ() / 16f + 0.5f;
-        renderVoxelShape = Shapes.box(minX, minY, minZ, maxX, maxY, maxZ);
-        return renderVoxelShape;
+        cachedCollisionShape = calcCollisionShape();
+        return cachedCollisionShape;
     }
 
     public void setLinkedPos(GlobalPos pos) {
@@ -488,6 +488,20 @@ public class SkinnableBlockEntity extends RotableContainerBlockEntity implements
         });
         return result.orElse(null);
     }
+
+    private VoxelShape calcCollisionShape() {
+        if (collisionShape.equals(OpenRectangle3i.ZERO)) {
+            return Shapes.block();
+        }
+        float minX = collisionShape.minX() / 16f + 0.5f;
+        float minY = collisionShape.minY() / 16f + 0.5f;
+        float minZ = collisionShape.minZ() / 16f + 0.5f;
+        float maxX = collisionShape.maxX() / 16f + 0.5f;
+        float maxY = collisionShape.maxY() / 16f + 0.5f;
+        float maxZ = collisionShape.maxZ() / 16f + 0.5f;
+        return Shapes.box(minX, minY, minZ, maxX, maxY, maxZ);
+    }
+
 
     private static class LinkedSnapshot {
 
