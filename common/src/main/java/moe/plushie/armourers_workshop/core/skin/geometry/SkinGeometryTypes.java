@@ -21,8 +21,10 @@ public final class SkinGeometryTypes {
     public static final ISkinGeometryType BLOCK_GLASS_GLOWING = register("glass_glowing", 3, ModBlocks.SKIN_CUBE_GLASS_GLOWING);
 
     public static final ISkinGeometryType CUBE = register("cube", 4, ModBlocks.BOUNDING_BOX);
+    public static final ISkinGeometryType CUBE_CULL = register("cube_cull", 6, ModBlocks.BOUNDING_BOX);
 
     public static final ISkinGeometryType MESH = register("mesh", 5, ModBlocks.BOUNDING_BOX);
+    public static final ISkinGeometryType MESH_CULL = register("mesh_cull", 7, ModBlocks.BOUNDING_BOX);
 
     public static ISkinGeometryType byName(String name) {
         var cube = ALL_GEOMETRY_TYPES.get(name);
@@ -52,14 +54,14 @@ public final class SkinGeometryTypes {
     /**
      * Should this cube be rendered after the world?
      */
-    public static boolean isGlass(ISkinGeometryType geometryType) {
+    public static boolean isGlassBlock(ISkinGeometryType geometryType) {
         return geometryType == BLOCK_GLASS || geometryType == BLOCK_GLASS_GLOWING;
     }
 
     /**
      * Will this cube glow in the dark?
      */
-    public static boolean isGlowing(ISkinGeometryType geometryType) {
+    public static boolean isGlowingBlock(ISkinGeometryType geometryType) {
         return geometryType == BLOCK_GLOWING || geometryType == BLOCK_GLASS_GLOWING;
     }
 

@@ -6,14 +6,13 @@ import moe.plushie.armourers_workshop.api.core.IResourceLocation;
 import moe.plushie.armourers_workshop.api.skin.geometry.ISkinGeometryType;
 import moe.plushie.armourers_workshop.core.client.other.SkinRenderType;
 import moe.plushie.armourers_workshop.core.client.other.SmartResourceManager;
-import moe.plushie.armourers_workshop.core.skin.geometry.SkinGeometryTypes;
+import moe.plushie.armourers_workshop.core.data.DataContainer;
 import moe.plushie.armourers_workshop.core.skin.texture.SkinTextureData;
 import moe.plushie.armourers_workshop.core.skin.texture.SkinTextureProperties;
 import moe.plushie.armourers_workshop.core.utils.FileUtils;
 import moe.plushie.armourers_workshop.core.utils.OpenRandomSource;
 import moe.plushie.armourers_workshop.core.utils.ReferenceCounted;
 import moe.plushie.armourers_workshop.init.ModConstants;
-import moe.plushie.armourers_workshop.core.data.DataContainer;
 import moe.plushie.armourers_workshop.utils.RenderSystem;
 import net.minecraft.client.renderer.RenderType;
 import org.jetbrains.annotations.Nullable;
@@ -30,8 +29,7 @@ public class SmartTexture extends ReferenceCounted {
 
     private final Map<IResourceLocation, ByteBuf> textureBuffers;
 
-    private RenderType cubeRenderType;
-    private RenderType meshRenderType;
+    private final Map<ISkinGeometryType, RenderType> bindingRenderTypes = new LinkedHashMap<>();
 
     public SmartTexture(SkinTextureData provider) {
         this.location = ModConstants.key("textures/dynamic/" + OpenRandomSource.nextInt(SmartTexture.class) + ".png");
@@ -62,19 +60,11 @@ public class SmartTexture extends ReferenceCounted {
     }
 
     public RenderType getRenderType(ISkinGeometryType type) {
-        if (type == SkinGeometryTypes.MESH) {
-            if (meshRenderType == null) {
-                meshRenderType = SkinRenderType.meshFace(location, properties.isEmissive());
-                DataContainer.set(meshRenderType, this);
-            }
-            return meshRenderType;
-        } else {
-            if (cubeRenderType == null) {
-                cubeRenderType = SkinRenderType.cubeFace(location, properties.isEmissive());
-                DataContainer.set(cubeRenderType, this);
-            }
-            return cubeRenderType;
-        }
+        return bindingRenderTypes.computeIfAbsent(type, it -> {
+            var renderType = SkinRenderType.geometryFace(it, location, properties.isEmissive());
+            DataContainer.set(renderType, this);
+            return renderType;
+        });
     }
 
     public IResourceLocation getLocation() {
@@ -91,12 +81,7 @@ public class SmartTexture extends ReferenceCounted {
     }
 
     protected void unbind() {
-        if (cubeRenderType != null) {
-            DataContainer.set(cubeRenderType, null);
-        }
-        if (meshRenderType != null) {
-            DataContainer.set(meshRenderType, null);
-        }
+        bindingRenderTypes.forEach((key, value) -> DataContainer.set(value, null));
         // when unbind the object, we must ensure that all resources release.
         while (refCnt() > 0) {
             release();

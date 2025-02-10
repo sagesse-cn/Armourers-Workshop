@@ -177,7 +177,7 @@ public class BakedGeometryFace {
 
     private List<? extends SkinGeometryVertex> triangulation(Iterable<? extends SkinGeometryVertex> verticesIn, ISkinGeometryType geometryType) {
         var vertices = Collections.newList(verticesIn);
-        if (geometryType != SkinGeometryTypes.MESH) {
+        if (geometryType != SkinGeometryTypes.MESH && geometryType != SkinGeometryTypes.MESH_CULL) {
             return vertices;
         }
         return switch (vertices.size()) {

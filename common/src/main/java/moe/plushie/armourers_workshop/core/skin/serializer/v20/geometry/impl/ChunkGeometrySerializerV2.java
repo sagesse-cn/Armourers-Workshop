@@ -4,7 +4,6 @@ import moe.plushie.armourers_workshop.api.skin.geometry.ISkinGeometryType;
 import moe.plushie.armourers_workshop.core.math.OpenRectangle3f;
 import moe.plushie.armourers_workshop.core.math.OpenTransform3f;
 import moe.plushie.armourers_workshop.core.math.OpenVector2f;
-import moe.plushie.armourers_workshop.core.skin.geometry.SkinGeometryTypes;
 import moe.plushie.armourers_workshop.core.skin.geometry.cube.SkinCube;
 import moe.plushie.armourers_workshop.core.skin.geometry.cube.SkinCubeFace;
 import moe.plushie.armourers_workshop.core.skin.serializer.io.IOConsumer2;
@@ -46,6 +45,8 @@ public class ChunkGeometrySerializerV2 extends ChunkGeometrySerializer {
 
         private final int faceCount;
 
+        private final ISkinGeometryType type;
+
         private final ChunkGeometrySlice slice;
         private final ChunkPaletteData palette;
 
@@ -57,6 +58,7 @@ public class ChunkGeometrySerializerV2 extends ChunkGeometrySerializer {
         private OpenTransform3f transform = OpenTransform3f.IDENTITY;
 
         public Decoder(ISkinGeometryType type, ChunkGeometrySlice slice) {
+            this.type = type;
             this.palette = slice.getPalette();
             this.slice = slice;
             this.faceCount = slice.getGeometryOptions() & 0x0F;
@@ -74,7 +76,7 @@ public class ChunkGeometrySerializerV2 extends ChunkGeometrySerializer {
 
         @Override
         public ISkinGeometryType getType() {
-            return SkinGeometryTypes.CUBE;
+            return type;
         }
 
         @Override

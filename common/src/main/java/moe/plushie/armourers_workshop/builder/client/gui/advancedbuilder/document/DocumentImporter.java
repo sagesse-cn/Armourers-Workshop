@@ -141,6 +141,7 @@ public class DocumentImporter {
 
         exporter.setOffset(getOffset(pack));
         exporter.setDisplayOffset(getDisplayOffset(pack));
+        exporter.setCulling(isCulling(pack));
 
         return exporter.export();
     }
@@ -252,6 +253,13 @@ public class DocumentImporter {
         var translate = entry.getOffset(); // 0 + offset
         var rotation = OpenVector3f.ZERO; // never use rotation on the built-in part type.
         return OpenTransform3f.create(translate, rotation, OpenVector3f.ONE);
+    }
+
+    private boolean isCulling(BlockBenchPack pack) {
+        if (pack.getFormat().equals("java_block")) {
+            return true;
+        }
+        return false;
     }
 
     private OpenVector3f getOffset(BlockBenchPack pack) {

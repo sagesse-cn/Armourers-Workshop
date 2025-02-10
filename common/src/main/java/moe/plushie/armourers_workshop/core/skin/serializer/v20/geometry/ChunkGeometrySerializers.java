@@ -25,7 +25,9 @@ public class ChunkGeometrySerializers {
         builder.put(SkinGeometryTypes.BLOCK_GLASS, new ChunkGeometrySerializerV1());
         builder.put(SkinGeometryTypes.BLOCK_GLASS_GLOWING, new ChunkGeometrySerializerV1());
         builder.put(SkinGeometryTypes.CUBE, new ChunkGeometrySerializerV2());
+        builder.put(SkinGeometryTypes.CUBE_CULL, new ChunkGeometrySerializerV2());
         builder.put(SkinGeometryTypes.MESH, new ChunkGeometrySerializerV3());
+        builder.put(SkinGeometryTypes.MESH_CULL, new ChunkGeometrySerializerV3());
     });
 
     public static ChunkGeometrySerializer getSerializer(ISkinGeometryType geometryType) {

@@ -129,7 +129,7 @@ public class SkinCubeFace extends SkinGeometryFace {
 
     private float roundUp(float edg) {
         if (edg == 0) {
-            return 0.002f;
+            return 0.0001f;
         }
         return edg;
     }
@@ -137,9 +137,9 @@ public class SkinCubeFace extends SkinGeometryFace {
     // avoid out-of-bounds behavior caused by floating point precision.
     private float roundDown(float edg) {
         if (edg < 0) {
-            return edg + 0.002f;
+            return edg + 0.0001f;
         } else {
-            return edg - 0.002f;
+            return edg - 0.0001f;
         }
     }
 
@@ -154,7 +154,7 @@ public class SkinCubeFace extends SkinGeometryFace {
     private static class Helper {
 
         public static final float[][][] VERTICES = new float[][][]{
-                {{0, 1, 1}, {0, 1, 0}, {1, 1, 0}, {1, 1, 1}, {0, 1, 0}},  // -y <- down
+                {{1, 1, 1}, {1, 1, 0}, {0, 1, 0}, {0, 1, 1}, {0, 1, 0}},  // -y <- down
                 {{0, 0, 1}, {0, 0, 0}, {1, 0, 0}, {1, 0, 1}, {0, -1, 0}}, // +y <- up
                 {{0, 0, 0}, {0, 1, 0}, {1, 1, 0}, {1, 0, 0}, {0, 0, -1}}, // -z <- north
                 {{1, 0, 1}, {1, 1, 1}, {0, 1, 1}, {0, 0, 1}, {0, 0, 1}},  // +z <- south
@@ -163,7 +163,7 @@ public class SkinCubeFace extends SkinGeometryFace {
         };
 
         public static final float[][][] UVS = new float[][][]{
-                {{0, 0}, {0, 1}, {1, 1}, {1, 0}}, // -y <- down
+                {{1, 0}, {1, 1}, {0, 1}, {0, 0}}, // -y <- down
                 {{0, 0}, {0, 1}, {1, 1}, {1, 0}}, // +y <- up
                 {{0, 0}, {0, 1}, {1, 1}, {1, 0}}, // -z <- north
                 {{0, 0}, {0, 1}, {1, 1}, {1, 0}}, // +z <- south
@@ -172,7 +172,7 @@ public class SkinCubeFace extends SkinGeometryFace {
         };
 
         public static final float[][][] UVS_90 = new float[][][]{
-                {{1, 0}, {0, 0}, {0, 1}, {1, 1}}, // -y <- down
+                {{1, 1}, {0, 1}, {0, 0}, {1, 0}}, // -y <- down
                 {{0, 1}, {1, 1}, {1, 0}, {0, 0}}, // +y <- up
                 {{0, 1}, {1, 1}, {1, 0}, {0, 0}}, // -z <- north
                 {{0, 1}, {1, 1}, {1, 0}, {0, 0}}, // +z <- south
@@ -181,7 +181,7 @@ public class SkinCubeFace extends SkinGeometryFace {
         };
 
         public static final float[][][] UVS_180 = new float[][][]{
-                {{1, 1}, {1, 0}, {0, 0}, {0, 1}}, // -y <- down
+                {{0, 1}, {0, 0}, {1, 0}, {1, 1}}, // -y <- down
                 {{1, 1}, {1, 0}, {0, 0}, {0, 1}}, // +y <- up
                 {{1, 1}, {1, 0}, {0, 0}, {0, 1}}, // -z <- north
                 {{1, 1}, {1, 0}, {0, 0}, {0, 1}}, // +z <- south
@@ -190,7 +190,7 @@ public class SkinCubeFace extends SkinGeometryFace {
         };
 
         public static final float[][][] UVS_270 = new float[][][]{
-                {{0, 1}, {1, 1}, {1, 0}, {0, 0}}, // -y <- down
+                {{0, 0}, {1, 0}, {1, 1}, {0, 1}}, // -y <- down
                 {{1, 0}, {0, 0}, {0, 1}, {1, 1}}, // +y <- up
                 {{1, 0}, {0, 0}, {0, 1}, {1, 1}}, // -z <- north
                 {{1, 0}, {0, 0}, {0, 1}, {1, 1}}, // +z <- south

@@ -2,6 +2,7 @@ package moe.plushie.armourers_workshop.core.skin.serializer.importer.blockbench;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import moe.plushie.armourers_workshop.api.skin.geometry.ISkinGeometryType;
 import moe.plushie.armourers_workshop.core.math.OpenMath;
 import moe.plushie.armourers_workshop.core.math.OpenPoseStack;
 import moe.plushie.armourers_workshop.core.math.OpenRectangle2f;
@@ -10,6 +11,7 @@ import moe.plushie.armourers_workshop.core.math.OpenSize2f;
 import moe.plushie.armourers_workshop.core.math.OpenTransform3f;
 import moe.plushie.armourers_workshop.core.math.OpenVector2f;
 import moe.plushie.armourers_workshop.core.math.OpenVector3f;
+import moe.plushie.armourers_workshop.core.math.OpenVector4f;
 import moe.plushie.armourers_workshop.core.skin.Skin;
 import moe.plushie.armourers_workshop.core.skin.SkinTypes;
 import moe.plushie.armourers_workshop.core.skin.animation.SkinAnimation;
@@ -17,6 +19,7 @@ import moe.plushie.armourers_workshop.core.skin.animation.SkinAnimationFunction;
 import moe.plushie.armourers_workshop.core.skin.animation.SkinAnimationKeyframe;
 import moe.plushie.armourers_workshop.core.skin.animation.SkinAnimationLoop;
 import moe.plushie.armourers_workshop.core.skin.animation.SkinAnimationPoint;
+import moe.plushie.armourers_workshop.core.skin.geometry.SkinGeometryTypes;
 import moe.plushie.armourers_workshop.core.skin.geometry.SkinGeometryVertex;
 import moe.plushie.armourers_workshop.core.skin.geometry.collection.SkinGeometrySetV2;
 import moe.plushie.armourers_workshop.core.skin.geometry.mesh.SkinMeshFace;
@@ -72,9 +75,10 @@ public class BlockBenchExporter {
     protected SkinSettings settings = new SkinSettings();
     protected SkinProperties properties = new SkinProperties();
 
-
     protected OpenVector3f offset = OpenVector3f.ZERO;
     protected OpenVector3f displayOffset = OpenVector3f.ZERO;
+
+    protected boolean isCulling = false;
 
     protected final BlockBenchPack pack;
     protected final MolangVirtualMachine virtualMachine;
@@ -191,11 +195,13 @@ public class BlockBenchExporter {
         }
 
         var rect = new OpenRectangle3f(x, y, z, w, h, d).inflate(inflate);
+        var type = cube.getType(isCulling());
         var transform = OpenTransform3f.create(OpenVector3f.ZERO, cube.rotation, OpenVector3f.ONE, cube.pivot, OpenVector3f.ZERO);
-        return new SkinGeometrySetV2.Box(rect, transform, skyBox);
+        return new SkinGeometrySetV2.Box(rect, type, transform, skyBox);
     }
 
     protected SkinGeometrySetV2.Mesh exportMesh(Mesh mesh, TextureSet texture) {
+        var type = mesh.getType(isCulling());
         var faces = new ArrayList<SkinMeshFace>();
         var transform = OpenTransform3f.create(mesh.origin, mesh.rotation, OpenVector3f.ONE, OpenVector3f.ZERO, OpenVector3f.ZERO);
         var defaultTexturePos = new SkinTexturePos[1];
@@ -216,10 +222,10 @@ public class BlockBenchExporter {
                 vertices.add(new SkinGeometryVertex(vertexId, position, normal, textureCoords));
                 TextureResolution.applyBoundary(texturePos.getProvider(), textureCoords.x(), textureCoords.y());
             });
-            faces.add(new SkinMeshFace(faceId, transform, texturePos, vertices));
+            faces.add(new SkinMeshFace(faceId, type, transform, texturePos, vertices));
             defaultTexturePos[0] = texturePos;
         });
-        return new SkinGeometrySetV2.Mesh(transform, defaultTexturePos[0], faces);
+        return new SkinGeometrySetV2.Mesh(type, transform, defaultTexturePos[0], faces);
     }
 
     protected OpenItemTransforms exportItemTransforms(Map<String, BlockBenchDisplay> transforms) {
@@ -281,6 +287,14 @@ public class BlockBenchExporter {
 
     public OpenVector3f getDisplayOffset() {
         return displayOffset;
+    }
+
+    public void setCulling(boolean culling) {
+        isCulling = culling;
+    }
+
+    public boolean isCulling() {
+        return isCulling;
     }
 
     public SkinSettings getSettings() {
@@ -399,12 +413,18 @@ public class BlockBenchExporter {
         }
 
         public void transform(OpenPoseStack poseStack) {
-            var rect = new OpenRectangle3f(origin.x(), origin.y(), origin.z(), size.x(), size.y(), size.z());
-            rect.mul(poseStack.last().pose());
-            origin = new OpenVector3f(rect.x(), rect.y(), rect.z());
-            size = new OpenVector3f(rect.width(), rect.height(), rect.depth());
+            var center = new OpenVector4f(origin.x() + size.x() / 2, origin.y() + size.y() / 2, origin.z() + size.z() / 2, 1.0f);
+            center.transform(poseStack.last().pose());
+            origin = new OpenVector3f(center.x() - size.x() / 2, center.y() - size.y() / 2, center.z() - size.z() / 2);
             pivot = pivot.transforming(poseStack.last().pose());
             rotation = rotation.transforming(poseStack.last().normal());
+        }
+
+        public ISkinGeometryType getType(boolean isCulling) {
+            if (isCulling) {
+                return SkinGeometryTypes.CUBE_CULL;
+            }
+            return SkinGeometryTypes.CUBE;
         }
     }
 
@@ -434,6 +454,14 @@ public class BlockBenchExporter {
             var fixedPoseStack = poseStack.copy();
             fixedPoseStack.last().pose().setTranslation(0, 0, 0);
             faces.forEach(it -> it.transform(fixedPoseStack));
+        }
+
+
+        public ISkinGeometryType getType(boolean isCulling) {
+            //if (isCulling) {
+            //    return SkinGeometryTypes.MESH_CULL;
+            //}
+            return SkinGeometryTypes.MESH;
         }
     }
 

@@ -218,37 +218,16 @@ public class OpenRectangle3f implements IRectangle3f {
     }
 
     public void mul(OpenMatrix4f matrix) {
-        var vertexes = Collections.newList(
-                new OpenVector4f(x, y, z, 1.0f),
-                new OpenVector4f(x + width, y, z, 1.0f),
-                new OpenVector4f(x + width, y + height, z, 1.0f),
-                new OpenVector4f(x + width, y + height, z + depth, 1.0f),
-                new OpenVector4f(x + width, y, z + depth, 1.0f),
-                new OpenVector4f(x, y + height, z, 1.0f),
-                new OpenVector4f(x, y + height, z + depth, 1.0f),
-                new OpenVector4f(x, y, z + depth, 1.0f)
-        );
-        var iterator = vertexes.iterator();
-        var point = iterator.next();
-        point.transform(matrix);
-        float minX = point.x(), minY = point.y(), minZ = point.z();
-        float maxX = point.x(), maxY = point.y(), maxZ = point.z();
-        while (iterator.hasNext()) {
-            point = iterator.next();
-            point.transform(matrix);
-            minX = Math.min(minX, point.x());
-            minY = Math.min(minY, point.y());
-            minZ = Math.min(minZ, point.z());
-            maxX = Math.max(maxX, point.x());
-            maxY = Math.max(maxY, point.y());
-            maxZ = Math.max(maxZ, point.z());
-        }
-        x = minX;
-        y = minY;
-        z = minZ;
-        width = maxX - minX;
-        height = maxY - minY;
-        depth = maxZ - minZ;
+        var start = new OpenVector4f(x, y, z, 1.0f);
+        var end = new OpenVector4f(x + width, y + height, z + depth, 1.0f);
+        start.transform(matrix);
+        end.transform(matrix);
+        x = start.x;
+        y = start.y;
+        z = start.z;
+        width = end.x - start.x;
+        height = end.y - start.y;
+        depth = end.z - start.z;
     }
 
     public List<Float> toList() {

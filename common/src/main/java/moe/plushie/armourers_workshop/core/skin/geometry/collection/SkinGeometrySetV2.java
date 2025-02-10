@@ -49,9 +49,11 @@ public class SkinGeometrySetV2 extends SkinGeometrySet<SkinGeometry> {
 
     public static class Box extends SkinCube {
 
+        private final ISkinGeometryType type;
         private final SkinTextureBox skyBox;
 
-        public Box(OpenRectangle3f boundingBox, OpenTransform3f transform, SkinTextureBox skyBox) {
+        public Box(OpenRectangle3f boundingBox, ISkinGeometryType type, OpenTransform3f transform, SkinTextureBox skyBox) {
+            this.type = type;
             this.transform = transform;
             this.boundingBox = boundingBox;
             this.skyBox = skyBox;
@@ -59,7 +61,7 @@ public class SkinGeometrySetV2 extends SkinGeometrySet<SkinGeometry> {
 
         @Override
         public ISkinGeometryType getType() {
-            return SkinGeometryTypes.CUBE;
+            return type;
         }
 
         @Override
@@ -83,12 +85,19 @@ public class SkinGeometrySetV2 extends SkinGeometrySet<SkinGeometry> {
 
     public static class Mesh extends SkinMesh {
 
+        private final ISkinGeometryType type;
         private final List<SkinMeshFace> faces;
 
-        public Mesh(OpenTransform3f transform, SkinTexturePos texturePos, List<SkinMeshFace> faces) {
+        public Mesh(ISkinGeometryType type, OpenTransform3f transform, SkinTexturePos texturePos, List<SkinMeshFace> faces) {
+            this.type = type;
             this.transform = transform;
             this.texturePos = texturePos;
             this.faces = faces;
+        }
+
+        @Override
+        public ISkinGeometryType getType() {
+            return type;
         }
 
         @Override

@@ -57,7 +57,7 @@ public class SkinCubeFaceCuller {
         // the slices are designed to contain multiple cube types,
         // but the skin culler can't support it now.
         var supportedTypes = geometries.getSupportedTypes();
-        if (supportedTypes != null && (supportedTypes.contains(SkinGeometryTypes.CUBE) || supportedTypes.contains(SkinGeometryTypes.MESH))) {
+        if (supportedTypes != null && (supportedTypes.contains(SkinGeometryTypes.CUBE) || supportedTypes.contains(SkinGeometryTypes.CUBE_CULL) || supportedTypes.contains(SkinGeometryTypes.MESH) || supportedTypes.contains(SkinGeometryTypes.MESH_CULL))) {
             return allFaces(geometries, bounds, partType);
         }
         var partition = getPartition(partType);
@@ -139,12 +139,12 @@ public class SkinCubeFaceCuller {
                 }
                 var isBlank = false;
                 var targetGeometryType = geometries.get(targetIndex).getType();
-                if (SkinGeometryTypes.isGlass(targetGeometryType)) {
+                if (SkinGeometryTypes.isGlassBlock(targetGeometryType)) {
                     pendingList.add(pos1);
                     // when source cube and target cube is linked glass, ignore.
                     int sourceIndex = map.get(pos);
                     if (sourceIndex != -1) {
-                        isBlank = SkinGeometryTypes.isGlass(geometries.get(sourceIndex).getType());
+                        isBlank = SkinGeometryTypes.isGlassBlock(geometries.get(sourceIndex).getType());
                     }
                 }
                 // first, when not any rotation of the cube, it's always facing north.

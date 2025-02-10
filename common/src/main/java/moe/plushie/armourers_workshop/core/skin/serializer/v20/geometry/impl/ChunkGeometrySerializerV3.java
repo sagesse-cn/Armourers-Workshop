@@ -37,6 +37,8 @@ public class ChunkGeometrySerializerV3 extends ChunkGeometrySerializer {
 
     protected static class Decoder extends SkinMesh implements ChunkGeometrySerializer.Decoder<SkinMesh> {
 
+        private final ISkinGeometryType type;
+
         private final ChunkGeometrySlice slice;
         private final ChunkPaletteData palette;
 
@@ -46,6 +48,7 @@ public class ChunkGeometrySerializerV3 extends ChunkGeometrySerializer {
         private SkinTextureData textureProvider;
 
         public Decoder(ISkinGeometryType type, ChunkGeometrySlice slice) {
+            this.type = type;
             this.palette = slice.getPalette();
             this.slice = slice;
         }
@@ -57,6 +60,11 @@ public class ChunkGeometrySerializerV3 extends ChunkGeometrySerializer {
         @Override
         public SkinMesh begin() {
             return this;
+        }
+
+        @Override
+        public ISkinGeometryType getType() {
+            return type;
         }
 
         @Override
@@ -133,7 +141,7 @@ public class ChunkGeometrySerializerV3 extends ChunkGeometrySerializer {
             for (int i = 0; i < vertexCount; i++) {
                 faceVertices.add(vertices.get(offset + i));
             }
-            return new SkinMeshFace(faceId, transform, texturePos, faceVertices);
+            return new SkinMeshFace(faceId, type, transform, texturePos, faceVertices);
         }
 
         protected SkinGeometryVertex parseVertex(int i, int usedBytes) {

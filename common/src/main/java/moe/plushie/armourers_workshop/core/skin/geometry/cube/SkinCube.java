@@ -50,7 +50,7 @@ public abstract class SkinCube extends SkinGeometry {
         var paintColor = getPaintColor(dir);
         var geometryType = getType();
         var alpha = 255;
-        if (SkinGeometryTypes.isGlass(geometryType)) {
+        if (SkinGeometryTypes.isGlassBlock(geometryType)) {
             alpha = 127;
         }
         var transform = getTransform();

@@ -71,24 +71,55 @@ public abstract class SkinRenderType implements IRenderTypeBuilder {
         return BLOCK_FACE_SOLID;
     }
 
-    public static RenderType cubeFace(IResourceLocation texture, boolean isGrowing) {
+    public static RenderType customFace(String name, SkinRenderFormat format, IResourceLocation texture, boolean isGrowing, boolean isCull, boolean isUseIndex) {
+        // select a variant container.
+        var variants = CUSTOM_FACE_SOLID_VARIANTS;
         if (isGrowing) {
-            var key = String.format("aw_cube_lighting/%s", texture.getPath());
-            return CUSTOM_FACE_LIGHTING_VARIANTS.computeIfAbsent(key, k -> _customFace(SkinRenderFormat.SKIN_CUBE_FACE_LIGHTING).texture(texture).build(k));
-        } else {
-            var key = String.format("aw_cube_solid/%s", texture.getPath());
-            return CUSTOM_FACE_SOLID_VARIANTS.computeIfAbsent(key, k -> _customFace(SkinRenderFormat.SKIN_CUBE_FACE).texture(texture).build(k));
+            variants = CUSTOM_FACE_LIGHTING_VARIANTS;
         }
+        var key = String.format("%s/%s", name, texture.getPath());
+        return variants.computeIfAbsent(key, it -> {
+            var builder = _customFace(format).texture(texture);
+            if (isCull) {
+                builder = builder.cull();
+            }
+            if (!isUseIndex) {
+                builder = builder.property(USING_INDEX, false);
+            }
+            return builder.build(it);
+        });
     }
 
-    public static RenderType meshFace(IResourceLocation texture, boolean isGrowing) {
+    public static RenderType geometryFace(ISkinGeometryType type, IResourceLocation texture, boolean isGrowing) {
+        // ..
         if (isGrowing) {
-            var key = String.format("aw_mesh_lighting/%s", texture.getPath());
-            return CUSTOM_FACE_LIGHTING_VARIANTS.computeIfAbsent(key, k -> _customFace(SkinRenderFormat.SKIN_MESH_FACE_LIGHTING).texture(texture).property(USING_INDEX, false).build(k));
+            if (type == SkinGeometryTypes.CUBE) {
+                return customFace("aw_cube_lighting", SkinRenderFormat.SKIN_CUBE_FACE_LIGHTING, texture, true, false, true);
+            }
+            if (type == SkinGeometryTypes.CUBE_CULL) {
+                return customFace("aw_cube_lighting_cull", SkinRenderFormat.SKIN_CUBE_FACE_LIGHTING, texture, true, true, true);
+            }
+            if (type == SkinGeometryTypes.MESH) {
+                return customFace("aw_mesh_lighting", SkinRenderFormat.SKIN_MESH_FACE_LIGHTING, texture, true, false, false);
+            }
+            if (type == SkinGeometryTypes.MESH_CULL) {
+                return customFace("aw_mesh_lighting_cull", SkinRenderFormat.SKIN_MESH_FACE_LIGHTING, texture, true, true, false);
+            }
         } else {
-            var key = String.format("aw_mesh_solid/%s", texture.getPath());
-            return CUSTOM_FACE_SOLID_VARIANTS.computeIfAbsent(key, k -> _customFace(SkinRenderFormat.SKIN_MESH_FACE).texture(texture).property(USING_INDEX, false).build(k));
+            if (type == SkinGeometryTypes.CUBE) {
+                return customFace("aw_cube_solid", SkinRenderFormat.SKIN_CUBE_FACE, texture, false, false, true);
+            }
+            if (type == SkinGeometryTypes.CUBE_CULL) {
+                return customFace("aw_cube_solid_cull", SkinRenderFormat.SKIN_CUBE_FACE, texture, false, true, true);
+            }
+            if (type == SkinGeometryTypes.MESH) {
+                return customFace("aw_mesh_solid", SkinRenderFormat.SKIN_MESH_FACE, texture, false, false, false);
+            }
+            if (type == SkinGeometryTypes.MESH_CULL) {
+                return customFace("aw_mesh_solid_cull", SkinRenderFormat.SKIN_MESH_FACE, texture, false, true, false);
+            }
         }
+        return by(type);
     }
 
     public static RenderType lines() {
