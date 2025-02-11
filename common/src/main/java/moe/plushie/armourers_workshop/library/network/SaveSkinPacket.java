@@ -15,6 +15,8 @@ import moe.plushie.armourers_workshop.core.skin.serializer.SkinFileOptions;
 import moe.plushie.armourers_workshop.core.skin.serializer.SkinSerializer;
 import moe.plushie.armourers_workshop.core.utils.Constants;
 import moe.plushie.armourers_workshop.core.utils.FileUtils;
+import moe.plushie.armourers_workshop.core.utils.Objects;
+import moe.plushie.armourers_workshop.core.utils.StreamUtils;
 import moe.plushie.armourers_workshop.init.ModLog;
 import moe.plushie.armourers_workshop.init.ModPermissions;
 import moe.plushie.armourers_workshop.init.platform.NetworkManager;
@@ -23,27 +25,25 @@ import moe.plushie.armourers_workshop.library.menu.SkinLibraryMenu;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 
-import java.util.Objects;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 public class SaveSkinPacket extends CustomPacket {
 
-    protected final Target source;
-    protected final Target destination;
+    private final Target source;
+    private final Target destination;
 
-    protected Skin skin;
-    protected Mode mode;
+    private Mode mode = Mode.NONE;
+    private Payload payload;
 
     public SaveSkinPacket(String source, SkinFileOptions sourceOptions, String destination, SkinFileOptions destinationOptions) {
         this.source = new Target(source, sourceOptions);
         this.destination = new Target(destination, destinationOptions);
-        this.mode = Mode.NONE;
         boolean shouldUpload = this.source.isLocal() && !this.destination.isLocal();
         if (shouldUpload) {
             this.mode = Mode.UPLOAD;
             if (SkinLibraryManager.getClient().shouldUploadFile(null)) {
-                this.skin = loadSkin(source, sourceOptions);
+                this.payload = Payload.loadWithOptions(source, sourceOptions);
             }
         }
     }
@@ -56,14 +56,14 @@ public class SaveSkinPacket extends CustomPacket {
             case UPLOAD: {
                 boolean shouldUpload = source.isLocal() && !destination.isLocal();
                 if (shouldUpload && SkinLibraryManager.getServer().shouldUploadFile(null)) {
-                    this.skin = decodeSkin(buffer);
+                    this.payload = Payload.readFromStream(buffer, resolveLoadOptions(source.options));
                 }
                 break;
             }
             case DOWNLOAD: {
                 boolean shouldDownload = !source.isLocal() && destination.isLocal();
                 if (shouldDownload) {
-                    this.skin = decodeSkin(buffer);
+                    this.payload = Payload.readFromStream(buffer, null);
                 }
                 break;
             }
@@ -74,9 +74,9 @@ public class SaveSkinPacket extends CustomPacket {
     public void encode(IFriendlyByteBuf buffer) {
         source.writeToStream(buffer);
         destination.writeToStream(buffer);
-        if (skin != null) {
+        if (payload != null) {
             buffer.writeEnum(mode);
-            encodeSkin(skin, buffer);
+            payload.writeToStream(buffer);
         } else {
             buffer.writeEnum(Mode.NONE);
         }
@@ -93,7 +93,7 @@ public class SaveSkinPacket extends CustomPacket {
             return;
         }
         var library = SkinLibraryManager.getClient().getLocalSkinLibrary();
-        library.save(destination.getPath(), skin, destination.getOptions());
+        library.save(destination.path, skin, destination.options);
     }
 
     @Override
@@ -122,7 +122,7 @@ public class SaveSkinPacket extends CustomPacket {
             if (container.shouldLoadStack()) {
                 accept(player, "load");
                 // TODO: fix db-link
-                var identifier = SkinLoader.getInstance().saveSkin(source.getIdentifier(), skin);
+                var identifier = SkinLoader.getInstance().saveSkin(source.identifier, skin);
                 container.crafting(new SkinDescriptor(identifier, skin.getType()));
             }
             return;
@@ -144,8 +144,8 @@ public class SaveSkinPacket extends CustomPacket {
             }
             if (container.shouldSaveStack()) {
                 accept(player, "save");
-                SkinLoader.getInstance().removeSkin(destination.getIdentifier()); // remove skin cache.
-                server.getLibrary().save(destination.getPath(), skin, destination.getOptions());
+                SkinLoader.getInstance().removeSkin(destination.identifier); // remove skin cache.
+                server.getLibrary().save(destination.path, skin, destination.options);
                 container.crafting(null);
             }
             return;
@@ -157,12 +157,13 @@ public class SaveSkinPacket extends CustomPacket {
                 return;
             }
             if (!source.isLocal()) {
-                this.skin = getSkin();
-                this.mode = Mode.DOWNLOAD;
-            }
-            if (skin != null && !skin.getSettings().isSavable()) {
-                abort(player, "download", "download prohibited from the skin author");
-                return;
+                mode = Mode.DOWNLOAD;
+                // check the server skin is savable?
+                var skin = getSkin();
+                if (skin == null || !skin.getSettings().isSavable()) {
+                    abort(player, "download", "download prohibited from the skin author");
+                    return;
+                }
             }
             if (container.shouldSaveStack()) {
                 // send skin data to client again, except case: fs -> fs
@@ -184,7 +185,7 @@ public class SaveSkinPacket extends CustomPacket {
         if (!source.isLocal() && destination.isLocal() && !libraryManager.shouldDownloadFile(player)) {
             return false; // can't download
         }
-        return mode == Mode.NONE || skin != null;
+        return mode == Mode.NONE || payload != null;
     }
 
     private void accept(Player player, String op) {
@@ -195,39 +196,15 @@ public class SaveSkinPacket extends CustomPacket {
         ModLog.info("abort {} request of the '{}', reason: '{}', from: '{}', to: '{}'", op, player.getScoreboardName(), reason, source, destination);
     }
 
-    private void encodeSkin(Skin skin, IFriendlyByteBuf buffer) {
-        try (var outputStream = new GZIPOutputStream(new ByteBufOutputStream(buffer.asByteBuf()))) {
-            SkinSerializer.writeToStream(skin, null, outputStream);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private Skin decodeSkin(IFriendlyByteBuf buffer) {
-        try (var inputStream = new GZIPInputStream(new ByteBufInputStream(buffer.asByteBuf()))) {
-            return SkinSerializer.readFromStream(null, inputStream);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    private Skin loadSkin(String identifier, SkinFileOptions options) {
-        try {
-            var stream = SkinLoader.getInstance().loadSkinData(identifier);
-            return SkinSerializer.readFromStream(resolveLoadOptions(options), stream);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
     private Skin getSkin() {
-        if (skin != null) {
-            return skin;
+        if (payload != null) {
+            return payload.get();
         }
-        skin = loadSkin(source.getIdentifier(), source.getOptions());
-        return skin;
+        payload = Payload.create(source.identifier, source.options);
+        if (payload != null) {
+            return payload.get();
+        }
+        return null;
     }
 
     private SkinFileOptions resolveLoadOptions(SkinFileOptions options) {
@@ -249,14 +226,17 @@ public class SaveSkinPacket extends CustomPacket {
         NONE, UPLOAD, DOWNLOAD
     }
 
-    public static class Target {
+    private static class Target {
 
         protected final String identifier;
         protected final SkinFileOptions options;
 
+        protected final String path;
+
         public Target(String identifier, SkinFileOptions options) {
             this.identifier = identifier;
             this.options = options;
+            this.path = DataDomain.getPath(identifier);
         }
 
         public static Target readFromStream(IFriendlyByteBuf buffer) {
@@ -304,37 +284,102 @@ public class SaveSkinPacket extends CustomPacket {
 
         public boolean isAuthorized(Player player) {
             if (isServer()) {
-                var path = getPath();
                 if (path.startsWith(Constants.PRIVATE + "/" + player.getStringUUID())) {
                     return true; // any operation has been accepted in the player's own directory.
                 }
                 if (path.startsWith(Constants.PRIVATE)) {
                     return false; // any operation has been rejected in the other player's private directory.
                 }
+//                if (SkinLibraryManager.getServer().getLibrary().get(path) != null) {
+//                    // required auth when on files already in public directory
+//                    return SkinLibraryManager.getServer().shouldModifierFile(player);
+//                }
                 return path.startsWith("/");
-//            if (SkinLibraryManager.getServer().getLibrary().get(path) != null) {
-//                // required auth when on files already in public directory
-//                return SkinLibraryManager.getServer().shouldModifierFile(player);
-//            }
             }
             return !isUnknown();
-        }
-
-        public String getPath() {
-            return DataDomain.getPath(identifier);
-        }
-
-        public String getIdentifier() {
-            return identifier;
-        }
-
-        public SkinFileOptions getOptions() {
-            return options;
         }
 
         @Override
         public String toString() {
             return identifier;
+        }
+    }
+
+    private static class Payload {
+
+        private Skin skin;
+
+        public Payload(Skin skin) {
+            this.skin = skin;
+        }
+
+        public static Payload create(String identifier, SkinFileOptions options) {
+            try {
+                var inputStream = SkinLoader.getInstance().loadSkinData(identifier);
+                return new Payload(SkinSerializer.readFromStream(options, inputStream));
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        public static Payload loadWithOptions(String identifier, SkinFileOptions options) {
+            // If the key is not provided, we need to transfer data without decrypt.
+            if (options != null && options.getSecurityData() != null && Objects.equals(options.getSecurityKey(), "")) {
+                return DirectyPayload.create(identifier, options);
+            }
+            return Payload.create(identifier, options);
+        }
+
+        public static Payload readFromStream(IFriendlyByteBuf buffer, SkinFileOptions options) {
+            try (var inputStream = new GZIPInputStream(new ByteBufInputStream(buffer.asByteBuf()))) {
+                return new Payload(SkinSerializer.readFromStream(options, inputStream));
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        public void writeToStream(IFriendlyByteBuf buffer) {
+            try (var outputStream = new GZIPOutputStream(new ByteBufOutputStream(buffer.asByteBuf()))) {
+                SkinSerializer.writeToStream(skin, null, outputStream);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        public Skin get() {
+            return skin;
+        }
+    }
+
+    private static class DirectyPayload extends Payload {
+
+        private final byte[] bytes;
+
+        public DirectyPayload(byte[] bytes) {
+            super(null);
+            this.bytes = bytes;
+        }
+
+        public static DirectyPayload create(String identifier, SkinFileOptions options) {
+            try {
+                var inputStream = SkinLoader.getInstance().loadSkinData(identifier);
+                var bytes = StreamUtils.readStreamToByteArray(inputStream);
+                return new DirectyPayload(bytes);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        @Override
+        public void writeToStream(IFriendlyByteBuf buffer) {
+            try (var outputStream = new GZIPOutputStream(new ByteBufOutputStream(buffer.asByteBuf()))) {
+                outputStream.write(bytes);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 }

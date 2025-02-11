@@ -69,7 +69,7 @@ public class ChunkSerializers {
             var context = stream.getContext();
             var skinType = stream.readType(SkinTypes::byName);
             return stream.readChunk(it -> {
-                // we need to  check the secret key is correct first.
+                // we need to check the secret key is correct first.
                 var settings = it.read(SKIN_SETTINGS);
                 if (settings.getSecurityData() != null && !settings.getSecurityData().equals(context.getSecurityData())) {
                     throw new IOException("Can't decrypt skin by the security key.");

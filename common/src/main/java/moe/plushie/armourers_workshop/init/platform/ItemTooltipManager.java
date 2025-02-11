@@ -137,7 +137,7 @@ public class ItemTooltipManager {
     }
 
     private static void appendSettingInfo(List<Component> tooltip, BakedSkin bakedSkin) {
-        var flags = new StringJoiner(",");
+        var flags = new StringJoiner(",", "[", "]");
         var settings = bakedSkin.getSkin().getSettings();
         if (!settings.isEditable()) {
             flags.add("NE");
@@ -150,6 +150,9 @@ public class ItemTooltipManager {
         }
         if (settings.isCompressed()) {
             flags.add("C");
+        }
+        if (settings.getSecurityData() != null) {
+            flags.add("S");
         }
         tooltip.add(TranslateUtils.subtitle("item.armourers_workshop.rollover.skinSettings", flags.toString()));
     }

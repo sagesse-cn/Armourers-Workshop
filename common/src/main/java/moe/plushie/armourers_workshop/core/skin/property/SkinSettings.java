@@ -10,7 +10,7 @@ import moe.plushie.armourers_workshop.core.utils.OpenItemTransforms;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 public class SkinSettings {
@@ -144,10 +144,11 @@ public class SkinSettings {
 
     @Override
     public String toString() {
-        var properties = new HashMap<String, Object>();
+        var properties = new LinkedHashMap<String, Object>();
         properties.put("editable", isEditable());
         properties.put("savable", isSavable());
         properties.put("exportable", isExportable());
+        properties.put("encrypted", getSecurityData() != null);
         properties.put("compressed", isCompressed());
         if (collisionBox != null && !collisionBox.isEmpty()) {
             properties.put("collisionBox", collisionBox);
@@ -172,7 +173,7 @@ public class SkinSettings {
         settings.setEditable(options.getEditable(settings.isEditable()));
         settings.setSavable(options.getSavable(settings.isSavable()));
         settings.setExportable(options.getExportable(settings.isExportable()));
-        settings.setCompressed(options.getCompressed(settings.isCompressed()));
+        settings.setCompressed(options.isCompressed());
         settings.setSecurityData(options.getSecurityData());
         return settings;
     }

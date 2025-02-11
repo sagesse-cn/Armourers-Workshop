@@ -52,6 +52,10 @@ public class SkinFileOptions {
         return defaultValue;
     }
 
+    public boolean isEditable() {
+        return getEditable(true);
+    }
+
     public void setSavable(boolean isSavable) {
         serializer.write(CodingKeys.IS_SAVABLE, isSavable);
     }
@@ -62,6 +66,10 @@ public class SkinFileOptions {
             return value;
         }
         return defaultValue;
+    }
+
+    public boolean isSavable() {
+        return getSavable(true);
     }
 
     public void setExportable(boolean isExportable) {
@@ -76,6 +84,10 @@ public class SkinFileOptions {
         return defaultValue;
     }
 
+    public boolean isExportable() {
+        return getExportable(true);
+    }
+
 
     public void setCompressed(boolean compressed) {
         serializer.write(CodingKeys.IS_COMPRESSED, compressed);
@@ -87,6 +99,10 @@ public class SkinFileOptions {
             return value;
         }
         return defaultValue;
+    }
+
+    public boolean isCompressed() {
+        return getCompressed(false);
     }
 
     public void setSecurityKey(String securityKey) {

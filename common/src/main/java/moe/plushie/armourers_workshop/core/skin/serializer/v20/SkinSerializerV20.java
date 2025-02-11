@@ -13,7 +13,7 @@ import java.io.IOException;
 public final class SkinSerializerV20 implements IOSerializer {
 
     public static final int FILE_MIN_VERSION = 20;
-    public static final int FILE_LATEST_VERSION = 24;
+    public static final int FILE_LATEST_VERSION = 25;
 
     public SkinSerializerV20() {
     }

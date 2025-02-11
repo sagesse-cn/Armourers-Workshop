@@ -29,17 +29,12 @@ public abstract class ChunkSerializer<V, C> {
     protected void config() {
     }
 
-    protected void config(ChunkFlags flags, V value, ChunkContext context) {
-    }
-
     public abstract V read(ChunkDataInputStream stream, C obj) throws IOException;
 
     public abstract void write(V value, C obj, ChunkDataOutputStream stream) throws IOException;
 
     public ChunkFlags getChunkFlags(V value, ChunkContext context) {
-        var flags = context.createSerializerFlags(this, value);
-        config(flags, value, context);
-        return flags;
+        return context.createSerializerFlags(this, value);
     }
 
     public ChunkType getChunkType() {

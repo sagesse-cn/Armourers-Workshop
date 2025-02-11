@@ -21,8 +21,20 @@ import java.util.zip.GZIPOutputStream;
 
 public class ChunkContext {
 
-    private static final List<ChunkType> SIMPLE_ENCRYPT = Collections.immutableList(builder -> {
+    private static final List<ChunkType> ENCRYPTED_CHUNK_TYPES = Collections.immutableList(builder -> {
         builder.add(ChunkType.SKIN_PART);
+    });
+
+    private static final List<ChunkType> COMPRESSED_CHUNK_TYPES = Collections.immutableList(builder -> {
+        builder.add(ChunkType.GEOMETRY_DATA);
+        builder.add(ChunkType.PAINT_DATA);
+        builder.add(ChunkType.PREVIEW_DATA);
+        builder.add(ChunkType.ANIMATION_DATA);
+        builder.add(ChunkType.PALETTE_DATA);
+        //builder.add(ChunkType.FILE_DATA);
+        builder.add(ChunkType.SKIN_PART);
+        //builder.add(ChunkType.MARKER);
+        //builder.add(ChunkType.SKIN_SETTINGS);
     });
 
     private boolean enablePartData = true;
@@ -30,7 +42,6 @@ public class ChunkContext {
     private boolean enableFastEncoder = true;
 
     private byte[] securityKey = null;
-    private List<ChunkType> securityTypes;
 
     private final ChunkFileData fileProvider;
     private final ChunkPaletteData paletteProvider;
@@ -53,7 +64,6 @@ public class ChunkContext {
         // decode security key from options.
         if (options.getSecurityData() != null && options.getSecurityKey() != null) {
             securityKey = Objects.decodeHex(options.getSecurityKey().toCharArray());
-            securityTypes = SIMPLE_ENCRYPT;
         }
     }
 
@@ -103,8 +113,11 @@ public class ChunkContext {
 
     public <V, T> ChunkFlags createSerializerFlags(ChunkSerializer<V, T> serializer, V value) {
         var flags = new ChunkFlags();
-        if (securityTypes != null && securityTypes.contains(serializer.getChunkType())) {
-            flags.add(ChunkFlag.ENCRYPT);
+        if (options.isCompressed() && COMPRESSED_CHUNK_TYPES.contains(serializer.getChunkType())) {
+            flags.add(ChunkFlag.GZIP); // zip all sections.
+        }
+        if (securityKey != null && ENCRYPTED_CHUNK_TYPES.contains(serializer.getChunkType())) {
+            flags.add(ChunkFlag.ENCRYPT); // only encrypt important section.
         }
         return flags;
     }
@@ -131,6 +144,10 @@ public class ChunkContext {
 
     public String getSecurityData() {
         return options.getSecurityData();
+    }
+
+    public String getSecurityKey() {
+        return options.getSecurityKey();
     }
 
     public ChunkFileData getFileProvider() {
