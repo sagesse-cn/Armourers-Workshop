@@ -173,21 +173,15 @@ public class SkinBlockPlaceContext extends BlockPlaceContext {
         }
 
         public void transform(OpenVector3f r) {
-            OpenQuaternionf q = new OpenQuaternionf(r.x(), r.y(), r.z(), true);
+            var q = new OpenQuaternionf(r.x(), r.y(), r.z(), true);
 
-            OpenVector4f f = new OpenVector4f(offset.getX(), offset.getY(), offset.getZ(), 1.0f);
+            var f = new OpenVector4f(offset.getX(), offset.getY(), offset.getZ(), 1.0f);
             f.transform(q);
             offset = new BlockPos(Math.round(f.x()), Math.round(f.y()), Math.round(f.z()));
 
-            OpenRectangle3f of = new OpenRectangle3f(shape);
-            of.mul(q);
-            shape = new OpenRectangle3i(0, 0, 0, 0, 0, 0);
-            shape.setX(Math.round(of.x()));
-            shape.setY(Math.round(of.y()));
-            shape.setZ(Math.round(of.z()));
-            shape.setWidth(Math.round(of.width()));
-            shape.setHeight(Math.round(of.height()));
-            shape.setDepth(Math.round(of.depth()));
+            var fixedShape = new OpenRectangle3f(shape);
+            fixedShape.mul(q);
+            shape = new OpenRectangle3i(Math.round(fixedShape.x()), Math.round(fixedShape.y()), Math.round(fixedShape.z()), Math.round(fixedShape.width()), Math.round(fixedShape.height()), Math.round(fixedShape.depth()));
         }
 
         public BlockPos getOffset() {

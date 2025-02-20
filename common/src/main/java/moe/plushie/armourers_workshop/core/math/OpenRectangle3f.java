@@ -222,12 +222,12 @@ public class OpenRectangle3f implements IRectangle3f {
         var end = new OpenVector4f(x + width, y + height, z + depth, 1.0f);
         start.transform(matrix);
         end.transform(matrix);
-        x = start.x;
-        y = start.y;
-        z = start.z;
-        width = end.x - start.x;
-        height = end.y - start.y;
-        depth = end.z - start.z;
+        x = Math.min(start.x(), end.x());
+        y = Math.min(start.y(), end.y());
+        z = Math.min(start.z(), end.z());
+        width = Math.max(start.x(), end.x()) - x;
+        height = Math.max(start.y(), end.y()) - y;
+        depth = Math.max(start.z(), end.z()) - z;
     }
 
     public List<Float> toList() {
