@@ -26,7 +26,7 @@ public abstract class Shader {
 
     public void begin() {
         RenderSystem.backupExtendedMatrix();
-        RenderSystem.setExtendedMatrixFlags(0x80000000);
+        RenderSystem.setExtendedMatrixFlags(0x01);
         RenderSystem.setShaderColor(1, 1, 1, 1);
         ShaderUniforms.begin();
 
@@ -72,7 +72,7 @@ public abstract class Shader {
         RenderSystem.setExtendedOverlayTextureMatrix(getOverlayTextureMatrix(object));
         RenderSystem.setExtendedLightmapTextureMatrix(getLightmapTextureMatrix(object));
         RenderSystem.setExtendedColorModulator(getColorColorModulator(object));
-        RenderSystem.setExtendedMatrixFlags(entry.properties() | 0x80000000);
+        RenderSystem.setExtendedMatrixFlags(entry.properties() | 0x01);
         RenderSystem.setExtendedNormalMatrix(entry.normal());
         RenderSystem.setExtendedModelViewMatrix(entry.pose());
 

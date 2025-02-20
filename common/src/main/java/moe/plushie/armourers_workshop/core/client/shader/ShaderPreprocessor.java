@@ -80,7 +80,7 @@ public class ShaderPreprocessor {
     private void processCommonShader(Builder builder) {
         // if normal exists, we need normalize it when flags is 0x2(non-uniform scaled) enabled.
         if (builder.variables.contains("aw_Normal")) {
-            builder.scripts.add("if ((aw_MatrixFlags & 0x2) != 0) {");
+            builder.scripts.add("if ((aw_MatrixFlags & 0x02) != 0) {");
             builder.scripts.add("  aw_Normal = normalize(aw_Normal);");
             builder.scripts.add("}");
         }
@@ -167,7 +167,7 @@ public class ShaderPreprocessor {
             builder.append("uniform int aw_MatrixFlags = 0;\n");
             builder.append("#endif\n");
             builder.append("void aw_main_pre() {\n");
-            builder.append("  if ((aw_MatrixFlags & 0x80000000) != 0) {\n");
+            builder.append("  if ((aw_MatrixFlags & 0x01) != 0) {\n");
             builder.append("    ", initializer2, ";\n");
             builder.append("    ", scripts, "\n");
             builder.append("  } else {\n");
