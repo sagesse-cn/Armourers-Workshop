@@ -65,7 +65,7 @@ public abstract class SkinAnimationFunction {
 
         @Override
         public float apply(float t) {
-            return 1; // 0 or 1
+            return 0; // 0 or 1
         }
 
         @Override
