@@ -52,6 +52,9 @@ processResources {
     filesMatching("META-INF/mods.toml") {
         expand inputs.properties
     }
+
+    // in 1.21, the neoforge provides c item tags. so we don't need reset it.
+    exclude "data/c/tags/item/**/*.json"
 }
 
 shadowJar {

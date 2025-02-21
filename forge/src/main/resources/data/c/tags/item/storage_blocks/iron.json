@@ -1,9 +1,6 @@
 {
   "replace": false,
   "values": [
-    {
-      "id": "#forge:storage_blocks/iron",
-      "required": false
-    }
+    "#forge:storage_blocks/iron"
   ]
 }

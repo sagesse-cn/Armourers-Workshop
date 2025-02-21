@@ -1,9 +1,6 @@
 {
   "replace": false,
   "values": [
-    {
-      "id": "#forge:ender_pearls",
-      "required": false
-    }
+    "#forge:ender_pearls"
   ]
 }
