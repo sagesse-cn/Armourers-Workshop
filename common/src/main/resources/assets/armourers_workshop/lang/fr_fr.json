@@ -431,6 +431,8 @@
   "inventory.armourers_workshop.skin-library-global.upload.skinDescription": "Description:",
   "inventory.armourers_workshop.skin-library-global.upload.skinName": "Nom du skin:",
   "inventory.armourers_workshop.skin-library-global.upload.skinTags": "Etiquettes du skin:",
+  "inventory.armourers_workshop.skin-library-global.upload.fileOptions": "Options de fichier avancées",
+  "inventory.armourers_workshop.skin-library-global.upload.setting.title": "Options de fichier avancées",
   "inventory.armourers_workshop.skinnable": "Bloc skinnable",
   "inventory.armourers_workshop.skinning-table": "Table de dépeçage",
   "inventory.armourers_workshop.skinning-table.setting.title": "Réglage de la table de dépeçage",

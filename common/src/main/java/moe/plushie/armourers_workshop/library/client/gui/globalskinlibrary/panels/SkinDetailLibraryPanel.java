@@ -1,4 +1,4 @@
-package moe.plushie.armourers_workshop.library.client.gui.panels;
+package moe.plushie.armourers_workshop.library.client.gui.globalskinlibrary.panels;
 
 import com.apple.library.coregraphics.CGGradient;
 import com.apple.library.coregraphics.CGGraphicsContext;
@@ -27,7 +27,7 @@ import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.init.ModLog;
 import moe.plushie.armourers_workshop.init.ModTextures;
 import moe.plushie.armourers_workshop.init.platform.EnvironmentManager;
-import moe.plushie.armourers_workshop.library.client.gui.GlobalSkinLibraryWindow;
+import moe.plushie.armourers_workshop.library.client.gui.globalskinlibrary.GlobalSkinLibraryWindow;
 import moe.plushie.armourers_workshop.library.client.gui.widget.SkinRatingView;
 import moe.plushie.armourers_workshop.library.data.GlobalSkinLibrary;
 import moe.plushie.armourers_workshop.library.data.SkinLibraryManager;

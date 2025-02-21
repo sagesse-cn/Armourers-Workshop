@@ -426,6 +426,8 @@
   "inventory.armourers_workshop.skin-library-global.upload.skinDescription": "Mô tả về da:",
   "inventory.armourers_workshop.skin-library-global.upload.skinName": "Tên Skin:",
   "inventory.armourers_workshop.skin-library-global.upload.skinTags": "Thẻ da:",
+  "inventory.armourers_workshop.skin-library-global.upload.fileOptions": "Tùy chọn tệp nâng cao",
+  "inventory.armourers_workshop.skin-library-global.upload.setting.title": "Tùy chọn tệp nâng cao",
   "inventory.armourers_workshop.skinnable": "Khối có thể lột da",
   "inventory.armourers_workshop.skinning-table": "Bàn lột da",
   "inventory.armourers_workshop.skinning-table.setting.title": "Bàn ăn",

@@ -1,10 +1,11 @@
-package moe.plushie.armourers_workshop.library.client.gui.panels;
+package moe.plushie.armourers_workshop.library.client.gui.globalskinlibrary.panels;
 
 import com.apple.library.coregraphics.CGRect;
 import com.apple.library.foundation.NSMutableString;
 import com.apple.library.foundation.NSString;
 import com.apple.library.foundation.NSTextAlignment;
 import com.apple.library.uikit.UIButton;
+import com.apple.library.uikit.UICheckBox;
 import com.apple.library.uikit.UIColor;
 import com.apple.library.uikit.UIControl;
 import com.apple.library.uikit.UIImage;
@@ -12,13 +13,16 @@ import com.apple.library.uikit.UIImageView;
 import com.apple.library.uikit.UILabel;
 import com.apple.library.uikit.UITextField;
 import com.apple.library.uikit.UITextView;
-import moe.plushie.armourers_workshop.core.client.bake.BakedSkin;
 import moe.plushie.armourers_workshop.core.client.bake.SkinBakery;
 import moe.plushie.armourers_workshop.core.data.ticket.Tickets;
+import moe.plushie.armourers_workshop.core.skin.Skin;
 import moe.plushie.armourers_workshop.core.skin.SkinDescriptor;
+import moe.plushie.armourers_workshop.core.skin.serializer.SkinFileOptions;
+import moe.plushie.armourers_workshop.core.skin.serializer.SkinSerializer;
 import moe.plushie.armourers_workshop.init.ModTextures;
 import moe.plushie.armourers_workshop.init.platform.NetworkManager;
-import moe.plushie.armourers_workshop.library.client.gui.GlobalSkinLibraryWindow;
+import moe.plushie.armourers_workshop.library.client.gui.globalskinlibrary.GlobalSkinLibrarySettingWindow;
+import moe.plushie.armourers_workshop.library.client.gui.globalskinlibrary.GlobalSkinLibraryWindow;
 import moe.plushie.armourers_workshop.library.data.GlobalSkinLibrary;
 import moe.plushie.armourers_workshop.library.menu.GlobalSkinLibraryMenu;
 import moe.plushie.armourers_workshop.library.network.UploadSkinPacket;
@@ -40,6 +44,7 @@ public class UploadLibraryPanel extends AbstractLibraryPanel {
     private UITextField textTags;
     private UITextView textDescription;
     private UIButton buttonUpload;
+    private UICheckBox fileOptionsBox;
 
     private String error = null;
     private boolean isUploading = false;
@@ -63,12 +68,20 @@ public class UploadLibraryPanel extends AbstractLibraryPanel {
         textTags = addTextField(5, 45, inputWidth, 16, "enterTags");
         textTags.setMaxLength(32);
 
-        textDescription = addTextView(5, 75, inputWidth, height - 75 - 40, "enterDescription");
+        textDescription = addTextView(5, 75, inputWidth, height - 75 - 40 - 12, "enterDescription");
         textDescription.setMaxLength(255);
 
         buttonUpload = addTextButton(28, height - 28, 96, 18, "buttonUpload", UploadLibraryPanel::upload);
         buttonUpload.setAutoresizingMask(AutoresizingMask.flexibleTopMargin);
         buttonUpload.setEnabled(false);
+
+        fileOptionsBox = new UICheckBox(new CGRect(5, textDescription.frame().maxY() + 6, inputWidth, 10));
+        fileOptionsBox.setTitle(getDisplayText("fileOptions"));
+        fileOptionsBox.setTitleColor(UIColor.WHITE);
+        fileOptionsBox.setSelected(GlobalSkinLibrarySettingWindow.hasChanges());
+        fileOptionsBox.addTarget(this, UIControl.Event.VALUE_CHANGED, UploadLibraryPanel::changeFileOptions);
+        fileOptionsBox.setAutoresizingMask(AutoresizingMask.flexibleTopMargin);
+        addSubview(fileOptionsBox);
 
         addLabel(5, 5, inputWidth, 10, getDisplayText("skinName"));
         addLabel(5, 35, inputWidth, 10, getDisplayText("skinTags"));
@@ -79,14 +92,14 @@ public class UploadLibraryPanel extends AbstractLibraryPanel {
         warningLabel.setTextVerticalAlignment(NSTextAlignment.Vertical.TOP);
         warningLabel.setAutoresizingMask(AutoresizingMask.flexibleLeftMargin | AutoresizingMask.flexibleHeight);
 
-        UIImageView bg1 = new UIImageView(new CGRect(width - 18 * 9 - 5, height - 82, 162, 76));
+        var bg1 = new UIImageView(new CGRect(width - 18 * 9 - 5, height - 82, 162, 76));
         bg1.setImage(UIImage.of(ModTextures.GLOBAL_SKIN_LIBRARY).uv(0, 180).build());
         bg1.setAutoresizingMask(AutoresizingMask.flexibleLeftMargin | AutoresizingMask.flexibleTopMargin);
         bg1.setOpaque(true);
         insertViewAtIndex(bg1, 0);
 
-        UIImageView bg2 = new UIImageView(new CGRect(5, height - 28, 18, 18));
-        UIImageView bg3 = new UIImageView(new CGRect(129, height - 32, 26, 26));
+        var bg2 = new UIImageView(new CGRect(5, height - 28, 18, 18));
+        var bg3 = new UIImageView(new CGRect(129, height - 32, 26, 26));
         bg2.setOpaque(true);
         bg3.setOpaque(true);
         bg2.setImage(UIImage.of(ModTextures.GLOBAL_SKIN_LIBRARY).uv(0, 162).build());
@@ -150,6 +163,19 @@ public class UploadLibraryPanel extends AbstractLibraryPanel {
         return button;
     }
 
+    private void changeFileOptions(UIControl sender) {
+        var dialog = new GlobalSkinLibrarySettingWindow();
+        dialog.setTitle(getDisplayText("setting.title"));
+        dialog.sizeToFit();
+        dialog.showInView(this, () -> {
+            if (!dialog.isCancelled()) {
+                GlobalSkinLibrarySettingWindow.setChanges(dialog.getProperties());
+                fileOptionsBox.setSelected(GlobalSkinLibrarySettingWindow.hasChanges());
+            }
+        });
+        fileOptionsBox.setSelected(GlobalSkinLibrarySettingWindow.hasChanges());
+    }
+
     private void upload(UIControl sender) {
         var descriptor = SkinDescriptor.of(getInputStack());
         var bakedSkin = SkinBakery.getInstance().loadSkin(descriptor, Tickets.RENDERER);
@@ -163,6 +189,7 @@ public class UploadLibraryPanel extends AbstractLibraryPanel {
             return;
         }
 
+        var uploadOptions = getUploadOptions(bakedSkin.getSkin());
         if (isUploading) {
             return;
         }
@@ -175,7 +202,7 @@ public class UploadLibraryPanel extends AbstractLibraryPanel {
                 return;
             }
             // upload now
-            library.uploadSkin(textName.text().trim(), textDescription.text().trim(), bakedSkin.getSkin(), (result1, exception1) -> {
+            library.uploadSkin(textName.text().trim(), textDescription.text().trim(), bakedSkin.getSkin(), uploadOptions, (result1, exception1) -> {
                 if (exception1 != null) {
                     onUploadFailed(exception1.toString());
                 } else {
@@ -185,6 +212,15 @@ public class UploadLibraryPanel extends AbstractLibraryPanel {
         }));
     }
 
+    private SkinFileOptions getUploadOptions(Skin skin) {
+        // only upgrade the version if necessary.
+        var options = GlobalSkinLibrarySettingWindow.getFileOptions();
+        if (skin.getVersion() < SkinSerializer.Versions.V20 && options.getFileVersion() < SkinSerializer.Versions.V20) {
+            return null;
+        }
+        options.setCompressed(true); // the global skin library always compress.
+        return options;
+    }
 
     private void onUploadFinish() {
         textName.setText("");

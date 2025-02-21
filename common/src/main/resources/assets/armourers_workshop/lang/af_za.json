@@ -425,6 +425,8 @@
   "inventory.armourers_workshop.skin-library-global.upload.skinDescription": "Velbeskrywing:",
   "inventory.armourers_workshop.skin-library-global.upload.skinName": "Vel Naam:",
   "inventory.armourers_workshop.skin-library-global.upload.skinTags": "Vel Tags:",
+  "inventory.armourers_workshop.skin-library-global.upload.fileOptions": "Gevorderde lêer opsies",
+  "inventory.armourers_workshop.skin-library-global.upload.setting.title": "Gevorderde lêer opsies",
   "inventory.armourers_workshop.skinnable": "Afvelbare blok",
   "inventory.armourers_workshop.skinning-table": "Afveltafel",
   "inventory.armourers_workshop.skinning-table.setting.title": "Vlee Tafel Dek",

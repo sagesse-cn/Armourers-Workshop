@@ -425,6 +425,8 @@
   "inventory.armourers_workshop.skin-library-global.upload.skinDescription": "Descripció de la pell:",
   "inventory.armourers_workshop.skin-library-global.upload.skinName": "Nom de la pell:",
   "inventory.armourers_workshop.skin-library-global.upload.skinTags": "Etiquetes de la pell:",
+  "inventory.armourers_workshop.skin-library-global.upload.fileOptions": "Opcions de fitxer avançades",
+  "inventory.armourers_workshop.skin-library-global.upload.setting.title": "Opcions de fitxer avançades",
   "inventory.armourers_workshop.skinnable": "Bloc Skinable",
   "inventory.armourers_workshop.skinning-table": "Taula de pell",
   "inventory.armourers_workshop.skinning-table.setting.title": "Configuració de la taula de pell",

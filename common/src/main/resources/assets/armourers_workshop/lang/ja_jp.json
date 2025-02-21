@@ -428,6 +428,8 @@
   "inventory.armourers_workshop.skin-library-global.upload.skinDescription": "スキンの説明:",
   "inventory.armourers_workshop.skin-library-global.upload.skinName": "スキン名:",
   "inventory.armourers_workshop.skin-library-global.upload.skinTags": "スキンのタグ:",
+  "inventory.armourers_workshop.skin-library-global.upload.fileOptions": "高度なファイルオプション",
+  "inventory.armourers_workshop.skin-library-global.upload.setting.title": "高度なファイルオプション",
   "inventory.armourers_workshop.skinnable": "スキン適用可能なブロック",
   "inventory.armourers_workshop.skinning-table": "スキニングテーブル",
   "inventory.armourers_workshop.skinning-table.setting.title": "スキニングテーブル設定",

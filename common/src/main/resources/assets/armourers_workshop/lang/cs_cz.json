@@ -428,6 +428,8 @@
   "inventory.armourers_workshop.skin-library-global.upload.skinDescription": "Popis skinu:",
   "inventory.armourers_workshop.skin-library-global.upload.skinName": "Název skinu:",
   "inventory.armourers_workshop.skin-library-global.upload.skinTags": "Štítky skinu:",
+  "inventory.armourers_workshop.skin-library-global.upload.fileOptions": "Rozšířené možnosti souboru",
+  "inventory.armourers_workshop.skin-library-global.upload.setting.title": "Rozšířené možnosti souboru",
   "inventory.armourers_workshop.skinnable": "Blok skinovatelný",
   "inventory.armourers_workshop.skinning-table": "Skinovací stůl",
   "inventory.armourers_workshop.skinning-table.setting.title": "Nastavení tabulky skinování",

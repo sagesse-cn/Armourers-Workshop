@@ -1,4 +1,4 @@
-package moe.plushie.armourers_workshop.library.client.gui.panels;
+package moe.plushie.armourers_workshop.library.client.gui.globalskinlibrary.panels;
 
 import com.apple.library.coregraphics.CGGraphicsContext;
 import com.apple.library.coregraphics.CGPoint;
@@ -11,7 +11,7 @@ import com.mojang.authlib.GameProfile;
 import moe.plushie.armourers_workshop.core.client.texture.PlayerTextureLoader;
 import moe.plushie.armourers_workshop.core.skin.texture.EntityTextureDescriptor;
 import moe.plushie.armourers_workshop.init.ModTextures;
-import moe.plushie.armourers_workshop.library.client.gui.GlobalSkinLibraryWindow;
+import moe.plushie.armourers_workshop.library.client.gui.globalskinlibrary.GlobalSkinLibraryWindow;
 import moe.plushie.armourers_workshop.library.data.GlobalSkinLibrary;
 import moe.plushie.armourers_workshop.library.data.impl.ServerPermission;
 import moe.plushie.armourers_workshop.library.data.impl.ServerUser;
@@ -146,7 +146,7 @@ public class HeaderLibraryPanel extends AbstractLibraryPanel {
     }
 
     private UIButton addRightButton(int u, int v, String key, String key2, BiConsumer<HeaderLibraryPanel, UIControl> handler) {
-        UIButton button = new UIButton(new CGRect(0, 0, 18, 18));
+        var button = new UIButton(new CGRect(0, 0, 18, 18));
         button.setImage(ModTextures.iconImage(u, v, 16, 16, ModTextures.GLOBAL_SKIN_LIBRARY), UIControl.State.ALL);
         button.setBackgroundImage(ModTextures.defaultButtonImage(), UIControl.State.ALL);
         button.setTooltip(getDisplayText(key), UIControl.State.NORMAL);

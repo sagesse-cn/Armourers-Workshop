@@ -431,6 +431,8 @@
   "inventory.armourers_workshop.skin-library-global.upload.skinDescription": "Skin Description:",
   "inventory.armourers_workshop.skin-library-global.upload.skinName": "Skin Name:",
   "inventory.armourers_workshop.skin-library-global.upload.skinTags": "Skin Tags:",
+  "inventory.armourers_workshop.skin-library-global.upload.fileOptions": "Advanced file options",
+  "inventory.armourers_workshop.skin-library-global.upload.setting.title": "Advanced file options",
   "inventory.armourers_workshop.skinnable": "Skinnable Block",
   "inventory.armourers_workshop.skinning-table": "Skinning Table",
   "inventory.armourers_workshop.skinning-table.setting.title": "Skinning Table Setting",

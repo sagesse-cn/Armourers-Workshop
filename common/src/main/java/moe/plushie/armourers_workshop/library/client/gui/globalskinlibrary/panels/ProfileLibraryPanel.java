@@ -1,4 +1,4 @@
-package moe.plushie.armourers_workshop.library.client.gui.panels;
+package moe.plushie.armourers_workshop.library.client.gui.globalskinlibrary.panels;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;

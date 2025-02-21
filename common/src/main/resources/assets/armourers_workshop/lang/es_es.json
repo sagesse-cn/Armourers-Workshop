@@ -431,6 +431,8 @@
   "inventory.armourers_workshop.skin-library-global.upload.skinDescription": "Descripción del Aspecto:",
   "inventory.armourers_workshop.skin-library-global.upload.skinName": "Nombre del Aspecto:",
   "inventory.armourers_workshop.skin-library-global.upload.skinTags": "Etiquetas del Aspecto:",
+  "inventory.armourers_workshop.skin-library-global.upload.fileOptions": "Opciones avanzadas de archivo",
+  "inventory.armourers_workshop.skin-library-global.upload.setting.title": "Opciones avanzadas de archivo",
   "inventory.armourers_workshop.skinnable": "Bloque de Aspecto",
   "inventory.armourers_workshop.skinning-table": "Mesa de piel",
   "inventory.armourers_workshop.skinning-table.setting.title": "Ajustes de la tabla de skinning",

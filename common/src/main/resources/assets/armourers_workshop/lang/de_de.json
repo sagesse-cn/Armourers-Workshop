@@ -428,6 +428,8 @@
   "inventory.armourers_workshop.skin-library-global.upload.skinDescription": "Skin Beschreibung:",
   "inventory.armourers_workshop.skin-library-global.upload.skinName": "Skin-Name:",
   "inventory.armourers_workshop.skin-library-global.upload.skinTags": "Skin-Tags:",
+  "inventory.armourers_workshop.skin-library-global.upload.fileOptions": "Erweiterte Datei-Optionen",
+  "inventory.armourers_workshop.skin-library-global.upload.setting.title": "Erweiterte Datei-Optionen",
   "inventory.armourers_workshop.skinnable": "Skinbarer Block",
   "inventory.armourers_workshop.skinning-table": "Ausrüstungs Verarbeiter",
   "inventory.armourers_workshop.skinning-table.setting.title": "Häkeltisch Einstellung",

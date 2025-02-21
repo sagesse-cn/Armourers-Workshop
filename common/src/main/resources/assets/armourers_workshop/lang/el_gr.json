@@ -427,6 +427,8 @@
   "inventory.armourers_workshop.skin-library-global.upload.skinDescription": "Περιγραφή Skin",
   "inventory.armourers_workshop.skin-library-global.upload.skinName": "Όνομα Του Δέρματος:",
   "inventory.armourers_workshop.skin-library-global.upload.skinTags": "Ετικέτες: Skin",
+  "inventory.armourers_workshop.skin-library-global.upload.fileOptions": "Προηγμένες επιλογές αρχείων",
+  "inventory.armourers_workshop.skin-library-global.upload.setting.title": "Προηγμένες επιλογές αρχείων",
   "inventory.armourers_workshop.skinnable": "Μπλοκ Με Skinnable",
   "inventory.armourers_workshop.skinning-table": "Πίνακας Εμφάνισης",
   "inventory.armourers_workshop.skinning-table.setting.title": "Ρύθμιση Πίνακα Εμφάνισης",

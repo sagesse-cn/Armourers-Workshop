@@ -6,6 +6,7 @@ import moe.plushie.armourers_workshop.api.core.IResultHandler;
 import moe.plushie.armourers_workshop.core.skin.Skin;
 import moe.plushie.armourers_workshop.core.skin.SkinType;
 import moe.plushie.armourers_workshop.core.skin.SkinTypes;
+import moe.plushie.armourers_workshop.core.skin.serializer.SkinFileOptions;
 import moe.plushie.armourers_workshop.core.skin.serializer.SkinSerializer;
 import moe.plushie.armourers_workshop.core.utils.FileUtils;
 import moe.plushie.armourers_workshop.core.utils.Objects;
@@ -161,13 +162,13 @@ public class GlobalSkinLibrary extends ServerSession {
         });
     }
 
-    public void uploadSkin(String name, String desc, Skin skin, IResultHandler<Void> handler) {
+    public void uploadSkin(String name, String desc, Skin skin, SkinFileOptions options, IResultHandler<Void> handler) {
         var parameters = new HashMap<String, Object>();
         parameters.put("name", name);
         parameters.put("description", desc);
         parameters.put("fileToUpload", ServerRequest.createFile(name, () -> {
             try (var outputStream = new ByteArrayOutputStream()) {
-                SkinSerializer.writeToStream(skin, null, outputStream);
+                SkinSerializer.writeToStream(skin, options, outputStream);
                 return Unpooled.wrappedBuffer(outputStream.toByteArray());
             }
         }));

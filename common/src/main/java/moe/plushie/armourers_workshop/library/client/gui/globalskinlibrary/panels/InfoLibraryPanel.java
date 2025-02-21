@@ -1,4 +1,4 @@
-package moe.plushie.armourers_workshop.library.client.gui.panels;
+package moe.plushie.armourers_workshop.library.client.gui.globalskinlibrary.panels;
 
 import com.apple.library.coregraphics.CGRect;
 import com.apple.library.foundation.NSMutableString;
@@ -6,7 +6,7 @@ import com.apple.library.foundation.NSTextAlignment;
 import com.apple.library.uikit.UIColor;
 import com.apple.library.uikit.UILabel;
 import com.apple.library.uikit.UILabelDelegate;
-import moe.plushie.armourers_workshop.library.client.gui.GlobalSkinLibraryWindow;
+import moe.plushie.armourers_workshop.library.client.gui.globalskinlibrary.GlobalSkinLibraryWindow;
 import moe.plushie.armourers_workshop.library.data.GlobalSkinLibrary;
 import moe.plushie.armourers_workshop.library.data.impl.ServerStatus;
 import net.fabricmc.api.EnvType;

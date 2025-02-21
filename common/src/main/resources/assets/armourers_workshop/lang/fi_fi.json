@@ -428,6 +428,8 @@
   "inventory.armourers_workshop.skin-library-global.upload.skinDescription": "Ulkoasun Kuvaus:",
   "inventory.armourers_workshop.skin-library-global.upload.skinName": "Ulkoinen Nimi:",
   "inventory.armourers_workshop.skin-library-global.upload.skinTags": "Ulkoasun Tunnisteet:",
+  "inventory.armourers_workshop.skin-library-global.upload.fileOptions": "Edistyneet tiedostovaihtoehdot",
+  "inventory.armourers_workshop.skin-library-global.upload.setting.title": "Edistyneet tiedostovaihtoehdot",
   "inventory.armourers_workshop.skinnable": "Lohko Sinnable",
   "inventory.armourers_workshop.skinning-table": "Skinning-taulu",
   "inventory.armourers_workshop.skinning-table.setting.title": "Skinning-Taulun Asetus",

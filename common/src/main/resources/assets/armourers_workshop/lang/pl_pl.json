@@ -431,6 +431,8 @@
   "inventory.armourers_workshop.skin-library-global.upload.skinDescription": "Opis skóry:",
   "inventory.armourers_workshop.skin-library-global.upload.skinName": "Nazwa skóry:",
   "inventory.armourers_workshop.skin-library-global.upload.skinTags": "Tagi skóry:",
+  "inventory.armourers_workshop.skin-library-global.upload.fileOptions": "Zaawansowane opcje plików",
+  "inventory.armourers_workshop.skin-library-global.upload.setting.title": "Zaawansowane opcje plików",
   "inventory.armourers_workshop.skinnable": "Blok do ubrania",
   "inventory.armourers_workshop.skinning-table": "Skracanie stół",
   "inventory.armourers_workshop.skinning-table.setting.title": "Ustawienia tabeli skórzania",

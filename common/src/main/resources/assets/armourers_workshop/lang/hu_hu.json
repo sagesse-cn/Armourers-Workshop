@@ -425,6 +425,8 @@
   "inventory.armourers_workshop.skin-library-global.upload.skinDescription": "Bőr leírása:",
   "inventory.armourers_workshop.skin-library-global.upload.skinName": "Bőr neve:",
   "inventory.armourers_workshop.skin-library-global.upload.skinTags": "Bőrcímkék:",
+  "inventory.armourers_workshop.skin-library-global.upload.fileOptions": "Speciális fájlbeállítások",
+  "inventory.armourers_workshop.skin-library-global.upload.setting.title": "Speciális fájlbeállítások",
   "inventory.armourers_workshop.skinnable": "Skinnable blokk",
   "inventory.armourers_workshop.skinning-table": "Nyúzási táblázat",
   "inventory.armourers_workshop.skinning-table.setting.title": "Nyúzási táblázat beállítása",

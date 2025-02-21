@@ -429,6 +429,8 @@
   "inventory.armourers_workshop.skin-library-global.upload.skinDescription": "스킨 설명 :",
   "inventory.armourers_workshop.skin-library-global.upload.skinName": "스킨 이름 :",
   "inventory.armourers_workshop.skin-library-global.upload.skinTags": "스킨 태그 :",
+  "inventory.armourers_workshop.skin-library-global.upload.fileOptions": "고급 파일 옵션",
+  "inventory.armourers_workshop.skin-library-global.upload.setting.title": "고급 파일 옵션",
   "inventory.armourers_workshop.skinnable": "스킨 테이블",
   "inventory.armourers_workshop.skinning-table": "스킨 조합대",
   "inventory.armourers_workshop.skinning-table.setting.title": "스키닝 테이블 세팅",

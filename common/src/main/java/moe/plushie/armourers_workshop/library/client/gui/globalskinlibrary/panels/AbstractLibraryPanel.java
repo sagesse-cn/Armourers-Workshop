@@ -1,4 +1,4 @@
-package moe.plushie.armourers_workshop.library.client.gui.panels;
+package moe.plushie.armourers_workshop.library.client.gui.globalskinlibrary.panels;
 
 import com.apple.library.coregraphics.CGGradient;
 import com.apple.library.coregraphics.CGPoint;
@@ -7,7 +7,7 @@ import com.apple.library.foundation.NSString;
 import com.apple.library.uikit.UIColor;
 import com.apple.library.uikit.UIEvent;
 import com.apple.library.uikit.UIView;
-import moe.plushie.armourers_workshop.library.client.gui.GlobalSkinLibraryWindow;
+import moe.plushie.armourers_workshop.library.client.gui.globalskinlibrary.GlobalSkinLibraryWindow;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;

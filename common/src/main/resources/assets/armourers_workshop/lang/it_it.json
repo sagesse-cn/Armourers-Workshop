@@ -428,6 +428,8 @@
   "inventory.armourers_workshop.skin-library-global.upload.skinDescription": "Descrizione Della Pelle:",
   "inventory.armourers_workshop.skin-library-global.upload.skinName": "Nome Della Pelle:",
   "inventory.armourers_workshop.skin-library-global.upload.skinTags": "Etichette Skin",
+  "inventory.armourers_workshop.skin-library-global.upload.fileOptions": "Opzioni avanzate del file",
+  "inventory.armourers_workshop.skin-library-global.upload.setting.title": "Opzioni avanzate del file",
   "inventory.armourers_workshop.skinnable": "Blocco Skinnable",
   "inventory.armourers_workshop.skinning-table": "Tavolo Da Pelle",
   "inventory.armourers_workshop.skinning-table.setting.title": "Impostazione Tabella Di Skinning",

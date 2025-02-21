@@ -431,6 +431,8 @@
   "inventory.armourers_workshop.skin-library-global.upload.skinDescription": "Описание скина:",
   "inventory.armourers_workshop.skin-library-global.upload.skinName": "Название:",
   "inventory.armourers_workshop.skin-library-global.upload.skinTags": "Метки:",
+  "inventory.armourers_workshop.skin-library-global.upload.fileOptions": "Расширенные настройки файла",
+  "inventory.armourers_workshop.skin-library-global.upload.setting.title": "Расширенные настройки файла",
   "inventory.armourers_workshop.skinnable": "Блок-скин",
   "inventory.armourers_workshop.skinning-table": "Стол нанесения скинов",
   "inventory.armourers_workshop.skinning-table.setting.title": "Настройки скинов таблиц",

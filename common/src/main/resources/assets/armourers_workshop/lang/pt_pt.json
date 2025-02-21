@@ -430,6 +430,8 @@
   "inventory.armourers_workshop.skin-library-global.upload.skinDescription": "Descrição do Visual:",
   "inventory.armourers_workshop.skin-library-global.upload.skinName": "Nome do Visual:",
   "inventory.armourers_workshop.skin-library-global.upload.skinTags": "Tags do Visual:",
+  "inventory.armourers_workshop.skin-library-global.upload.fileOptions": "Opções avançadas de arquivo",
+  "inventory.armourers_workshop.skin-library-global.upload.setting.title": "Opções avançadas de arquivo",
   "inventory.armourers_workshop.skinnable": "Bloco de Visual Aplicável",
   "inventory.armourers_workshop.skinning-table": "Mesa de Aplicação de Visuais",
   "inventory.armourers_workshop.skinning-table.setting.title": "Configuração da Tabela Esfolada",

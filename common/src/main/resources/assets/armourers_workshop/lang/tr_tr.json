@@ -426,6 +426,8 @@
   "inventory.armourers_workshop.skin-library-global.upload.skinDescription": "Cilt Açıklaması:",
   "inventory.armourers_workshop.skin-library-global.upload.skinName": "Cilt Adı:",
   "inventory.armourers_workshop.skin-library-global.upload.skinTags": "Cilt Etiketleri:",
+  "inventory.armourers_workshop.skin-library-global.upload.fileOptions": "Gelişmiş dosya seçenekleri",
+  "inventory.armourers_workshop.skin-library-global.upload.setting.title": "Gelişmiş dosya seçenekleri",
   "inventory.armourers_workshop.skinnable": "Derisi soyulabilen blok",
   "inventory.armourers_workshop.skinning-table": "Deri Yüzme Masası",
   "inventory.armourers_workshop.skinning-table.setting.title": "Deri Yüzme Masası Düzeni",

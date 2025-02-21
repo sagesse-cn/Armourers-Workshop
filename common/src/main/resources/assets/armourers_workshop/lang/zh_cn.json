@@ -428,6 +428,8 @@
   "inventory.armourers_workshop.skin-library-global.upload.skinDescription": "时装简介：",
   "inventory.armourers_workshop.skin-library-global.upload.skinName": "时装名字：",
   "inventory.armourers_workshop.skin-library-global.upload.skinTags": "时装标签：",
+  "inventory.armourers_workshop.skin-library-global.upload.fileOptions": "高级文件选项",
+  "inventory.armourers_workshop.skin-library-global.upload.setting.title": "高级文件选项",
   "inventory.armourers_workshop.skinnable": "时装方块",
   "inventory.armourers_workshop.skinning-table": "镶嵌工作台",
   "inventory.armourers_workshop.skinning-table.setting.title": "镶嵌工作台设置",

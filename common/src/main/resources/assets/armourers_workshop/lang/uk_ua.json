@@ -430,6 +430,8 @@
   "inventory.armourers_workshop.skin-library-global.upload.skinDescription": "Опис шкіри:",
   "inventory.armourers_workshop.skin-library-global.upload.skinName": "Ім'я скіна",
   "inventory.armourers_workshop.skin-library-global.upload.skinTags": "Теги шкіри:",
+  "inventory.armourers_workshop.skin-library-global.upload.fileOptions": "Додаткові параметри файлу",
+  "inventory.armourers_workshop.skin-library-global.upload.setting.title": "Додаткові параметри файлу",
   "inventory.armourers_workshop.skinnable": "Візуальний блок",
   "inventory.armourers_workshop.skinning-table": "Стіл створення ескізів",
   "inventory.armourers_workshop.skinning-table.setting.title": "Налаштування таблиці скінів",

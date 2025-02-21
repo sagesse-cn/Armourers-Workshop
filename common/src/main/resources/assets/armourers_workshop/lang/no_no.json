@@ -428,6 +428,8 @@
   "inventory.armourers_workshop.skin-library-global.upload.skinDescription": "Beskrivelse av skallet:",
   "inventory.armourers_workshop.skin-library-global.upload.skinName": "Skinn navn:",
   "inventory.armourers_workshop.skin-library-global.upload.skinTags": "Skin merker:",
+  "inventory.armourers_workshop.skin-library-global.upload.fileOptions": "Avanserte filinnstillinger",
+  "inventory.armourers_workshop.skin-library-global.upload.setting.title": "Avanserte filinnstillinger",
   "inventory.armourers_workshop.skinnable": "Skinnbar blokk",
   "inventory.armourers_workshop.skinning-table": "Skinnende tabell",
   "inventory.armourers_workshop.skinning-table.setting.title": "Skinner Tabellinstillinger",

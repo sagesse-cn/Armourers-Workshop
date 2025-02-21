@@ -425,6 +425,8 @@
   "inventory.armourers_workshop.skin-library-global.upload.skinDescription": "תיאור העור:",
   "inventory.armourers_workshop.skin-library-global.upload.skinName": "שם העור:",
   "inventory.armourers_workshop.skin-library-global.upload.skinTags": "תגיות עור:",
+  "inventory.armourers_workshop.skin-library-global.upload.fileOptions": "אפשרויות קבצים מתקדמות",
+  "inventory.armourers_workshop.skin-library-global.upload.setting.title": "אפשרויות קבצים מתקדמות",
   "inventory.armourers_workshop.skinnable": "בלוק שניתן לעור",
   "inventory.armourers_workshop.skinning-table": "טבלת עורות",
   "inventory.armourers_workshop.skinning-table.setting.title": "עריכת שולחן סקינינג",

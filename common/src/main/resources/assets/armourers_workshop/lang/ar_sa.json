@@ -431,6 +431,8 @@
   "inventory.armourers_workshop.skin-library-global.upload.skinDescription": "وصف الجلد:",
   "inventory.armourers_workshop.skin-library-global.upload.skinName": "اسم الجلد:",
   "inventory.armourers_workshop.skin-library-global.upload.skinTags": "وسوم الجلد:",
+  "inventory.armourers_workshop.skin-library-global.upload.fileOptions": "خيارات الملف المتقدمة",
+  "inventory.armourers_workshop.skin-library-global.upload.setting.title": "خيارات الملف المتقدمة",
   "inventory.armourers_workshop.skinnable": "كتلة سكانية",
   "inventory.armourers_workshop.skinning-table": "منضدة الجلد",
   "inventory.armourers_workshop.skinning-table.setting.title": "إعدادات جدول الظهور",
