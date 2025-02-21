@@ -109,8 +109,8 @@ public class BakedSkinPart {
         return quads.getShape();
     }
 
-    public int getFaceTotal() {
-        return quads.getFaceTotal();
+    public int getMarkerTotal() {
+        return part.getMarkers().size();
     }
 
     public void setRenderPolygonOffset(float renderPolygonOffset) {

@@ -12,7 +12,7 @@ import java.util.Set;
 public class SkinUsedCounter {
 
     private final Set<SkinDyeType> dyeTypes = new HashSet<>();
-    private final int[] cubeTotals = new int[SkinGeometryTypes.getTotalCubes()];
+    private final int[] geometryTotals = new int[SkinGeometryTypes.getTotalCubes()];
 
     private int markerTotal;
     private int geometryTotal;
@@ -24,22 +24,12 @@ public class SkinUsedCounter {
     public void add(SkinUsedCounter counter) {
         markerTotal += counter.markerTotal;
         geometryTotal += counter.geometryTotal;
-        for (int i = 0; i < cubeTotals.length; ++i) {
-            cubeTotals[i] += counter.cubeTotals[i];
+        for (int i = 0; i < geometryTotals.length; ++i) {
+            geometryTotals[i] += counter.geometryTotals[i];
         }
     }
 
-    public void addGeometry(int geometryId) {
-        var geometryType = SkinGeometryTypes.byId(geometryId);
-        geometryTotal += 1;
-        cubeTotals[geometryType.getId()] += 1;
-    }
-
-    public void addMarkers(int count) {
-        markerTotal += count;
-    }
-
-    public void addPaints(Set<SkinPaintType> paintTypes) {
+    public void addPaintType(Set<SkinPaintType> paintTypes) {
         if (paintTypes == null) {
             return;
         }
@@ -50,15 +40,30 @@ public class SkinUsedCounter {
         }
     }
 
+    public void addGeometryType(ISkinGeometryType geometryType) {
+        geometryTotal += 1;
+        geometryTotals[geometryType.getId()] += 1;
+    }
+
     public void addFaceTotal(int total) {
         this.faceTotal += total;
+    }
+
+    public void addMarkerTotal(int count) {
+        markerTotal += count;
     }
 
     public void reset() {
         dyeTypes.clear();
         markerTotal = 0;
         geometryTotal = 0;
-        Arrays.fill(cubeTotals, 0);
+        Arrays.fill(geometryTotals, 0);
+    }
+
+    public SkinUsedCounter copy() {
+        var result = new SkinUsedCounter();
+        result.add(this);
+        return result;
     }
 
     public int getDyeTotal() {
@@ -73,8 +78,8 @@ public class SkinUsedCounter {
         return markerTotal;
     }
 
-    public int getCubeTotal(ISkinGeometryType cube) {
-        return cubeTotals[cube.getId()];
+    public int getGeometryTotal(ISkinGeometryType geometryType) {
+        return geometryTotals[geometryType.getId()];
     }
 
     public int getGeometryTotal() {

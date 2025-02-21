@@ -28,7 +28,7 @@ public class SkinPart implements ISkinPart {
     protected final SkinGeometrySet<?> geometries;
 
     protected final List<SkinPart> children = new ArrayList<>();
-    protected final List<SkinMarker> markerBlocks = new ArrayList<>();
+    protected final List<SkinMarker> markers = new ArrayList<>();
 
     protected final Object blobs;
 
@@ -46,9 +46,7 @@ public class SkinPart implements ISkinPart {
         this.transform = transform;
 
         this.geometries = geometries;
-        this.geometries.getUsedCounter().addMarkers(markers.size());
-
-        this.markerBlocks.addAll(markers);
+        this.markers.addAll(markers);
 
         this.blobs = blobs;
     }
@@ -121,7 +119,7 @@ public class SkinPart implements ISkinPart {
 
     @Override
     public List<SkinMarker> getMarkers() {
-        return markerBlocks;
+        return markers;
     }
 
     public Object getBlobs() {
@@ -130,7 +128,7 @@ public class SkinPart implements ISkinPart {
 
     @Override
     public String toString() {
-        return Objects.toString(this, "name", name, "type", type, "transform", transform, "markers", markerBlocks, "cubes", geometries);
+        return Objects.toString(this, "name", name, "type", type, "transform", transform, "markers", markers, "cubes", geometries);
     }
 
     public static class Builder {

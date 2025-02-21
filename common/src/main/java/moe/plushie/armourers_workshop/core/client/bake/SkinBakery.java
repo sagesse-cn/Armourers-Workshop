@@ -179,7 +179,7 @@ public final class SkinBakery implements ISkinLibraryListener {
                 var bakedPart = new BakedSkinPart(usedPart, new SkinPartTransform(usedPart, partTransform), quads);
                 children.add(bakedPart);
                 bakedParts.add(bakedPart);
-                usedCounter.addFaceTotal(bakedPart.getFaceTotal());
+                usedCounter.add(quads.getUsedCounter());
             });
             // a part maybe bake into multiple parts,
             // but we must add sub-parts into main parts.
@@ -194,7 +194,6 @@ public final class SkinBakery implements ISkinLibraryListener {
                     mainChildPart = bakedPart;
                 }
             }
-            usedCounter.add(part.getGeometries().getUsedCounter());
             return mainChildPart;
         });
 
@@ -204,6 +203,8 @@ public final class SkinBakery implements ISkinLibraryListener {
             bakedPart.setRenderPolygonOffset(20);
             bakedParts.add(bakedPart);
             rootParts.add(bakedPart);
+            usedCounter.add(quads.getUsedCounter());
+            usedCounter.addMarkerTotal(bakedPart.getMarkerTotal());
         });
 
         // we only bake special parts in preview mode.
@@ -214,6 +215,8 @@ public final class SkinBakery implements ISkinLibraryListener {
                 bakedPart.setRenderPolygonOffset(bakedParts.size());
                 bakedParts.add(bakedPart);
                 rootParts.add(bakedPart);
+                usedCounter.add(quads.getUsedCounter());
+                usedCounter.addMarkerTotal(bakedPart.getMarkerTotal());
             });
         }
 
@@ -222,7 +225,7 @@ public final class SkinBakery implements ISkinLibraryListener {
             colorInfo.add(bakedPart.getColorInfo());
         });
 
-        usedCounter.addPaints(colorInfo.getPaintTypes());
+        usedCounter.addPaintType(colorInfo.getPaintTypes());
 
         var totalTime = System.currentTimeMillis() - startTime;
 //            int index = bakeTimesIndex.getAndIncrement();

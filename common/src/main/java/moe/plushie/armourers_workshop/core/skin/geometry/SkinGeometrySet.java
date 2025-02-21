@@ -4,15 +4,12 @@ import moe.plushie.armourers_workshop.api.skin.geometry.ISkinGeometrySet;
 import moe.plushie.armourers_workshop.api.skin.geometry.ISkinGeometryType;
 import moe.plushie.armourers_workshop.core.math.OpenPoseStack;
 import moe.plushie.armourers_workshop.core.math.OpenVoxelShape;
-import moe.plushie.armourers_workshop.core.skin.serializer.SkinUsedCounter;
 import moe.plushie.armourers_workshop.core.utils.Objects;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 
 public abstract class SkinGeometrySet<T extends SkinGeometry> implements ISkinGeometrySet<T> {
-
-    protected final SkinUsedCounter usedCounter = new SkinUsedCounter();
 
     protected int id = -1;
 
@@ -47,10 +44,6 @@ public abstract class SkinGeometrySet<T extends SkinGeometry> implements ISkinGe
     public Collection<ISkinGeometryType> getSupportedTypes() {
         // we don't know the included cube types.
         return null;
-    }
-
-    public SkinUsedCounter getUsedCounter() {
-        return usedCounter;
     }
 
     @Override
