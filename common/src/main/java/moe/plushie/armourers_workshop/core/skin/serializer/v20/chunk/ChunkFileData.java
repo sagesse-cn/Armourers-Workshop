@@ -64,6 +64,17 @@ public class ChunkFileData implements ChunkVariable {
         return true;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof ChunkFileData that)) return false;
+        return contents.equals(that.contents);
+    }
+
+    @Override
+    public int hashCode() {
+        return contents.hashCode();
+    }
+
     public void addDependency(BooleanSupplier dependency) {
         this.dependencies.add(dependency);
     }

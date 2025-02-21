@@ -2,6 +2,7 @@ package moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk;
 
 import io.netty.buffer.ByteBuf;
 import moe.plushie.armourers_workshop.core.skin.property.SkinProperties;
+import moe.plushie.armourers_workshop.core.utils.Objects;
 import org.jetbrains.annotations.Nullable;
 
 public class ChunkFile {
@@ -58,5 +59,16 @@ public class ChunkFile {
 
     public ByteBuf getBytes() {
         return bytes;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof ChunkFile chunkFile)) return false;
+        return type == chunkFile.type && Objects.equals(name, chunkFile.name) && Objects.equals(properties, chunkFile.properties) && Objects.equals(bytes, chunkFile.bytes);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, properties, bytes, type);
     }
 }
