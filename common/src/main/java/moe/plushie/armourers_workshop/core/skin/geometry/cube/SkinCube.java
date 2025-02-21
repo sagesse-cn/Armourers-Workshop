@@ -20,7 +20,6 @@ public abstract class SkinCube extends SkinGeometry {
 
     protected final EnumMap<OpenDirection, SkinPaintColor> paintColors = new EnumMap<>(OpenDirection.class);
 
-
     public void setType(ISkinGeometryType type) {
         throw new UnsupportedOperationException();
     }

@@ -95,12 +95,11 @@ public class ItemTooltipManager {
         }
 
         if (ModDebugger.tooltip && Screen.hasShiftDown()) {
-
-            String totals = String.format("%d/%d/%d/%d",
-                    counter.getCubeTotal(SkinGeometryTypes.BLOCK_SOLID),
-                    counter.getCubeTotal(SkinGeometryTypes.BLOCK_GLOWING),
-                    counter.getCubeTotal(SkinGeometryTypes.BLOCK_GLASS),
-                    counter.getCubeTotal(SkinGeometryTypes.BLOCK_GLASS_GLOWING));
+            var totals = String.format("%d/%d/%d/%d",
+                    counter.getGeometryTotal(SkinGeometryTypes.BLOCK_SOLID),
+                    counter.getGeometryTotal(SkinGeometryTypes.BLOCK_GLOWING),
+                    counter.getGeometryTotal(SkinGeometryTypes.BLOCK_GLASS),
+                    counter.getGeometryTotal(SkinGeometryTypes.BLOCK_GLASS_GLOWING));
 
             tooltip.add(TranslateUtils.subtitle("item.armourers_workshop.rollover.skinIdentifier", descriptor.getIdentifier()));
             tooltip.add(TranslateUtils.subtitle("item.armourers_workshop.rollover.skinTotalCubes", totals));

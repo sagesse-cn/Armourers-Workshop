@@ -17,6 +17,7 @@ import moe.plushie.armourers_workshop.core.skin.part.SkinPart;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPartTransform;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPartType;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPartTypes;
+import moe.plushie.armourers_workshop.core.skin.serializer.SkinUsedCounter;
 import moe.plushie.armourers_workshop.core.skin.texture.EntityTextureModel;
 import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintColor;
 import moe.plushie.armourers_workshop.core.skin.texture.SkinPaintData;
@@ -42,10 +43,12 @@ public class BakedGeometryQuads {
 
     private final OpenVoxelShape shape;
     private final ColorDescriptor colorInfo;
+    private final SkinUsedCounter usedCounter;
 
-    public BakedGeometryQuads(OpenVoxelShape shape, ColorDescriptor colorInfo) {
+    public BakedGeometryQuads(OpenVoxelShape shape, ColorDescriptor colorInfo, SkinUsedCounter usedCounter) {
         this.shape = shape;
         this.colorInfo = colorInfo;
+        this.usedCounter = usedCounter;
     }
 
     public static QuadsList<SkinPartType> from(SkinPart part) {
@@ -61,7 +64,7 @@ public class BakedGeometryQuads {
                 var fixedBounds = result.getBounds().offset(bounds.origin());
                 newShape = OpenVoxelShape.box(fixedBounds);
             }
-            var newQuads = new BakedGeometryQuads(newShape, new ColorDescriptor());
+            var newQuads = new BakedGeometryQuads(newShape, new ColorDescriptor(), result.getUsedCounter());
             newQuads.loadFaces(result.getFaces());
             quads.add(result.getPartType(), newTransform, newQuads);
         });
@@ -77,9 +80,9 @@ public class BakedGeometryQuads {
             var shape = data.getShape();
             var bounds = new OpenRectangle3i(shape.bounds());
             SkinCubeFaceCuller.cullFaces2(data, bounds, SkinPartTypes.BLOCK).forEach(result -> {
-                var quad = new BakedGeometryQuads(shape, new ColorDescriptor());
-                quad.loadFaces(result.getFaces());
-                allQuads.add(result.getPartType(), transform, quad);
+                var quads = new BakedGeometryQuads(shape, new ColorDescriptor(), result.getUsedCounter());
+                quads.loadFaces(result.getFaces());
+                allQuads.add(result.getPartType(), transform, quads);
             });
         });
         return allQuads;
@@ -105,7 +108,7 @@ public class BakedGeometryQuads {
                 faces.add(new SkinCubeFace(id, SkinGeometryTypes.BLOCK_SOLID, transform, null, shape, dir, paintColor, 255));
             });
             if (!faces.isEmpty()) {
-                var quads = new BakedGeometryQuads(OpenVoxelShape.box(box.getBounds()), new ColorDescriptor());
+                var quads = new BakedGeometryQuads(OpenVoxelShape.box(box.getBounds()), new ColorDescriptor(), new SkinUsedCounter());
                 quads.loadFaces(faces);
                 allQuads.add(entry.getKey(), OpenTransform3f.IDENTITY, quads);
             }
@@ -135,13 +138,14 @@ public class BakedGeometryQuads {
         if (!mergedShape.isEmpty()) {
             mergedShape.optimize();
         }
-        var mergedQuads = new BakedGeometryQuads(mergedShape, parent.getColorInfo().copy());
+        var mergedQuads = new BakedGeometryQuads(mergedShape, parent.getColorInfo().copy(), parent.getUsedCounter().copy());
         parent.splitFaces.forEach((key, value) -> mergedQuads.splitFaces.put(key, value.copy()));
         children.forEach(pair -> {
             var transform = pair.getKey();
             var child = pair.getValue();
             child.splitFaces.forEach((key, value) -> mergedQuads.splitFaces.computeIfAbsent(key, CompressedList::new).addAll(transform, value));
             mergedQuads.getColorInfo().add(child.getColorInfo());
+            mergedQuads.getUsedCounter().add(child.getUsedCounter());
         });
         return mergedQuads;
     }
@@ -179,6 +183,7 @@ public class BakedGeometryQuads {
         }
         for (var filteredFaces : splitFaces.values()) {
             filteredFaces.sort(Comparator.comparingDouble(BakedGeometryFace::getPriority));
+            usedCounter.addFaceTotal(filteredFaces.size());
         }
     }
 
@@ -192,20 +197,16 @@ public class BakedGeometryQuads {
         splitFaces.computeIfAbsent(renderType, CompressedList::new).add(bakedFace);
     }
 
+    public SkinUsedCounter getUsedCounter() {
+        return usedCounter;
+    }
+
     public ColorDescriptor getColorInfo() {
         return colorInfo;
     }
 
     public OpenVoxelShape getShape() {
         return shape;
-    }
-
-    public int getFaceTotal() {
-        int total = 0;
-        for (var face : splitFaces.values()) {
-            total += face.size();
-        }
-        return total;
     }
 
     public static class CompressedList<T> {

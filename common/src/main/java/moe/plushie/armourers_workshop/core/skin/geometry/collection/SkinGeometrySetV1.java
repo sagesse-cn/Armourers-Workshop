@@ -76,7 +76,6 @@ public class SkinGeometrySetV1 extends SkinGeometrySet<SkinCube> {
                         slice.setPaintType(side, (byte) 255);
                     }
                 }
-                geometries.usedCounter.addGeometry(slice.getId());
             }
             return geometries;
         }

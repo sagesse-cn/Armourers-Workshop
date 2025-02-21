@@ -1,5 +1,6 @@
 package moe.plushie.armourers_workshop.core.skin.geometry.cube;
 
+import moe.plushie.armourers_workshop.api.skin.geometry.ISkinGeometryType;
 import moe.plushie.armourers_workshop.core.math.OpenRectangle3i;
 import moe.plushie.armourers_workshop.core.math.OpenVector3i;
 import moe.plushie.armourers_workshop.core.skin.geometry.SkinGeometryFace;
@@ -7,6 +8,7 @@ import moe.plushie.armourers_workshop.core.skin.geometry.SkinGeometrySet;
 import moe.plushie.armourers_workshop.core.skin.geometry.SkinGeometryTypes;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPartType;
 import moe.plushie.armourers_workshop.core.skin.part.SkinPartTypes;
+import moe.plushie.armourers_workshop.core.skin.serializer.SkinUsedCounter;
 import moe.plushie.armourers_workshop.core.utils.Collections;
 import moe.plushie.armourers_workshop.core.utils.OpenDirection;
 import moe.plushie.armourers_workshop.init.ModConfig;
@@ -52,6 +54,18 @@ public class SkinCubeFaceCuller {
         return new Simple(partType);
     }
 
+    public static Collection<SearchResult> allFaces(SkinGeometrySet<?> geometries, OpenRectangle3i bounds, SkinPartType partType) {
+        var result = new SearchResult(partType, bounds, OpenVector3i.ZERO);
+        for (int i = 0; i < geometries.size(); ++i) {
+            var geometry = geometries.get(i);
+            result.addLog(geometry.getType());
+            for (var face : geometry.getFaces()) {
+                result.addFace(face);
+            }
+        }
+        return Collections.singleton(result);
+    }
+
     public static Collection<SearchResult> cullFaces2(SkinGeometrySet<?> geometries, OpenRectangle3i bounds, SkinPartType partType) {
         // The texture cube does not support static cull,
         // the slices are designed to contain multiple cube types,
@@ -67,33 +81,20 @@ public class SkinCubeFaceCuller {
             result.cull(geometries, indexedMap);
         }
         for (int i = 0; i < geometries.size(); ++i) {
-            SkinCube geometry = null;
-            for (var dir : OpenDirection.values()) {
-                for (var result : results) {
+            var geometry = (SkinCube) geometries.get(i);
+            for (var result : results) {
+                result.addLog(geometry.getType());
+                for (var dir : OpenDirection.values()) {
                     if (result.flags.get(i * DIRECTION_SIZE + dir.get3DDataValue())) {
-                        if (geometry == null) {
-                            geometry = (SkinCube) geometries.get(i);
-                        }
                         var face = geometry.getFace(dir);
                         if (face != null) {
-                            result.add(face);
+                            result.addFace(face);
                         }
                     }
                 }
             }
         }
         return results;
-    }
-
-    public static Collection<SearchResult> allFaces(SkinGeometrySet<?> geometries, OpenRectangle3i bounds, SkinPartType partType) {
-        var result = new SearchResult(partType, bounds, OpenVector3i.ZERO);
-        for (int i = 0; i < geometries.size(); ++i) {
-            var geometry = geometries.get(i);
-            for (var face : geometry.getFaces()) {
-                result.add(face);
-            }
-        }
-        return Collections.singleton(result);
     }
 
     public static ArrayList<SkinGeometryFace> cullFaces(SkinGeometrySet<?> geometries, OpenRectangle3i bounds) {
@@ -220,17 +221,23 @@ public class SkinCubeFaceCuller {
         protected final OpenVector3i origin;
 
         protected BitSet flags;
+        protected SkinUsedCounter usedCounter;
         protected ArrayList<SkinGeometryFace> faces;
 
         public SearchResult(SkinPartType partType, OpenRectangle3i bounds, OpenVector3i origin) {
             this.faces = new ArrayList<>();
+            this.usedCounter = new SkinUsedCounter();
             this.partType = partType;
             this.bounds = bounds;
             this.origin = origin;
         }
 
-        public void add(SkinGeometryFace face) {
+        public void addFace(SkinGeometryFace face) {
             this.faces.add(face);
+        }
+
+        public void addLog(ISkinGeometryType geometryType) {
+            this.usedCounter.addGeometryType(geometryType);
         }
 
         public void cull(SkinGeometrySet<?> geometries, IndexedMap map) {
@@ -245,6 +252,10 @@ public class SkinCubeFaceCuller {
             return faces;
         }
 
+        public SkinUsedCounter getUsedCounter() {
+            return usedCounter;
+        }
+
         public OpenVector3i getOrigin() {
             return origin;
         }
@@ -255,7 +266,6 @@ public class SkinCubeFaceCuller {
     }
 
     public static class IndexedMap {
-
 
         public final int x;
         public final int y;
