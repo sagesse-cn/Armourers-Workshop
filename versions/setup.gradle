@@ -157,7 +157,6 @@ tasks.register("applyCoreSources") {
 tasks.register("applyCoreResources") {
     dependsOn "applyCoreSources"
 
-
     renameDataPack(12100, "tags/items", "tags/item")
     renameDataPack(12100, "tags/blocks", "tags/block")
     renameDataPack(12100, "loot_tables", "loot_table")

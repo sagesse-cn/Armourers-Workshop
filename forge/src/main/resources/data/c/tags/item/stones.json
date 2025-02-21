@@ -1,9 +1,6 @@
 {
   "replace": false,
   "values": [
-    {
-      "id": "#forge:stone",
-      "required": false
-    }
+    "#forge:stone"
   ]
 }

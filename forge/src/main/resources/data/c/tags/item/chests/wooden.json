@@ -1,9 +1,6 @@
 {
   "replace": false,
   "values": [
-    {
-      "id": "#forge:chests/wooden",
-      "required": false
-    }
+    "#forge:chests/wooden"
   ]
 }

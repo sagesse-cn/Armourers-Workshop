@@ -1,9 +1,6 @@
 {
   "replace": false,
   "values": [
-    {
-      "id": "#forge:dusts/glowstone",
-      "required": false
-    }
+    "#forge:dusts/glowstone"
   ]
 }

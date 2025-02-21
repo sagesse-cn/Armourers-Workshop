@@ -1,9 +1,6 @@
 {
   "replace": false,
   "values": [
-    {
-      "id": "#forge:glass",
-      "required": false
-    }
+    "#forge:glass"
   ]
 }

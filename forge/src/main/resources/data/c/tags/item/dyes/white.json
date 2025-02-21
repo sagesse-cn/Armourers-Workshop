@@ -1,9 +1,6 @@
 {
   "replace": false,
   "values": [
-    {
-      "id": "#forge:dyes/white",
-      "required": false
-    }
+    "#forge:dyes/white"
   ]
 }
