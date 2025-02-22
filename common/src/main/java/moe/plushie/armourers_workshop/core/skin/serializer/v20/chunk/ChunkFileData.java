@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BooleanSupplier;
 
-public class ChunkFileData implements ChunkVariable {
+public class ChunkFileData implements ChunkVariable, ChunkCondition {
 
     public static final ChunkFileData EMPTY = new ChunkFileData();
 
@@ -62,6 +62,28 @@ public class ChunkFileData implements ChunkVariable {
             }
         }
         return true;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof ChunkFileData that)) return false;
+        return contents.equals(that.contents);
+    }
+
+    @Override
+    public int hashCode() {
+        return contents.hashCode();
+    }
+
+    @Override
+    public ChunkConditionResult getResult() {
+        if (!freeze()) {
+            return ChunkConditionResult.PENDING;
+        }
+        if (contents.isEmpty()) {
+            return ChunkConditionResult.FAILURE;
+        }
+        return ChunkConditionResult.PASS;
     }
 
     public void addDependency(BooleanSupplier dependency) {

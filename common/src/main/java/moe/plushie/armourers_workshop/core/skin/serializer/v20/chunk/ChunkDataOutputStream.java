@@ -77,6 +77,17 @@ public class ChunkDataOutputStream implements ChunkOutputStream {
         tailNode = null;
     }
 
+    protected void ifTask(ChunkCondition condition, IOExecutor executor) throws IOException {
+        switch (condition.getResult()) {
+            case PASS -> executor.run();
+            case PENDING -> {
+                var start = appendVariable(null);
+                executor.run();
+                appendNode(new ChunkNode.If(buffer.writerIndex(), start, condition));
+            }
+        }
+    }
+
     protected void sumTask(IntConsumer callback, IOExecutor executor) throws IOException {
         var start = appendVariable(null);
         executor.run();
@@ -89,9 +100,8 @@ public class ChunkDataOutputStream implements ChunkOutputStream {
             return;
         }
         var start = appendVariable(null);
-        appendNode(start);
         executor.run();
-        appendNode(new ChunkNode.Compressed(getBuffer().writerIndex(), start, flags, this));
+        appendNode(new ChunkNode.Compressed(buffer.writerIndex(), start, flags, this));
     }
 
     @Override

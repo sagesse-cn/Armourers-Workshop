@@ -121,6 +121,47 @@ public class ChunkNode {
         }
     }
 
+    public static class If extends ChunkNode {
+
+        private final ChunkNode start;
+        private final ChunkCondition condition;
+
+        public If(int index, ChunkNode start, ChunkCondition condition) {
+            super(index);
+            this.start = start;
+            this.condition = condition;
+        }
+
+        @Override
+        public void write(byte[] bytes, OutputStream stream) throws IOException {
+            // nope
+        }
+
+        @Override
+        public int length() throws IOException {
+            return 0;
+        }
+
+        @Override
+        public boolean freeze() throws IOException {
+            if (freezeRange(start, this) && condition.getResult() != ChunkConditionResult.PENDING) {
+                updateIfNeeded();
+                return true;
+            }
+            return false;
+        }
+
+        private void updateIfNeeded() throws IOException {
+            // check the condition result, the result failure we need ignore all node.
+            if (condition.getResult() != ChunkConditionResult.FAILURE) {
+                return;
+            }
+            // reset the node info.
+            start.next = this;
+            index = start.index; // yep, the start node can't write any contents.
+        }
+    }
+
     public static class Sum extends ChunkNode {
 
         private final ChunkNode start;
@@ -218,6 +259,5 @@ public class ChunkNode {
             start.next = this;
             index = start.index; // yep, the start node can't write any contents.
         }
-
     }
 }

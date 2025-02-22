@@ -5,10 +5,8 @@ import moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk.ChunkDataIn
 import moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk.ChunkDataOutputStream;
 import moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk.ChunkFlags;
 import moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk.ChunkType;
-import moe.plushie.armourers_workshop.core.utils.Objects;
 
 import java.io.IOException;
-import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -50,21 +48,8 @@ public abstract class ChunkSerializer<V, C> {
     }
 
     public Encoder<V, C> createEncoder(V value, C obj, ChunkContext context) {
-        if (value == null) {
-            return null;
-        }
-        if (value instanceof Collection<?> collection) {
-            if (collection.isEmpty()) {
-                return null;
-            }
-            return this::write;
-        }
-        if (Objects.equals(value, defaultValue)) {
-            return null;
-        }
         return this::write;
     }
-
 
     public interface Encoder<V, C> {
         void encode(V value, C obj, ChunkDataOutputStream stream) throws IOException;

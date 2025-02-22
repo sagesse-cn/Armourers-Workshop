@@ -1,6 +1,7 @@
 package moe.plushie.armourers_workshop.core.skin.serializer.v20.chunk;
 
 import moe.plushie.armourers_workshop.core.skin.serializer.v20.ChunkSerializer;
+import moe.plushie.armourers_workshop.core.utils.Objects;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
@@ -19,26 +20,25 @@ public class ChunkWriter {
         write(serializer, value, null);
     }
 
-    public <V, T> void write(ChunkSerializer<V, T> serializer, @Nullable V value, T obj) throws IOException {
-        // we allow user write a null values, but it doesn't visible in the stream.
-        var encoder = serializer.createEncoder(value, obj, stream.getContext());
-        if (encoder == null) {
-            return;
-        }
-        var name = serializer.getChunkType().getName();
-        var flags = serializer.getChunkFlags(value, stream.getContext());
-        var sum = new Sum();
-        stream.writeVariable(sum);
-        stream.sumTask(sum, () -> {
-            writeHeader(name, flags);
-            stream.compressTask(flags, () -> encoder.encode(value, obj, stream));
-            writeFooter(name, flags);
+    public <V, T> void write(ChunkSerializer<V, T> serializer, @Nullable V value, T context) throws IOException {
+        var encoder = serializer.createEncoder(value, context, stream.getContext());
+        var condition = Condition.of(value, serializer.getDefaultValue());
+        stream.ifTask(condition, () -> {
+            var name = serializer.getChunkType().getName();
+            var flags = serializer.getChunkFlags(value, stream.getContext());
+            var sum = new Sum();
+            stream.writeVariable(sum);
+            stream.sumTask(sum, () -> {
+                writeHeader(name, flags);
+                stream.compressTask(flags, () -> encoder.encode(value, context, stream));
+                writeFooter(name, flags);
+            });
         });
     }
 
     public void writeBlobs(Object blobs) throws IOException {
-        if (blobs instanceof Collection<?>) {
-            for (Object blob : (Collection<?>) blobs) {
+        if (blobs instanceof Collection<?> allBlobs) {
+            for (var blob : allBlobs) {
                 if (blob instanceof Chunk chunk) {
                     var name = chunk.getName();
                     var flags = chunk.getFlags();
@@ -59,7 +59,7 @@ public class ChunkWriter {
     protected void writeFooter(String name, ChunkFlags flags) throws IOException {
     }
 
-    protected static class Sum implements IntConsumer, ChunkVariable {
+    private static class Sum implements IntConsumer, ChunkVariable {
 
         private int length = 0;
         private boolean resolved = false;
@@ -78,6 +78,39 @@ public class ChunkWriter {
         @Override
         public boolean freeze() {
             return resolved;
+        }
+    }
+
+    private static class Condition implements ChunkCondition {
+
+        private static final Condition PASS = new Condition(ChunkConditionResult.PASS);
+        private static final Condition FAILURE = new Condition(ChunkConditionResult.FAILURE);
+
+        private final ChunkConditionResult result;
+
+        public Condition(ChunkConditionResult result) {
+            this.result = result;
+        }
+
+        public static <V> ChunkCondition of(V value, V defaultValue) {
+            // using user condition.
+            if (value instanceof ChunkCondition condition) {
+                return condition;
+            }
+            // check collection value.
+            if (value instanceof Collection<?> collection && collection.isEmpty()) {
+                return FAILURE;
+            }
+            // check empty value.
+            if (value == null || Objects.equals(value, defaultValue)) {
+                return FAILURE;
+            }
+            return PASS;
+        }
+
+        @Override
+        public ChunkConditionResult getResult() {
+            return result;
         }
     }
 }
