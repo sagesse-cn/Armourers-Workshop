@@ -441,7 +441,11 @@ public class BlockBenchExporter {
             this.pivot = mesh.getOrigin();
             this.rotation = mesh.getRotation();
             for (var entry : mesh.getFaces().entrySet()) {
-                faces.add(new MeshFace(entry.getKey(), entry.getValue(), mesh));
+                try {
+                    faces.add(new MeshFace(entry.getKey(), entry.getValue(), mesh));
+                } catch (Exception ignored) {
+                    // ignore this face when some error occurred.
+                }
             }
         }
 
