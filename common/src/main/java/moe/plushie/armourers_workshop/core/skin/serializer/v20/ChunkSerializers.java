@@ -316,7 +316,7 @@ public class ChunkSerializers {
                         itemTransforms.put(name, OpenTransform3f.create(translate, rotation, scale));
                     }
                 }
-                boolean isEditable = stream.readBoolean();
+                var isEditable = stream.readBoolean();
                 var settings = new SkinSettings();
                 settings.setEditable(isEditable);
                 settings.setItemTransforms(itemTransforms);
@@ -346,7 +346,7 @@ public class ChunkSerializers {
                         collisionBox.add(rect);
                     }
                 }
-                boolean isEditable = stream.readBoolean();
+                var isEditable = stream.readBoolean();
                 var settings = new SkinSettings();
                 settings.setEditable(isEditable);
                 settings.setItemTransforms(itemTransforms);

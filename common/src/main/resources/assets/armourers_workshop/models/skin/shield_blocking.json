@@ -2,32 +2,24 @@
   "parent": "armourers_workshop:skin/item",
   "display": {
     "thirdperson_righthand": {
-      "rotation": [ 45, 155, 0 ],
-      "translation": [ -3.49, 11, -2 ],
-      "scale": [ 1, 1, 1 ],
-      "post_translation": [ -6, -8, -10 ],
-      "post_rotation": [ 0, -90, 0 ]
+      "rotation": [ -45, -65, 0 ],
+      "translation": [ 2, 3, 0 ],
+      "scale": [ 1, 1, 1 ]
     },
     "thirdperson_lefthand": {
-      "rotation": [ 45, 155, 0 ],
-      "translation": [ 11.51, 7, 2.5 ],
-      "scale": [ 1, 1, 1 ],
-      "post_translation": [ -6, -8, -10 ],
-      "post_rotation": [ 0, -90, 0 ]
+      "rotation": [ -45, -65, 0 ],
+      "translation": [ 2, 2.5, 0 ],
+      "scale": [ 1, 1, 1 ]
     },
     "firstperson_righthand": {
-      "rotation": [ 0, 180, -5 ],
-      "translation": [ -15, 5, -11 ],
-      "scale": [ 1.25, 1.25, 1.25 ],
-      "post_translation": [ -6, -8, -10 ],
-      "post_rotation": [ 0, -90, 0 ]
+      "rotation": [ 90, -85, 90 ],
+      "translation": [ 6.5, 4, 1.5 ],
+      "scale": [ 1.25, 1.25, 1.25 ]
     },
     "firstperson_lefthand": {
-      "rotation": [ 0, 180, -5 ],
-      "translation": [ 5, 5, -11 ],
-      "scale": [ 1.25, 1.25, 1.25 ],
-      "post_translation": [ -6, -8, -10 ],
-      "post_rotation": [ 0, -90, 0 ]
+      "rotation": [ 90, -85, 90 ],
+      "translation": [ 6.5, 6, 1.5 ],
+      "scale": [ 1.25, 1.25, 1.25 ]
     }
   }
 }

@@ -33,17 +33,6 @@ public class ItemTransform {
         return new ItemTransform(translation, rotation, scale);
     }
 
-    public static ItemTransform create(OpenVector3f translation, OpenVector3f rotation, OpenVector3f scale, OpenVector3f rightTranslation, OpenVector3f rightRotation) {
-        var leftTransform = create(translation, rotation, scale);
-        rightTranslation = optimize(rightTranslation, OpenVector3f.ZERO);
-        rightRotation = optimize(rightRotation, OpenVector3f.ZERO);
-        if (rightTranslation == OpenVector3f.ZERO && rightRotation == OpenVector3f.ZERO) {
-            return leftTransform;
-        }
-        return new Post(leftTransform, rightTranslation, rightRotation, OpenVector3f.ONE);
-    }
-
-
     public void apply(boolean applyLeftHandTransform, IPoseStack poseStack) {
         if (this == NO_TRANSFORM) {
             return;
@@ -79,28 +68,10 @@ public class ItemTransform {
         return scale;
     }
 
-
-    private static <T> T optimize(T value, T targetValue) {
+    protected static <T> T optimize(T value, T targetValue) {
         if (value.equals(targetValue)) {
             return targetValue;
         }
         return value;
-    }
-
-    private static class Post extends ItemTransform {
-
-        private final ItemTransform leftTransform;
-
-        public Post(ItemTransform leftTransform, OpenVector3f translation, OpenVector3f rotation, OpenVector3f scale) {
-            super(translation, rotation, scale);
-            this.leftTransform = leftTransform;
-        }
-
-        @Override
-        public void apply(boolean applyLeftHandTransform, IPoseStack poseStack) {
-            this.leftTransform.apply(applyLeftHandTransform, poseStack);
-            // the post transform never apply hand transform.
-            super.apply(false, poseStack);
-        }
     }
 }

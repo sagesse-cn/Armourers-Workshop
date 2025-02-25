@@ -114,12 +114,14 @@ public class ItemModelManager {
                 });
                 object.get("display").entrySet().forEach(entry -> {
                     var name = entry.getKey();
-                    var translation = parseVector3f(entry.getValue().get("translation"), OpenVector3f.ZERO);
-                    var rotation = parseVector3f(entry.getValue().get("rotation"), OpenVector3f.ZERO);
-                    var scale = parseVector3f(entry.getValue().get("scale"), OpenVector3f.ONE);
-                    var rightTranslation = parseVector3f(entry.getValue().get("post_translation"), OpenVector3f.ZERO);
-                    var rightRotation = parseVector3f(entry.getValue().get("post_rotation"), OpenVector3f.ZERO);
-                    builder.addTransform(name, ItemTransform.create(rev(translation), rev(rotation), scale, rev(rightTranslation), rev(rightRotation)));
+                    var value = entry.getValue();
+                    var translation = parseVector3f(value.get("translation"), OpenVector3f.ZERO);
+                    var rotation = parseVector3f(value.get("rotation"), OpenVector3f.ZERO);
+                    var scale = parseVector3f(value.get("scale"), OpenVector3f.ONE);
+                    var rightTranslation = parseVector3f(value.get("post_translation"), OpenVector3f.ZERO);
+                    var rightRotation = parseVector3f(value.get("post_rotation"), OpenVector3f.ZERO);
+                    var rightScale = parseVector3f(value.get("post_scale"), OpenVector3f.ONE);
+                    builder.addTransform(name, SkinItemTransform.create(translation, rotation, scale, rightTranslation, rightRotation, rightScale));
                 });
                 object.get("overrides").allValues().forEach(it -> {
                     var model = it.get("model").stringValue();
@@ -159,22 +161,6 @@ public class ItemModelManager {
             float x = value.at(0).floatValue();
             float y = value.at(1).floatValue();
             float z = value.at(2).floatValue();
-            return new OpenVector3f(x, y, z);
-        }
-
-        private OpenVector3f rev(OpenVector3f value) {
-            if (value.equals(OpenVector3f.ZERO)) {
-                return OpenVector3f.ZERO;
-            }
-            float x = value.x();
-            if (x != 0) {
-                x = -x;
-            }
-            float y = value.y();
-            if (y != 0) {
-                y = -y;
-            }
-            float z = value.z();
             return new OpenVector3f(x, y, z);
         }
     }

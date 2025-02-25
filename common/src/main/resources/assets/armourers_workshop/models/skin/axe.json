@@ -1,5 +1,5 @@
 {
-  "parent": "armourers_workshop:skin/legacy/unknown",
+  "parent": "armourers_workshop:skin/item",
   "overrides": [
     { "predicate": { "is_skin": 1 }, "model": "armourers_workshop:skin/unknown_item" }
   ]
